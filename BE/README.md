@@ -1,2 +1,0 @@
-- Dùng jdk 16.0.2
-- Tài khoản, mật khẩu sql: mockproject
