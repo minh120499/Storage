@@ -2,7 +2,7 @@ package intern.sapo.be.sercurity;
 
 import intern.sapo.be.sercurity.jwt.JwtAuthenticationEntryPoint;
 import intern.sapo.be.sercurity.jwt.JwtRequestFilter;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,17 +19,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtRequestFilter jwtRequestFilter;
 
-    public JwtWebSecurityConfig(@Qualifier("User") UserDetailsService userService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtRequestFilter jwtRequestFilter) {
-//        this.userService = userService;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-        this.jwtRequestFilter = jwtRequestFilter;
-    }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -69,4 +65,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-}}
+}
