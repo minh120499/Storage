@@ -20,8 +20,8 @@ public class BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @CreatedDate
-    private Timestamp createdAt;
-    @LastModifiedDate
-    private Timestamp updateAt;
+//    @CreatedDate
+//    private Timestamp createdAt;
+//    @LastModifiedDate
+//    private Timestamp updateAt;
 }
