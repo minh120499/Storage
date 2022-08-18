@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class BaseModel {
+public  class BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

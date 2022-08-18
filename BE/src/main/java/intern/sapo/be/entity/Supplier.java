@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "suppliers")
 @Getter
 @Setter
-public class Supplier extends BaseModel {
+public class Supplier extends BaseModel  {
 
     @Column(name = "code", nullable = false, length = 100)
     private String code;
