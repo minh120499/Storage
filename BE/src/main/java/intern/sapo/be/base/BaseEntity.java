@@ -1,4 +1,6 @@
-package com.example.be.base;
+package intern.sapo.be.base;
+
+
 
 import lombok.Data;
 import org.springframework.data.annotation.CreatedBy;

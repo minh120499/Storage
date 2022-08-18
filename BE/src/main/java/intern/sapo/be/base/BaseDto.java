@@ -1,4 +1,4 @@
-package com.example.be.base;
+package intern.sapo.be.base;
 
 public class BaseDto {
 }

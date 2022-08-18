@@ -1,4 +1,4 @@
-package com.example.be.base;
+package intern.sapo.be.base;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
