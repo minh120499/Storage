@@ -222,6 +222,8 @@ foreign key(product_variant_id) references product_variants(id)
 
 create table exports(
 id int primary key auto_increment,
+export_inventory_id int not null,
+
 receive_inventory_id int not null,
 status_id int not null default(0),
 transport_company_id int not null,
@@ -231,6 +233,7 @@ update_at datetime ,
 is_delete bit not null default(0),
 foreign key(account_id) references accounts(id),
 foreign key(receive_inventory_id) references inventories(id),
+foreign key(export_inventory_id) references inventories(id),
 foreign key(status_id) references status(id),
 foreign key(transport_company_id) references transport_companies(id)
 
