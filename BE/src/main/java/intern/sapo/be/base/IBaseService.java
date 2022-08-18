@@ -1,21 +1,24 @@
 package intern.sapo.be.base;
 
-import java.io.Serializable;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.validation.BindingResult;
+
+
 import java.util.List;
-import java.util.Optional;
 
-public interface IBaseService<T ,ID extends Serializable> {
-    T save(T entity);
+public interface IBaseService<T> {
 
-    Optional<T> findById(ID entityId);
+    Page<T> findAll(Pageable pageable);
 
-    T update(T entity);
+    List<T> findAll();
 
-    T updateById(T entity, ID entityId);
+    T create(T t, BindingResult bindingResult);
 
-    void delete(T entity);
+    T findById(int id);
 
-    void deleteById(ID entityId);
+    T update(T t,BindingResult bindingResult);
 
-    List<T> getList(Integer page, Integer perPage, String sort, String sortBy);
+    void delete(int id);
 }
