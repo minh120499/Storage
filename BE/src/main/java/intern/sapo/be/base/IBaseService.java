@@ -8,17 +8,17 @@ import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public interface IBaseService<D> {
+public interface IBaseService<T> {
     //D for DTO & E for Entity
-    Page<D> findAll(Pageable pageable);
+    Page<T> findAll(Pageable pageable);
 
-    List<D> findAll();
+    List<T> findAll();
 
-    D create(D d, BindingResult bindingResult);
+    T create(T t, BindingResult bindingResult);
 
-    D findById(int id);
+    T findById(int id);
 
-    D update(D t,BindingResult bindingResult);
+    T update(T t,BindingResult bindingResult);
 
     void delete(int id);
 }

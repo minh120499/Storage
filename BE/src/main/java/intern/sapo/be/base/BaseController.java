@@ -12,11 +12,11 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @CrossOrigin("*")
-public abstract class BaseController<D extends BaseModel> {
+public abstract class BaseController<T extends BaseModel> {
 
-    private final IBaseService<D> baseService;
+    private final IBaseService<T> baseService;
     @GetMapping
-    public Page<D> getPagination(@RequestParam(value = "pageNumber",required = true) int pageNumber,
+    public Page<T> getPagination(@RequestParam(value = "pageNumber",required = true) int pageNumber,
                                           @RequestParam(value = "pageSize",required = true) int pageSize,
                                           @RequestParam(value = "sortBy",required = false) String sortBy,
                                           @RequestParam(value = "sortDir",required = false) String sortDir){
@@ -29,23 +29,23 @@ public abstract class BaseController<D extends BaseModel> {
 
 
     @GetMapping("/findAll")
-    public List<D> list() {
+    public List<T> list() {
         return baseService.findAll();
     }
 
     @PostMapping
-    public D create(@RequestBody @Valid D request, BindingResult bindingResult) {
+    public T create(@RequestBody @Valid T request, BindingResult bindingResult) {
         return baseService.create(request,bindingResult);
     }
 
     @GetMapping("{id}")
-    public D findById(@PathVariable(value = "id") Integer id) {
+    public T findById(@PathVariable(value = "id") Integer id) {
         return baseService.findById(id);
     }
 
 
     @PutMapping
-    public D update(@RequestBody @Valid D entity,BindingResult bindingResult) {
+    public T update(@RequestBody @Valid T entity,BindingResult bindingResult) {
         return baseService.update(entity,bindingResult);
     }
      

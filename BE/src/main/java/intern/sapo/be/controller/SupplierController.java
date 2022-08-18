@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 @CrossOrigin("*")
 @RequestMapping("api/suppliers")
-public class SupplierController extends BaseController<SuppliersDTO> {
+public class SupplierController extends BaseController<Supplier> {
 
 
-    public SupplierController(IBaseService<SuppliersDTO> baseService) {
+    public SupplierController(IBaseService<Supplier> baseService) {
         super(baseService);
     }
 }

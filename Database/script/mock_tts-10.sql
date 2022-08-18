@@ -12,9 +12,9 @@ create table status(
 id int primary key auto_increment,
 code varchar(200) not null,
 name nvarchar(200) not null,
-description text 
+description text
 );
- 
+
 create table accounts(
 id int primary key auto_increment,
 username varchar(200) not null unique,

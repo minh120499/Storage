@@ -8,7 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SupplierService extends BaseService<SuppliersDTO, Supplier> {
+public class SupplierService extends BaseService<Supplier> {
     public SupplierService(IBaseRepo<Supplier, Integer> baseRepo, ModelMapper modelMapper) {
         super(baseRepo, modelMapper);
     }
