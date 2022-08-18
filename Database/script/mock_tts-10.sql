@@ -6,10 +6,7 @@ use mock_tts_10;
 create table roles(
 id int primary key ,
 name varchar(100) not null unique,
-description text not null,
-create_at datetime default(now()) not null,
-update_at datetime ,
-is_delete bit not null default(0)
+description text not null
 );
 create table status(
 id int primary key auto_increment,
@@ -55,7 +52,13 @@ code varchar(200) not null unique,
 name text not null,
 email varchar(200) not null unique,
 phone varchar(20) not null ,
-address text not null
+address text not null,
+account_id int not null,
+create_at datetime default(now()) not null,
+update_at datetime default(now()),
+is_delete bit not null default(0),
+foreign key(account_id) references accounts(id)
+
 );
 
 create table inventories(
@@ -64,7 +67,8 @@ code varchar(100) not null unique,
 name text not null ,
 address text not null,
 create_at datetime default(now()) not null,
-update_at datetime 
+update_at datetime ,
+is_delete bit not null default(0)
 
 );
 create table suppliers(
@@ -74,9 +78,12 @@ name text not null ,
 email varchar(100) not null unique,
 phone varchar(20) not null unique,
 address text not null ,
+account_id int not null,
 create_at datetime default(now()) not null,
 update_at datetime ,
-is_delete bit not null default(0)
+is_delete bit not null default(0),
+foreign key(account_id) references accounts(id)
+
 );
 create table inventories_accounts(
 account_id int not null,
@@ -99,11 +106,14 @@ name text not null,
 description text not null ,
 status_id int not null,
 supplier_id int not null,
+account_id int not null,
 create_at datetime default(now()) not null,
 update_at datetime ,
 is_delete bit not null default(0),
 foreign key(supplier_id) references suppliers(id),
-foreign key(status_id) references status(id)
+foreign key(status_id) references status(id),
+foreign key(account_id) references accounts(id)
+
 
 );
 
@@ -167,11 +177,11 @@ id int primary key auto_increment,
 code varchar(100) not null  unique,
 supplier_id int not null,
 status_id int not null default(0),
-create_by int not null,
+account_id int not null,
 create_at datetime default(now()) not null,
 update_at datetime ,
 is_delete bit not null default(0),
-foreign key(create_by) references accounts(id),
+foreign key(account_id) references accounts(id),
 foreign key(supplier_id) references suppliers(id),
 foreign key(status_id) references status(id)
 
@@ -190,12 +200,13 @@ create table imports(
 id int primary key auto_increment,
 contact_id int not null,
 transport_company_id int not null,
-create_by int not null,
+status_id int not null,
+account_id int not null,
 create_at datetime default(now()) not null,
 update_at datetime ,
 is_delete bit not null default(0),
 foreign key(contact_id) references contacts(id),
-foreign key(create_by) references accounts(id),
+foreign key(account_id) references accounts(id),
 foreign key(status_id) references status(id),
 foreign key(transport_company_id) references transport_companies(id)
 );
@@ -214,11 +225,11 @@ id int primary key auto_increment,
 receive_inventory_id int not null,
 status_id int not null default(0),
 transport_company_id int not null,
-create_by int not null,
+account_id int not null,
 create_at datetime default(now()) not null,
 update_at datetime ,
 is_delete bit not null default(0),
-foreign key(create_by) references accounts(id),
+foreign key(account_id) references accounts(id),
 foreign key(receive_inventory_id) references inventories(id),
 foreign key(status_id) references status(id),
 foreign key(transport_company_id) references transport_companies(id)
@@ -232,7 +243,7 @@ export_id int not null,
 product_variant_id int not null,
 quantity int not null default(0),
 foreign key(export_id) references exports(id),
-foreign key(product_id) references product_variants(id)
+foreign key(product_variant_id) references product_variants(id)
 );
 
 
