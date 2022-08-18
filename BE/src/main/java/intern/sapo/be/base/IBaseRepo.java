@@ -6,7 +6,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import java.io.Serializable;
 
 @NoRepositoryBean
-public interface IBaseRepo<T,Id extends Serializable> extends JpaRepository<T,Id> {
+public interface IBaseRepo<E,Id extends Serializable> extends JpaRepository<E,Id> {
 
 //    T findByCode(String code);
 

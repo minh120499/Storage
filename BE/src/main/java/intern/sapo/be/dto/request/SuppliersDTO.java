@@ -1,21 +1,30 @@
 package intern.sapo.be.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import intern.sapo.be.base.BaseModel;
+import lombok.*;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
-@Data
-public class SuppliersDTO {
-    private Integer id;
-    private String code;
-    private String name;
-    private String email;
-    private String phone;
-    private String address;
-    private Integer accountId;
-    private java.sql.Timestamp createAt;
-    private java.sql.Timestamp updateAt;
-    private Boolean isDelete;
+@Getter
+@Setter
+@NoArgsConstructor
+public class SuppliersDTO extends BaseModel {
 
+    @NotEmpty(message = "Code can not be null")
+    @Size(max = 100,message = "code can not be more then 100 character")
+    private String code;
+    @NotEmpty(message = "Name can not be null")
+    private String name;
+    @Email(message = "Email not valid")
+    @Size(max = 100,message = "code can not be more then 100 character")
+    private String email;
+    @NotEmpty(message = "Phone can not be null")
+    @Size(max = 20,message = "Phone number cant be more than 20")
+    private String phone;
+    @NotEmpty(message = "Address can not be null")
+    private String address;
 
 }

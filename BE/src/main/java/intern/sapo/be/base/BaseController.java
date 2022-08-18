@@ -6,17 +6,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import intern.sapo.be.base.*;
+
 import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
 @CrossOrigin("*")
-public abstract class BaseController<T extends BaseEntity> {
+public abstract class BaseController<D extends BaseModel> {
 
-    private final IBaseService<T> baseService;
+    private final IBaseService<D> baseService;
     @GetMapping
-    public Page<T> getPagination(@RequestParam(value = "pageNumber",required = true) int pageNumber,
+    public Page<D> getPagination(@RequestParam(value = "pageNumber",required = true) int pageNumber,
                                           @RequestParam(value = "pageSize",required = true) int pageSize,
                                           @RequestParam(value = "sortBy",required = false) String sortBy,
                                           @RequestParam(value = "sortDir",required = false) String sortDir){
@@ -29,23 +29,23 @@ public abstract class BaseController<T extends BaseEntity> {
 
 
     @GetMapping("/findAll")
-    public List<T> list() {
+    public List<D> list() {
         return baseService.findAll();
     }
 
     @PostMapping
-    public T create(@RequestBody @Valid T request, BindingResult bindingResult) {
+    public D create(@RequestBody @Valid D request, BindingResult bindingResult) {
         return baseService.create(request,bindingResult);
     }
 
     @GetMapping("{id}")
-    public T findById(@PathVariable(value = "id") Integer id) {
+    public D findById(@PathVariable(value = "id") Integer id) {
         return baseService.findById(id);
     }
 
 
     @PutMapping
-    public T update(@RequestBody @Valid T entity,BindingResult bindingResult) {
+    public D update(@RequestBody @Valid D entity,BindingResult bindingResult) {
         return baseService.update(entity,bindingResult);
     }
      
