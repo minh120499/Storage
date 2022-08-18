@@ -15,7 +15,7 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
 
     private final IBaseRepo<T, Integer> baseRepo;
 
-    private final Utils utils;
+//    private final Utils utils;
 
 
     @Override
@@ -30,18 +30,7 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
 
     @Override
     public T create(T request, BindingResult bindingResult) {
-        var t = baseRepo.findByCode(request.getCode());
-        if (t != null) {
-            log.info("code already there");
-            throw new IllegalArgumentException("code has already exits");
-        } else {
-            if (bindingResult.hasErrors()) {
-                throw utils.invalidInputException(bindingResult);
-            } else {
-                t = baseRepo.save(request);
-            }
-        }
-        return t;
+        return baseRepo.save(request);
     }
 
     @Override
@@ -52,14 +41,7 @@ public abstract class BaseService<T extends BaseEntity> implements IBaseService<
     @Override
     public T update(T request, BindingResult bindingResult) {
         var t = baseRepo.findById(request.getId()).orElseThrow(() -> new IllegalArgumentException(("id not found: " + request.getId())));
-        BindingResult result = utils.getListResult(bindingResult,request);
-        if (result.hasErrors()) {
-            throw utils.invalidInputException(result);
-        } else {
-            request.setCreatedDate(t.getCreatedDate());
-            request.setCode(t.getCode());
-            return baseRepo.save(request);
-        }
+        return baseRepo.save(t);
     }
 
     @Override

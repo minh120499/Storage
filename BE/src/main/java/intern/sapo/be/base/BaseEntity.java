@@ -19,11 +19,8 @@ public class BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty(message = "Code can not be null")
-    @Size(max = 10,message = "Code can not be more then 10 character")
-    private String code;
     @CreatedDate
-    private Timestamp createdDate;
+    private Timestamp createdAt;
     @LastModifiedDate
-    private Timestamp modifiedDate;
+    private Timestamp updateAt;
 }
