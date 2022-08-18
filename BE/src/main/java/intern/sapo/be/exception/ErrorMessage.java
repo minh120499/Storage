@@ -9,14 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class ErrorMessage {
-    private final int status;
-    private final String error;
-    private final String message;
-    private List<String> detailedMessages;
-
-    public ErrorMessage(HttpStatus httpStatus, String message) {
-        status = httpStatus.value();
-        error = httpStatus.getReasonPhrase();
-        this.message = message;
-    }
+    private String code;
+    private String message;
 }

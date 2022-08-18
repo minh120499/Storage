@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
-//    @ExceptionHandler(Exception.class)
+    //    @ExceptionHandler(Exception.class)
 //    public ResponseEntity<ErrorMessage> handleSystemError(Exception e) {
 //        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessage.builder().message(e.getMessage()).build());
 //    }
@@ -29,7 +29,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 //            MethodArgumentTypeMismatchException.class,
 //            TypeMismatchException.class
 //    })
-//    public ResponseEntity<Map<String, String>> handleException(TypeMismatchException e) {
+
+    //    public ResponseEntity<Map<String, String>> handleException(TypeMismatchException e) {
 //        Map<String, String> errorResponse = new HashMap<>();
 //        errorResponse.put("message", e.getLocalizedMessage());
 //        errorResponse.put("status", HttpStatus.BAD_REQUEST.toString());
@@ -66,4 +67,12 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 //                .collect(Collectors.toList()));
 //        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(dto);
 //    }
+    @ExceptionHandler(value = InvalidInputException.class)
+    public ResponseEntity<ErrorMessage> handleInvalidInputException(Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorMessage.builder().code("INVALID_INPUT").message(e.getMessage()).build());
+    }
+    @ExceptionHandler(value = AlreadyExistsException.class)
+    public ResponseEntity<ErrorMessage> handleAlreadyExistsException(Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorMessage.builder().code("ALREADY_EXIST").message(e.getMessage()).build());
+    }
 }
