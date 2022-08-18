@@ -6,7 +6,7 @@ use mock_tts_10;
 create table roles(
 id int primary key ,
 name varchar(100) not null unique,
-description text not null
+description text 
 );
 create table status(
 id int primary key auto_increment,
@@ -19,9 +19,9 @@ create table accounts(
 id int primary key auto_increment,
 username varchar(200) not null unique,
 password varchar(500) not null,
-create_at datetime default(now()) not null,
+create_at datetime default(now()) ,
 update_at datetime default(now()),
-is_delete bit not null default(0)
+is_delete bit  default(0)
 );
 
 create table accounts_roles(
@@ -54,9 +54,9 @@ email varchar(200) not null unique,
 phone varchar(20) not null ,
 address text not null,
 account_id int not null,
-create_at datetime default(now()) not null,
+create_at datetime default(now()) ,
 update_at datetime default(now()),
-is_delete bit not null default(0),
+is_delete bit  default(0),
 foreign key(account_id) references accounts(id)
 
 );
@@ -66,9 +66,9 @@ id int primary key auto_increment,
 code varchar(100) not null unique,
 name text not null ,
 address text not null,
-create_at datetime default(now()) not null,
+create_at datetime default(now()) ,
 update_at datetime ,
-is_delete bit not null default(0)
+is_delete bit  default(0)
 
 );
 create table suppliers(
@@ -79,9 +79,9 @@ email varchar(100) not null unique,
 phone varchar(20) not null unique,
 address text not null ,
 account_id int not null,
-create_at datetime default(now()) not null,
+create_at datetime default(now()) ,
 update_at datetime ,
-is_delete bit not null default(0),
+is_delete bit  default(0),
 foreign key(account_id) references accounts(id)
 
 );
@@ -96,20 +96,20 @@ foreign key(inventory_id) references inventories(id)
 create table categories(
 id int primary key auto_increment,
 name nvarchar(500) not null,
-description text not null
+description text 
 );
 
 create table products(
 id int primary key auto_increment,
 code varchar(100) not null unique,
 name text not null,
-description text not null ,
-status_id int not null,
+description text  ,
+status_id int default(0),
 supplier_id int not null,
 account_id int not null,
-create_at datetime default(now()) not null,
+create_at datetime default(now()) ,
 update_at datetime ,
-is_delete bit not null default(0),
+is_delete bit  default(0),
 foreign key(supplier_id) references suppliers(id),
 foreign key(status_id) references status(id),
 foreign key(account_id) references accounts(id)
@@ -138,9 +138,9 @@ code varchar(100) not null unique,
 product_id int not null,
 name nvarchar(200) not null,
 image text ,
-wholesale_price decimal(20,2) not null default (0),
-sale_price decimal(20,2) not null default (0),
-import_price decimal(20,2) not null default (0),
+wholesale_price decimal(20,2)  default (0),
+sale_price decimal(20,2)  default (0),
+import_price decimal(20,2)  default (0),
 foreign key(product_id) references products(id)
 
 );
@@ -166,7 +166,7 @@ foreign key(category_id) references categories(id)
 create table inventoies_product_variant(
 inventory_id int not null,
 product_variant_id int not null,
-qantity int not null default(0),
+qantity int  default(0),
 primary key(inventory_id,product_variant_id),
 foreign key(inventory_id) references inventories(id),
 foreign key(product_variant_id) references product_variants(id)
@@ -176,11 +176,11 @@ create table contacts(
 id int primary key auto_increment,
 code varchar(100) not null  unique,
 supplier_id int not null,
-status_id int not null default(0),
+status_id int  default(0),
 account_id int not null,
-create_at datetime default(now()) not null,
+create_at datetime default(now()) ,
 update_at datetime ,
-is_delete bit not null default(0),
+is_delete bit  default(0),
 foreign key(account_id) references accounts(id),
 foreign key(supplier_id) references suppliers(id),
 foreign key(status_id) references status(id)
@@ -191,7 +191,7 @@ create table details_contacts(
 id int primary key auto_increment,
 contact_id int not null,
 product_variant_id int not null,
-quantity int not null default(0),
+quantity int  default(0),
 foreign key (contact_id) references contacts(id),
 foreign key (product_variant_id) references product_variants(id)
 );
@@ -202,9 +202,9 @@ contact_id int not null,
 transport_company_id int not null,
 status_id int not null,
 account_id int not null,
-create_at datetime default(now()) not null,
+create_at datetime default(now()),
 update_at datetime ,
-is_delete bit not null default(0),
+is_delete bit  default(0),
 foreign key(contact_id) references contacts(id),
 foreign key(account_id) references accounts(id),
 foreign key(status_id) references status(id),
@@ -214,7 +214,7 @@ create table details_imports(
 id int primary key auto_increment,
 import_id int not null,
 product_variant_id int not null,
-quantity int not null default(0),
+quantity int  default(0),
 foreign key(import_id) references imports(id),
 foreign key(product_variant_id) references product_variants(id)
 );
@@ -228,9 +228,9 @@ receive_inventory_id int not null,
 status_id int not null default(0),
 transport_company_id int not null,
 account_id int not null,
-create_at datetime default(now()) not null,
+create_at datetime default(now()) ,
 update_at datetime ,
-is_delete bit not null default(0),
+is_delete bit  default(0),
 foreign key(account_id) references accounts(id),
 foreign key(receive_inventory_id) references inventories(id),
 foreign key(export_inventory_id) references inventories(id),
@@ -244,7 +244,7 @@ create table details_exports(
 id int primary key auto_increment,
 export_id int not null,
 product_variant_id int not null,
-quantity int not null default(0),
+quantity int  default(0),
 foreign key(export_id) references exports(id),
 foreign key(product_variant_id) references product_variants(id)
 );
@@ -253,7 +253,7 @@ foreign key(product_variant_id) references product_variants(id)
 create table actions(
 id int primary key auto_increment,
 code varchar(20) not null unique,
-description text not null
+description text 
 );
 
 create table logs(
@@ -274,7 +274,7 @@ export_id int not null,
 status_id int not null,
 foreign key(export_id) references exports(id),
 foreign key(status_id) references status(id),
-create_at datetime not null default(now())
+create_at datetime  default(now())
 );
 create table imports_status(
 id int primary key auto_increment,
@@ -282,7 +282,7 @@ import_id int not null,
 status_id int not null,
 foreign key(import_id) references imports(id),
 foreign key(status_id) references status(id),
-create_at datetime not null default(now())
+create_at datetime  default(now())
 );
 create table contacts_status(
 id int primary key auto_increment,
@@ -290,7 +290,7 @@ contact_id int not null,
 status_id int not null,
 foreign key(contact_id) references contacts(id),
 foreign key(status_id) references status(id),
-create_at datetime not null default(now())
+create_at datetime  default(now())
 )
 
 
