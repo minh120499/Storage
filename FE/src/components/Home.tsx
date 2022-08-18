@@ -36,7 +36,6 @@ import axios from "axios";
 
 export default function Home() {
     
-    const que = useQueryClient()
     const fetchGroups = (): Promise<[]> => axios.get('https://jsonplaceholder.typicode.com/posts').then(response => response.data)
     const { data, isFetching, isLoading, error, isError } = useQuery(['id'], fetchGroups)
 
@@ -55,6 +54,6 @@ export default function Home() {
     
     
     return (
-        <div>ok</div>
+        <div className="text-3xl font-bold underline">ok</div>
     )
 }
