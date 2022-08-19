@@ -3,6 +3,8 @@ package intern.sapo.be.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -11,6 +13,7 @@ import java.sql.Timestamp;
 @Table(name = "products")
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +39,7 @@ public class Product {
 
     @JoinColumn(name = "account_id", nullable = false)
     private Integer accountId;
-
+    @CreatedDate
     @Column(name = "create_at")
     private Timestamp createAt;
 

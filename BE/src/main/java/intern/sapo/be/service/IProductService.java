@@ -1,5 +1,6 @@
 package intern.sapo.be.service;
 
+import intern.sapo.be.dto.request.Product.ProductAdd;
 import intern.sapo.be.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
@@ -19,4 +20,6 @@ public interface IProductService {
     void deleteById(Integer integer);
 
     Page<Product> findAll(int pageNumber, int pageSize, String sortBy, String sortDir);
+
+    Product save(ProductAdd request, BindingResult bindingResult);
 }

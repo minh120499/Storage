@@ -1,11 +1,9 @@
 package intern.sapo.be.controller;
 
-import intern.sapo.be.entity.Option;
+import intern.sapo.be.dto.request.Product.ProductAdd;
 import intern.sapo.be.entity.Product;
-import intern.sapo.be.entity.Supplier;
 import intern.sapo.be.service.IProductService;
 import intern.sapo.be.service.ISupplierService;
-import intern.sapo.be.service.impl.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +38,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public Product create(@RequestBody @Valid Product request, @RequestBody @Valid Option option, BindingResult bindingResult) {
+    public Product create(@RequestBody @Valid ProductAdd request, BindingResult bindingResult) {
         return productService.save(request,bindingResult);
     }
 
