@@ -1,18 +1,15 @@
 package intern.sapo.be.base;
 
 
+import intern.sapo.be.util.Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindingResult;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -20,7 +17,7 @@ public abstract class BaseService<T extends BaseModel> implements IBaseService<T
 
     private final IBaseRepo<T, Integer> baseRepo;
 
-//    private final Utils utils;
+    private final Utils utils;
 
     private final ModelMapper modelMapper;
 
@@ -32,13 +29,15 @@ public abstract class BaseService<T extends BaseModel> implements IBaseService<T
 
     @Override
     public List<T> findAll() {
-       return baseRepo.findAll();
+        return baseRepo.findAll();
     }
 
     @Override
     public T create(T request, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw utils.invalidInputException(bindingResult);
+        }
         return baseRepo.save(request);
-
     }
 
     @Override
@@ -50,7 +49,13 @@ public abstract class BaseService<T extends BaseModel> implements IBaseService<T
     @Override
     public T update(T request, BindingResult bindingResult) {
         var t = baseRepo.findById(request.getId()).orElseThrow(() -> new IllegalArgumentException(("id not found: " + request.getId())));
-        return baseRepo.save(t);
+        BindingResult result = utils.getListResult(bindingResult,request);
+        if (result.hasErrors()) {
+            throw utils.invalidInputException(result);
+        } else {
+            request.setCreatedAt(t.getCreatedAt());
+            return baseRepo.save(request);
+        }
     }
 
     @Override
