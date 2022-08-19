@@ -1,5 +1,6 @@
 package intern.sapo.be.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,19 +28,16 @@ public class Product {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "status_id", nullable = false)
-    private Status status;
+    private Integer statusId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "supplier_id", nullable = false)
-    private Supplier supplier;
+    private Integer supplierId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    private Integer accountId;
 
-    @Column(name = "create_at", nullable = false)
+    @Column(name = "create_at")
     private Timestamp createAt;
 
     @Column(name = "update_at")

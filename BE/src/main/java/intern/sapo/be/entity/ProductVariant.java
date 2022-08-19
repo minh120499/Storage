@@ -19,9 +19,8 @@ public class ProductVariant {
     @Column(name = "code", nullable = false, length = 100)
     private String code;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    private Integer productId;
 
     @Column(name = "name", nullable = false, length = 200)
     private String name;
