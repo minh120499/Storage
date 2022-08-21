@@ -7,18 +7,21 @@ import org.springframework.validation.BindingResult;
 
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IBaseService<T> {
 
-    Page<T> findAll(Pageable pageable);
+    T save(T entity);
 
-    List<T> findAll();
+    Optional<T> findById(Integer entityId);
 
-    T create(T t, BindingResult bindingResult);
+    T update(T entity);
 
-    T findById(int id);
+    T updateById(T entity, Integer entityId);
 
-    T update(T t,BindingResult bindingResult);
+    void delete(T entity);
 
-    void delete(int id);
+    void deleteById(Integer entityId);
+
+    List<T> getList(Integer page, Integer perPage, String sort, String sortBy);
 }

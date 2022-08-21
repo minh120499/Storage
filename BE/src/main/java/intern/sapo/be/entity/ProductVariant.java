@@ -19,7 +19,7 @@ public class ProductVariant {
     @Column(name = "code", nullable = false, length = 100)
     private String code;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 

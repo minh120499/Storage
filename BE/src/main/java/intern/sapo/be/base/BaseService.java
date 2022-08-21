@@ -4,49 +4,70 @@ package intern.sapo.be.base;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 @RequiredArgsConstructor
-public abstract class BaseService<T extends BaseEntity> implements IBaseService<T> {
+public abstract class BaseService<T> implements IBaseService<T> {
 
     private final IBaseRepo<T, Integer> baseRepo;
 
-//    private final Utils utils;
-
-
     @Override
-    public Page<T> findAll(Pageable pageable) {
-        return baseRepo.findAll(pageable);
+    public T save(T entity) {
+        return baseRepo.save(entity);
     }
 
     @Override
-    public List<T> findAll() {
-        return baseRepo.findAll();
+    public Optional<T> findById(Integer entityId) {
+        return baseRepo.findById(entityId);
     }
 
     @Override
-    public T create(T request, BindingResult bindingResult) {
-        return baseRepo.save(request);
+    public T update(T entity) {
+        return baseRepo.save(entity);
     }
 
     @Override
-    public T findById(int id) {
-        return baseRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found: " + id));
+    public T updateById(T entity, Integer entityId) {
+        Optional<T> optional = baseRepo.findById(entityId);
+        if (optional.isPresent()) {
+            return baseRepo.save(entity);
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public T update(T request, BindingResult bindingResult) {
-        var t = baseRepo.findById(request.getId()).orElseThrow(() -> new IllegalArgumentException(("id not found: " + request.getId())));
-        return baseRepo.save(t);
+    public void delete(T entity) {
+        baseRepo.delete(entity);
     }
 
     @Override
-    public void delete(int id) {
-        baseRepo.findById(id).orElseThrow(() -> new IllegalArgumentException(("id not found: " + id)));
-        baseRepo.deleteById(id);
+    public void deleteById(Integer entityId) {
+        baseRepo.deleteById(entityId);
+    }
+
+    @Override
+    public List<T> getList(Integer page, Integer perPage, String sort, String sortBy) {
+
+        List<T> data;
+        if (sort == null) {
+            data = page == null && perPage == null
+                    ?
+                    baseRepo.findAll()
+                    :
+                    baseRepo.findAll(PageRequest.of(page - 1, perPage)).getContent();
+
+        } else {
+            Sort sortList = sort.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+            data = baseRepo.findAll(PageRequest.of(page - 1, perPage, sortList)).getContent();
+        }
+        return data;
     }
 }
