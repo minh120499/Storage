@@ -1,17 +1,32 @@
 .side-bar {
     position: relative;
     height: max-content;
-    height: calc(100vh-50px);
-    /* position: sticky;
-    top: 0; */
+    height: calc(100vh - 50px);
 }
 .side-bar,
 .side-bar ul
 {
     width: 100% !important;
 }
+.side-bar__brand-logo {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto max-content;
+    background-color: var(--headerBg);
+}
+.side-bar__brand-logo img {
+    padding: 10px;
+}
+.side-bar__brand-logo::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    border-top: 1px solid #263d53;
+}
+
 .side-bar__brand-logo a {
-    /* height: 100%; */
     top: 0;
     left: 0;
     display: block;
@@ -25,7 +40,7 @@
 }
 
 .ant-menu.ant-menu-root {
-    max-height: calc(100vh - 50px);
+    max-height: calc(100vh - var(--headerHeight));
     overflow: auto;
 }
 
@@ -33,6 +48,9 @@
     width: 5px;
 }
 .ant-menu.ant-menu-root::-webkit-scrollbar-thumb {
-    background: red;
+    background: #202d3f;
     border-radius: 10px;
+}
+.ant-layout-sider {
+    transition: width 200ms;
 }

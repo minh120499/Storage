@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import { useForm } from 'react-hook-form'
 
 const Login: React.FC = () => {
@@ -11,9 +11,12 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="fixed top-0 left-0 h-full w-full flex justify-center items-center">
+    <div 
+        className=" flex justify-center items-center"
+        style={{"backgroundImage": "url('/loginBg.svg')", "backgroundSize": "cover"}}
+    >
       <Form
-        className="relative h-max w-max bg-sky-300 p-10 rounded-md"
+        className="relative h-max w-max p-10 rounded-md"
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
@@ -37,17 +40,11 @@ const Login: React.FC = () => {
         >
           <Input.Password />
         </Form.Item>
-
-        <Form.Item
-          name="remember"
-          valuePropName="checked"
-          wrapperCol={{ offset: 8, span: 16 }}
-        >
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item>
-
+        
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
+          <Button 
+            style={{"background": "radial-gradient(100% 1111.11% at 100% 51.11%,#00d8b0 0,#00de92 100%)"}}
+            type="primary" htmlType="submit">
             Submit
           </Button>
         </Form.Item>
