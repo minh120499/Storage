@@ -15,9 +15,8 @@ public class OptionValue {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "option_id", nullable = false)
-    private Option option;
+    private Integer optionId;
 
     @Column(name = "name", nullable = false, length = 200)
     private String name;

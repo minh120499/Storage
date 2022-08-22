@@ -34,7 +34,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public List<CategoriesDTO> getAll(Integer pageNumber, Integer limit, String sortBy) {
+    public List<CategoriesDTO> findAll(Integer pageNumber, Integer limit, String sortBy) {
         List<CategoriesDTO> results = new ArrayList<>();
 
         if(pageNumber != null && limit != null) {

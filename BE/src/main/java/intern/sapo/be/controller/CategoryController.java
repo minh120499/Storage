@@ -23,7 +23,7 @@ public class CategoryController {
     public List<CategoriesDTO> getAll(@RequestParam(value = "page", required = false) Integer pageNumber,
                                       @RequestParam(value = "limit", required = false) Integer limit,
                                       @RequestParam(value = "sortby", required = false) String sortBy){
-        return iCategoryService.getAll(pageNumber,limit,sortBy);
+        return iCategoryService.findAll(pageNumber,limit,sortBy);
     }
 
     @GetMapping("/category/{id}")

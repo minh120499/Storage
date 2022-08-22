@@ -15,13 +15,11 @@ public class ProductVariantOption {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "variant_id", nullable = false)
-    private ProductVariant variant;
+    private Integer variantId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "option_value_id", nullable = false)
-    private OptionValue optionValue;
+    private Integer optionValueId;
 
 
 

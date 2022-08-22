@@ -1,7 +1,10 @@
 package intern.sapo.be.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -10,6 +13,7 @@ import java.sql.Timestamp;
 @Table(name = "products")
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,19 +31,16 @@ public class Product {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "status_id", nullable = false)
-    private Status status;
+    private Integer statusId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "supplier_id", nullable = false)
-    private Supplier supplier;
+    private Integer supplierId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
-
-    @Column(name = "create_at", nullable = false)
+    private Integer accountId;
+    @CreatedDate
+    @Column(name = "create_at")
     private Timestamp createAt;
 
     @Column(name = "update_at")
