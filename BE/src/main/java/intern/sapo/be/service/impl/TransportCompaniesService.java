@@ -29,9 +29,4 @@ public class TransportCompaniesService implements ITransportCompaniesService {
     public CategoriesDTO update(Integer id, CategoriesDTO categoriesDTO, BindingResult bindingResult) {
         return null;
     }
-
-    @Override
-    public void delete(int id) {
-
-    }
 }

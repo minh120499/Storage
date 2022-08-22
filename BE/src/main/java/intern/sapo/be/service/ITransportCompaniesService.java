@@ -13,7 +13,5 @@ public interface ITransportCompaniesService {
     CategoriesDTO create(CategoriesDTO categoriesDTO, BindingResult bindingResult);
 
     CategoriesDTO update(Integer id, CategoriesDTO categoriesDTO, BindingResult bindingResult);
-
-    void  delete(int id);
 }
 
