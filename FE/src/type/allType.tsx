@@ -1,3 +1,5 @@
+import { NullLiteral } from "typescript"
+
 export interface Supplier {
     id: number,
     code: string,
@@ -12,13 +14,16 @@ export interface Supplier {
 
 }
 export interface Product {
-    id: number,
-    code: string,
+    id?: number,
+    code?: string,
     name: string,
-    description:string|null,
-    createAt: string,
-    updateAt: string,
-    isDelete: boolean
+    description?:string|null,
+    statusId:number|null,
+    supplierId:number|null,
+    accountId:number,
+    createAt?: string,
+    updateAt?: string,
+    isDelete?: boolean
 
 }
 export interface Option{
@@ -35,5 +40,16 @@ export interface OptionValue{
 export interface AddProductInput{
     name:string,
     description:string|null,
+
+}
+export interface IVariant{
+    id?: number|null,
+    code?:string|null,
+    productId?:number|null
+    name:string,
+    image?:string|null,
+    wholesalePrice:number,
+    salePrice:number,
+    importPrice:number
 
 }

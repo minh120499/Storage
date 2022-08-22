@@ -3,6 +3,7 @@ package intern.sapo.be.service.impl;
 import intern.sapo.be.dto.request.Product.OptionAdd;
 import intern.sapo.be.dto.request.Product.OptionValuesAdd;
 import intern.sapo.be.dto.request.Product.ProductAdd;
+import intern.sapo.be.dto.request.Product.ProductAddDTO;
 import intern.sapo.be.dto.response.ProductReponse;
 import intern.sapo.be.entity.Option;
 import intern.sapo.be.entity.Product;
@@ -86,6 +87,27 @@ public class ProductService  implements IProductService {
 
 
         return product;
+    }
+
+    @Override
+    @Transactional(rollbackOn = SQLException.class)
+    public ProductAddDTO save(ProductAddDTO request, BindingResult bindingResult) {
+
+        Product product=request.getProduct();
+        product.setCode(getNewCode());
+        request.setProduct(productRepo.save(product));
+
+        for (ProductVariant variant : request.getVariants()) {
+            variant.setProductId(request.getProduct().getId());
+            variant.setCode(getNewVariantCode());
+            variant=variantRepo.save(variant);
+        }
+        return request;
+    }
+
+    @Override
+    public List<Product> findAllVariant(Integer pageNumber, Integer pageSize, String name) {
+        return null;
     }
 
     public String getNewCode() {

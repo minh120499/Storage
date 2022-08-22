@@ -2,6 +2,7 @@ package intern.sapo.be.controller;
 
 import intern.sapo.be.dto.request.Product.OptionAdd;
 import intern.sapo.be.dto.request.Product.ProductAdd;
+import intern.sapo.be.dto.request.Product.ProductAddDTO;
 import intern.sapo.be.entity.Product;
 import intern.sapo.be.service.IProductService;
 import intern.sapo.be.service.ISupplierService;
@@ -41,6 +42,10 @@ public class ProductController {
     @PostMapping
     public Product create(@RequestBody @Valid ProductAdd request, BindingResult bindingResult) {
         return productService.save(request,bindingResult);
+    }
+    @PostMapping("/add")
+    public ResponseEntity create(@RequestBody @Valid ProductAddDTO request, BindingResult bindingResult) {
+        return ResponseEntity.ok(productService.save(request,bindingResult));
     }
 
     @GetMapping("{id}")

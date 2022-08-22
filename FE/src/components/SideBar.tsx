@@ -41,7 +41,7 @@ const items: MenuItem[] = [
   ]),
   getItem("Navigation Three", "sub2", <SettingOutlined />, [
     getItem("Thêm sản phẩm", "/productsAdd"),
-    getItem("Option 8", "8"),
+    getItem("test", "/test"),
     getItem("Option 9", "9"),
     getItem("Option 10", "10"),
   ]),
