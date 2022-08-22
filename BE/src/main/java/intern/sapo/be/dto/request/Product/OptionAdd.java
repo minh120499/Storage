@@ -5,13 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Data
 public class OptionAdd {
     private Integer id;
     private Integer productId;
     private String name;
-   private OptionValuesAdd[] values;
+   private List<OptionValuesAdd> values;
     public Option toEntity()
     {
         ModelMapper mapper=new ModelMapper();
