@@ -69,15 +69,15 @@ public class SupplierService implements ISupplierService {
     @Override
     public Supplier update(Supplier request, BindingResult bindingResult) {
         var t = supplierRepo.findById(request.getId()).orElseThrow(() -> new IllegalArgumentException(("id not found: " + request.getId())));
-        supplierRepo.findByPhone(request.getPhone()).ifPresent(e -> {
-            throw new AlreadyExistsException("phone number has already exits");
-        });
-        supplierRepo.findByEmail(request.getEmail()).ifPresent(e -> {
-            throw new AlreadyExistsException("email has already exits");
-        });
-        supplierRepo.findByCode(request.getCode()).ifPresent(e -> {
-            throw new AlreadyExistsException("code has already exits");
-        });
+        if (!t.getPhone().equals(request.getPhone())) {
+            supplierRepo.findByPhone(request.getPhone()).ifPresent(e -> {
+                throw new AlreadyExistsException("phone number has already exits");
+            });
+        } else if (!t.getEmail().equals(request.getEmail())) {
+            supplierRepo.findByEmail(request.getEmail()).ifPresent(e -> {
+                throw new AlreadyExistsException("email has already exits");
+            });
+        }
         BindingResult result = utils.getListResult(bindingResult, request);
         if (result.hasErrors()) {
             throw utils.invalidInputException(result);
@@ -88,8 +88,20 @@ public class SupplierService implements ISupplierService {
     }
 
     @Override
-    public void delete(int id) {
-        supplierRepo.findById(id).orElseThrow(() -> new IllegalArgumentException(("id not found: " + id)));
-        supplierRepo.deleteById(id);
+    public void softDeleteAllIds(List<Integer> listId) {
+        listId.forEach(id -> supplierRepo.findById(id).orElseThrow(() -> new IllegalArgumentException(("id not found: " + id))));
+        supplierRepo.softDeleteAllIds(listId);
+    }
+
+    @Override
+    public void updateStatusFalseTransaction(List<Integer> listId) {
+        listId.forEach(id -> supplierRepo.findById(id).orElseThrow(() -> new IllegalArgumentException(("id not found: " + id))));
+        supplierRepo.updateStatusFalseTransaction(listId);
+    }
+
+    @Override
+    public void updateStatusTrueTransaction(List<Integer> listId) {
+        listId.forEach(id -> supplierRepo.findById(id).orElseThrow(() -> new IllegalArgumentException(("id not found: " + id))));
+        supplierRepo.updateStatusTrueTransaction(listId);
     }
 }

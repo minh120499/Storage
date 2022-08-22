@@ -54,6 +54,6 @@ export default function Home() {
     
     
     return (
-        <div>ok</div>
+        <div>Home 123</div>
     )
 }

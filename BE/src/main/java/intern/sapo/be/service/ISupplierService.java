@@ -20,5 +20,8 @@ public interface ISupplierService  {
 
     Supplier update(Supplier t,BindingResult bindingResult);
 
-    void delete(int id);
+    void softDeleteAllIds(List<Integer> id);
+
+    void updateStatusTrueTransaction(List<Integer> id);
+    void updateStatusFalseTransaction(List<Integer> id);
 }
