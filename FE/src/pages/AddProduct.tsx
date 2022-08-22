@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
 
-import { Chip, Autocomplete, Stack, TextField, FormControl, Box, Grid, Paper, Button, InputAdornment, styled, FormGroup, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Input, Modal, Typography, CircularProgress } from '@mui/material';
+// import { Mui.Chip, Autocomplete, Stack, Mui.TextField, FormControl, Box, Mui.Grid, Paper, Mui.Button, Mui.InputAdornment, styled, FormGroup, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Input, Modal, Typography, CircularProgress } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import * as Mui from '@mui/material'
+import * as Antd from 'antd'
 import { getValue } from '@mui/system';
 import { AddProductInput, IVariant, OptionValue, Product, Supplier } from '../type/allType';
 import { useForm } from 'react-hook-form';
@@ -13,6 +15,7 @@ const { Option } = Select;
 
 
 function AddProduct() {
+    //init values
     var initOptions: Array<Array<string>> = []
 
     const initSuppliers: Supplier[] = [{
@@ -59,48 +62,63 @@ function AddProduct() {
         options: initSuppliers,
         getOptionLabel: (option: Supplier) => option.id + " | " + option.name,
     };
-    var valuesForName: string[] = []
-    var variantsAll: IVariant[] = []
-    const initVariants: Array<IVariant> = []
-    const [options, setOptions] = useState<string[][]>(initOptions)
-    const [supplierId, setSupplierId] = useState<number>(0);
-    const { register, handleSubmit, watch, formState: { errors } } = useForm<AddProductInput>()
-    const [variants, setVariants] = useState(initVariants)
-    const [optionNumber, setOptionNumber] = useState(options.length)
-    const [open, setOpen] = React.useState(false);
-    const [isCreated, setIsCreated] = useState(false)
-    const handleOpen = () => { setOpen(true); }
-    const handleClose = () => { setOpen(false); }
 
-    const Item = styled(Paper)(({ theme }) => ({
+    const Item = Mui.styled(Mui.Paper)(({ theme }) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
         ...theme.typography.body2,
         textAlign: 'center',
         color: theme.palette.text.secondary,
     }));
 
+    var valuesForName: string[] = []
+    var variantsAll: IVariant[] = []
+    const initVariants: Array<IVariant> = []
+
+    //state
+    const [options, setOptions] = useState<string[][]>(initOptions)
+    const [supplierId, setSupplierId] = useState<number>(0);
+    const [variants, setVariants] = useState(initVariants)
+    const [optionNumber, setOptionNumber] = useState(options.length)
+    const [open, setOpen] = React.useState(false);
+    const [isCreated, setIsCreated] = useState(false)
+    const [form]=Antd.Form.useForm()
+
+    const children = [];
+
+    for (let i = 10; i < 36; i++) {
+      children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
+    }
+    useEffect(()=>{
+        console.log(form.getFieldsValue())
+    },[])
+
+
+    //function
+    const handleOpen = () => { setOpen(true); }
+    const handleClose = () => { setOpen(false); }
     const handleSelectSupplier = (key: number) => {
         setSupplierId(key)
     }
     const onSubmit = (data: any) => {
-        let product: Product = data
-        product.supplierId = supplierId
-        product.accountId = 1
-        product.statusId = 1
+        // let product: Product = data
+        // product.supplierId = supplierId
+        // product.accountId = 1
+        // product.statusId = 1
 
-        let body = {
-            product: product,
-            variants: variants
-        }
-       
-        addProduct(body).then(response => {
-            
-            return response.json()
-        }).then(result=>{
-            console.log(result)
-            setIsCreated(true)
-        })
-     
+        // let body = {
+        //     product: product,
+        //     variants: variants
+        // }
+
+        // addProduct(body).then(response => {
+
+        //     return response.json()
+        // }).then(result => {
+        //     console.log(result)
+        //     setIsCreated(true)
+        // })
+        console.log(data);
+
 
     }
     const addNewOptionUI = () => {
@@ -141,10 +159,6 @@ function AddProduct() {
 
 
     }
-    // useEffect(()=>{
-
-    //         console.log(variants)
-    // },[options])
 
     const deleteOption = (key: number) => {
 
@@ -161,9 +175,199 @@ function AddProduct() {
     }
 
 
+    // Component
+    const ProductInfo = () => {
+
+        return (
+            <>
+                <Mui.Paper sx={{ p: 5 }}>
+
+
+                    <Antd.Form.Item label='Nhà cung cấp' name={'supplierId'} labelCol={{ span: 24 }}>
+                        <SelectSupplier ></SelectSupplier>
+
+                    </Antd.Form.Item>
+                    <Antd.Form onFinish={onSubmit}>
+
+                        <Antd.Form.Item labelCol={{ span: 24 }} labelAlign='left' label='Tên sản phẩm' name="name"
+                            rules={[
+                                { required: true, message: 'Tên sản phẩm không được để trống' }
+
+                            ]}
+                        >
+                            <Antd.Input ></Antd.Input>
+                        </Antd.Form.Item>
+                        <Antd.Space size={[50, 3]}>
+                            <Antd.Form.Item labelCol={{ span: 24 }} label='Giá bán lẻ' name="salePrice" style={{ width: '100%' }}
+                                rules={[
+                                    { required: true, message: 'Giá bán lẻ Không được để trống' },
+                                ]}
+                            >
+                                <Antd.InputNumber defaultValue={0} min={0} style={{ width: '100%' }}
+                                    formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                >
+                                </Antd.InputNumber>
+                            </Antd.Form.Item>
+                            <Antd.Form.Item labelCol={{ span: 24 }} label='Giá bán buôn' name="wholesalePrice" >
+                                <Antd.InputNumber defaultValue={0} min={0} style={{ width: '100%' }}
+                                    formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                >
+                                </Antd.InputNumber>
+                            </Antd.Form.Item>
+                            <Antd.Form.Item labelCol={{ span: 24 }} label='Giá nhập' name="importPrice"
+                                rules={[
+                                    { required: true, message: 'Giá nhập không được để trống' },
+
+                                ]}
+                            >
+                                <Antd.InputNumber defaultValue={0} min={0} style={{ width: '100%' }}
+                                    formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                >
+                                </Antd.InputNumber>
+                            </Antd.Form.Item>
+
+                        </Antd.Space>
+                        <Antd.Form.Item name='description'>
+                            <Antd.Input.TextArea rows={4} placeholder="Mô tả sản phẩm" />
+
+                        </Antd.Form.Item>
+                        <Mui.Button sx={{ ml: 100 }} variant="contained" type='submit'>Lưu</Mui.Button>
+
+                    </Antd.Form>
+                </Mui.Paper>
+
+            </>
+        )
+    }
+    const SelectSupplier = () => {
+        return (
+            <>
+                <Antd.Select style={{ width: '100%', marginBottom: 10 }} dropdownStyle={{ height: 300, width: 700 }}
+                    showSearch
+                    placeholder="Search to Select"
+                    optionFilterProp="children"
+                    defaultValue={0}
+                    onChange={handleSelectSupplier}
+                    filterOption={(input, option) => (option!.children as unknown as string).includes(input)}
+                    filterSort={(optionA, optionB) =>
+                        (optionA!.children as unknown as string)
+                            .toLowerCase()
+                            .localeCompare((optionB!.children as unknown as string).toLowerCase())
+                    }
+
+                >
+                    {
+                        initSuppliers.map((supplier, index) => {
+                            return (
+                                <Antd.Select.Option style={{ width: 1000, marginTop: 5 }} key={index} value={index}>
+
+                                    {supplier.name + " | " + supplier.code}
+
+                                </Antd.Select.Option>
+                            )
+                        })
+                    }
+                </Antd.Select>
+            </>
+        )
+    }
+    const OptionInfo = () => {
+        return (
+            <>
+                <Mui.Paper style={{ boxSizing: 'border-box', height: 400, padding:'3% 10%' }} >
+
+                    {
+                        options.map
+                            ((value, index) => {
+                                return (
+
+                                    // <Mui.Grid style={{ boxSizing: 'border-box' }} container spacing={2} mb={5} ml={1}>
+                                    //     <Mui.Grid item xs={3}>
+                                    //         <Mui.TextField
+                                    //             variant="outlined"
+                                    //             label="Tên thuộc tính"
+                                    //             size='small'
+                                    //             InputProps={{
+                                    //                 startAdornment: (
+                                    //                     <Mui.InputAdornment position="start">
+                                    //                     </Mui.InputAdornment>
+                                    //                 ),
+                                    //             }}
+                                    //         />
+                                    //     </Mui.Grid>
+                                    //     <Mui.Grid item xs={6}>
+                                    //         <Mui.Autocomplete
+                                    //             multiple
+                                    //             id="options"
+                                    //             options={value}
+                                    //             size='small'
+                                    //             freeSolo
+                                    //             renderTags={(value: string[], getTagProps) => {
+                                    //                 options[index] = value
+                                    //                 return value.map((option: string, index: number) => {
+                                    //                     return (
+                                    //                         <Mui.Chip sx={{ p: 0, m: 0 }} variant="outlined" label={option} {...getTagProps({ index })} />
+                                    //                     )
+                                    //                 }
+                                    //                 )
+                                    //             }
+                                    //             }
+                                    //             renderInput={(params) => (
+                                    //                 <Mui.TextField
+                                    //                     {...params}
+                                    //                     variant="outlined"
+
+                                    //                     label="Giá trị"
+                                    //                     placeholder=""
+                                    //                 />
+                                    //             )}
+
+                                    //         />
+
+                                    //     </Mui.Grid>
+                                    //     <Mui.Grid item xs={2} >
+                                    //         {index === options.length - 1 ? <Mui.Button onClick={() => deleteOption(index)} >Delete</Mui.Button> : null}
+
+                                    //     </Mui.Grid>
+                                    // </Mui.Grid>
+                                    <>
+                                    <Antd.Input   style={{
+                                           width: '20%',
+                                           margin:'10px 10px'
+                                       }}></Antd.Input>
+                                       <Antd.Select
+                                       
+                                       mode="tags"
+                                       placeholder="Please select"
+                                       style={{
+                                           width: '60%',
+                                       }}
+                                       defaultValue={[...value]}
+                                       onChange={(data)=>{
+                                          console.log(data)
+                                        //   onOptionChange()
+                                       }}
+                                   >
+                                                               
+                                   </Antd.Select>
+                                     {index === options.length - 1 ? <Mui.Button onClick={() => deleteOption(index)} >Delete</Mui.Button> : null}
+                                     </>
+
+                                   
+                                )
+                            })}
+                    <Mui.Button sx={{ ml: 3 }} onClick={addNewOptionUI}>Thêm Thuộc tính</Mui.Button>
+                    <Mui.Button sx={{ ml: 6 }} onClick={() => { onOptionChange() }}>Tạo các phiên bản</Mui.Button>
+
+
+                </Mui.Paper>
+            </>
+        )
+    }
+
     return (
         <div>
-            <Modal sx={{
+            <Mui.Modal sx={{
                 position: 'absolute' as 'absolute',
                 top: '50%',
                 left: '50%',
@@ -177,233 +381,62 @@ function AddProduct() {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Paper sx={{ top: '40%', left: '40%', height: '20%', width: '20%' }}>
-                    {isCreated ? "Thêm thành công" : <CircularProgress />}
-                </Paper>
-            </Modal>
+                <Mui.Paper sx={{ top: '40%', left: '40%', height: '20%', width: '20%' }}>
+                    {isCreated ? "Thêm thành công" : <Mui.CircularProgress />}
+                </Mui.Paper>
+            </Mui.Modal>
             <span>Thông tin chung </span>
-            <Button variant="contained" onClick={handleSubmit(onSubmit)} >Lưu</Button>
 
-            <Box sx={{ flexGrow: 1 }}>
-                <Grid container spacing={2}>
-                    <Grid item xs={7} textAlign={'left'} >
+            <Mui.Box sx={{ flexGrow: 1 }}>
+                <Mui.Grid container spacing={2}>
+                    <Mui.Grid item xs={7} textAlign={'left'} >
+                        <ProductInfo></ProductInfo>
+                    </Mui.Grid>
+                    <Mui.Grid item xs={5}  >
+                        <OptionInfo></OptionInfo>
+                     
+                    </Mui.Grid>
 
+                </Mui.Grid>
+            </Mui.Box>
 
-
-                        {/* <Autocomplete
-                            options={initSuppliers}
-                            getOptionLabel={(option: Supplier) => option.name}
-                            sx={{ mt: 3 }}
-                            id="supplier"
-                            disableCloseOnSelect
-                            renderInput={(params) => (
-                                <TextField   {...params} label="Nhà cung cấp" variant="outlined" />
-                            )}
-                            onChange={(event: any, newValue: Supplier | null) => {
-                                setSupplier(newValue);
-                                console.log(supplier)
-                            }}
-                        /> */}
-                        <Select style={{ width: '100%' }} dropdownStyle={{ height: 300, width: 700 }}
-
-                            showSearch
-                            placeholder="Search to Select"
-                            optionFilterProp="children"
-                            onChange={handleSelectSupplier}
-                            filterOption={(input, option) => (option!.children as unknown as string).includes(input)}
-                            filterSort={(optionA, optionB) =>
-                                (optionA!.children as unknown as string)
-                                    .toLowerCase()
-                                    .localeCompare((optionB!.children as unknown as string).toLowerCase())
-                            }
-                            onSelect={() => {
-
-                            }}
-                        >
-                            {
-                                initSuppliers.map((supplier, index) => {
-                                    return (
-                                        <Option style={{ width: 1000 }} value={supplier.id}>
-
-                                            {supplier.name + "  " + supplier.code}
-
-                                        </Option>
-                                    )
-                                })
-                            }
-                        </Select>
-
-
-                        <FormControl sx={{ mt: 5, flexFlow: 1 }}>
-                            <form onSubmit={handleSubmit(onSubmit)}>
-
-                                <Item sx={{height:325}}>
-                                    <TextField
-                                        label="Tên sản phẩm"
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                        sx={{ width: 600, mt: 5 }}
-                                        id="name"
-                                        defaultValue=""
-                                        size="small"
-                                        autoFocus={errors.name ? true : false}
-                                        variant='outlined'
-                                        {...register('name', { required: 'Tên sản phẩm không được để trống', minLength: 3 })}
-                                        helperText={errors.name ? errors.name.message : null}
-                                        error={!!errors.name}
-
-                                    />
-
-                                    <TextField
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                        label="Mô tả"
-                                        sx={{ width: 600, mt: 5, height: 150 }}
-                                        id="description"
-                                        maxRows={5}
-                                        {...register('description')}
-                                        defaultValue=""
-                                        variant='outlined'
-
-                                        size="small"
-                                        helperText={errors.description ? errors.description.message : null}
-                                        error={!!errors.description}
-                                    />
-
-
-                                    {/* <TextareaAutosize
-                                maxRows={4}
-                                aria-label="maximum height"
-                                placeholder="Mô tả"
-                                defaultValue="Ví dụ"
-                                style={{ width: 600 , height:150 ,marginTop:10}}
-                            /> */}
-                                </Item>
-
-                            </form>
-
-
-                        </FormControl>
-
-
-
-
-                    </Grid>
-                    <Grid item xs={5} >
-                        <Paper style={{ boxSizing: 'border-box', height: 400, marginTop: 15 }} >
-
-                            {
-                                options.map
-                                    ((value, index) => {
-                                        return (
-                                            <Grid style={{ boxSizing: 'border-box' }} container spacing={2} mb={5} ml={1}>
-                                                <Grid item xs={3}>
-                                                    <TextField
-                                                        variant="outlined"
-                                                        label="Tên thuộc tính"
-                                                        size='small'
-                                                        InputProps={{
-                                                            startAdornment: (
-                                                                <InputAdornment position="start">
-                                                                </InputAdornment>
-                                                            ),
-                                                        }}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={6}>
-                                                    <Autocomplete
-                                                        multiple
-                                                        id="tags-filled"
-                                                        options={value}
-                                                        size='small'
-                                                        freeSolo
-                                                        renderTags={(value: string[], getTagProps) => {
-                                                            options[index] = value
-                                                            return value.map((option: string, index: number) => {
-                                                                return (
-                                                                    <Chip sx={{ p: 0, m: 0 }} variant="outlined" label={option} {...getTagProps({ index })} />
-                                                                )
-                                                            }
-                                                            )
-                                                        }
-                                                        }
-                                                        renderInput={(params) => (
-                                                            <TextField
-                                                                {...params}
-                                                                variant="outlined"
-
-                                                                label="Giá trị"
-                                                                placeholder=""
-                                                            />
-                                                        )}
-
-                                                    />
-
-                                                </Grid>
-                                                <Grid item xs={2} >
-                                                    {index === options.length - 1 ? <Button onClick={() => deleteOption(index)} >Delete</Button> : null}
-
-                                                </Grid>
-                                            </Grid>
-                                        )
-                                    })}
-                            <Button sx={{ ml: 3  }} onClick={addNewOptionUI}>Thêm Thuộc tính</Button>
-                            <Button sx={{ ml: 6 }} onClick={() => { onOptionChange() }}>Tạo các phiên bản</Button>
-
-
-                        </Paper>
-
-
-                    </Grid>
-
-                </Grid>
-            </Box>
-
-            <TableContainer sx={{mt:5}} component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="center">Tên sản phẩm</TableCell>
-                            <TableCell align="center">Giá bán lẻ</TableCell>
-                            <TableCell align="center">Giá bán buôn</TableCell>
-                            <TableCell align="center">Giá nhập</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
+            <Mui.TableContainer sx={{ mt: 5 }} component={Mui.Paper}>
+                <Mui.Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <Mui.TableHead>
+                        <Mui.TableRow>
+                            <Mui.TableCell align="center">Tên sản phẩm</Mui.TableCell>
+                            <Mui.TableCell align="center">Giá bán lẻ</Mui.TableCell>
+                            <Mui.TableCell align="center">Giá bán buôn</Mui.TableCell>
+                            <Mui.TableCell align="center">Giá nhập</Mui.TableCell>
+                        </Mui.TableRow>
+                    </Mui.TableHead>
+                    <Mui.TableBody>
                         {variants.map((variant, index) => (
-                            <TableRow
+                            <Mui.TableRow
                                 key={index}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row" align="center">
+                                <Mui.TableCell component="th" scope="row" align="center">
                                     {variant.name}
-                                </TableCell>
-                                <TableCell align="center">
-                                    <TextField
+                                </Mui.TableCell>
+                                <Mui.TableCell align="center">
+                                    <Mui.TextField
                                         size='small'
                                         type="number"
                                         onChange={(e) => {
                                             variant.salePrice = Number(e.target.value)
                                         }} />
-                                </TableCell>
-                                <TableCell align="center">
-                                    <TextField
+                                </Mui.TableCell>
+                                <Mui.TableCell align="center">
+                                    <Mui.TextField
                                         size='small'
                                         type="number"
                                         onChange={(e) => {
                                             variant.wholesalePrice = Number(e.target.value)
                                         }} />
-                                </TableCell>
-                                <TableCell align="center">
-                                    <TextField
+                                </Mui.TableCell>
+                                <Mui.TableCell align="center">
+                                    <Mui.TextField
                                         size='small'
                                         type="number"
                                         onChange={(e) => {
@@ -413,12 +446,12 @@ function AddProduct() {
                                             }
                                         }} />
 
-                                </TableCell>
-                            </TableRow>
+                                </Mui.TableCell>
+                            </Mui.TableRow>
                         ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                    </Mui.TableBody>
+                </Mui.Table>
+            </Mui.TableContainer>
         </div>
 
 
