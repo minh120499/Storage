@@ -15,21 +15,21 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("api/products")
-public class ProductController {
+@RequestMapping("api/products/variants")
+public class PController {
 
-    private ISupplierService supplierService;
     private IProductService productService;
 
-    public ProductController(IProductService productService) {
+    public PController(IProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping()
     public ResponseEntity getPagination(@RequestParam(value = "pageNumber",required = false) Integer pageNumber,
-                                       @RequestParam(value = "pageSize",required = false) Integer pageSize
-                                    ){
-        return ResponseEntity.ok(productService.findAll(pageNumber,pageSize).toList());
+                                        @RequestParam(value = "pageSize",required = false) Integer pageSize,
+                                        @RequestParam(value = "name",required = false) String name
+    ){
+        return ResponseEntity.ok(productService.findAllVariant(pageNumber,pageSize,name) );
     }
 
 
@@ -63,11 +63,11 @@ public class ProductController {
         return productService.save(entity,bindingResult);
     }
 
-        @DeleteMapping("/options/{id}")
-        public ResponseEntity update (@PathVariable Integer id,@RequestBody OptionAdd[] options)
-        {
-            return  ResponseEntity.ok(options);
-        }
+    @DeleteMapping("/options/{id}")
+    public ResponseEntity update (@PathVariable Integer id,@RequestBody OptionAdd[] options)
+    {
+        return  ResponseEntity.ok(options);
+    }
 
 
 }
