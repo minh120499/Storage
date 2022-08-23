@@ -1,7 +1,6 @@
 import {Button, Dropdown, Menu, Modal, Space, Table, Typography} from "antd";
 import React, {useEffect, useState} from "react";
 import {ISupplier, TypeSupplier} from "../../services/customType";
-
 import {createSupplier, deleteSupplier, getSuppliers, updateStatusSupplier} from "../../services/api";
 import {SupplierColumn} from "../../components/Datatablesource";
 import {Link, useNavigate} from "react-router-dom";

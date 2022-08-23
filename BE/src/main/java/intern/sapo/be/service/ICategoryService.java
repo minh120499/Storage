@@ -4,7 +4,8 @@ import org.springframework.validation.BindingResult;
 import java.util.List;
 
 
-public interface ICategoryService {
+public interface
+ICategoryService {
     List<CategoriesDTO> findAll(Integer pageNumber, Integer limit, String sortBy);
 
     CategoriesDTO findById(Integer id);
@@ -13,5 +14,5 @@ public interface ICategoryService {
 
     CategoriesDTO update(Integer id, CategoriesDTO categoriesDTO, BindingResult bindingResult);
 
-    void  delete(int id);
+    void  delete(List<Integer> id);
 }

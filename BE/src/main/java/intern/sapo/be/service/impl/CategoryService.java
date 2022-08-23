@@ -96,8 +96,10 @@ public class CategoryService implements ICategoryService {
 
 
     @Override
-    public void delete(int id) {
-        iCategoryRepo.findById(id).orElseThrow(()-> new IllegalArgumentException("id not found:" + id));
-        iCategoryRepo.delete(id);
+    public void delete(List<Integer> id) {
+        for (Integer item:  id) {
+            iCategoryRepo.findById(item.intValue()).orElseThrow(()-> new IllegalArgumentException("id not found:" + item.intValue()));
+            iCategoryRepo.delete(item.intValue());
+        }
     }
 }

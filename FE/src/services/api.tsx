@@ -21,3 +21,8 @@ export const updateSupplier = async (supplier:object)=>{
 export const getSupplierById = async (id:number) => {
     return await axios.get(`${configValue}suppliers/${id}`)
 }
+
+
+export const deleteCategories = async (listId:React.Key[])=>{
+    return axios.post(`${process.env.REACT_APP_API}categories/delete`,listId)
+}
