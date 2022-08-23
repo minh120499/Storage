@@ -14,5 +14,7 @@ public interface ICategoryRepo extends JpaRepository<Category,Integer>{
     List<Category> getAll(Pageable pageable);
     @Query(value = "call delete_category(?1)", nativeQuery = true)
     void delete(Integer id);
+    @Query("select c from Category  c order by  c.id desc ")
+    List<Category> getAll();
 
 }

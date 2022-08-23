@@ -26,7 +26,6 @@ public class Supplier {
 
 
     @Column(name = "code", nullable = false, length = 100)
-    @NotEmpty(message = "Code can not be null")
     @Size(max = 100,message = "code can not be more then 100 character")
     private String code;
 
@@ -59,6 +58,9 @@ public class Supplier {
 
     @Column(name = "is_delete", nullable = false)
     private Boolean isDelete = false;
+
+    @Column(name = "status_transaction", nullable = false)
+    private Boolean statusTransaction = true;
 
 
     @JoinColumn(name = "account_id",insertable = false,updatable = false, nullable = false)

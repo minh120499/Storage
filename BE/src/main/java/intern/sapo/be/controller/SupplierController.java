@@ -22,17 +22,17 @@ import java.util.List;
 @CrossOrigin("*")
 @RequestMapping("api/suppliers")
 @AllArgsConstructor
-public class SupplierController  {
+public class SupplierController {
 
     private ISupplierService supplierService;
 
 
     @GetMapping
-    public Page<Supplier> getPagination(@RequestParam(value = "pageNumber",required = true) int pageNumber,
-                                 @RequestParam(value = "pageSize",required = true) int pageSize,
-                                 @RequestParam(value = "sortBy",required = false) String sortBy,
-                                 @RequestParam(value = "sortDir",required = false) String sortDir){
-        return supplierService.findAll(pageNumber,pageSize,sortBy,sortDir);
+    public Page<Supplier> getPagination(@RequestParam(value = "pageNumber", required = true) int pageNumber,
+                                        @RequestParam(value = "pageSize", required = true) int pageSize,
+                                        @RequestParam(value = "sortBy", required = false) String sortBy,
+                                        @RequestParam(value = "sortDir", required = false) String sortDir) {
+        return supplierService.findAll(pageNumber, pageSize, sortBy, sortDir);
     }
 
 
@@ -43,7 +43,7 @@ public class SupplierController  {
 
     @PostMapping
     public Supplier create(@RequestBody @Valid Supplier request, BindingResult bindingResult) {
-        return supplierService.create(request,bindingResult);
+        return supplierService.create(request, bindingResult);
     }
 
     @GetMapping("{id}")
@@ -53,13 +53,20 @@ public class SupplierController  {
 
 
     @PutMapping
-    public Supplier update(@RequestBody @Valid Supplier entity,BindingResult bindingResult) {
-        return supplierService.update(entity,bindingResult);
+    public Supplier update(@RequestBody @Valid Supplier entity, BindingResult bindingResult) {
+        return supplierService.update(entity, bindingResult);
     }
 
-    @DeleteMapping("{id}")
-    public void delete(@PathVariable(value = "id") Integer id) {
-        supplierService.delete(id);
+    @PutMapping("/delete")
+    public void softDeleteAllIds(@RequestBody List<Integer> id) {
+        supplierService.softDeleteAllIds(id);
+    }
+
+    @PutMapping("/updateStatus/{status}")
+    public void updateStatus(@PathVariable(value = "status") String status, @RequestBody List<Integer> ids) {
+        if (status.equals("true")) {
+            supplierService.updateStatusTrueTransaction(ids);
+        } else supplierService.updateStatusFalseTransaction(ids);
     }
 
 }

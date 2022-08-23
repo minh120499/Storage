@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Button, Table, Modal, Form, Input, Select } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import axios from "axios";
-import type { FormInstance } from 'antd/es/form';
-import { useForm } from "react-hook-form";
-import { Category } from "../type/allType";
+import "../../styles/Category.css"
+
 
 
 
@@ -18,6 +17,7 @@ export default function Categories() {
   const [response, setResponse] = useState<DataType[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [status, setStatus] = useState(false);
   const [formAdd] = Form.useForm();
 
 
@@ -30,7 +30,7 @@ export default function Categories() {
       }).catch(error => {
         console.log(error);
       });
-  }, [])
+  }, [status])
 
 
   /*Khởi tạo giá trị column*/
@@ -79,7 +79,7 @@ export default function Categories() {
     })
     formAdd.resetFields();
     setIsModalVisible(false);
-
+    setStatus(!status);
   };
 
   const handleCancel = () => {
@@ -101,12 +101,14 @@ export default function Categories() {
 
   const tailLayout = {
     wrapperCol: { offset: 13, span: 16 },
+    labelCol: { span: 100 },
   };
 
 
 
   return (
-    <div>
+    <>
+      <h1 className="ant-typography">Danh mục</h1>
       <div style={{ marginBottom: 16 }}>
         <Button type="primary" onClick={showModal}>
           Thêm mới
@@ -129,6 +131,7 @@ export default function Categories() {
               <Button htmlType="button" onClick={handleCancel}>
                 Cancle
               </Button>
+
               <Button type="primary" htmlType="submit">
                 Submit
               </Button>
@@ -137,6 +140,6 @@ export default function Categories() {
         </Modal>
       </div>
       <Table rowKey={'id'} rowSelection={rowSelection} columns={columns} dataSource={data} />
-    </div>
+    </>
   )
 }

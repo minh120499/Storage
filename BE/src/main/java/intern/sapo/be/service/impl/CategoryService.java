@@ -39,9 +39,9 @@ public class CategoryService implements ICategoryService {
 
         if(pageNumber != null && limit != null) {
             if (sortBy == null) {
-                sortBy = "name";
+                sortBy = "id";
             }
-            Pageable pageable = PageRequest.of(pageNumber - 1, limit, Sort.by(sortBy).ascending());
+            Pageable pageable = PageRequest.of(pageNumber - 1, limit, Sort.by(sortBy).descending());
             List<Category> categories = iCategoryRepo.getAll(pageable);
             for (Category item : categories) {
                 CategoriesDTO categoriesDTO = toDto(item);
@@ -49,7 +49,7 @@ public class CategoryService implements ICategoryService {
             }
             return results;
         }else{
-            List<Category> categories = iCategoryRepo.findAll();
+            List<Category> categories = iCategoryRepo.getAll();
             for (Category item : categories) {
                 CategoriesDTO categoriesDTO = toDto(item);
                 results.add(categoriesDTO);

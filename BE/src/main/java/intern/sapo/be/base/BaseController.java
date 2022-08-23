@@ -51,6 +51,7 @@ public abstract class BaseController<T extends BaseModel> {
      
     @DeleteMapping("{id}")
     public void delete(@PathVariable(value = "id") Integer id) {
+
         baseService.delete(id);
     }
 
