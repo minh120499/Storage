@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,6 +20,7 @@ import java.util.Set;
 @Table(name = "accounts")
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,10 +33,12 @@ public class Account implements Serializable {
     @Column(name = "password", nullable = false, length = 500)
     private String password;
 
-    @Column(name = "create_at", nullable = false)
+    @Column(name = "create_at")
+    @CreatedDate
     private Timestamp createAt;
 
     @Column(name = "update_at")
+    @LastModifiedDate
     private Timestamp updateAt;
 
     @Column(name = "is_delete", nullable = false)

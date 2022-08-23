@@ -46,8 +46,8 @@ public class AccountService {
 		employee.setFullName(accountDTO.getFullName());
 
 		Set<Role> roles = new HashSet<>();
-		for(Long role: accountDTO.getRoleIds()) {
-			Role roleId = roleRepository.getById(role);
+		for(String role: accountDTO.getRoleIds()) {
+			Role roleId = roleRepository.findRoleByName(role);
 			roles.add(roleId);
 		}
 
@@ -61,15 +61,14 @@ public class AccountService {
 
 	public Account edit(AccountDTO accountDTO) {
 		Account account = modelMapper.map(accountDTO, Account.class);
-		account.setUpdateAt(new Timestamp(new Date().getTime()));
 
-		List<Role> roles = new ArrayList<>();
-		for(Long role: accountDTO.getRoleIds()) {
-			Role roleId = roleRepository.getById(role);
+		Set<Role> roles = new HashSet<>();
+		for(String role: accountDTO.getRoleIds()) {
+			Role roleId = roleRepository.findRoleByName(role);
 			roles.add(roleId);
 		}
 
-		account.setRoles(new HashSet<>(roles));
+		account.setRoles(roles);
 		return accountRepository.save(account);
 	}
 

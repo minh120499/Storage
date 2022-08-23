@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
+import java.util.NoSuchElementException;
+
 @ControllerAdvice
 public class ExceptionController {
 	private MessageSource messageSource;
@@ -28,6 +30,13 @@ public class ExceptionController {
 	@ResponseStatus(HttpStatus.EXPECTATION_FAILED)
 	@ResponseBody
 	public ApiResponse handleAccountException(AccountException ex, WebRequest request) {
+		return new ApiResponse(false, ex.getMessage(), ex.getClass().getName(), resolvePathFromRequest(request));
+	}
+
+	@ExceptionHandler(value = NoSuchElementException.class)
+	@ResponseStatus(HttpStatus.EXPECTATION_FAILED)
+	@ResponseBody
+	public ApiResponse handleNotFoundElementException(AccountException ex, WebRequest request) {
 		return new ApiResponse(false, ex.getMessage(), ex.getClass().getName(), resolvePathFromRequest(request));
 	}
 }

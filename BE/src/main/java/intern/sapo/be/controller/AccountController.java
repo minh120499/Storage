@@ -12,6 +12,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/account")
+@CrossOrigin
 public class AccountController {
 
 	@Autowired
