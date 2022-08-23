@@ -38,8 +38,14 @@ export interface OptionValue{
 }
 
 export interface AddProductInput{
+    id?: number|null,
+    code?:string|null,
+    productId?:number|null
     name:string,
     description:string|null,
+    wholesalePrice:number,
+    salePrice:number,
+    importPrice:number
 
 }
 export interface IVariant{
