@@ -8,7 +8,7 @@ import {
 import { Divider, Menu, Switch } from "antd";
 import type { MenuProps, MenuTheme } from "antd/es/menu";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import AddProduct from "../pages/product/AddProduct";
 import "../styles/SideBar.css";
 
@@ -42,7 +42,7 @@ const items: MenuItem[] = [
   getItem("Navigation Three", "sub2", <SettingOutlined />, [
 
     getItem("Thêm sản phẩm", "/productsAdd"),
-    getItem("test", "/test"),
+    getItem("Danh sách sản phẩm", "/products"),
 
     getItem("Option 7", "7"),
     getItem("Option 8", "8"),
@@ -62,7 +62,7 @@ const items: MenuItem[] = [
 const SideBar: React.FC = () => {
   const [mode, setMode] = useState<"vertical" | "inline">("inline");
   const [theme, setTheme] = useState<MenuTheme>("dark");
-
+  const navigate=useNavigate()
   const changeMode = (value: boolean) => {
     setMode(value ? "vertical" : "inline");
   };
@@ -96,6 +96,9 @@ const SideBar: React.FC = () => {
               mode={mode}
               theme={theme}
               items={items}
+            onClick={(e)=>{
+              navigate(e.key)
+            }}
             />
         </div>
     </div>

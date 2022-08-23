@@ -9,6 +9,7 @@ import SupplierList from "./pages/supplier/SupplierList";
 // import SupplierDetails from "./pages/supplier/SupplierDetails";
 import SupplierCreate from "./pages/supplier/SupplierCreate";
 import SupplierDetails from "./pages/supplier/SupplierDetails";
+import ListProduct from "./pages/product/ListProduct";
 
 
 const App: React.FC = () => {
@@ -37,7 +38,12 @@ const App: React.FC = () => {
         {
           path: "/productsAdd",
           element: <AddProduct />
-        },{
+        },
+        {
+          path: "/products",
+          element: <ListProduct />
+        },
+        {
           
           path:"/categories",
           element: <Categories/>

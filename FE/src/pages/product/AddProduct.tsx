@@ -1,19 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { Route, Routes } from 'react-router-dom';
+
 
 import React, { useEffect, useState } from 'react';
 import * as Mui from '@mui/material'
 import * as Antd from 'antd'
-import { getValue } from '@mui/system';
 import { AddProductInput, IVariant, OptionValue, Product, Supplier } from '../../type/allType';
-import { useForm } from 'react-hook-form';
-import { Result, Select } from 'antd';
 import addProduct from '../../services/productServices';
-import { FieldDataNode } from 'rc-tree';
-import { Console } from 'console';
-import { allResolved } from 'q';
-import e from 'express';
-const { Option } = Select;
 
 
 
@@ -61,15 +53,6 @@ function AddProduct() {
         updateAt: "string",
         isDelete: true
     },];
-
-
-    const Item = Mui.styled(Mui.Paper)(({ theme }) => ({
-        backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-        ...theme.typography.body2,
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    }));
-
     var valuesForName: string[] = []
     var variantsAll: IVariant[] = []
     const initVariants: Array<IVariant> = []
@@ -89,16 +72,15 @@ function AddProduct() {
     const [options, setOptions] = useState<Array<OX>>(initOptions)
     const [supplierId, setSupplierId] = useState<number>(1);
     const [variants, setVariants] = useState(initVariants)
-    const [optionNumber, setOptionNumber] = useState(options.length)
     const [product, setProduct] = useState<AddProductInput>(initProduct)
     const [open, setOpen] = React.useState(false);
     const [isCreated, setIsCreated] = useState(false)
 
-    const children = [];
+    // const children = [];
 
-    for (let i = 0; i < options.length; i++) {
-        children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
-    }
+    // for (let i = 0; i < options.length; i++) {
+    //     children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
+    // }
 
 
 
@@ -118,7 +100,7 @@ function AddProduct() {
             variants: variants
         }
 
-    
+
         if (options.length == 0) {
             body = {
                 ...body,
@@ -135,16 +117,16 @@ function AddProduct() {
         console.log(options)
         handleOpen()
 
-        // addProduct(body).then(response => {
+        addProduct(body).then(response => {
 
-        //     return response.json()
-        // }).then(result => {
-        //     console.log(result)
-        //     // setIsCreated(true)
-        //     handleClose()
-        // }).catch((erorr)=>{
-        //     handleClose()
-        // })
+            return response.json()
+        }).then(result => {
+            console.log(result)
+            localStorage.removeItem('product')
+            handleClose()
+        }).catch((erorr) => {
+            handleClose()
+        })
 
     }
     const addNewOptionUI = () => {
@@ -217,16 +199,18 @@ function AddProduct() {
                 <Mui.Paper sx={{ p: 5, height: 610 }}>
 
 
-                    <Antd.Form.Item label='Nhà cung cấp' name={'supplierId'} labelCol={{ span: 24 }}>
-                        <SelectSupplier ></SelectSupplier>
 
-                    </Antd.Form.Item>
                     <Antd.Form onFinish={onSubmit}
+
                         initialValues={product}
                         onValuesChange={(change, value) => {
                             localStorage.setItem('product', JSON.stringify(value))
                         }}
                     >
+                        <Antd.Form.Item label='Nhà cung cấp' name={'supplierId'} labelCol={{ span: 24 }}>
+                            <SelectSupplier ></SelectSupplier>
+
+                        </Antd.Form.Item>
                         <Antd.Form.Item labelCol={{ span: 24 }} labelAlign='left' label='Tên sản phẩm' name="name"
                             rules={[
                                 { required: true, message: 'Tên sản phẩm không được để trống' }
@@ -241,13 +225,13 @@ function AddProduct() {
                                     { required: true, message: 'Giá bán lẻ Không được để trống' },
                                 ]}
                             >
-                                <Antd.InputNumber size={'large'} defaultValue={0} min={0} style={{ width: '100%' }}
+                                <Antd.InputNumber size={'large'} min={0} style={{ width: '100%' }}
                                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                 >
                                 </Antd.InputNumber>
                             </Antd.Form.Item>
-                            <Antd.Form.Item labelCol={{ span: 24 }} label='Giá bán buôn' name="wholesalePrice"  >
-                                <Antd.InputNumber size={'large'} defaultValue={0} min={0} style={{ width: '100%' }}
+                            <Antd.Form.Item labelCol={{ span: 24 }} label='Giá bán buôn' name="wholesalePrice" >
+                                <Antd.InputNumber size={'large'} min={0} style={{ width: '100%' }}
                                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                 >
                                 </Antd.InputNumber>
@@ -258,7 +242,7 @@ function AddProduct() {
 
                                 ]}
                             >
-                                <Antd.InputNumber size={'large'} defaultValue={0} min={0} style={{ width: '100%' }}
+                                <Antd.InputNumber size={'large'} min={0} style={{ width: '100%' }}
                                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                 >
                                 </Antd.InputNumber>
@@ -269,7 +253,7 @@ function AddProduct() {
                             <Antd.Input.TextArea rows={8} placeholder="Mô tả sản phẩm" />
 
                         </Antd.Form.Item>
-                        <Mui.Button sx={{ left: '93%' ,top:'93%' ,position:'fixed',zIndex:10, p:'10px 30px' ,m:'10px 10px'}} variant="contained" type='submit'>Lưu</Mui.Button>
+                        <Mui.Button sx={{ left: '93%', top: '93%', position: 'fixed', zIndex: 10, p: '10px 30px', m: '10px 10px' }} variant="contained" type='submit'>Lưu</Mui.Button>
 
                     </Antd.Form>
                 </Mui.Paper>
@@ -442,24 +426,26 @@ function AddProduct() {
 
     return (
         <div>
+            <h1 style={{fontSize:30 }}>Thêm sản phẩm mới</h1>
+
             <Mui.Modal sx={{
-                display:'flex',
-                justifyContent:'center',
+                display: 'flex',
+                justifyContent: 'center',
                 width: '100%',
                 height: '100%',
                 p: 4,
 
             }}
                 open={open}
-                
+
             >
-                <Mui.Paper sx={{ margin:'300px' ,p:'100px 140px 140px 100px' }}>
+                <Mui.Paper sx={{ margin: '300px', p: '100px 140px 140px 100px' }}>
                     {isCreated ? "Thêm thành công" : <Mui.CircularProgress />}
                 </Mui.Paper>
             </Mui.Modal>
             <span>Thông tin chung </span>
 
-            <Mui.Box sx={{ flexGrow: 1 }}  > 
+            <Mui.Box sx={{ flexGrow: 1 }}  >
                 <Mui.Grid container spacing={2}>
                     <Mui.Grid item xs={7} textAlign={'left'} >
                         <ProductInfo></ProductInfo>

@@ -113,6 +113,7 @@ public class ProductService  implements IProductService {
     public String getNewCode() {
         String newCode = "SP";
         Product product = productRepo.getTop();
+        if(product==null) return "SP1";
         newCode = newCode + (product.getId() + 1);
         return newCode;
     }
