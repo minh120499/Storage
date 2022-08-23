@@ -1,59 +1,40 @@
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQueryClient,
-  useQuery,
-  useMutation
-} from "@tanstack/react-query";
-import axios from "axios";
+import React from 'react';
+import 'antd/dist/antd.css';
+// import './index.css';
+import { Select } from 'antd';
 
-// const queryClient = new QueryClient();
-// function Example () {
-//   const {data, isLoading, error} = useQuery(["id"], () => axios.get("https://jsonplaceholder.typicode.com/posts"));
-// //   console.log(data, isLoading, error);
-// // console.log(isLoading, data, error);
-// if(!isLoading) {
-//     // return data
-//     console.log(data);
-    
-// }
+const { Option, OptGroup } = Select;
 
+const handleChange = (value: any) => {
+  console.log(`selected ${value}`);
+};
 
-//   return (
-//     <div>
+const Home = () => (
+  <Select
+    dropdownStyle={{
+        height: "100px",
+        // width: "10011x"
+    }}
+    defaultValue="lucy"
+    style={{
+      width: 200,
+    }}
+    onChange={handleChange}
+  >
+    <OptGroup className="h-10 w-10" label="Manager">
+      <Option id={1} value="jack">Jack</Option>
+      <Option id={2} value="lucy">Lucy</Option>
+      <Option id={1} value="jack">Jack</Option>
+      <Option id={2} value="lucy">Lucy</Option>
+      <Option id={1} value="jack">Jack</Option>
+      <Option id={2} value="lucy">Lucy</Option>
+      <Option id={1} value="jack">Jack</Option>
+      <Option id={2} value="lucy">Lucy</Option>
+    </OptGroup>
+    {/* <OptGroup label="Engineer">
+      <Option value="Yiminghe">yiminghe</Option>
+    </OptGroup> */}
+  </Select>
+);
 
-//     </div>
-//   )
-// }
-
-// export default function Home() {
-//   return (
-//     <QueryClientProvider client={queryClient}>
-//       <Example />
-//     </QueryClientProvider>
-//   );
-// }
-
-export default function Home() {
-    
-    const fetchGroups = (): Promise<[]> => axios.get('https://jsonplaceholder.typicode.com/posts').then(response => response.data)
-    const { data, isFetching, isLoading, error, isError } = useQuery(['id'], fetchGroups)
-
-
-    if(isLoading) {
-        return <div>Loadding...</div>
-    }
-
-    if(error) {
-        console.log(error);
-        
-        return <div>Errro</div>
-    }
-
-    // data && console.log(data)
-    
-    
-    return (
-        <div>ok</div>
-    )
-}
+export default Home;

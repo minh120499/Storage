@@ -3,11 +3,14 @@ import {
   CalendarOutlined,
   LinkOutlined,
   MailOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
 import { Divider, Menu, Switch } from "antd";
 import type { MenuProps, MenuTheme } from "antd/es/menu";
 import React, { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import "../styles/SideBar.css";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -44,25 +47,16 @@ const items: MenuItem[] = [
     getItem("Option 10", "10"),
   ]),
   getItem(
-    <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
-      Ant Design
-    </a>,
-    "link",
+      "Employees",
+    "/employees",
     <LinkOutlined />
   ),
 ];
 
 const SideBar: React.FC = () => {
+  const navigate = useNavigate()
   const [mode, setMode] = useState<"vertical" | "inline">("inline");
   const [theme, setTheme] = useState<MenuTheme>("dark");
-
-  const changeMode = (value: boolean) => {
-    setMode(value ? "vertical" : "inline");
-  };
-
-  const changeTheme = (value: boolean) => {
-    setTheme(value ? "dark" : "light");
-  };
 
   return (
     <div className="side-bar">
@@ -75,22 +69,15 @@ const SideBar: React.FC = () => {
           />
         </a>
       </div>
-      <div className="side-bar_menu">
-            {/* <Switch onChange={changeMode} /> Change Mode */}
-            {/* <Divider type="vertical" />
-            <Switch onChange={changeTheme} /> Change Style */}
-            {/* <br />
-            <br /> */}
-            
-            <Menu 
-              style={{ width: 256, height: "100%"}}
-              defaultSelectedKeys={["1"]}
-              defaultOpenKeys={["sub1"]}
-              mode={mode}
-              theme={theme}
-              items={items}
-            />
-        </div>
+      <Menu 
+          style={{ width: 256, height: "100%"}}
+          defaultSelectedKeys={["1"]}
+          defaultOpenKeys={["sub1"]}
+          mode={mode}
+          theme={theme}
+          items={items}
+          onClick={(e) => navigate(e.key)}
+        />
     </div>
   );
 };
