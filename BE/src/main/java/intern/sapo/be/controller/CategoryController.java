@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @Log4j2
 @CrossOrigin("*")
-@RequestMapping("api/categories")
+@RequestMapping("/api/categories")
 @AllArgsConstructor
 public class CategoryController {
     public final ICategoryService iCategoryService;

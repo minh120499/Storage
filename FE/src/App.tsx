@@ -2,6 +2,7 @@ import { useRoutes } from "react-router-dom";
 import Home from "./components/Home";
 import React from "react";
 import Dashboard from "./pages/Dashboard";
+import Categories from "./components/Categories";
 import Storage from "./components/Storage";
 
 const App: React.FC = () => {
@@ -18,6 +19,10 @@ const App: React.FC = () => {
         {
           path: "/storage",
           element: <Storage />
+        },
+        {
+          path:"/categories",
+          element: <Categories/>
         }
       ]
     }

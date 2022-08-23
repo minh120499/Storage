@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
         <SideBar />
       </Sider>
       <Layout className="site-layout">
-        <Header className="top-header" style={{ padding: 0 }}>
+        <Header className="top-header z-10" style={{ padding: 0 }}>
           {/* {React.createElement(
             collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
             {

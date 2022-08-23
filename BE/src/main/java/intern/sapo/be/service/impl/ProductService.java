@@ -23,21 +23,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ProductService  implements IProductService {
-    Utils utils;
-
+public class ProductService implements IProductService {
     private final IProductRepo productRepo;
     private final IProductVariantRepo variantRepo;
     private final IOptionRepo  optionRepo;
     private final IOptionValueRepo optionValueRepo;
+    private final Utils utils;
+
 
     private  final IProductVariantOptionRepo variantOptionRepo;
-    public ProductService(IProductRepo productRepo, IProductVariantRepo variantRepo, IOptionRepo optionRepo, IOptionValueRepo optionValueRepo, IProductVariantOptionRepo variantOptionRepo) {
+    public ProductService(IProductRepo productRepo, IProductVariantRepo variantRepo, IOptionRepo optionRepo, IOptionValueRepo optionValueRepo, IProductVariantOptionRepo variantOptionRepo, Utils utils) {
         this.productRepo = productRepo;
         this.variantRepo = variantRepo;
         this.optionRepo = optionRepo;
         this.optionValueRepo = optionValueRepo;
         this.variantOptionRepo = variantOptionRepo;
+        this.utils = utils;
     }
     List<OptionValuesAdd> list=new ArrayList<>();
 
@@ -86,6 +87,11 @@ public class ProductService  implements IProductService {
 
 
         return product;
+    }
+
+    @Override
+    public List<Product> findAllVariant(Integer pageNumber, Integer pageSize, String name) {
+        return null;
     }
 
     public String getNewCode() {
