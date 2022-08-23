@@ -2,6 +2,11 @@ package intern.sapo.be.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -39,7 +44,16 @@ public class Product {
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
-    @Column(name = "create_at", nullable = false)
+    @JoinColumn(name = "status_id", nullable = false)
+    private Integer statusId;
+
+    @JoinColumn(name = "supplier_id", nullable = false)
+    private Integer supplierId;
+
+    @JoinColumn(name = "account_id", nullable = false)
+    private Integer accountId;
+    @CreatedDate
+    @Column(name = "create_at")
     private Timestamp createAt;
 
     @Column(name = "update_at")

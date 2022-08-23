@@ -5,17 +5,20 @@ import {
   Form,
   Input,
   Modal,
-  Select,
   Skeleton,
-  Tag,
+  Space,
+  Dropdown,
+  Menu,
 } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+import { Link, useNavigate } from "react-router-dom";
 import Table, { ColumnsType } from "antd/lib/table";
 import axios from "axios";
-import { IRole, IRoleLable } from "../interface";
-import { roleColor } from "../constant";
+import { IRole, IRoleLable } from "../../interface";
+import { roleColor } from "../../constant";
 import { useState } from "react";
-import Role from "./Employee/Role";
-import RoleSelect from "./Employee/RoleSelect";
+import Role from "./Role";
+import RoleSelect from "./RoleSelect";
 
 interface DataType {
   key: React.Key;
@@ -59,7 +62,10 @@ const columns: ColumnsType<DataType> = [
     title: "Avatar",
     dataIndex: "employee",
     render: ([employees]) => (
-      <Avatar style={{ backgroundColor: "#f56a00", verticalAlign: "middle" }} src={employees?.avatar}>
+      <Avatar
+        style={{ backgroundColor: "#f56a00", verticalAlign: "middle" }}
+        src={employees?.avatar}
+      >
         {employees?.avatar || employees?.fullName}
       </Avatar>
     ),

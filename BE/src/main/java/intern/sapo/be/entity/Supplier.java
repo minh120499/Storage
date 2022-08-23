@@ -1,5 +1,6 @@
 package intern.sapo.be.entity;
 
+import intern.sapo.be.base.BaseModel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -18,48 +19,52 @@ import java.sql.Timestamp;
 @Setter
 @EntityListeners(AuditingEntityListener.class)
 public class Supplier {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false)
+	private Integer id;
 
-    @Column(name = "code", nullable = false, length = 100)
-    @NotEmpty(message = "Code can not be null")
-    @Size(max = 100,message = "code can not be more then 100 character")
-    private String code;
+	@Column(name = "code", nullable = false, length = 100)
+	@NotEmpty(message = "Code can not be null")
+	@Size(max = 100, message = "code can not be more then 100 character")
+	private String code;
 
-    @Lob
-    @Column(name = "name", nullable = false)
-    @NotEmpty(message = "Name can not be null")
-    private String name;
+	@Lob
+	@Column(name = "name", nullable = false)
+	@NotEmpty(message = "Name can not be null")
+	private String name;
 
-    @Column(name = "email", nullable = false, length = 100)
-    @Email(message = "Email not valid")
-    @Size(max = 100,message = "code can not be more then 100 character")
-    private String email;
+	@Column(name = "email", nullable = false, length = 100)
+	@Email(message = "Email not valid")
+	@Size(max = 100, message = "code can not be more then 100 character")
+	private String email;
 
-    @Column(name = "phone", nullable = false, length = 20)
-    @NotEmpty(message = "Phone can not be null")
-    @Size(max = 20,message = "Phone number cant be more than 20")
-    private String phone;
+	@Column(name = "phone", nullable = false, length = 20)
+	@NotEmpty(message = "Phone can not be null")
+	@Size(max = 20, message = "Phone number cant be more than 20")
+	private String phone;
 
-    @Lob
-    @Column(name = "address", nullable = false)
-    @NotEmpty(message = "Address can not be null")
-    private String address;
+	@Lob
+	@Column(name = "address", nullable = false)
+	@NotEmpty(message = "Address can not be null")
+	private String address;
 
-    @CreatedDate
-    @Column(name = "create_at", nullable = false)
-    private Timestamp createdAt;
-    @LastModifiedDate
-    @Column(name = "update_at", nullable = false)
-    private Timestamp updateAt;
+	@CreatedDate
+	@Column(name = "create_at", nullable = false)
+	private Timestamp createdAt;
+	@LastModifiedDate
+	@Column(name = "update_at", nullable = false)
+	private Timestamp updateAt;
 
-    @Column(name = "is_delete", nullable = false)
-    private Boolean isDelete = false;
+	@Column(name = "is_delete", nullable = false)
+	private Boolean isDelete = false;
 
 
-    @JoinColumn(name = "account_id",insertable = false,updatable = false, nullable = false)
-    private Integer accountId;
+	@Column(name = "status_transaction", nullable = false)
+	private Boolean statusTransaction = true;
+
+
+	@JoinColumn(name = "account_id", insertable = false, updatable = false, nullable = false)
+	private Integer accountId;
 
 }

@@ -34,8 +34,10 @@ public class Employee implements Serializable {
     @Column(name = "address", nullable = false, length = 500)
     private String address;
 
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "account_id")
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
+
+
 }
