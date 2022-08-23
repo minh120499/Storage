@@ -115,18 +115,18 @@ const SupplierDetails = () => {
                                        </Row>
                                        <Row>
                                            <Col span ={8}>
-                                               <p>Địa chỉ nhà cung cấp: </p>
-                                           </Col>
-                                           <Col span={12}>
-                                               <b style={{textTransform:"uppercase"}}>{supplier.address}</b>
-                                           </Col>
-                                       </Row>
-                                       <Row>
-                                           <Col span ={8}>
                                                <p>Nhân viên phụ trách: </p>
                                            </Col>
                                            <Col span={12}>
                                                <b style={{textTransform:"uppercase"}}>{supplier.accountId}</b>
+                                           </Col>
+                                       </Row>
+                                       <Row>
+                                           <Col span ={8}>
+                                               <p>Địa chỉ nhà cung cấp: </p>
+                                           </Col>
+                                           <Col span={12}>
+                                               <b style={{textTransform:"uppercase"}}>{supplier.address}</b>
                                            </Col>
                                        </Row>
                                    </Col>

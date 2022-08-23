@@ -20,3 +20,14 @@ export const updateSupplier = async (supplier:object)=>{
 export const getSupplierById = async (id:number) => {
     return await axios.get(`${configValue}suppliers/${id}`)
 }
+
+export const getProvince = async () =>{
+    return await axios.get(`https://provinces.open-api.vn/api/p`)
+}
+
+export const getDistrict= async (code:string) =>{
+    return await axios.get(`https://provinces.open-api.vn/api/p/${code}?depth=2`)
+}
+export const getWard= async (code:string) =>{
+    return await axios.get(`https://provinces.open-api.vn/api/d/${code}?depth=2`)
+}

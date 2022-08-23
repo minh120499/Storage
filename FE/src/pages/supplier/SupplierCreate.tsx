@@ -1,21 +1,20 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Col, Form, Input, Modal, Row, Select, Space} from 'antd';
 import "antd/dist/antd.css";
 import {TypeSupplier} from "../../services/customType";
-import {createSupplier} from "../../services/api";
+import {createSupplier, getDistrict, getProvince, getWard} from "../../services/api";
 import ToastCustom from "../../features/toast/Toast";
+
 type SupplierProps = {
     reload: () => void
 }
-const SupplierCreate = ({reload}:SupplierProps) => {
-    const onChange = (value: string) => {
-        console.log(`selected ${value}`);
-    };
-
-    const onSearch = (value: string) => {
-        console.log('search:', value);
-    };
+type AddressType = {
+    code: number,
+    name: string
+}
+const SupplierCreate = ({reload}: SupplierProps) => {
     const {Option} = Select;
+
     const [form] = Form.useForm();
     const onFormSubmit = (supplier: TypeSupplier) => {
         supplier.accountId = Number(1)
@@ -23,9 +22,8 @@ const SupplierCreate = ({reload}:SupplierProps) => {
         createSupplier(supplier).then(() => {
             ToastCustom.fire({
                 icon: 'success',
-                title: 'Add category successfully'
+                title: 'Thêm nhà cung cấp thành công'
             }).then()
-            console.log(123)
             setVisible(false);
             form.resetFields();
             reload()
@@ -33,7 +31,7 @@ const SupplierCreate = ({reload}:SupplierProps) => {
             const error = err.response.data.message
             ToastCustom.fire({
                 icon: 'error',
-                title: "Add category failed",
+                title: "Thêm nhà cung cấp thất bại",
                 html: `${error}`
             }).then()
         })
@@ -49,7 +47,70 @@ const SupplierCreate = ({reload}:SupplierProps) => {
     const handleCancel = () => {
         setVisible(false);
         form.resetFields();
+        setDistricts([])
+        setWards([])
+        setDetailAddress("")
+        setWardName("")
+        setDistrictName("")
+        setProvinceName("")
     };
+    const onChangeProvinces = (value: string) => {
+        setProvinceCode(value)
+        const item = provinces.find((p) => {
+            return p.code.toString() == value
+        })
+        item && setProvinceName(", "+ item.name +", ")
+    };
+    const onChangeDistrict = (value: string) => {
+        setDistrictCode(value)
+        const item = districts.find((d) => {
+            return d.code.toString() == value
+        })
+        item && setDistrictName(item.name  +", ")
+    };
+    const onChangeWard = (value: string) => {
+        const item = wards.find((w) => {
+            return w.code.toString() == value
+        })
+        item && setWardName(item.name  +", ")
+    };
+
+
+
+    const [provinces, setProvinces] = useState([{} as AddressType])
+    const [districts, setDistricts] = useState([{} as AddressType])
+    const [wards, setWards] = useState([{} as AddressType])
+
+    const [provinceName, setProvinceName] = useState<string>("")
+    const [districtName, setDistrictName] = useState<string>("")
+    const [wardName, setWardName] = useState<string>("")
+
+    const [provinceCode, setProvinceCode] = useState<string>()
+    const [districtCode, setDistrictCode] = useState<string>()
+    const [detailAddress,setDetailAddress] = useState<string>("")
+    let address = detailAddress +  provinceName + districtName + wardName
+
+    form.setFieldsValue({
+        address: address
+    })
+    useEffect(() => {
+        getProvince().then((p) => {
+            setProvinces(p.data)
+        })
+    }, [])
+
+    useEffect(() => {
+        provinceCode && getDistrict(provinceCode as string).then((d) => {
+            setDistricts(d.data.districts)
+        })
+    }, [provinceCode])
+
+    useEffect(() => {
+        districtCode && getWard(districtCode as string).then((w) => {
+            setWards(w.data.wards)
+        })
+    }, [districtCode])
+
 
     return (
         <>
@@ -65,6 +126,7 @@ const SupplierCreate = ({reload}:SupplierProps) => {
                 onCancel={handleCancel}
                 width={700}
                 footer={[]}
+                forceRender
             >
                 <div style={{background: "white", padding: 24}}>
                     <Form
@@ -106,14 +168,13 @@ const SupplierCreate = ({reload}:SupplierProps) => {
                                         showSearch
                                         placeholder="Select a person"
                                         optionFilterProp="children"
-                                        onChange={onChange}
-                                        onSearch={onSearch}
+                                        // onChange={onChange}
+                                        // onSearch={onSearch}
                                         listItemHeight={10} listHeight={250}
                                         filterOption={(input, option) =>
                                             (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
                                         }
                                         dropdownStyle={{height: 100, width: 100}}
-
                                     >
                                         <Option value="jack">Jack</Option>
                                         <Option value="lucy">Lucy</Option>
@@ -121,8 +182,88 @@ const SupplierCreate = ({reload}:SupplierProps) => {
                                 </Form.Item>
                             </Col>
                         </Row>
-                        <Form.Item label="Địa chỉ" name="address" rules={[{required: true}]}>
-                            <Input placeholder="nhập địa chỉ nhà cung cấp"/>
+                        <Row gutter={24}>
+                            <Col span={12}>
+                                <Form.Item label="Địa chỉ chi tiết" name="detailsAddress" rules={[{required: true}]}>
+                                    <Input onChange={(e) => setDetailAddress(e.target.value)} placeholder="nhập địa chỉ nhà cung cấp"/>
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item label="Thành phố/Tỉnh" name="province" rules={[{required: true}]}>
+                                    <Select
+                                        showSearch
+                                        placeholder="Chọn tỉnh thành phố"
+                                        optionFilterProp="children"
+                                        onChange={onChangeProvinces}
+                                        // onSearch={onSearch}
+                                        listItemHeight={1} listHeight={250}
+                                        filterOption={(input, option) =>
+                                            (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
+                                        }
+                                        dropdownStyle={{height: 250, width: 100}}
+                                    >
+                                        {
+                                            provinces && provinces.map((p, key) => (
+                                                <Option key={key} style={{width: 400}}
+                                                        value={p.code}>{p.name}</Option>
+                                            ))
+                                        }
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item label="Quận/Huyện" name="district" rules={[{required: true}]}>
+                                    <Select
+                                        showSearch
+                                        placeholder="Chọn quận huyện"
+                                        optionFilterProp="children"
+                                        onChange={onChangeDistrict}
+                                        listItemHeight={1} listHeight={250}
+                                        filterOption={(input, option) =>
+                                            (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
+                                        }
+                                        dropdownStyle={{height: 250, width: 100}}
+                                    >
+                                        {
+                                            districts.length > 1 ? (
+                                                districts.map((d, key) => (
+                                                    <Option key={key} style={{width: 400}}
+                                                            value={d.code}>{d.name}</Option>
+                                                ))
+                                            ) : (<Option style={{width: 400}}
+                                                         value="default">Chọn quận huyện</Option>)
+                                        }
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item label="Phường/Xã" name="ward" rules={[{required: true}]}>
+                                    <Select
+                                        showSearch
+                                        placeholder="Chọn xã phường"
+                                        optionFilterProp="children"
+                                        onChange={onChangeWard}
+                                        listItemHeight={1} listHeight={250}
+                                        filterOption={(input, option) =>
+                                            (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
+                                        }
+                                        dropdownStyle={{height: 250, width: 100}}
+                                    >
+                                        {
+                                            wards.length > 1 ? (
+                                                wards.map((w, key) => (
+                                                    <Option key={key} style={{width: 400}}
+                                                            value={w.code}>{w.name}</Option>
+                                                ))
+                                            ) : (<Option style={{width: 400}}
+                                                         value="default">Chọn xã phường</Option>)
+                                        }
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Form.Item label="Địa chỉ" name="address">
+                            <Input disabled  placeholder="địa chỉ nhà cung cấp"/>
                         </Form.Item>
                         <Row>
                             <Col span={4}>
@@ -143,4 +284,4 @@ const SupplierCreate = ({reload}:SupplierProps) => {
         </>
     )
 }
-export default SupplierCreate
+export default React.memo(SupplierCreate)

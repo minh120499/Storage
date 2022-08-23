@@ -54,6 +54,7 @@ const SupplierList = () => {
         }
     };
 
+
     const onDelete = (listId: React.Key[]) => {
         Swal.fire({
             title: 'Bạn có chắc?',
@@ -102,7 +103,7 @@ const SupplierList = () => {
         })
     }
 
-
+    const [visible, setVisible] = useState(false);
     const menu = (
         <Menu
             onClick={handleMenuClick}
@@ -115,13 +116,13 @@ const SupplierList = () => {
                 {
                     label: <Link to="#">Cập nhập trạng thái</Link>,
                     key: '2',
-                    icon: <DeleteOutlined/>,
+                    icon: <InfoCircleOutlined/>,
                 },
                 {
                     label: <Link to="#">Xóa nhà cung cấp</Link>,
                     key: '3',
-                    icon: <InfoCircleOutlined/>,
 
+                    icon: <DeleteOutlined/>,
                 },
             ]}
         />
@@ -152,13 +153,12 @@ const SupplierList = () => {
             <Table dataSource={data}
                    columns={SupplierColumn}
                    rowKey="id" bordered
-                   pagination={{defaultPageSize: 2}}
+                   pagination={{defaultPageSize: 5}}
                    onRow={(record) => {
                        return {
                            onClick: event => navigate({pathname: `/supplier/details/${record.id}`}),
                        }
                    }}
-
                    rowSelection={rowSelection}
             />
         </>
