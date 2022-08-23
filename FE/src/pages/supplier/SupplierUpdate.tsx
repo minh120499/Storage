@@ -16,7 +16,7 @@ const SupplierUpdate = ({supplier,isVisible,setIsVisible}: SupplierProps) =>{
     const onSearch = (value: string) => {
         console.log('search:', value);
     };
-    const {Option} = Select;
+    const {Option} = Select;    
     const [form] = Form.useForm();
     form.setFieldsValue({
         id: supplier.id,
