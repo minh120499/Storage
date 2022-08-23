@@ -10,6 +10,7 @@ import { AddProductInput, IVariant, OptionValue, Product, Supplier } from '../ty
 import { useForm } from 'react-hook-form';
 import { Result, Select } from 'antd';
 import addProduct from '../services/productServices';
+import { FieldDataNode } from 'rc-tree';
 const { Option } = Select;
 
 
@@ -79,6 +80,7 @@ function AddProduct() {
     const [supplierId, setSupplierId] = useState<number>(0);
     const [variants, setVariants] = useState(initVariants)
     const [optionNumber, setOptionNumber] = useState(options.length)
+    const [product,setProduct]=useState<any>([])
     const [open, setOpen] = React.useState(false);
     const [isCreated, setIsCreated] = useState(false)
     const [form]=Antd.Form.useForm()
@@ -187,7 +189,8 @@ function AddProduct() {
                         <SelectSupplier ></SelectSupplier>
 
                     </Antd.Form.Item>
-                    <Antd.Form onFinish={onSubmit}>
+                    <Antd.Form onFinish={onSubmit}  onFieldsChange={(dataChange)=>{setProduct(dataChange)}} 
+                    >
 
                         <Antd.Form.Item labelCol={{ span: 24 }} labelAlign='left' label='Tên sản phẩm' name="name"
                             rules={[
@@ -344,7 +347,8 @@ function AddProduct() {
                                        }}
                                        defaultValue={[...value]}
                                        onChange={(data)=>{
-                                          console.log(data)
+                                          options[index]=data
+                                          console.log(options)
                                         //   onOptionChange()
                                        }}
                                    >
