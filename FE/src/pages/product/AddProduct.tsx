@@ -5,10 +5,10 @@ import React, { useEffect, useState } from 'react';
 import * as Mui from '@mui/material'
 import * as Antd from 'antd'
 import { getValue } from '@mui/system';
-import { AddProductInput, IVariant, OptionValue, Product, Supplier } from '../type/allType';
+import { AddProductInput, IVariant, OptionValue, Product, Supplier } from '../../type/allType';
 import { useForm } from 'react-hook-form';
 import { Result, Select } from 'antd';
-import addProduct from '../services/productServices';
+import addProduct from '../../services/productServices';
 import { FieldDataNode } from 'rc-tree';
 import { Console } from 'console';
 import { allResolved } from 'q';

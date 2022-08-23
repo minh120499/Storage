@@ -4,11 +4,11 @@ import React from "react";
 import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/category/Categories";
 import Storage from "./components/Storage";
-import AddProduct from "./pages/AddProduct";
-import Test from "./pages/Test";
+import AddProduct from "./pages/product/AddProduct";
 import SupplierList from "./pages/supplier/SupplierList";
-import SupplierDetails from "./pages/supplier/SupplierDetails";
+// import SupplierDetails from "./pages/supplier/SupplierDetails";
 import SupplierCreate from "./pages/supplier/SupplierCreate";
+import SupplierDetails from "./pages/supplier/SupplierDetails";
 
 
 const App: React.FC = () => {
@@ -25,6 +25,14 @@ const App: React.FC = () => {
         {
           path: "/storage",
           element: <Storage />
+        },
+        {
+          path: "/supplier",
+          children: [
+            // {path: "add", element: <CategoryAdd/>},
+            { path: "", element: <SupplierList /> },
+            { path: "details/:id", element: <SupplierDetails /> }
+          ]
         },
         {
           path: "/productsAdd",

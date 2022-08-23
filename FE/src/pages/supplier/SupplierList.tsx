@@ -115,12 +115,12 @@ const SupplierList = () => {
                 {
                     label: <Link to="#">Cập nhập trạng thái</Link>,
                     key: '2',
-                    icon: <InfoCircleOutlined/>,
+                    icon: <DeleteOutlined/>,
                 },
                 {
                     label: <Link to="#">Xóa nhà cung cấp</Link>,
                     key: '3',
-                    icon: <DeleteOutlined/>,
+                    icon: <InfoCircleOutlined/>,
 
                 },
             ]}

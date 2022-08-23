@@ -8,11 +8,8 @@ import {
 import { Divider, Menu, Switch } from "antd";
 import type { MenuProps, MenuTheme } from "antd/es/menu";
 import React, { useState } from "react";
-<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
-import AddProduct from "../pages/AddProduct";
-=======
->>>>>>> origin/duc_anh
+import AddProduct from "../pages/product/AddProduct";
 import "../styles/SideBar.css";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -43,15 +40,15 @@ const items: MenuItem[] = [
     ]),
   ]),
   getItem("Navigation Three", "sub2", <SettingOutlined />, [
-<<<<<<< HEAD
+
     getItem("Thêm sản phẩm", "/productsAdd"),
     getItem("test", "/test"),
-=======
+
     getItem("Option 7", "7"),
     getItem("Option 8", "8"),
->>>>>>> origin/duc_anh
+
     getItem("Option 9", "9"),
-    getItem("Option 10", "10"),
+    getItem("Option 10", "10")
   ]),
   getItem(
     <a href="https://ant.design" target="_blank" rel="noopener noreferrer">

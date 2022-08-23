@@ -294,4 +294,25 @@ create_at datetime  default(now())
 )
 
 
+ALTER TABLE suppliers
+    ADD COLUMN status_transaction bit  default(0);
+
+ALTER TABLE suppliers
+    MODIFY COLUMN code varchar(100) unique;
+
+CREATE TABLE supplier_seqId
+(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+DELIMITER $$
+CREATE TRIGGER tg_supplier_insert
+    BEFORE INSERT ON suppliers
+    FOR EACH ROW
+    IF NEW.code is null or NEW.code = '' THEN
+begin
+INSERT INTO supplier_seqId VALUES (NULL);
+SET NEW.code = CONCAT('SUPP', LPAD(LAST_INSERT_ID(), 5, '0'));
+end;
+end if $$
+DELIMITER ;
 
