@@ -13,6 +13,12 @@ export interface Supplier {
     isDelete: boolean
 
 }
+export type Category = {
+    id: number,
+    name: string,
+    description: string
+}
+
 export interface Product {
     id?: number,
     code?: string,

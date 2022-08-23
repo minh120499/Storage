@@ -24,6 +24,7 @@ public class Supplier {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+
     @Column(name = "code", nullable = false, length = 100)
     @NotEmpty(message = "Code can not be null")
     @Size(max = 100,message = "code can not be more then 100 character")
