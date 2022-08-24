@@ -2,6 +2,9 @@ package intern.sapo.be.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -10,6 +13,7 @@ import java.sql.Timestamp;
 @Table(name = "inventories")
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 public class Inventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +32,11 @@ public class Inventory {
     private String address;
 
     @Column(name = "create_at", nullable = false)
+    @CreatedDate
     private Timestamp createAt;
 
     @Column(name = "update_at")
+    @LastModifiedDate
     private Timestamp updateAt;
 
     @Column(name = "is_delete", nullable = false)

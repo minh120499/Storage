@@ -31,11 +31,14 @@ public class Product {
     @Column(name = "description", nullable = false)
     private String description;
 
+
     @JoinColumn(name = "status_id", nullable = false)
     private Integer statusId;
 
+
     @JoinColumn(name = "supplier_id", nullable = false)
     private Integer supplierId;
+
 
     @JoinColumn(name = "account_id", nullable = false)
     private Integer accountId;

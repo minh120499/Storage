@@ -23,6 +23,7 @@ public class ProductVariant {
 	@JoinColumn(name = "product_id", nullable = false)
 	private Integer productId;
 
+
 	@Column(name = "name", nullable = false, length = 200)
 	private String name;
 
