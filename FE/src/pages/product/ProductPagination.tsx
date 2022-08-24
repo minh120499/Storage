@@ -13,6 +13,7 @@ const ProductPagination = (props: any) => {
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     onPageChange(event, 1);
+    
   };
 
   const handleBackButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -24,7 +25,7 @@ const ProductPagination = (props: any) => {
   };
 
   const handleLastPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    onPageChange(event, Math.max(1, Math.ceil(count / rowsPerPage) - 1));
+    onPageChange(event, Math.max(1, Math.ceil(count / rowsPerPage) ));
   };
 
   return (

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 
 import React, { useEffect, useState } from 'react';
@@ -75,7 +75,7 @@ function AddProduct() {
     const [product, setProduct] = useState<AddProductInput>(initProduct)
     const [open, setOpen] = React.useState(false);
     const [isCreated, setIsCreated] = useState(false)
-
+    const navigate=useNavigate()
     //function
     const handleOpen = () => { setOpen(true); }
     const handleClose = () => { setOpen(false); }
@@ -86,12 +86,10 @@ function AddProduct() {
         let { salePrice, wholesalePrice, importPrice, ...other } = { ...product }
         let newProduct = { ...other, supplierId: supplierId, accountId: 1, statusId: 1 }
 
-
         let body = {
             product: newProduct,
             variants: variants
         }
-
 
         if (options.length == 0) {
             body = {
@@ -105,8 +103,6 @@ function AddProduct() {
                 variants: variants
             }
         }
-        console.log(body)
-        console.log(options)
         handleOpen()
 
         addProduct(body).then(response => {
@@ -115,6 +111,7 @@ function AddProduct() {
         }).then(result => {
             console.log(result)
             localStorage.removeItem('product')
+            navigate('/products')
             handleClose()
         }).catch((erorr) => {
             handleClose()
@@ -188,10 +185,8 @@ function AddProduct() {
 
         return (
             <>
-                <Mui.Paper sx={{ p: 5, height: 610 }}>
-
-
-
+                <h1>Thông tin chung</h1>    
+                <Mui.Paper sx={{ p: 5, height: 645 }}>
                     <Antd.Form onFinish={onSubmit}
 
                         initialValues={product}
@@ -288,16 +283,13 @@ function AddProduct() {
     const OptionInfo = () => {
         return (
             <>
-                <span>Thuộc tính</span>
-
-                <Mui.Paper style={{ boxSizing: 'border-box', height: 250, padding: '3% 10%', marginTop: 10 }} >
+                <h1>Thêm thuộc tính</h1>
+                <Mui.Paper style={{ boxSizing: 'border-box', height: 300, padding: '3% 10%' }} >
 
                     {
                         options.map
                             ((option, index) => {
                                 return (
-
-
                                     <>
                                         <Antd.Input size={'large'} style={{
                                             width: '20%',
@@ -334,7 +326,7 @@ function AddProduct() {
 
                                 )
                             })}
-                    <Mui.Button sx={{ ml: 3 }} onClick={addNewOptionUI}>Thêm Thuộc tính</Mui.Button>
+                    <Mui.Button sx={{ ml: 3 }} onClick={addNewOptionUI}>+ Thêm Thuộc tính</Mui.Button>
                     {/* <Mui.Button sx={{ ml: 6 }} onClick={() => { onOptionChange() }}>Tạo các phiên bản</Mui.Button> */}
 
 
@@ -345,9 +337,9 @@ function AddProduct() {
     const SelectCategory = () => {
         return (
             <>
-                                <span>Danh mục </span>
+                <h1>Chọn Danh mục </h1>
 
-                <Mui.Paper style={{ boxSizing: 'border-box', height: 250, padding: '3% 10%' }}>
+                <Mui.Paper style={{ boxSizing: 'border-box', height: 300, padding: '3% 10%', marginBottom:10 }}>
 
                 </Mui.Paper>
             </>
@@ -357,8 +349,8 @@ function AddProduct() {
     const Variants = () => {
         return (
             <>
-                <span>Các phiên bản</span>
-                <Mui.TableContainer sx={{ mt: 5 }} component={Mui.Paper}>
+                <h1>Các phiên bản</h1>
+                <Mui.TableContainer  component={Mui.Paper}>
                     <Mui.Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <Mui.TableHead>
                             <Mui.TableRow>
@@ -441,9 +433,7 @@ function AddProduct() {
                     {isCreated ? "Thêm thành công" : <Mui.CircularProgress />}
                 </Mui.Paper>
             </Mui.Modal>
-            <span>Thông tin chung </span>
-
-            <Mui.Box sx={{ flexGrow: 1 }}  >
+            <Mui.Box sx={{ flexGrow: 1 , mb:5 }}  >
                 <Mui.Grid container spacing={2}>
                     <Mui.Grid item xs={7} textAlign={'left'} >
                         <ProductInfo></ProductInfo>

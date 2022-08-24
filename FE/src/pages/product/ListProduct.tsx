@@ -2,7 +2,7 @@ import * as Antd from 'antd'
 
 import * as Mui from '@mui/material'
 
-import { Button, Dropdown, Menu, Modal, Space, Table, Typography } from "antd";
+
 import React, { useEffect, useState } from "react";
 import { ISupplier, TypeSupplier } from "../../services/customType";
 
@@ -42,19 +42,18 @@ const ProductCol = [
         dataIndex: "total",
         key: "total"
     }]
-    // {
-    //     title: "Trạng thái",
-    //     dataIndex: "statusTransaction",
-    //     key: "status",
-    //     render: (status: boolean) => {
-    //         return status ? <p style={{ color: 'blue' }}>Đang giao dịch</p> : <p style={{ color: 'red' }}>Ngừng giao dịch</p>
-    //     },
+// {
+//     title: "Trạng thái",
+//     dataIndex: "statusTransaction",
+//     key: "status",
+//     render: (status: boolean) => {
+//         return status ? <p style={{ color: 'blue' }}>Đang giao dịch</p> : <p style={{ color: 'red' }}>Ngừng giao dịch</p>
+//     },
 
 
-    
+
 const ListProduct = () => {
 
-    const { Title } = Typography;
     const [productFilter, setProductFilter] = useState<IProductFilter>(initFilter)
     const [products, setProducts] = useState<Array<IProductCount>>([])
     const [reload, setReload] = useState(false)
@@ -91,80 +90,57 @@ const ListProduct = () => {
 
     return (
         <>
-            <Title>Danh sách sản phẩm</Title>
-            <Mui.Paper>
-                <Mui.TableContainer sx={{ mt: 5, height:600, maxHeight: 600 }} component={Mui.Paper}>
-                    <Mui.Table sx={{ minWidth: 650 }} stickyHeader aria-label="Bảng sản phẩm">
-                        <Mui.TableHead  >
-                            <Mui.TableRow>
-                                <Mui.TableCell align="center">Mã sản phẩm</Mui.TableCell>
-                                <Mui.TableCell align="center">Tên sản phẩm</Mui.TableCell>
-                                <Mui.TableCell align="center">Số lượng phiên bản</Mui.TableCell>
-                                <Mui.TableCell align="center">Số lượng</Mui.TableCell>
+            <Antd.Typography.Title>Danh sách sản phẩm</Antd.Typography.Title>
 
-                            </Mui.TableRow>
-                        </Mui.TableHead>
-                        <Mui.TableBody >
-                            {
-                                products.map((product, index) => {
+            <Mui.Grid container spacing={2}>
+                <Mui.Grid item xs={1}>
+                    <Antd.Input  >
 
-                                    return (
-                                        <Mui.TableRow key={index}>
-                                            <Mui.TableCell align="center">{product.code}</Mui.TableCell>
-                                            <Mui.TableCell align="center">{product.name}</Mui.TableCell>
-                                            <Mui.TableCell align="center">{product.numberOfVariant}</Mui.TableCell>
-                                            <Mui.TableCell align="center">{product.total}</Mui.TableCell>
-                                        </Mui.TableRow>
-
-
-                                    )
-                                })
-                            }
-
-
-                        </Mui.TableBody>
-
-                        {/* <Mui.TableFooter>
-                            <Mui.TableRow>
-
-                            </Mui.TableRow>
-
-                        </Mui.TableFooter> */}
-
-
-                    </Mui.Table>
-                </Mui.TableContainer>
-                <Mui.TablePagination
-                    rowsPerPageOptions={[10, 25, 50, 100, 200]}
-                    count={totalPage}
-                    rowsPerPage={productFilter.size}
-                    page={productFilter.page}
-                    labelRowsPerPage='Row'
-                    labelDisplayedRows={()=>{
-                        return (
-                           <>
-                           <Antd.InputNumber style={{marginTop:15}} value={productFilter.page} ></Antd.InputNumber>
-                           </>
-                        )
+                    </Antd.Input>
+                </Mui.Grid>
+                <Mui.Grid item xs={5}>
+                    <Antd.Input 
+                    placeholder='Nhập tên hoặc mã sản phẩm' 
+                    onChange={(e)=>{
+                        setProductFilter({...productFilter,key:e.target.value.toString()})
                     }}
-                    component='div'
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    ActionsComponent={ProductPagination}
-                    style={{verticalAlign:"center"}}
-                />
+                    >
 
-            </Mui.Paper>
-            <Table dataSource={products}
-                   columns={ProductCol}
-                   rowKey="id" bordered
-                   pagination={false}
-                   onRow={(record) => {
-                       return {
-                           onClick: event => navigate({pathname: `/supplier/details/${record.id}`}),
-                       }
-                   }}
+                    </Antd.Input>
+                </Mui.Grid>
+            </Mui.Grid>
 
+            <Antd.Table dataSource={products}
+                scroll={{ x: 500, y: 500 }}
+                columns={ProductCol}
+                rowKey="id" bordered
+                pagination={false}
+                onRow={(record) => {
+                    return {
+                        onClick: event => navigate({ pathname: `/supplier/details/${record.id}` }),
+                    }
+                }}
+
+            />
+
+            <Mui.TablePagination
+                rowsPerPageOptions={[10, 25, 50, 100, 200]}
+                count={totalPage}
+                rowsPerPage={productFilter.size}
+                page={productFilter.page}
+                labelRowsPerPage='Row'
+                labelDisplayedRows={() => {
+                    return (
+                        <>
+                            <Antd.InputNumber style={{ marginTop: 15 }} value={productFilter.page} ></Antd.InputNumber> /{Math.ceil(totalPage / productFilter.size)}
+                        </>
+                    )
+                }}
+                component='div'
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={ProductPagination}
+                style={{ verticalAlign: "center" }}
             />
 
         </>
