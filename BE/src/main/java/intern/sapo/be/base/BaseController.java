@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import intern.sapo.be.base.*;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @CrossOrigin("*")
@@ -40,5 +41,9 @@ public abstract class BaseController<T> {
                            @RequestParam(required = false) String sort,
                            @RequestParam(required = false) String sortBy) {
         return baseService.getList(page, perPage, sort, sortBy);
+    }
+    @GetMapping("{id}")
+    public Optional<T> findById(@PathVariable Integer id) {
+        return baseService.findById(id);
     }
 }

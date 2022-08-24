@@ -10,4 +10,5 @@ import java.util.List;
 public interface ProductVariantsRepository extends IBaseRepo<ProductVariant, Integer> {
     @Query(value = "SELECT * FROM product_variants WHERE NAME LIKE %?%", nativeQuery = true)
     List<ProductVariant> findProductVariantByName(String name);
+
 }
