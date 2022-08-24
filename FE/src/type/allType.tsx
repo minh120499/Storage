@@ -13,10 +13,23 @@ export interface Supplier {
     isDelete: boolean
 
 }
-export type Category = {
+export interface Category  {
     id: number,
     name: string,
     description: string
+}
+
+export interface TransportCompany{
+    id: number,
+    code: string,
+    name: string,
+    email: string,
+    phone: string,
+    address: string,
+    accountId: number,
+    createAt: string,
+    updateAt: string,
+    isDelete: boolean
 }
 
 export interface Product {

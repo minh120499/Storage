@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,8 +97,10 @@ public class CategoryService implements ICategoryService {
 
 
     @Override
-    public void delete(int id) {
-        iCategoryRepo.findById(id).orElseThrow(()-> new IllegalArgumentException("id not found:" + id));
-        iCategoryRepo.delete(id);
+    @Transactional
+    public void delete(List<Integer> id) {
+        for (Integer item:  id) {
+            iCategoryRepo.delete(item.intValue());
+        }
     }
 }

@@ -44,10 +44,16 @@ public class CategoryController {
         return iCategoryService.update(id,categoriesDTO,bindingResult);
     }
 
-    @DeleteMapping("/category/{id}")
-    public void delete (@PathVariable(value = "id") Integer id){
+    @PostMapping("/delete")
+    public void delete (@RequestBody List<Integer> id){
         iCategoryService.delete(id);
     }
+
+
+
+
+
+
 }
 
 
