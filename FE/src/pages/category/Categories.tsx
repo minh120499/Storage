@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table, Modal, Form, Input, Space, notification } from 'antd';
+import { Button, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import axios from "axios";
 import "../../styles/Category.css";
 import ToastCustom from "../../features/toast/Toast";
 import Swal from "sweetalert2";
 import CategoryCareate from "./CategoryCreate";
+import CategoryUpdate from "./CategoriesUpdate";
+import CategoryDelete from "./CategoryDelete";
 
 interface DataType {
   id: string
@@ -17,10 +19,7 @@ export default function Categories() {
   const [response, setResponse] = useState<DataType[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [status, setStatus] = useState(false);
-  
 
-
-  /*Lấy danh sách danh mục*/
   useEffect(function getAll() {
     axios.get(`http://localhost:8080/api/categories`)
       .then(response => {
@@ -30,8 +29,8 @@ export default function Categories() {
       });
   }, [status])
 
+  const data: DataType[] = response;
 
-  /*Khởi tạo giá trị column*/
   const columns: ColumnsType<DataType> = [
     {
       title: 'Mã danh mục',
@@ -48,11 +47,6 @@ export default function Categories() {
   ];
 
 
-  /*Truyền data vào table*/
-  const data: DataType[] = response;
-
-
-  /*Các hàm xử lý table*/
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
   };
@@ -61,10 +55,10 @@ export default function Categories() {
     selectedRowKeys,
     onChange: onSelectChange,
   };
+
   let hasSelected = selectedRowKeys.length > 0;
   let hasOneSelected = selectedRowKeys.length === 1;
 
-  /*Xoá danh mục*/
   const handleDelete = () => {
     Swal.fire({
       title: 'Bạn có chắc?',
@@ -89,21 +83,16 @@ export default function Categories() {
     })
   }
 
-  
+
   return (
     <>
       <h1 className="ant-typography">Danh mục</h1>
       <div style={{ marginBottom: 16, display: "flex", alignItems: "center" }}>
-          <CategoryCareate status ={()=> setStatus(!status)}/>
+        <CategoryCareate status={() => setStatus(!status)} />
+        <CategoryDelete selectedKey = {selectedRowKeys}  status={() => setStatus(!status)} selected={hasSelected} setSelected={()=>setSelectedRowKeys([])}/>
+        <CategoryUpdate selectedOne = {hasOneSelected} status={() => setStatus(!status)} idUpdate={selectedRowKeys[0]} />
         <div>
-          <Button type="primary" onClick={handleDelete} disabled={hasSelected ? false : true} >
-            Xoá danh mục
-          </Button>
-        </div>
-        <div>
-          <Button type="primary"  disabled={hasOneSelected ? false : true} >
-            Sửa danh mục
-          </Button>
+
         </div>
       </div>
       <Table rowKey={'id'} rowSelection={rowSelection} columns={columns} dataSource={data} />

@@ -3,29 +3,32 @@ import { Button, Modal, Form, Input, Space } from 'antd';
 import axios from "axios";
 import ToastCustom from "../../features/toast/Toast";
 
-
 type props = {
-    status: () => void
+    selectedOne: boolean,
+    status: () => void,
+    idUpdate: any
 }
-export default function CategoryCreate({status}:props) {
+
+export default function CategoryUpdate({ selectedOne, status, idUpdate}: props) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [formAdd] = Form.useForm();
+    
 
-
-    const handleCreate = () => {
+    const handleUpdate = () =>{
         const { name, description } = formAdd.getFieldsValue();
-        axios.post("http://localhost:8080/api/categories/category", {
+        axios.put(`http://localhost:8080/api/categories/category/${idUpdate}`, {
             "name": name,
             "description": description
         });
         ToastCustom.fire({
             icon: 'success',
-            title: 'Thêm danh mục thành công!'
+            title: 'Sửa danh mục thành công!'
         });
         formAdd.resetFields();
         status();
-        setIsModalVisible(false);   
-    };
+        setIsModalVisible(false);
+    }
+
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -36,10 +39,12 @@ export default function CategoryCreate({status}:props) {
         setIsModalVisible(false)
     }
 
+
+
     const validateMessages = {
         required: 'Không được để trống!',
     };
-    /*Layout form*/
+
     const layout = {
         labelCol: { span: 5 },
         wrapperCol: { span: 16 },
@@ -52,25 +57,25 @@ export default function CategoryCreate({status}:props) {
     return (
         <>
             <div>
-                <Button onClick={showModal} style={{ width: "121px"}} type="primary">
+                <Button onClick={showModal} style={{ width: "121px"}} type="primary" disabled={selectedOne?false:true}>
                     <Space>
-                        Thêm mới
+                        Sửa danh mục
                     </Space>
                 </Button>
             </div>
-            <Modal title="Thêm mới Danh Mục" visible={isModalVisible} footer={null} onCancel={handleCancel}>
+            <Modal title="Sửa Danh Mục" visible={isModalVisible} footer={null} onCancel={handleCancel}>
                 <Form
                     {...layout}
                     name="nest-messages"
                     validateMessages={validateMessages}
-                    onFinish={handleCreate}
+                    onFinish={handleUpdate}
                     form={formAdd}
                 >
-                    <Form.Item name='name' label="Tên" rules={[{ required: true }]}>
-                        <Input placeholder="Nhập Tên" />
+                    <Form.Item name='name' label="Nhập tên" rules={[{ required: true }]}>
+                        <Input placeholder="Tên"/>
                     </Form.Item>
-                    <Form.Item name='description' label="Mô tả" rules={[{ required: true }]}>
-                        <Input placeholder="Nhập mô tả" />
+                    <Form.Item name='description' label="Nhập mô tả" rules={[{ required: true }]}>
+                        <Input placeholder="Mô tả" />
                     </Form.Item>
                     <Form.Item {...tailLayout}>
                         <Button htmlType="button" onClick={handleCancel}>
