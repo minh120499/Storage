@@ -1,39 +1,37 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Col, Form, Input, Modal, Row, Select, Space} from 'antd';
 import "antd/dist/antd.css";
 import {TypeSupplier} from "../../services/customType";
-import {createSupplier} from "../../services/api";
+import {createSupplier, getDistrict, getProvince, getWard} from "../../services/api";
 import ToastCustom from "../../features/toast/Toast";
+import AddAddress from "../../components/AddAddress";
+import {PlusOutlined} from '@ant-design/icons';
+
 type SupplierProps = {
     reload: () => void
 }
-const SupplierCreate = ({reload}:SupplierProps) => {
-    const onChange = (value: string) => {
-        console.log(`selected ${value}`);
-    };
 
-    const onSearch = (value: string) => {
-        console.log('search:', value);
-    };
+const SupplierCreate = ({reload}: SupplierProps) => {
     const {Option} = Select;
+
     const [form] = Form.useForm();
     const onFormSubmit = (supplier: TypeSupplier) => {
         supplier.accountId = Number(1)
-        supplier.code = ''
         createSupplier(supplier).then(() => {
             ToastCustom.fire({
                 icon: 'success',
-                title: 'Add category successfully'
+                title: 'Thêm nhà cung cấp thành công'
             }).then()
-            console.log(123)
             setVisible(false);
             form.resetFields();
             reload()
+            handleKeyChange()
         }).catch((err) => {
             const error = err.response.data.message
+            console.log(err)
             ToastCustom.fire({
                 icon: 'error',
-                title: "Add category failed",
+                title: "Thêm nhà cung cấp thất bại",
                 html: `${error}`
             }).then()
         })
@@ -44,18 +42,37 @@ const SupplierCreate = ({reload}:SupplierProps) => {
 
     const showModal = () => {
         setVisible(true);
+
     };
 
     const handleCancel = () => {
         setVisible(false);
         form.resetFields();
+        handleKeyChange()
     };
 
+
+    const [fullAddress,setFullAddress] = useState("")
+    const [keyChange, setKeyChange] = useState(0);
+
+    const handleKeyChange = () => {
+        setKeyChange(current => current + 1);
+    };
+    useEffect(() =>{
+         form.setFieldsValue({
+            address: fullAddress
+        })
+    },[fullAddress])
+
     return (
-        <>
-        
+
+
+
+        <div>
+
             <Button onClick={showModal} style={{width: "180px", fontSize: '14px'}} type="primary">
                 <Space>
+                    <PlusOutlined />
                     Thêm mới
                 </Space>
             </Button>
@@ -66,6 +83,7 @@ const SupplierCreate = ({reload}:SupplierProps) => {
                 onCancel={handleCancel}
                 width={700}
                 footer={[]}
+
             >
                 <div style={{background: "white", padding: 24}}>
                     <Form
@@ -107,14 +125,13 @@ const SupplierCreate = ({reload}:SupplierProps) => {
                                         showSearch
                                         placeholder="Select a person"
                                         optionFilterProp="children"
-                                        onChange={onChange}
-                                        onSearch={onSearch}
+                                        // onChange={onChange}
+                                        // onSearch={onSearch}
                                         listItemHeight={10} listHeight={250}
                                         filterOption={(input, option) =>
                                             (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
                                         }
                                         dropdownStyle={{height: 100, width: 100}}
-
                                     >
                                         <Option value="jack">Jack</Option>
                                         <Option value="lucy">Lucy</Option>
@@ -122,8 +139,15 @@ const SupplierCreate = ({reload}:SupplierProps) => {
                                 </Form.Item>
                             </Col>
                         </Row>
-                        <Form.Item label="Địa chỉ" name="address" rules={[{required: true}]}>
-                            <Input placeholder="nhập địa chỉ nhà cung cấp"/>
+
+                        {/*add address*/}
+
+                       <AddAddress onChange = {setFullAddress} keyChange={keyChange}/>
+
+                        {/*-------------------*/}
+
+                        <Form.Item label="Địa chỉ" name="address">
+                            <Input disabled  placeholder="địa chỉ nhà cung cấp"/>
                         </Form.Item>
                         <Row>
                             <Col span={4}>
@@ -141,7 +165,7 @@ const SupplierCreate = ({reload}:SupplierProps) => {
                 </div>
             </Modal>
 
-        </>
+        </div>
     )
 }
-export default SupplierCreate
+export default React.memo(SupplierCreate)
