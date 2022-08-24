@@ -22,17 +22,17 @@ public class RoleController {
 	}
 
 	@GetMapping("emp/{id}")
-	public ResponseEntity<?> getRoleByEmp(@PathVariable Long id) {
+	public ResponseEntity<?> getRoleByEmp(@PathVariable Integer id) {
 		return ResponseEntity.ok(roleService.getRoleByEmp(id));
 	}
 
 	@PatchMapping("emp/{id}")
-	public ResponseEntity<?> updateRoleByEmp(@PathVariable Long id, @RequestBody RolesRequest roleIds) {
+	public ResponseEntity<?> updateRoleByEmp(@PathVariable Integer id, @RequestBody RolesRequest roleIds) {
 		return ResponseEntity.ok(roleService.updateRoleByEmp(id, roleIds));
 	}
 
 	@GetMapping("{id}")
-	public ResponseEntity<?> getRole(@PathVariable Long id) {
+	public ResponseEntity<?> getRole(@PathVariable Integer id) {
 		return ResponseEntity.ok(roleService.getOne(id));
 	}
 

@@ -3,7 +3,7 @@ import intern.sapo.be.dto.request.TransportCompaniesDTO;
 import intern.sapo.be.entity.TransportCompany;
 import intern.sapo.be.repository.ITransportCompaniesRepo;
 import intern.sapo.be.service.ITransportCompaniesService;
-import intern.sapo.be.util.Utils;
+import intern.sapo.be.security.jwt.util.Utils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;

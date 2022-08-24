@@ -1,11 +1,21 @@
 package intern.sapo.be.controller;
 
+import intern.sapo.be.dto.payload.LoginRequest;
 import intern.sapo.be.dto.request.AccountDTO;
+import intern.sapo.be.dto.response.JwtAuthenticationResponse;
 import intern.sapo.be.entity.Account;
+import intern.sapo.be.exception.AccountException;
+import intern.sapo.be.security.jwt.JwtTokenUtil;
+
 import intern.sapo.be.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -14,33 +24,56 @@ import javax.validation.Valid;
 @RequestMapping("api/account")
 @CrossOrigin
 public class AccountController {
-
+	@Autowired
+	AuthenticationManager authManager;
 	@Autowired
 	private AccountService accountService;
 
+	@Autowired
+	private JwtTokenUtil jwtUtils;
+
 	@GetMapping()
-	public ResponseEntity<?> getAll(){
+	@PreAuthorize("hasAuthority('staff')")
+	public ResponseEntity<?> getAll() {
 		return ResponseEntity.ok(accountService.getAll());
 	}
 
 	@PostMapping
-	public ResponseEntity<?> createAccount(@Valid @RequestBody AccountDTO accountDTO){
+	public ResponseEntity<?> createAccount(@Valid @RequestBody AccountDTO accountDTO) {
 		return ResponseEntity.ok(accountService.save(accountDTO));
 	}
 
 	@PatchMapping
-	public ResponseEntity<?> editAccount(@Valid @RequestBody AccountDTO accountDTO){
+	public ResponseEntity<?> editAccount(@Valid @RequestBody AccountDTO accountDTO) {
 		return ResponseEntity.ok(accountService.edit(accountDTO));
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
+	public ResponseEntity<?> delete(@PathVariable Integer id) {
 		accountService.delete(id);
 		return ResponseEntity.ok(HttpStatus.OK);
 	}
 
 	@GetMapping("{id}")
-	public Account getAccountDetails(@PathVariable Long id) {
-		return accountService.getAllDetails(id);
+	public ResponseEntity<?> getAccountDetails(@PathVariable Integer id) {
+		return ResponseEntity.ok(accountService.getAllDetails(id));
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+		try {
+			Authentication authentication = authManager.authenticate(
+					new UsernamePasswordAuthenticationToken(
+							loginRequest.getUsername(), loginRequest.getPassword())
+			);
+
+			Account account = (Account) authentication.getPrincipal();
+			String accessToken = jwtUtils.generateAccessToken(account);
+			JwtAuthenticationResponse response = new JwtAuthenticationResponse(accessToken);
+			return ResponseEntity.ok(response);
+
+		} catch (BadCredentialsException ex) {
+			throw new AccountException("Invalid Username or Password");
+		}
 	}
 }

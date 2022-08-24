@@ -36,6 +36,7 @@ public class AccountService {
 		Account account = modelMapper.map(accountDTO, Account.class);
 		account.setCreateAt(new Timestamp(new Date().getTime()));
 		account.setUpdateAt(new Timestamp(new Date().getTime()));
+//		account.setPassword();
 		account.setIsDelete(false);
 
 		Employee employee = new Employee();
@@ -72,13 +73,13 @@ public class AccountService {
 		return accountRepository.save(account);
 	}
 
-	public void delete(Long id) {
+	public void delete(Integer id) {
 		Account account = accountRepository.findById(id).get();
 		account.setIsDelete(true);
 		accountRepository.save(account);
 	}
 
-	public Account getAllDetails(Long id) {
+	public Account getAllDetails(Integer id) {
 		Account account = accountRepository.findById(id).get();
 
 		return account;

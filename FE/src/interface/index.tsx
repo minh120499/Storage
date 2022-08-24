@@ -8,3 +8,8 @@ export interface IRoleLable {
     staff: string,
     stocker: string
 }
+
+export interface ILoginData {
+    username: string,
+    password: string
+}

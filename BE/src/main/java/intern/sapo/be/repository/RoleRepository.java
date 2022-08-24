@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long>, CrudRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, Integer>, CrudRepository<Role, Integer> {
 	Role findRoleByName(String name);
 }

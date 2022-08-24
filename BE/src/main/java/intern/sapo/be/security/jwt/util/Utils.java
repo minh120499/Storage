@@ -1,4 +1,4 @@
-package intern.sapo.be.util;
+package intern.sapo.be.security.jwt.util;
 
 
 import intern.sapo.be.exception.InvalidInputException;

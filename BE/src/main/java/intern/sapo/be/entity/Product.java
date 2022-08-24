@@ -1,7 +1,5 @@
 package intern.sapo.be.entity;
 
-import lombok.Getter;
-import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +13,7 @@ import java.sql.Timestamp;
 @Table(name = "products")
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,18 +30,6 @@ public class Product {
     @Lob
     @Column(name = "description", nullable = false)
     private String description;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "status_id", nullable = false)
-    private Status status;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "supplier_id", nullable = false)
-    private Supplier supplier;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
 
     @JoinColumn(name = "status_id", nullable = false)
     private Integer statusId;

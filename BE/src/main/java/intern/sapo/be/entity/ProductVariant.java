@@ -1,7 +1,5 @@
 package intern.sapo.be.entity;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -22,9 +20,6 @@ public class ProductVariant {
 	@Column(name = "code", nullable = false, length = 100)
 	private String code;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "product_id", nullable = false)
-	private Product product;
 	@JoinColumn(name = "product_id", nullable = false)
 	private Integer productId;
 
@@ -35,15 +30,12 @@ public class ProductVariant {
 	@Column(name = "image")
 	private String image;
 
-	@Column(name = "import_price", nullable = false, precision = 20, scale = 2)
-	private BigDecimal importPrice;
-	@Column(name = "wholesale_price", nullable = false, precision = 20, scale = 2, columnDefinition = " default (0)")
+	@Column(name = "wholesale_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
 	private BigDecimal wholesalePrice;
 
-	@Column(name = "sale_price", nullable = false, precision = 20, scale = 2, columnDefinition = " default (0)")
+	@Column(name = "sale_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
 	private BigDecimal salePrice;
-	@Column(name = "import_price", nullable = false, precision = 20, scale = 2, columnDefinition = " default (0)")
+	@Column(name = "import_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
 	private BigDecimal importPric;
-
 
 }

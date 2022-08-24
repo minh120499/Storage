@@ -8,12 +8,18 @@ import Employee from "./components/Employee/Employee";
 import SupplierList from "./pages/supplier/SupplierList";
 import SupplierDetails from "./pages/supplier/SupplierDetails";
 import SupplierCreate from "./pages/supplier/SupplierCreate";
+import HomePage from "./components/HomePage";
+import EmployeeDetails from "./components/Employee/Details";
 
 const App: React.FC = () => {
   const router = useRoutes([
     {
       path: "/login",
       element: <Login />,
+    },
+    {
+      path: "/home",
+      element: <HomePage />,
     },
     {
       path: "/",
@@ -31,6 +37,10 @@ const App: React.FC = () => {
         {
           path: "/storage",
           element: <Storage />,
+        },
+        {
+          path: "/employees/:id",
+          element: <EmployeeDetails />,
         },
         {
           path: "/employees",

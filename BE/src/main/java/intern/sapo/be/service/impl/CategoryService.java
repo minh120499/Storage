@@ -3,7 +3,7 @@ import intern.sapo.be.dto.request.CategoriesDTO;
 import intern.sapo.be.entity.Category;
 import intern.sapo.be.repository.ICategoryRepo;
 import intern.sapo.be.service.ICategoryService;
-import intern.sapo.be.util.Utils;
+import intern.sapo.be.security.jwt.util.Utils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;

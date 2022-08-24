@@ -10,7 +10,7 @@ const Dashboard: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   return (
     <Layout style={{minHeight: "100vh"}}>
-      <Sider width="auto">
+      <Sider collapsible >
         <SideBar />
       </Sider>
       <Layout className="site-layout">

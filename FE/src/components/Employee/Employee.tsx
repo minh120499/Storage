@@ -6,16 +6,9 @@ import {
   Input,
   Modal,
   Skeleton,
-  Space,
-  Dropdown,
-  Menu,
 } from "antd";
-import { DownOutlined } from "@ant-design/icons";
-import { Link, useNavigate } from "react-router-dom";
 import Table, { ColumnsType } from "antd/lib/table";
 import axios from "axios";
-import { IRole, IRoleLable } from "../../interface";
-import { roleColor } from "../../constant";
 import { useState } from "react";
 import Role from "./Role";
 import RoleSelect from "./RoleSelect";
@@ -31,7 +24,7 @@ const columns: ColumnsType<DataType> = [
   {
     title: "Id",
     dataIndex: "id",
-    render: (text: string) => <a href={`./${text}`}>{text}</a>,
+    render: (text: string) => <a href={`./employees/${text}`}>{text}</a>,
   },
   {
     title: "Name",
@@ -95,9 +88,8 @@ function Employee() {
   }
 
   const addEmployeeHandle = () => {
-    const { username, password, fullName, email, phone, address } =
+    const { username, password, fullName, email, phone, address, roles } =
       employeeForm.getFieldsValue();
-
     postEmployee.mutate({
       username,
       password,
@@ -105,7 +97,7 @@ function Employee() {
       email,
       phone,
       address,
-      roleIds: currentRoles,
+      roleIds: roles,
     });
 
     setIsModalVisible(false);
@@ -193,9 +185,7 @@ function Employee() {
           >
             <Input />
           </Form.Item>
-          <Form.Item label="Role">
-            <RoleSelect getRole={setRole} />
-          </Form.Item>
+          <RoleSelect getRole={setRole} />
           <Form.Item {...{ wrapperCol: { offset: 4, span: 16 } }}>
             <Button type="primary" htmlType="submit">
               Submit

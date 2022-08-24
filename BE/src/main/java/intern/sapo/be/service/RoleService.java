@@ -22,7 +22,7 @@ public class RoleService {
 	@Autowired
 	ModelMapper modelMapper;
 
-	public Optional<Role> getOne(Long id) {
+	public Optional<Role> getOne(Integer id) {
 		return roleRepository.findById(id);
 	}
 
@@ -35,11 +35,11 @@ public class RoleService {
 		return roleRepository.save(role);
 	}
 
-	public Account getRoleByEmp(Long id) {
+	public Account getRoleByEmp(Integer id) {
 		return accountRepository.findById(id).get();
 	}
 
-	public Account updateRoleByEmp(Long id, RolesRequest rolesId) {
+	public Account updateRoleByEmp(Integer id, RolesRequest rolesId) {
 		Account account = accountRepository.findById(id).get();
 		Account old = modelMapper.map(account, Account.class);
 

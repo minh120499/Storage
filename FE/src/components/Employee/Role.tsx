@@ -1,6 +1,6 @@
 import { IRole, IRoleLable } from "../../interface";
 import { roleColor } from "../../constant";
-import { Alert, Button, Modal, Tag } from "antd";
+import { Alert, Button, Form, Modal, Tag } from "antd";
 import { useState } from "react";
 import RoleSelect from "./RoleSelect";
 import { useMutation } from "@tanstack/react-query";
@@ -17,8 +17,8 @@ export default function Role({ roles, empId }: props) {
   const updateRole = useMutation<Response, unknown, any>((data) => {
     return axios.post(`http://localhost:8080/api/roles/emp/${empId}`, data, {
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
       },
     });
   });
@@ -50,7 +50,9 @@ export default function Role({ roles, empId }: props) {
           );
         })
       ) : (
-        <Tag className="cursor-pointer" onClick={() => setModal(true)}>Add role</Tag>
+        <Tag className="cursor-pointer" onClick={() => setModal(true)}>
+          Add role
+        </Tag>
       )}
       <Modal
         title="Role"
@@ -58,7 +60,9 @@ export default function Role({ roles, empId }: props) {
         onOk={() => updateRoles()}
         onCancel={() => setModal(false)}
       >
-        <RoleSelect getRole={setRole} empRole={roles.map((e) => e.name)} />
+        <Form>
+          <RoleSelect getRole={setRole} empRole={roles.map((e) => e.name)} />
+        </Form>
       </Modal>
     </div>
   );
