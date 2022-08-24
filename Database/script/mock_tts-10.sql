@@ -161,12 +161,10 @@ foreign key(product_id) references products(id),
 foreign key(category_id) references categories(id)
 );
 
-
-
-create table inventoies_product_variant(
+create table inventories_product_variant(
 inventory_id int not null,
 product_variant_id int not null,
-qantity int  default(0),
+quantity int  default(0),
 primary key(inventory_id,product_variant_id),
 foreign key(inventory_id) references inventories(id),
 foreign key(product_variant_id) references product_variants(id)
@@ -291,7 +289,7 @@ status_id int not null,
 foreign key(contact_id) references contacts(id),
 foreign key(status_id) references status(id),
 create_at datetime  default(now())
-)
+);
 
 
 ALTER TABLE suppliers

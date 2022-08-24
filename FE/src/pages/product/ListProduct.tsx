@@ -1,167 +1,172 @@
-import {Button, Dropdown, Menu, Modal, Space, Table, Typography} from "antd";
-import React, {useEffect, useState} from "react";
-import {ISupplier, TypeSupplier} from "../../services/customType";
+import * as Antd from 'antd'
 
-import {createSupplier, deleteSupplier, getSuppliers, updateStatusSupplier} from "../../services/api";
-import {SupplierColumn} from "../../components/Datatablesource";
-import {Link, useNavigate} from "react-router-dom";
+import * as Mui from '@mui/material'
+
+import { Button, Dropdown, Menu, Modal, Space, Table, Typography } from "antd";
+import React, { useEffect, useState } from "react";
+import { ISupplier, TypeSupplier } from "../../services/customType";
+
+
+import { Link, useNavigate } from "react-router-dom";
 import "../../styles/Table.css";
-import type {MenuProps} from 'antd';
-import {DownOutlined, DeleteOutlined, StopOutlined, InfoCircleOutlined} from '@ant-design/icons';
-import ToastCustom from "../../features/toast/Toast";
-import Swal from "sweetalert2";
-import SupplierCreate from "../supplier/SupplierCreate";
 
-const ListProduct=()=>{
+import { IProductCount, IProductFilter } from '../../type/allType';
+import { countProductByFilter, getProducts } from '../../services/productServices';
+import ProductPagination from './ProductPagination';
+const initFilter: IProductFilter = {
+    key: '',
+    isDelete: false,
+    sortBy: 'name',
+    isDesc: true,
+    page: 1,
+    size: 10
+}
+const ProductCol = [
+    {
+        title: 'Mã sản phẩm',
+        dataIndex: 'code',
+        key: 'code',
+    },
+    {
+        title: 'Tên sản phẩm',
+        dataIndex: 'name',
+        key: 'name',
+    },
+    {
+        title: 'Số lượng phiên bản',
+        dataIndex: "numberOfVariant",
+        key: "numberOfVariant"
+    },
+    {
+        title: "Số lượng",
+        dataIndex: "total",
+        key: "total"
+    }]
+    // {
+    //     title: "Trạng thái",
+    //     dataIndex: "statusTransaction",
+    //     key: "status",
+    //     render: (status: boolean) => {
+    //         return status ? <p style={{ color: 'blue' }}>Đang giao dịch</p> : <p style={{ color: 'red' }}>Ngừng giao dịch</p>
+    //     },
 
-    const {Title} = Typography;
-    const [data, setData] = useState([{} as ISupplier])
 
-    const [reload, setReload] = useState(false);
+    
+const ListProduct = () => {
 
-
-
-    useEffect(() => {
-        getSuppliers().then((r) => {
-            setData(r.data.reverse())
-        })
-
-    }, [reload])
-
+    const { Title } = Typography;
+    const [productFilter, setProductFilter] = useState<IProductFilter>(initFilter)
+    const [products, setProducts] = useState<Array<IProductCount>>([])
+    const [reload, setReload] = useState(false)
     const navigate = useNavigate()
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+    const [totalPage, setTotalPage] = useState<number>(1);
+    useEffect(() => {
+        getProducts(productFilter).then((response) => response.json())
+            .then((res) => {
+                setProducts(res)
 
-    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        setSelectedRowKeys(newSelectedRowKeys);
-    };
-
-    const rowSelection = {
-        selectedRowKeys,
-        onChange: onSelectChange,
-    };
-    let hasSelected = selectedRowKeys.length > 0;
-
-    const handleMenuClick: MenuProps['onClick'] = (e: any) => {
-        switch (e.key) {
-            case '1':
-                onUpdateFalseStatus(selectedRowKeys);
-                break
-            case '2':
-                onUpdateTrueStatus(selectedRowKeys);
-                break
-            case '3':
-                onDelete(selectedRowKeys);
-                break
-        }
-    };
-
-    const onDelete = (listId: React.Key[]) => {
-        Swal.fire({
-            title: 'Bạn có chắc?',
-            text: "Bạn không thể hồi phục lại dữ liệu!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Delete!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                deleteSupplier(listId).then(() => {
-                    ToastCustom.fire({
-                        icon: 'success',
-                        title: 'Delete category successfully'
-                    }).then(r => {
-                    })
-                    setReload(!reload)
-                    setSelectedRowKeys([])
-                })
-
-            }
-        })
-    }
-
-    const onUpdateTrueStatus = (listId: React.Key[]) => {
-        updateStatusSupplier(listId, "true").then(() => {
-            ToastCustom.fire({
-                icon: 'success',
-                title: 'Sửa trạng thái thành công'
-            }).then(r => {
             })
-            setReload(!reload)
-            setSelectedRowKeys([])
-        })
-    }
-    const onUpdateFalseStatus = (listId: React.Key[]) => {
-        updateStatusSupplier(listId, "false").then(() => {
-            ToastCustom.fire({
-                icon: 'success',
-                title: 'Sửa trạng thái thành công'
-            }).then(r => {
+
+    }, [productFilter])
+    useEffect(() => {
+        countProductByFilter(productFilter).then((response) => response.json())
+            .then((res) => {
+                setTotalPage(res)
             })
-            setReload(!reload)
-            setSelectedRowKeys([])
-        })
+
+    }, [])
+
+    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
+        setProductFilter({ ...productFilter, page: page })
+
     }
+    const handleChangeRowsPerPage = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
 
+        setProductFilter({ ...productFilter, size: Number(event.target.value), page: 1 })
 
-    const menu = (
-        <Menu
-            onClick={handleMenuClick}
-            items={[
-                {
-                    label: <Link to="#">Ngừng giao dịch</Link>,
-                    key: '1',
-                    icon: <StopOutlined/>,
-                },
-                {
-                    label: <Link to="#">Cập nhập trạng thái</Link>,
-                    key: '2',
-                    icon: <DeleteOutlined/>,
-                },
-                {
-                    label: <Link to="#">Xóa nhà cung cấp</Link>,
-                    key: '3',
-                    icon: <InfoCircleOutlined/>,
-
-                },
-            ]}
-        />
-    );
+    };
 
 
     return (
         <>
-            <Title>Nhà cung cấp</Title>
-            <div style={{marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between"}}>
-                <div>
-                    <Dropdown overlay={menu} disabled={!hasSelected}>
-                        <Button style={{width: "180px", fontSize: '14px'}} type="primary">
-                            <Space>
-                                Thao tác
-                                <DownOutlined/>
-                            </Space>
-                        </Button>
-                    </Dropdown>
-                    <span style={{marginLeft: 8, marginRight: 8}}>
-                    {hasSelected ? `Selected ${selectedRowKeys.length} istems` : ''}
-                </span>
-                </div>
-                <div>
-                    <SupplierCreate reload={() => setReload(!reload)}/>
-                </div>
-            </div>
-            <Table dataSource={data}
-                   columns={SupplierColumn}
+            <Title>Danh sách sản phẩm</Title>
+            <Mui.Paper>
+                <Mui.TableContainer sx={{ mt: 5, height:600, maxHeight: 600 }} component={Mui.Paper}>
+                    <Mui.Table sx={{ minWidth: 650 }} stickyHeader aria-label="Bảng sản phẩm">
+                        <Mui.TableHead  >
+                            <Mui.TableRow>
+                                <Mui.TableCell align="center">Mã sản phẩm</Mui.TableCell>
+                                <Mui.TableCell align="center">Tên sản phẩm</Mui.TableCell>
+                                <Mui.TableCell align="center">Số lượng phiên bản</Mui.TableCell>
+                                <Mui.TableCell align="center">Số lượng</Mui.TableCell>
+
+                            </Mui.TableRow>
+                        </Mui.TableHead>
+                        <Mui.TableBody >
+                            {
+                                products.map((product, index) => {
+
+                                    return (
+                                        <Mui.TableRow key={index}>
+                                            <Mui.TableCell align="center">{product.code}</Mui.TableCell>
+                                            <Mui.TableCell align="center">{product.name}</Mui.TableCell>
+                                            <Mui.TableCell align="center">{product.numberOfVariant}</Mui.TableCell>
+                                            <Mui.TableCell align="center">{product.total}</Mui.TableCell>
+                                        </Mui.TableRow>
+
+
+                                    )
+                                })
+                            }
+
+
+                        </Mui.TableBody>
+
+                        {/* <Mui.TableFooter>
+                            <Mui.TableRow>
+
+                            </Mui.TableRow>
+
+                        </Mui.TableFooter> */}
+
+
+                    </Mui.Table>
+                </Mui.TableContainer>
+                <Mui.TablePagination
+                    rowsPerPageOptions={[10, 25, 50, 100, 200]}
+                    count={totalPage}
+                    rowsPerPage={productFilter.size}
+                    page={productFilter.page}
+                    labelRowsPerPage='Row'
+                    labelDisplayedRows={()=>{
+                        return (
+                           <>
+                           <Antd.InputNumber style={{marginTop:15}} value={productFilter.page} ></Antd.InputNumber>
+                           </>
+                        )
+                    }}
+                    component='div'
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    ActionsComponent={ProductPagination}
+                    style={{verticalAlign:"center"}}
+                />
+
+            </Mui.Paper>
+            <Table dataSource={products}
+                   columns={ProductCol}
                    rowKey="id" bordered
-                   pagination={{defaultPageSize: 2}}
+                   pagination={false}
                    onRow={(record) => {
                        return {
                            onClick: event => navigate({pathname: `/supplier/details/${record.id}`}),
                        }
                    }}
 
-                   rowSelection={rowSelection}
             />
+
         </>
     )
 }

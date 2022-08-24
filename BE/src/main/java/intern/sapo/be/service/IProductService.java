@@ -2,7 +2,9 @@ package intern.sapo.be.service;
 
 import intern.sapo.be.dto.request.Product.ProductAdd;
 import intern.sapo.be.dto.request.Product.ProductAddDTO;
-import intern.sapo.be.dto.response.ProductReponse;
+import intern.sapo.be.dto.request.Product.ProductFilter;
+import intern.sapo.be.dto.response.product.ProductFilterResponse;
+import intern.sapo.be.dto.response.product.ProductReponse;
 import intern.sapo.be.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
@@ -21,9 +23,13 @@ public interface IProductService {
 
     Page<Product> findAll(Integer pageNumber, Integer pageSize);
 
-    Product save(ProductAdd request, BindingResult bindingResult);
+//    Product save(ProductAdd request, BindingResult bindingResult);
     ProductAddDTO save(ProductAddDTO request, BindingResult bindingResult);
 
 
     List<Product> findAllVariant(Integer pageNumber, Integer pageSize, String name);
+
+    List<ProductFilterResponse> productFilter(ProductFilter filter, BindingResult bindingResult);
+
+    Integer countProductByFilter(ProductFilter filter, BindingResult bindingResult);
 }

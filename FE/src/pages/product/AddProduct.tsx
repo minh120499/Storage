@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import * as Mui from '@mui/material'
 import * as Antd from 'antd'
 import { AddProductInput, IVariant, OptionValue, Product, Supplier } from '../../type/allType';
-import addProduct from '../../services/productServices';
+import { addProduct } from '../../services/productServices';
 
 
 
@@ -75,14 +75,6 @@ function AddProduct() {
     const [product, setProduct] = useState<AddProductInput>(initProduct)
     const [open, setOpen] = React.useState(false);
     const [isCreated, setIsCreated] = useState(false)
-
-    // const children = [];
-
-    // for (let i = 0; i < options.length; i++) {
-    //     children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
-    // }
-
-
 
     //function
     const handleOpen = () => { setOpen(true); }
@@ -264,12 +256,11 @@ function AddProduct() {
     const SelectSupplier = () => {
         return (
             <>
-                <Antd.Select style={{ width: '100%', marginBottom: 10, borderRadius: 5 }} size={'large'} dropdownStyle={{ height: 300, width: 1000 }}
+                <Antd.Select style={{ width: '100%', marginBottom: 10, borderRadius: 5 }} size={'large'}
                     showSearch
                     placeholder="Nhấn để chọn nhà cung cấp"
                     optionFilterProp="children"
                     defaultValue={supplierId}
-                    suffixIcon={null}
                     onChange={handleSelectSupplier}
                     filterOption={(input, option) => (option!.children as unknown as string).includes(input)}
                     filterSort={(optionA, optionB) =>
@@ -282,7 +273,7 @@ function AddProduct() {
                     {
                         initSuppliers.map((supplier, index) => {
                             return (
-                                <Antd.Select.Option style={{ width: 1000, height: '100%', marginTop: 5 }} key={supplier.id} value={supplier.id}>
+                                <Antd.Select.Option key={supplier.id} value={supplier.id}>
 
                                     {supplier.name + " | " + supplier.code}
 
@@ -297,7 +288,9 @@ function AddProduct() {
     const OptionInfo = () => {
         return (
             <>
-                <Mui.Paper style={{ boxSizing: 'border-box', height: 300, padding: '3% 10%', marginTop: 10 }} >
+                <span>Thuộc tính</span>
+
+                <Mui.Paper style={{ boxSizing: 'border-box', height: 250, padding: '3% 10%', marginTop: 10 }} >
 
                     {
                         options.map
@@ -351,14 +344,20 @@ function AddProduct() {
     }
     const SelectCategory = () => {
         return (
-            <Mui.Paper style={{ boxSizing: 'border-box', height: 300, padding: '3% 10%' }}>
+            <>
+                                <span>Danh mục </span>
 
-            </Mui.Paper>
+                <Mui.Paper style={{ boxSizing: 'border-box', height: 250, padding: '3% 10%' }}>
+
+                </Mui.Paper>
+            </>
+
         )
     }
     const Variants = () => {
         return (
             <>
+                <span>Các phiên bản</span>
                 <Mui.TableContainer sx={{ mt: 5 }} component={Mui.Paper}>
                     <Mui.Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <Mui.TableHead>
@@ -426,7 +425,7 @@ function AddProduct() {
 
     return (
         <div>
-            <h1 style={{fontSize:30 }}>Thêm sản phẩm mới</h1>
+            <h1 style={{ fontSize: 30 }}>Thêm sản phẩm mới</h1>
 
             <Mui.Modal sx={{
                 display: 'flex',
@@ -434,7 +433,6 @@ function AddProduct() {
                 width: '100%',
                 height: '100%',
                 p: 4,
-
             }}
                 open={open}
 
