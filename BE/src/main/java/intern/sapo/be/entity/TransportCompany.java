@@ -33,9 +33,8 @@ public class TransportCompany {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    @Column(name = "account_id", nullable = false)
+    private Integer accountId;
 
     @Column(name = "create_at", nullable = false)
     private Timestamp createAt;

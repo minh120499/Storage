@@ -12,20 +12,7 @@ export default function CategoryCreate({status}:props) {
     const [formAdd] = Form.useForm();
 
 
-    const handleCreate = () => {
-        const { name, description } = formAdd.getFieldsValue();
-        axios.post("http://localhost:8080/api/categories/category", {
-            "name": name,
-            "description": description
-        });
-        ToastCustom.fire({
-            icon: 'success',
-            title: 'Thêm danh mục thành công!'
-        });
-        formAdd.resetFields();
-        status();
-        setIsModalVisible(false);   
-    };
+    
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -48,6 +35,21 @@ export default function CategoryCreate({status}:props) {
     const tailLayout = {
         wrapperCol: { offset: 13, span: 16 },
         labelCol: { span: 100 },
+    };
+
+    const handleCreate = () => {
+        const { name, description } = formAdd.getFieldsValue();
+        axios.post("http://localhost:8080/api/categories/category", {
+            "name": name,
+            "description": description
+        });
+        ToastCustom.fire({
+            icon: 'success',
+            title: 'Thêm danh mục thành công!'
+        });
+        formAdd.resetFields();
+        status();
+        setIsModalVisible(false);   
     };
     return (
         <>

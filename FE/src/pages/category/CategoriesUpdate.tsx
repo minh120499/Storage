@@ -13,22 +13,16 @@ export default function CategoryUpdate({ selectedOne, status, idUpdate}: props) 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [formAdd] = Form.useForm();
     
-
-    const handleUpdate = () =>{
-        const { name, description } = formAdd.getFieldsValue();
-        axios.put(`http://localhost:8080/api/categories/category/${idUpdate}`, {
-            "name": name,
-            "description": description
-        });
-        ToastCustom.fire({
-            icon: 'success',
-            title: 'Sửa danh mục thành công!'
-        });
-        formAdd.resetFields();
-        status();
-        setIsModalVisible(false);
-    }
-
+    
+    
+    // axios.get(`http://localhost:8080/api/categories/category/${idUpdate}`)
+    // .then(response => {
+    //    const data = response.data;
+    //    console.log(data.name);
+       
+    // }).catch(error => {
+    //   console.log(error);
+    // })
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -54,6 +48,21 @@ export default function CategoryUpdate({ selectedOne, status, idUpdate}: props) 
         wrapperCol: { offset: 13, span: 16 },
         labelCol: { span: 100 },
     };
+
+    const handleUpdate = () =>{
+        const { name, description } = formAdd.getFieldsValue();
+        axios.put(`http://localhost:8080/api/categories/category/${idUpdate}`, {
+            "name": name,
+            "description": description
+        });
+        ToastCustom.fire({
+            icon: 'success',
+            title: 'Sửa danh mục thành công!'
+        });
+        formAdd.resetFields();
+        status();
+        setIsModalVisible(false);
+    }
     return (
         <>
             <div>

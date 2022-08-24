@@ -7,6 +7,7 @@ import Storage from "./components/Storage";
 import SupplierList from "./pages/supplier/SupplierList";
 import SupplierDetails from "./pages/supplier/SupplierDetails";
 import SupplierCreate from "./pages/supplier/SupplierCreate";
+import TransportCompanies from "./pages/transport_company/TransportCompanies";
 
 
 const App: React.FC = () => {
@@ -35,6 +36,10 @@ const App: React.FC = () => {
         {
           path:"/categories",
           element: <Categories/>
+        },
+        {
+          path:"/transport-companies",
+          element: <TransportCompanies/>
         }
       ]
     }

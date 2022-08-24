@@ -23,6 +23,4 @@ export const getSupplierById = async (id:number) => {
 }
 
 
-export const deleteCategories = async (listId:React.Key[])=>{
-    return axios.post(`${process.env.REACT_APP_API}categories/delete`,listId)
-}
+
