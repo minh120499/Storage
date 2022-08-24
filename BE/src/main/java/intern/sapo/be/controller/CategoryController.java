@@ -29,7 +29,8 @@ public class CategoryController {
     @GetMapping("/category/{id}")
     public CategoriesDTO getById(@PathVariable(value = "id") Integer id)
     {
-        return iCategoryService.findById(id);
+        return iCategoryService.findById(id)
+                ;
     }
 
     @PostMapping("/category")
@@ -46,15 +47,8 @@ public class CategoryController {
 
     @PostMapping("/delete")
     public void delete (@RequestBody List<Integer> id){
-        iCategoryService.delete(id);
+        iCategoryService.delete(id)
+        ;
     }
 
-
-
-
-
-
 }
-
-
-

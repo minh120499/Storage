@@ -8,12 +8,8 @@ import {
 import { Divider, Menu, Switch } from "antd";
 import type { MenuProps, MenuTheme } from "antd/es/menu";
 import React, { useState } from "react";
-<<<<<<< HEAD
 import { Navigate, useNavigate } from "react-router-dom";
 import AddProduct from "../pages/product/AddProduct";
-=======
-import { useNavigate } from "react-router-dom";
->>>>>>> origin/duc_anh
 import "../styles/SideBar.css";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -33,7 +29,7 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  
+
   getItem("Navigation Two", "2", <CalendarOutlined />),
   getItem("Navigation Two", "sub1", <AppstoreOutlined />, [
     getItem("Option 3", "3"),
@@ -66,12 +62,9 @@ const items: MenuItem[] = [
 const SideBar: React.FC = () => {
   const [mode, setMode] = useState<"vertical" | "inline">("inline");
   const [theme, setTheme] = useState<MenuTheme>("dark");
-<<<<<<< HEAD
-  const navigate=useNavigate()
-=======
-  const redirect = useNavigate();
 
->>>>>>> origin/duc_anh
+  const navigate = useNavigate()
+
   const changeMode = (value: boolean) => {
     setMode(value ? "vertical" : "inline");
   };
@@ -84,7 +77,7 @@ const SideBar: React.FC = () => {
     <div className="side-bar">
       <div className="side-bar__brand-logo">
         <a href="/home">
-          <img            
+          <img
             className="img-fill"
             src="https://bizweb.dktcdn.net/assets/admin/images/icon-svg/sub_logosapo-02.svg"
             alt="logo"
@@ -92,24 +85,24 @@ const SideBar: React.FC = () => {
         </a>
       </div>
       <div className="side-bar_menu">
-            {/* <Switch onChange={changeMode} /> Change Mode */}
-            {/* <Divider type="vertical" />
+        {/* <Switch onChange={changeMode} /> Change Mode */}
+        {/* <Divider type="vertical" />
             <Switch onChange={changeTheme} /> Change Style */}
-            {/* <br />
+        {/* <br />
             <br /> */}
-            
-            <Menu 
-              style={{ width: 256, height: "100%"}}
-              defaultSelectedKeys={["1"]}
-              defaultOpenKeys={["sub1"]}
-              mode={mode}
-              theme={theme}
-              items={items}
-            onClick={(e)=>{
-              navigate(e.key)
-            }}
-            />
-        </div>
+
+        <Menu
+          style={{ width: 256, height: "100%" }}
+          defaultSelectedKeys={["1"]}
+          defaultOpenKeys={["sub1"]}
+          mode={mode}
+          theme={theme}
+          items={items}
+          onClick={(e) => {
+            navigate(e.key)
+          }}
+        />
+      </div>
     </div>
   );
 };

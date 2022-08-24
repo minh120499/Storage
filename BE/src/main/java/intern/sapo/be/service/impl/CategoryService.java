@@ -25,8 +25,8 @@ public class CategoryService implements ICategoryService {
 
 
     private CategoriesDTO toDto(Category category){
-    CategoriesDTO categoriesDTO  = modelMapper.map(category,CategoriesDTO.class);
-    return  categoriesDTO;
+        CategoriesDTO categoriesDTO  = modelMapper.map(category,CategoriesDTO.class);
+        return  categoriesDTO;
     }
 
     private Category toEntity(CategoriesDTO categoriesDTO){
@@ -56,7 +56,7 @@ public class CategoryService implements ICategoryService {
                 results.add(categoriesDTO);
             }
             return results;
-            }
+        }
     }
 
     @Override
@@ -84,16 +84,17 @@ public class CategoryService implements ICategoryService {
         if (result.hasErrors()) {
             throw utils.invalidInputException(result);
         } else {
-                if (category != null)
-                {
-                    categoriesDTO.setId(id);
-                    category = toEntity(categoriesDTO);
-                    iCategoryRepo.save(category);
-                    categoriesDTO = toDto(category);
-                }
-                return categoriesDTO;
+            if (category != null)
+            {
+                categoriesDTO.setId(id)
+                ;
+                category = toEntity(categoriesDTO);
+                iCategoryRepo.save(category);
+                categoriesDTO = toDto(category);
             }
+            return categoriesDTO;
         }
+    }
 
 
     @Override

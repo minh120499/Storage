@@ -16,7 +16,7 @@ import TransportCompanies from "./pages/transport_company/TransportCompanies";
 
 
 const App: React.FC = () => {
-  const router = useRoutes ([
+  const router = useRoutes([
     {
       path: "/",
       element: <Dashboard />,
@@ -47,13 +47,13 @@ const App: React.FC = () => {
           element: <ListProduct />
         },
         {
-          
-          path:"/categories",
-          element: <Categories/>
+
+          path: "/categories",
+          element: <Categories />
         },
         {
-          path:"/transport-companies",
-          element: <TransportCompanies/>
+          path: "/transport-companies",
+          element: <TransportCompanies />
         }
       ]
     },
