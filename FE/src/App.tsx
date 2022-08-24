@@ -1,5 +1,4 @@
 import { useRoutes } from "react-router-dom";
-import Home from "./components/Home";
 
 import React from "react";
 import Dashboard from "./pages/Dashboard";
@@ -34,10 +33,7 @@ const App: React.FC = () => {
       element: <Dashboard />,
 
       children: [
-        {
-          path: "",
-          element: <Home />
-        },
+        
         {
           path: "/storage",
           element: <Storage />

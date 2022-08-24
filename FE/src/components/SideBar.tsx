@@ -30,26 +30,18 @@ function getItem(
 
 const items: MenuItem[] = [
 
-  getItem("Navigation Two", "2", <CalendarOutlined />),
-  getItem("Navigation Two", "sub1", <AppstoreOutlined />, [
-    getItem("Option 3", "3"),
-    getItem("Option 4", "4"),
-    getItem("Submenu", "sub1-2", null, [
-      getItem("Option 5", "5"),
-      getItem("Option 6", "6"),
-    ]),
-  ]),
-  getItem("Navigation Three", "sub2", <SettingOutlined />, [
-
+  getItem("Quản lý sản phẩm", "sub1", <AppstoreOutlined />, [
+  
     getItem("Thêm sản phẩm", "/productsAdd"),
     getItem("Danh sách sản phẩm", "/products"),
-
-    getItem("Option 7", "7"),
-    getItem("Option 8", "8"),
-
-    getItem("Option 9", "9"),
-    getItem("Option 10", "10")
+    getItem("Danh mục sản phẩm", "/categories"),
+    
   ]),
+  getItem("Đơn vị vận chuyển", "/transport-companies", <AppstoreOutlined />),
+
+  getItem("Nhà cung cấp", "/supplier",<CalendarOutlined/>), 
+
+  getItem("Navigation Two", "2", <CalendarOutlined />),
   getItem(
     <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
       Ant Design

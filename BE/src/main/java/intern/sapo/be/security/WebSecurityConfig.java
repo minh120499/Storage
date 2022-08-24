@@ -57,7 +57,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/api/account/login").permitAll()
-				.anyRequest().authenticated().and().exceptionHandling().accessDeniedHandler(accessDeniedHandler());
+				.anyRequest().permitAll();
+//				.authenticated().and().exceptionHandling().accessDeniedHandler(accessDeniedHandler());
 		http.cors().and().csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.exceptionHandling()
