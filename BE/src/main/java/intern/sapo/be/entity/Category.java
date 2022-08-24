@@ -1,8 +1,10 @@
 package intern.sapo.be.entity;
+
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+
 
 @Entity
 @Table(name = "categories")
@@ -13,7 +15,6 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-
 
     @Column(name = "name", nullable = false, length = 500)
     private String name;

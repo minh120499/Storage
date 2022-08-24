@@ -1,9 +1,12 @@
 package intern.sapo.be.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -12,7 +15,7 @@ import javax.persistence.*;
 public class Role {
     @Id
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "name", nullable = false, length = 100)
     private String name;
@@ -21,5 +24,8 @@ public class Role {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @ManyToMany(mappedBy = "roles")
+    @JsonBackReference
+    private Set<Account> emp = new HashSet<>();
 
 }

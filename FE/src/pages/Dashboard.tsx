@@ -8,21 +8,13 @@ const { Sider, Content, Header } = Layout;
 
 const Dashboard: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
-
   return (
     <Layout style={{minHeight: "100vh"}}>
-      <Sider width="auto">
+      <Sider collapsible >
         <SideBar />
       </Sider>
       <Layout className="site-layout">
         <Header className="top-header z-10" style={{ padding: 0 }}>
-          {/* {React.createElement(
-            collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-            {
-              className: "trigger",
-              onClick: () => setCollapsed(!collapsed),
-            }
-          )} */}
           <HeaderMenu />
         </Header>
         <Content

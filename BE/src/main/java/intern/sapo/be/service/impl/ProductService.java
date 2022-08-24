@@ -7,8 +7,9 @@ import intern.sapo.be.entity.Product;
 import intern.sapo.be.entity.ProductVariant;
 import intern.sapo.be.repository.*;
 import intern.sapo.be.service.IProductService;
-import intern.sapo.be.util.Utils;
+
 import org.modelmapper.ModelMapper;
+import intern.sapo.be.security.jwt.util.Utils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

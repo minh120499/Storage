@@ -12,32 +12,32 @@ import java.math.BigDecimal;
 @Setter
 @EntityListeners(AuditingEntityListener.class)
 public class ProductVariant {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false)
+	private Integer id;
 
-    @Column(name = "code", nullable = false, length = 100)
-    private String code;
+	@Column(name = "code", nullable = false, length = 100)
+	private String code;
 
-    @JoinColumn(name = "product_id", nullable = false)
-    private Integer productId;
+	@JoinColumn(name = "product_id", nullable = false)
+	private Integer productId;
 
-    @Column(name = "name", nullable = false, length = 200)
-    private String name;
+	@Column(name = "name", nullable = false, length = 200)
+	private String name;
 
     @Lob
     @Column(name = "image")
     private String image;
 
-    @Column(name = "wholesale_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
-    private BigDecimal wholesalePrice;
-
-    @Column(name = "sale_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
-    private BigDecimal salePrice;
-    @Column(name = "import_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
-    private BigDecimal importPrice;
 
 
+	@Column(name = "wholesale_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
+	private BigDecimal wholesalePrice;
+
+	@Column(name = "sale_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
+	private BigDecimal salePrice;
+	@Column(name = "import_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
+	private BigDecimal importPric;
 
 }

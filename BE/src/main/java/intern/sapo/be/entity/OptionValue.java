@@ -15,8 +15,9 @@ public class OptionValue {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "option_id", nullable = false)
-    private Integer optionId;
+    private Option option;
 
     @Column(name = "name", nullable = false, length = 200)
     private String name;

@@ -1,19 +1,21 @@
 package intern.sapo.be.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "employees")
 @Getter
 @Setter
-public class Employee {
+public class Employee implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Lob
     @Column(name = "full_name", nullable = false)
@@ -32,8 +34,10 @@ public class Employee {
     @Column(name = "address", nullable = false, length = 500)
     private String address;
 
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "account_id", nullable = false)
+    @JsonBackReference
     private Account account;
 
 

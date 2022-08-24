@@ -1,5 +1,8 @@
 package intern.sapo.be.dto.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import intern.sapo.be.entity.Account;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,6 +44,5 @@ public class TransportCompaniesDTO {
     private java.sql.Timestamp createAt;
     private java.sql.Timestamp updateAt;
     private Boolean isDelete;
-
 
 }

@@ -10,17 +10,15 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class ProductVariantOption {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false)
+	private Integer id;
 
-    @JoinColumn(name = "variant_id", nullable = false)
-    private Integer variantId;
+	@JoinColumn(name = "variant_id", nullable = false)
+	private Integer variantId;
 
-    @JoinColumn(name = "option_value_id", nullable = false)
-    private Integer optionValueId;
-
-
+	@JoinColumn(name = "option_value_id", nullable = false)
+	private Integer optionValueId;
 
 }

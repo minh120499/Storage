@@ -1,4 +1,5 @@
 package intern.sapo.be.dto.request;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,5 @@ public class CategoriesDTO {
     @NotNull
     @NotBlank
     private String description;
-
 
 }
