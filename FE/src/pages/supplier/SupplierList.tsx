@@ -1,16 +1,18 @@
-import {Button, Dropdown, Menu, Modal, Space, Table, Typography} from "antd";
+import type {MenuProps} from 'antd';
+import {Button, Dropdown, Menu, Space, Table, Typography} from "antd";
 import React, {useEffect, useState} from "react";
-import {ISupplier, TypeSupplier} from "../../services/customType";
+import {ISupplier} from "../../services/customType";
 
-import {createSupplier, deleteSupplier, getSuppliers, updateStatusSupplier} from "../../services/api";
+import {deleteSupplier, getSuppliers, updateStatusSupplier} from "../../services/api";
 import {SupplierColumn} from "../../components/Datatablesource";
 import {Link, useNavigate} from "react-router-dom";
 import "../../styles/Table.css";
-import type {MenuProps} from 'antd';
-import {DownOutlined, DeleteOutlined, StopOutlined, InfoCircleOutlined} from '@ant-design/icons';
+import {DeleteOutlined, DownOutlined, InfoCircleOutlined, StopOutlined, UploadOutlined} from '@ant-design/icons';
 import ToastCustom from "../../features/toast/Toast";
 import Swal from "sweetalert2";
 import SupplierCreate from "./SupplierCreate";
+import ImportExcel from "../../components/ImportExcel";
+import ExportExcel from "../../components/ExportExcel";
 
 const SupplierList = () => {
     const {Title} = Typography;
@@ -18,12 +20,15 @@ const SupplierList = () => {
 
     const [reload, setReload] = useState(false);
 
-
+    const [isLoading,setIsLoading] = useState(true)
 
     useEffect(() => {
-        getSuppliers().then((r) => {
-            setData(r.data.reverse())
-        })
+        setTimeout(() =>{
+            getSuppliers().then((r) => {
+                setData(r.data.reverse())
+                setIsLoading(false)
+            })
+        },1000)
 
     }, [reload])
 
@@ -73,6 +78,7 @@ const SupplierList = () => {
                     }).then(r => {
                     })
                     setReload(!reload)
+                    setIsLoading(true)
                     setSelectedRowKeys([])
                 })
 
@@ -87,6 +93,7 @@ const SupplierList = () => {
                 title: 'Sửa trạng thái thành công'
             }).then(r => {
             })
+            setIsLoading(true)
             setReload(!reload)
             setSelectedRowKeys([])
         })
@@ -98,6 +105,7 @@ const SupplierList = () => {
                 title: 'Sửa trạng thái thành công'
             }).then(r => {
             })
+            setIsLoading(true)
             setReload(!reload)
             setSelectedRowKeys([])
         })
@@ -129,11 +137,12 @@ const SupplierList = () => {
     );
 
 
+
     return (
-        <>
+        <div>
             <Title>Nhà cung cấp</Title>
             <div style={{marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between"}}>
-                <div>
+                <div style={{display: "flex", alignItems: "center",gap:"10px"}}>
                     <Dropdown overlay={menu} disabled={!hasSelected}>
                         <Button style={{width: "180px", fontSize: '14px'}} type="primary">
                             <Space>
@@ -142,26 +151,38 @@ const SupplierList = () => {
                             </Space>
                         </Button>
                     </Dropdown>
-                    <span style={{marginLeft: 8, marginRight: 8}}>
-                    {hasSelected ? `Selected ${selectedRowKeys.length} istems` : ''}
-                </span>
+                    <span style={{marginLeft: 8, marginRight: 8}}>{hasSelected ? `Selected ${selectedRowKeys.length} istems` : ''}</span>
+                    <ImportExcel reload={() => setReload(!reload)}/>
+
+                    <ExportExcel/>
+                    {/*<div>*/}
+                    {/*    <label htmlFor="file-upload" className="custom-file-upload">*/}
+                    {/*        <UploadOutlined/>   Xuất excel*/}
+                    {/*    </label>*/}
+                    {/*    <input  id="file-upload" type="file"/>*/}
+                    {/*</div>*/}
                 </div>
                 <div>
                     <SupplierCreate reload={() => setReload(!reload)}/>
                 </div>
+
             </div>
-            <Table dataSource={data}
-                   columns={SupplierColumn}
-                   rowKey="id" bordered
-                   pagination={{defaultPageSize: 5}}
-                   onRow={(record) => {
-                       return {
-                           onClick: event => navigate({pathname: `/supplier/details/${record.id}`}),
-                       }
-                   }}
-                   rowSelection={rowSelection}
-            />
-        </>
+            {
+                isLoading ? <p>Loading....</p> : (
+                    <Table dataSource={data}
+                           columns={SupplierColumn}
+                           rowKey="id" bordered
+                           pagination={{defaultPageSize: 5}}
+                           onRow={(record) => {
+                               return {
+                                   onClick: event => navigate({pathname: `/supplier/details/${record.id}`}),
+                               }
+                           }}
+                           rowSelection={rowSelection}
+                    />
+                )
+            }
+        </div>
     )
 }
 

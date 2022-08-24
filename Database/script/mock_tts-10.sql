@@ -302,6 +302,10 @@ ALTER TABLE suppliers
 ALTER TABLE suppliers
     MODIFY COLUMN code varchar(100) unique;
 
+
+ALTER TABLE suppliers
+    MODIFY COLUMN account_id int;
+
 CREATE TABLE supplier_seqId
 (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY

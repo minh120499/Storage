@@ -1,5 +1,6 @@
 package intern.sapo.be.service.impl;
 
+import helper.ExcelHelper;
 import intern.sapo.be.base.BaseService;
 import intern.sapo.be.base.IBaseRepo;
 import intern.sapo.be.base.IBaseService;
@@ -18,7 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -40,7 +44,7 @@ public class SupplierService implements ISupplierService {
 
     @Override
     public List<Supplier> findAll() {
-        return supplierRepo.findAll();
+        return supplierRepo.findAllByIsDelete();
     }
 
     @Override
@@ -59,6 +63,23 @@ public class SupplierService implements ISupplierService {
         }
         return supplierRepo.save(request);
 
+    }
+
+    @Override
+    public void save(MultipartFile file) {
+        try {
+            List<Supplier> suppliers = ExcelHelper.excelToSuppliers(file.getInputStream());
+            supplierRepo.saveAll(suppliers);
+        } catch (Exception e) {
+            throw new AlreadyExistsException("fail to store excel data");
+        }
+    }
+
+    @Override
+    public ByteArrayInputStream loadExcel() {
+        List<Supplier> tutorials = supplierRepo.findAll();
+        ByteArrayInputStream in = ExcelHelper.supplierToExcel(tutorials);
+        return in;
     }
 
     @Override

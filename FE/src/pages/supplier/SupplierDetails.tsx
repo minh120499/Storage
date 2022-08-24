@@ -4,7 +4,7 @@ import {ISupplier} from "../../services/customType";
 import {getSupplierById} from "../../services/api";
 import {Button, Col, Dropdown, Menu, MenuProps, Row, Space} from "antd";
 import Moment from "react-moment";
-import {DeleteOutlined, DownOutlined, InfoCircleOutlined} from "@ant-design/icons";
+import {DeleteOutlined, DownOutlined, InfoCircleOutlined,LeftOutlined} from "@ant-design/icons";
 import SupplierUpdate from "./SupplierUpdate";
 
 const SupplierDetails = () => {
@@ -58,7 +58,12 @@ const SupplierDetails = () => {
         <>
             {
                supplier && (
-                   <>
+                   <div>
+                       <h2 style={{margin:20}}>
+                           <Link to="/supplier/">
+                               <LeftOutlined /> Danh sách nhà cung cấp
+                            </Link>
+                       </h2>
                        <div style={{background:"white",margin:20}}>
                            <div style={{padding:20,display:'flex',justifyContent:'space-between',paddingBottom:0}}>
                                <div>
@@ -172,7 +177,7 @@ const SupplierDetails = () => {
                            </div>
                        </div>
                        {isLoadModal && <SupplierUpdate supplier={supplier} isVisible={isLoadModal} setIsVisible={() =>setIsLoadModal(false)}/>}
-                   </>
+                   </div>
                 )
             }
         </>

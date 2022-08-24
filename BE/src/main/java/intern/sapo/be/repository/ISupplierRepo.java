@@ -18,7 +18,7 @@ public interface ISupplierRepo extends JpaRepository<Supplier,Integer> {
     Optional<Supplier> findByCode(String code);
 
     @Query(value = "select s from Supplier s where s.isDelete = false")
-    List<Supplier> findAll();
+    List<Supplier> findAllByIsDelete();
 
     @Modifying
     @Transactional
