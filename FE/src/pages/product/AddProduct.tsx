@@ -78,21 +78,24 @@ function AddProduct() {
         addProduct(body).then(response => {
             if(response.ok) {
                 localStorage.removeItem('product')
-                handleClose()
                 ToastCustom.fire({
                     icon: 'success',
                     title: 'Thêm sản phẩm thành công'
                 }).then()
+                localStorage.removeItem('products')
+                navigate('/products')
+            }
+            else{
+                ToastCustom.fire({
+                    icon: 'error',
+                    title: 'Thêm sản phẩm thất bại'
+                }).then()
             }
 
-            return response.json()
-        }).then(result => {
-            console.log(result)
-            ToastCustom.fire({
-                icon: 'error',
-                title: 'Thêm sản phẩm thất bại'
-            }).then()
+            
             handleClose()
+
+
         }).catch((erorr) => {
             ToastCustom.fire({
                 icon: 'error',
