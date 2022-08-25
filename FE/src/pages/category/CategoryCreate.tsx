@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Button, Modal, Form, Input, Space } from 'antd';
 import axios from "axios";
 import ToastCustom from "../../features/toast/Toast";
+import { Category } from "../../type/allType";
+import { createCategory } from "../../services/apiCategory";
 
 
 type props = {
@@ -37,11 +39,9 @@ export default function CategoryCreate({status}:props) {
         labelCol: { span: 100 },
     };
 
-    const handleCreate = () => {
-        const { name, description } = formAdd.getFieldsValue();
-        axios.post("http://localhost:8080/api/categories/category", {
-            "name": name,
-            "description": description
+    const handleCreate = async (category: Category) => {
+        await createCategory(category).catch(error=>{
+            console.log(error);
         });
         ToastCustom.fire({
             icon: 'success',

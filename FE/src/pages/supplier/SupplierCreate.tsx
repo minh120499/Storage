@@ -17,6 +17,8 @@ const SupplierCreate = ({reload}: SupplierProps) => {
     const [form] = Form.useForm();
     const onFormSubmit = (supplier: TypeSupplier) => {
         supplier.accountId = Number(1)
+        console.log(supplier);
+        
         createSupplier(supplier).then(() => {
             ToastCustom.fire({
                 icon: 'success',

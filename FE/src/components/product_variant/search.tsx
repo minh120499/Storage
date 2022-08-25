@@ -8,7 +8,7 @@ import type { ColumnsType } from "antd/es/table";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createExport } from "../../api/export";
 import { creatDetailExport } from "../../api/detail_export";
-import { randomInt } from "crypto";
+
 
 interface DataType {
   getProductById: any;
@@ -70,28 +70,29 @@ const Search: React.FC = () => {
       title: "Mã hàng",
       dataIndex: "getProductById",
       render: (text) => {
-        return <div>{text?.code}</div>;
+        return <div>{text?.data.code}</div>;
       },
     },
     {
       title: "Tên sản phẩm",
       dataIndex: "getProductById",
       render: (text) => {
-        return <div>{text?.name}</div>;
+        return <div>{text?.data.name}</div>;
       },
     },
     {
       title: "Số lượng",
       dataIndex: ["quantity", "getProductById"],
       render: (a, text) => {
+        console.log(text)
         return (
           <input
             type={"number"}
             style={{ width: "50px" }}
             onChange={handleQuantity}
-            id={text?.getProductById.id}
+            id={text?.getProductById.data.id}
             value={text?.quantity}
-            key={text?.getProductById.id}
+            key={text?.getProductById.data.id}
             min={"0"}
           ></input>
         );
@@ -110,11 +111,10 @@ const Search: React.FC = () => {
     () => {
       const searchProduct = async () => {
         const getList = await getProducts();
-        setProduct(getList);
+        setProduct(getList.data);
       };
       searchProduct();
-    },
-    { refetchOnWindowFocus: false }
+    }
   );
 
   const handleClickOptionProduct = (e: any) => {
@@ -152,21 +152,20 @@ const Search: React.FC = () => {
     ["getListInventory"],
     () => {
       const getListInventories = async () => {
-        await getAllInventory().then((res) => {
-          setInventory(res.data);
-        });
-      };
+       const listInventory= await getAllInventory();
+          setInventory(listInventory.data);
+        };
+
       getListInventories();
-    },
-    { refetchInterval: false, enabled: false }
+    }
   );
   const handleClickOptionSend = async (e: any) => {
     const inventorySend = await findInventoryById(e);
-    setInventorySend(inventorySend);
+    setInventorySend(inventorySend.data);
   };
   const handleClickOptionReceive = async (e: any) => {
     const inventoryReceive = await findInventoryById(e);
-    setInventoryReceive(inventoryReceive);
+    setInventoryReceive(inventoryReceive.data);
   };
   //--------------------- form -------------------
 
@@ -175,7 +174,7 @@ const Search: React.FC = () => {
     const exportId = saveExport.data.id;
     const detailExport = products.map((e: any) => {
       return {
-        productVariant: e.getProductById.id,
+        productVariant: e.getProductById.data.id,
         quantity: e.quantity,
         export: exportId,
       };
@@ -199,16 +198,6 @@ const Search: React.FC = () => {
             dropdownStyle={{ height: 150, width: 1000 }}
             placeholder="Search to Select"
             optionFilterProp="children"
-            // filterOption={(input, option) =>
-            //   (option!.children as unknown as string).includes(input)
-            // }
-            // filterSort={(optionA, optionB) =>
-            //   (optionA!.children as unknown as string)
-            //     .toLowerCase()
-            //     .localeCompare(
-            //       (optionB!.children as unknown as string).toLowerCase()
-            //     )
-            // }
             onSelect={handleClickOptionProduct}
           >
             {product.map((item: any) => (
@@ -217,7 +206,7 @@ const Search: React.FC = () => {
                 key={item.id}
                 value={item.id}
               >
-                {item.name + "---" + item.code + " : " + item.product.name}
+                {item.name}
               </Select.Option>
             ))}
           </Select>
@@ -242,16 +231,7 @@ const Search: React.FC = () => {
             dropdownStyle={{ height: 150, width: 300 }}
             placeholder="Search to Select"
             optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option!.children as unknown as string).includes(input)
-            }
-            filterSort={(optionA, optionB) =>
-              (optionA!.children as unknown as string)
-                .toLowerCase()
-                .localeCompare(
-                  (optionB!.children as unknown as string).toLowerCase()
-                )
-            }
+          
             onSelect={handleClickOptionSend}
           >
             {inventories.map((item: any) => (
@@ -271,16 +251,7 @@ const Search: React.FC = () => {
             dropdownStyle={{ height: 150, width: 300 }}
             placeholder="Search to Select"
             optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option!.children as unknown as string).includes(input)
-            }
-            filterSort={(optionA, optionB) =>
-              (optionA!.children as unknown as string)
-                .toLowerCase()
-                .localeCompare(
-                  (optionB!.children as unknown as string).toLowerCase()
-                )
-            }
+
             onSelect={handleClickOptionReceive}
           >
             {inventories.map((item: any) => (

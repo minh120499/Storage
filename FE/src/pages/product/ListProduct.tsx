@@ -71,6 +71,8 @@ const ListProduct = () => {
         countProductByFilter(productFilter).then((response) => response.json())
             .then((res) => {
                 setTotalPage(res)
+            }).catch(error=>{
+                console.log(error);     
             })
 
     }, [])

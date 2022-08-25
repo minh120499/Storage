@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Button, Modal, Form, Input, Space } from 'antd';
 import axios from "axios";
 import ToastCustom from "../../features/toast/Toast";
+import { Category } from "../../type/allType";
+import { updateCategory } from "../../services/apiCategory";
 
 type props = {
     selectedOne: boolean,
@@ -49,12 +51,8 @@ export default function CategoryUpdate({ selectedOne, status, idUpdate}: props) 
         labelCol: { span: 100 },
     };
 
-    const handleUpdate = () =>{
-        const { name, description } = formAdd.getFieldsValue();
-        axios.put(`http://localhost:8080/api/categories/category/${idUpdate}`, {
-            "name": name,
-            "description": description
-        });
+    const handleUpdate = (category: Category) =>{
+        updateCategory(category,idUpdate);
         ToastCustom.fire({
             icon: 'success',
             title: 'Sửa danh mục thành công!'
