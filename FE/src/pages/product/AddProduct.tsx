@@ -20,42 +20,7 @@ function AddProduct() {
     }
     var initOptions: Array<OX> = []
 
-    const initSuppliers: Supplier[] = [{
-        id: 1,
-        code: "string",
-        name: "name1",
-        email: "string",
-        phone: "string",
-        address: "string",
-        accountId: 1,
-        createAt: "string",
-        updateAt: "string",
-        isDelete: true
-    },
-    {
-        id: 2,
-        code: "string",
-        name: "name2",
-        email: "string",
-        phone: "string",
-        address: "string",
-        accountId: 1,
-        createAt: "string",
-        updateAt: "string",
-        isDelete: true
-    },
-    {
-        id: 3,
-        code: "string",
-        name: "name3",
-        email: "string",
-        phone: "string",
-        address: "string",
-        accountId: 1,
-        createAt: "string",
-        updateAt: "string",
-        isDelete: true
-    },];
+
     var valuesForName: string[] = []
     var variantsAll: IVariant[] = []
     const initVariants: Array<IVariant> = []
@@ -111,17 +76,23 @@ function AddProduct() {
         handleOpen()
 
         addProduct(body).then(response => {
+            if(response.ok) {
+                localStorage.removeItem('product')
+                handleClose()
+                ToastCustom.fire({
+                    icon: 'success',
+                    title: 'Thêm sản phẩm thành công'
+                }).then()
+            }
 
             return response.json()
         }).then(result => {
             console.log(result)
-            localStorage.removeItem('product')
-            navigate('/products')
-            handleClose()
             ToastCustom.fire({
-                icon: 'success',
-                title: 'Thêm sản phẩm thành công'
+                icon: 'error',
+                title: 'Thêm sản phẩm thất bại'
             }).then()
+            handleClose()
         }).catch((erorr) => {
             ToastCustom.fire({
                 icon: 'error',
