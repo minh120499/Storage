@@ -18,6 +18,8 @@ import TransportCompanies from "./pages/transport_company/TransportCompanies";
 import HomePage from "./components/HomePage";
 import EmployeeDetails from "./components/Employee/Details";
 import Employee from "./components/Employee/Employee";
+import DetailsProduct from "./pages/product/DetailsProduct";
+import { exact } from "prop-types";
 const App: React.FC = () => {
   const router = useRoutes([
     {
@@ -52,7 +54,11 @@ const App: React.FC = () => {
         },
         {
           path: "/products",
-          element: <ListProduct />
+          
+          children: [
+            { index: true, element: <ListProduct /> },            
+            { path: "/products/:id", element: <DetailsProduct /> },
+          ],
         },
         {
 

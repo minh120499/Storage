@@ -14,7 +14,6 @@ import { IProductCount, IProductFilter } from '../../type/allType';
 import { countProductByFilter, getProducts } from '../../services/productServices';
 import ProductPagination from './ProductPagination';
 import { PlusOutlined } from '@ant-design/icons';
-import { margin } from '@mui/system';
 const initFilter: IProductFilter = {
     key: '',
     isDelete: false,
@@ -57,6 +56,7 @@ const ProductCol = [
 
 
 const ListProduct = () => {
+    var keyWord=''
 
     const [productFilter, setProductFilter] = useState<IProductFilter>(initFilter)
     const [products, setProducts] = useState<Array<IProductCount>>([])
@@ -64,7 +64,6 @@ const ListProduct = () => {
     const navigate = useNavigate()
     const [totalPage, setTotalPage] = useState<number>(1);
     const [selectProduct, setSelectProduct] = useState<React.Key[]>([]);
-
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
         setSelectProduct(newSelectedRowKeys);
     };
@@ -91,21 +90,22 @@ const ListProduct = () => {
 
 
     useEffect(() => {
+        
         getProducts(productFilter).then((response) => response.json())
             .then((res) => {
                 setProducts(res)
 
             }).catch(error=>{})
-
-    }, [productFilter])
-    useEffect(() => {
-        countProductByFilter(productFilter).then((response) => response.json())
+            countProductByFilter(productFilter).then((response) => response.json())
             .then((res) => {
                 setTotalPage(res)
-            }).catch(error=>{})
+            }).catch(error=>{
 
-    }, []) 
+                
+            })
 
+    }, [productFilter])
+   
     const Products = () => {
         return (
             <>
@@ -162,9 +162,15 @@ const ListProduct = () => {
                 <Mui.Grid item xs={8}>
                     <Antd.Input
                         placeholder='Nhập tên hoặc mã sản phẩm'
-                        onChange={(e) => {
-                            setProductFilter({ ...productFilter, key: e.target.value.toString() })
+                       onChange={(e)=>{
+                        keyWord=e.target.value.toString()
+
+                       }}
+                        onKeyDown={(e)=>{
+                            if(e.key==='Enter')
+                           setProductFilter({...productFilter,key:keyWord})
                         }}
+                        
                     >
 
                     </Antd.Input>
