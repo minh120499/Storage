@@ -18,12 +18,9 @@ import TransportCompanies from "./pages/transport_company/TransportCompanies";
 import HomePage from "./components/HomePage";
 import EmployeeDetails from "./components/Employee/Details";
 import Employee from "./components/Employee/Employee";
-<<<<<<< HEAD
 import RoleManager from "./components/RoleManager/RoleManager";
-=======
 import DetailsProduct from "./pages/product/DetailsProduct";
 import { exact } from "prop-types";
->>>>>>> ee882b58bd355d4cc0a09f32479b1f3fb023846d
 const App: React.FC = () => {
   const router = useRoutes([
     {
