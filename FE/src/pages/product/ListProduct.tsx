@@ -13,6 +13,8 @@ import "../../styles/Table.css";
 import { IProductCount, IProductFilter } from '../../type/allType';
 import { countProductByFilter, getProducts } from '../../services/productServices';
 import ProductPagination from './ProductPagination';
+import { PlusOutlined } from '@ant-design/icons';
+import { margin } from '@mui/system';
 const initFilter: IProductFilter = {
     key: '',
     isDelete: false,
@@ -41,14 +43,16 @@ const ProductCol = [
         title: "Số lượng",
         dataIndex: "total",
         key: "total"
-    }]
-// {
-//     title: "Trạng thái",
-//     dataIndex: "statusTransaction",
-//     key: "status",
-//     render: (status: boolean) => {
-//         return status ? <p style={{ color: 'blue' }}>Đang giao dịch</p> : <p style={{ color: 'red' }}>Ngừng giao dịch</p>
-//     },
+    },
+    {
+        title: "Trạng thái",
+        dataIndex: "total",
+        key: "total",
+        render: (total: number) => {
+            return total > 0 ? <p style={{ color: 'blue' }}>Có thể bán</p> : <p style={{ color: 'red' }}>Hết hàng</p>
+        }
+    }
+]
 
 
 
@@ -59,22 +63,20 @@ const ListProduct = () => {
     const [reload, setReload] = useState(false)
     const navigate = useNavigate()
     const [totalPage, setTotalPage] = useState<number>(1);
-    useEffect(() => {
-        getProducts(productFilter).then((response) => response.json())
-            .then((res) => {
-                setProducts(res)
+    const [selectProduct, setSelectProduct] = useState<React.Key[]>([]);
 
-            })
+    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+        setSelectProduct(newSelectedRowKeys);
+    };
 
-    }, [productFilter])
-    useEffect(() => {
-        countProductByFilter(productFilter).then((response) => response.json())
-            .then((res) => {
-                setTotalPage(res)
-            })
+    const rowSelection = {
+        selectProduct,
+        onChange: onSelectChange,
+    };
 
-    }, [])
 
+    let hasSelected = selectProduct.length > 0;
+    let hasOneSelected = selectProduct.length === 1;
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
         setProductFilter({ ...productFilter, page: page })
 
@@ -88,60 +90,98 @@ const ListProduct = () => {
     };
 
 
+    useEffect(() => {
+        getProducts(productFilter).then((response) => response.json())
+            .then((res) => {
+                setProducts(res)
+
+            }).catch(error=>{})
+
+    }, [productFilter])
+    useEffect(() => {
+        countProductByFilter(productFilter).then((response) => response.json())
+            .then((res) => {
+                setTotalPage(res)
+            }).catch(error=>{})
+
+    }, []) 
+
+    const Products = () => {
+        return (
+            <>
+
+                <Antd.Table dataSource={products}
+                    scroll={{ x: 500, y: 500 }}
+                    columns={ProductCol}
+                    rowKey="id"
+                    bordered
+                    pagination={false}
+
+                    onRow={(record) => {
+                        return {
+                            onClick: event => navigate({ pathname: `/products/${record.id}` }),
+                        }
+                    }}
+                    rowSelection={rowSelection}
+
+
+                />
+
+                <Mui.TablePagination
+                    rowsPerPageOptions={[10, 25, 50, 100, 200]}
+                    count={totalPage}
+                    rowsPerPage={productFilter.size}
+                    page={productFilter.page}
+                    labelDisplayedRows={() => {
+                        return (
+                            <>
+                                <Antd.InputNumber  value={productFilter.page} ></Antd.InputNumber> /{Math.ceil(totalPage / productFilter.size)}
+                            </>
+                        )
+                    }}
+                    component='div'
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    ActionsComponent={ProductPagination}
+                    style={{ verticalAlign: "center" }}
+                />
+            </>
+        )
+    }
+
     return (
         <>
             <Antd.Typography.Title>Danh sách sản phẩm</Antd.Typography.Title>
 
-            <Mui.Grid container spacing={2}>
-                <Mui.Grid item xs={1}>
+            <Mui.Grid container spacing={2} sx={{ mb: 2 }}>
+                <Mui.Grid item xs={2}>
                     <Antd.Input  >
-
                     </Antd.Input>
+
                 </Mui.Grid>
-                <Mui.Grid item xs={5}>
-                    <Antd.Input 
-                    placeholder='Nhập tên hoặc mã sản phẩm' 
-                    onChange={(e)=>{
-                        setProductFilter({...productFilter,key:e.target.value.toString()})
-                    }}
+                <Mui.Grid item xs={8}>
+                    <Antd.Input
+                        placeholder='Nhập tên hoặc mã sản phẩm'
+                        onChange={(e) => {
+                            setProductFilter({ ...productFilter, key: e.target.value.toString() })
+                        }}
                     >
 
                     </Antd.Input>
                 </Mui.Grid>
+                <Mui.Grid item xs={2}>
+                    <Antd.Button style={{ width: "100%", fontSize: '14px', margin: 0 }} type="primary">
+                        <Antd.Space>
+                            <PlusOutlined />
+                            Thêm mới
+                        </Antd.Space>
+                    </Antd.Button>
+                </Mui.Grid>
+                <Mui.Grid item xs={12}>
+                    <Products />
+                </Mui.Grid>
             </Mui.Grid>
 
-            <Antd.Table dataSource={products}
-                scroll={{ x: 500, y: 500 }}
-                columns={ProductCol}
-                rowKey="id" bordered
-                pagination={false}
-                onRow={(record) => {
-                    return {
-                        onClick: event => navigate({ pathname: `/supplier/details/${record.id}` }),
-                    }
-                }}
-
-            />
-
-            <Mui.TablePagination
-                rowsPerPageOptions={[10, 25, 50, 100, 200]}
-                count={totalPage}
-                rowsPerPage={productFilter.size}
-                page={productFilter.page}
-                labelRowsPerPage='Row'
-                labelDisplayedRows={() => {
-                    return (
-                        <>
-                            <Antd.InputNumber style={{ marginTop: 15 }} value={productFilter.page} ></Antd.InputNumber> /{Math.ceil(totalPage / productFilter.size)}
-                        </>
-                    )
-                }}
-                component='div'
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                ActionsComponent={ProductPagination}
-                style={{ verticalAlign: "center" }}
-            />
 
         </>
     )

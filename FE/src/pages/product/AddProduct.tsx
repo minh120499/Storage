@@ -6,6 +6,9 @@ import * as Mui from '@mui/material'
 import * as Antd from 'antd'
 import { AddProductInput, IVariant, OptionValue, Product, Supplier } from '../../type/allType';
 import { addProduct } from '../../services/productServices';
+import { getSuppliers } from '../../services/api';
+import { ISupplier } from '../../services/customType';
+import ToastCustom from '../../features/toast/Toast';
 
 
 
@@ -70,7 +73,9 @@ function AddProduct() {
     }
     //state
     const [options, setOptions] = useState<Array<OX>>(initOptions)
-    const [supplierId, setSupplierId] = useState<number>(1);
+    const [supplierId, setSupplierId] = useState<number>();
+    const [suppliers, setSuppliers] = useState<ISupplier[]>([]);
+
     const [variants, setVariants] = useState(initVariants)
     const [product, setProduct] = useState<AddProductInput>(initProduct)
     const [open, setOpen] = React.useState(false);
@@ -113,7 +118,15 @@ function AddProduct() {
             localStorage.removeItem('product')
             navigate('/products')
             handleClose()
+            ToastCustom.fire({
+                icon: 'success',
+                title: 'Thêm sản phẩm thành công'
+            }).then()
         }).catch((erorr) => {
+            ToastCustom.fire({
+                icon: 'error',
+                title: 'Thêm sản phẩm thất bại'
+            }).then()
             handleClose()
         })
 
@@ -179,6 +192,11 @@ function AddProduct() {
         setProduct(y)
     }, [supplierId, options])
 
+    useEffect(()=>{
+        getSuppliers().then((r) => {
+            setSuppliers(r.data.reverse())
+        })
+    },[])
 
     // Component
     const ProductInfo = () => {
@@ -266,11 +284,11 @@ function AddProduct() {
 
                 >
                     {
-                        initSuppliers.map((supplier, index) => {
+                        suppliers.map((supplier, index) => {
                             return (
                                 <Antd.Select.Option key={supplier.id} value={supplier.id}>
 
-                                    {supplier.name + " | " + supplier.code}
+                                    {supplier.code+' | '+supplier.name}
 
                                 </Antd.Select.Option>
                             )
@@ -429,7 +447,7 @@ function AddProduct() {
                 open={open}
 
             >
-                <Mui.Paper sx={{ margin: '300px', p: '100px 140px 140px 100px' }}>
+                <Mui.Paper sx={{ margin: '300px', p: '100px 100px 100px 100px' }}>
                     {isCreated ? "Thêm thành công" : <Mui.CircularProgress />}
                 </Mui.Paper>
             </Mui.Modal>
