@@ -6,6 +6,9 @@ import * as Mui from '@mui/material'
 import * as Antd from 'antd'
 import { AddProductInput, IVariant, OptionValue, Product, Supplier } from '../../type/allType';
 import { addProduct } from '../../services/productServices';
+import { getSuppliers } from '../../services/api';
+import { ISupplier } from '../../services/customType';
+import ToastCustom from '../../features/toast/Toast';
 
 
 
@@ -17,42 +20,7 @@ function AddProduct() {
     }
     var initOptions: Array<OX> = []
 
-    const initSuppliers: Supplier[] = [{
-        id: 1,
-        code: "string",
-        name: "name1",
-        email: "string",
-        phone: "string",
-        address: "string",
-        accountId: 1,
-        createAt: "string",
-        updateAt: "string",
-        isDelete: true
-    },
-    {
-        id: 2,
-        code: "string",
-        name: "name2",
-        email: "string",
-        phone: "string",
-        address: "string",
-        accountId: 1,
-        createAt: "string",
-        updateAt: "string",
-        isDelete: true
-    },
-    {
-        id: 3,
-        code: "string",
-        name: "name3",
-        email: "string",
-        phone: "string",
-        address: "string",
-        accountId: 1,
-        createAt: "string",
-        updateAt: "string",
-        isDelete: true
-    },];
+
     var valuesForName: string[] = []
     var variantsAll: IVariant[] = []
     const initVariants: Array<IVariant> = []
@@ -70,7 +38,9 @@ function AddProduct() {
     }
     //state
     const [options, setOptions] = useState<Array<OX>>(initOptions)
-    const [supplierId, setSupplierId] = useState<number>(1);
+    const [supplierId, setSupplierId] = useState<number>();
+    const [suppliers, setSuppliers] = useState<ISupplier[]>([]);
+
     const [variants, setVariants] = useState(initVariants)
     const [product, setProduct] = useState<AddProductInput>(initProduct)
     const [open, setOpen] = React.useState(false);
@@ -106,14 +76,31 @@ function AddProduct() {
         handleOpen()
 
         addProduct(body).then(response => {
+            if(response.ok) {
+                localStorage.removeItem('product')
+                ToastCustom.fire({
+                    icon: 'success',
+                    title: 'Thêm sản phẩm thành công'
+                }).then()
+                localStorage.removeItem('products')
+                navigate('/products')
+            }
+            else{
+                ToastCustom.fire({
+                    icon: 'error',
+                    title: 'Thêm sản phẩm thất bại'
+                }).then()
+            }
 
-            return response.json()
-        }).then(result => {
-            console.log(result)
-            localStorage.removeItem('product')
-            navigate('/products')
+            
             handleClose()
+
+
         }).catch((erorr) => {
+            ToastCustom.fire({
+                icon: 'error',
+                title: 'Thêm sản phẩm thất bại'
+            }).then()
             handleClose()
         })
 
@@ -179,6 +166,11 @@ function AddProduct() {
         setProduct(y)
     }, [supplierId, options])
 
+    useEffect(()=>{
+        getSuppliers().then((r) => {
+            setSuppliers(r.data.reverse())
+        })
+    },[])
 
     // Component
     const ProductInfo = () => {
@@ -266,11 +258,11 @@ function AddProduct() {
 
                 >
                     {
-                        initSuppliers.map((supplier, index) => {
+                        suppliers.map((supplier, index) => {
                             return (
                                 <Antd.Select.Option key={supplier.id} value={supplier.id}>
 
-                                    {supplier.name + " | " + supplier.code}
+                                    {supplier.code+' | '+supplier.name}
 
                                 </Antd.Select.Option>
                             )
@@ -429,7 +421,7 @@ function AddProduct() {
                 open={open}
 
             >
-                <Mui.Paper sx={{ margin: '300px', p: '100px 140px 140px 100px' }}>
+                <Mui.Paper sx={{ margin: '300px', p: '100px 100px 100px 100px' }}>
                     {isCreated ? "Thêm thành công" : <Mui.CircularProgress />}
                 </Mui.Paper>
             </Mui.Modal>
