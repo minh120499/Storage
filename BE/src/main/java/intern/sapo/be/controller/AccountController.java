@@ -33,7 +33,7 @@ public class AccountController {
 	private JwtTokenUtil jwtUtils;
 
 	@GetMapping()
-	@PreAuthorize("hasAuthority('staff')")
+//	@PreAuthorize("hasAuthority('staff')")
 	public ResponseEntity<?> getAll() {
 		return ResponseEntity.ok(accountService.getAll());
 	}

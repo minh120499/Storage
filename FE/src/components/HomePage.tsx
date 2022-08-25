@@ -1,7 +1,7 @@
 import { Input, Table } from "antd";
 import { useState } from "react";
-import { T } from "../UI/Table";
+import Tablee from "../UI/Table";
 
 export default function HomePage() {
-  return <T />;
+  return <Tablee />;
 }
