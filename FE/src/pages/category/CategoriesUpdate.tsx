@@ -1,30 +1,19 @@
 import React, { useState } from "react";
-import { Button, Modal, Form, Input, Space } from 'antd';
-import axios from "axios";
+import { Modal, Form, Input, Space } from 'antd';
 import ToastCustom from "../../features/toast/Toast";
 import { Category } from "../../type/allType";
 import { updateCategory } from "../../services/apiCategory";
+import Button from "../../UI/Button"
 
 type props = {
-    selectedOne: boolean,
+
     status: () => void,
-    idUpdate: any
+    categoryProp: any
 }
 
-export default function CategoryUpdate({ selectedOne, status, idUpdate}: props) {
+export default function CategoryUpdate({ status, categoryProp }: props) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [formAdd] = Form.useForm();
-    
-    
-    
-    // axios.get(`http://localhost:8080/api/categories/category/${idUpdate}`)
-    // .then(response => {
-    //    const data = response.data;
-    //    console.log(data.name);
-       
-    // }).catch(error => {
-    //   console.log(error);
-    // })
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -35,7 +24,12 @@ export default function CategoryUpdate({ selectedOne, status, idUpdate}: props) 
         setIsModalVisible(false)
     }
 
-
+    formAdd.setFieldsValue({
+        id: categoryProp.id,
+        name: categoryProp.name,
+        description: categoryProp.description
+        
+    });
 
     const validateMessages = {
         required: 'Không được để trống!',
@@ -51,11 +45,11 @@ export default function CategoryUpdate({ selectedOne, status, idUpdate}: props) 
         labelCol: { span: 100 },
     };
 
-    const handleUpdate = (category: Category) =>{
-        updateCategory(category,idUpdate);
+    const handleUpdate = (category: Category) => {
+        updateCategory(category, categoryProp.id);
         ToastCustom.fire({
             icon: 'success',
-            title: 'Sửa danh mục thành công!'
+            title: 'Sửa thành công!'
         });
         formAdd.resetFields();
         status();
@@ -63,13 +57,13 @@ export default function CategoryUpdate({ selectedOne, status, idUpdate}: props) 
     }
     return (
         <>
-            <div>
-                <Button onClick={showModal} style={{ width: "121px"}} type="primary" disabled={selectedOne?false:true}>
-                    <Space>
-                        Sửa danh mục
-                    </Space>
-                </Button>
-            </div>
+
+            <Button onClick={showModal} style={{ width: "55px" }} type="primary">
+                <Space>
+                    Sửa
+                </Space>
+            </Button>
+
             <Modal title="Sửa Danh Mục" visible={isModalVisible} footer={null} onCancel={handleCancel}>
                 <Form
                     {...layout}
@@ -79,7 +73,7 @@ export default function CategoryUpdate({ selectedOne, status, idUpdate}: props) 
                     form={formAdd}
                 >
                     <Form.Item name='name' label="Nhập tên" rules={[{ required: true }]}>
-                        <Input placeholder="Tên"/>
+                        <Input placeholder="Tên" />
                     </Form.Item>
                     <Form.Item name='description' label="Nhập mô tả" rules={[{ required: true }]}>
                         <Input placeholder="Mô tả" />

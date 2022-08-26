@@ -318,3 +318,96 @@ end;
 end if $$
 DELIMITER ;
 
+-- ducanh
+DELIMITER $$
+CREATE  PROCEDURE `delete_category`(IN categories_id int)
+BEGIN
+				declare result int;
+                if  not exists (select * from categories where id = categories_id) then
+                -- trả về 0 khi mã danh mục không tồn tại 
+				set @result=0 ;
+                else 	
+						start transaction;
+								begin
+									DECLARE EXIT HANDLER FOR sqlstate '23000' 
+									set @result=1 ;
+									-- trả về 1 khi  không xóa được sản phẩm với mã danh mục truyền vào
+									delete from categories_products where categories_products.category_id = categories_id;    
+									-- trả về 2 khi không xóa được danh mục
+									set @result=2 ;
+									delete from categories where id = categories_id;
+									-- trả về 3 tức là đã xóa thành công
+									set @result=3;
+
+									commit;
+									end;
+					end if;
+				select @result;
+END;
+
+
+
+
+-- product
+CREATE DEFINER=`root`@`localhost` PROCEDURE `count_product_by_filter`(in key_word text,in sort_by text,in is_desc bit,in page int,in size int,in is_delete bit)
+BEGIN
+
+declare search_value text ;
+set search_value=lower(concat('%',key_word,'%'));
+select  count(table1.total) from (select 0 as total  from products left join product_variants on products.id=product_variants.product_id
+left join inventories_product_variant on product_variants.id=inventories_product_variant.product_variant_id 
+where (lower(products.name) like search_value or lower(products.code) like search_value) and products.is_delete=is_delete
+group by(products.id) ) as table1  
+group by table1.total;
+ 
+END;
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `filter_product`(in key_word text,in sort_by text,in is_desc bit,in page int,in size int,in is_delete bit)
+BEGIN
+declare offset_number int ;
+declare search_value text;
+set search_value=lower(concat('%',key_word,'%'));
+set offset_number=(page-1)*size;
+ 
+ 
+ 
+ CREATE TEMPORARY TABLE products_count (
+		id int,
+		code text,
+		name text,
+        description text,
+        status_id int ,
+        supplier_id int,
+        account_id int,
+        create_at datetime,
+        update_at datetime,
+        is_delete bit,
+        number_of_variant int,
+        total int
+
+		);
+
+insert into products_count (select products.*,count(product_variants.id) as number_of_variant,sum(IF(quantity>0,quantity,0)) as total from products left join product_variants on products.id=product_variants.product_id
+left join inventories_product_variant on product_variants.id=inventories_product_variant.product_variant_id 
+where (lower(products.name) like search_value or lower(products.code) like search_value) and products.is_delete=is_delete
+group by(products.id) ) limit size offset offset_number;
+ 
+ 
+ 
+   if (is_desc=true) then
+ begin 
+ 	select * from products_count order by sort_by desc ;
+ end;
+ else
+ begin
+ 	select * from products_count order by sort_by asc;
+
+ end;
+ end if ;
+
+
+drop table products_count;
+
+
+
+END

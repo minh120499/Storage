@@ -1,20 +1,20 @@
 import React, { useState } from "react";
-import { Button, Modal, Form, Input, Space } from 'antd';
-import axios from "axios";
+import { Modal, Form, Input, Space } from 'antd';
 import ToastCustom from "../../features/toast/Toast";
 import { Category } from "../../type/allType";
 import { createCategory } from "../../services/apiCategory";
+import Button from "../../UI/Button"
 
 
 type props = {
     status: () => void
 }
-export default function CategoryCreate({status}:props) {
+export default function CategoryCreate({ status }: props) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [formAdd] = Form.useForm();
 
 
-    
+
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -40,21 +40,21 @@ export default function CategoryCreate({status}:props) {
     };
 
     const handleCreate = async (category: Category) => {
-        await createCategory(category).catch(error=>{
+        await createCategory(category).catch(error => {
             console.log(error);
         });
         ToastCustom.fire({
             icon: 'success',
-            title: 'Thêm danh mục thành công!'
+            title: 'Thêm thành công!'
         });
         formAdd.resetFields();
         status();
-        setIsModalVisible(false);   
+        setIsModalVisible(false);
     };
     return (
         <>
             <div>
-                <Button onClick={showModal} style={{ width: "121px"}} type="primary">
+                <Button onClick={showModal} style={{ width: "130px" }} type="primary">
                     <Space>
                         Thêm mới
                     </Space>
@@ -75,7 +75,7 @@ export default function CategoryCreate({status}:props) {
                         <Input placeholder="Nhập mô tả" />
                     </Form.Item>
                     <Form.Item {...tailLayout}>
-                        <Button htmlType="button" onClick={handleCancel}>
+                        <Button htmlType="button"  onClick={handleCancel}>
                             Cancle
                         </Button>
                         <Button type="primary" htmlType="submit" >

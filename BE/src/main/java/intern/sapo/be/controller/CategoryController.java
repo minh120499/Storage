@@ -46,9 +46,14 @@ public class CategoryController {
     }
 
     @PostMapping("/delete")
-    public void delete (@RequestBody List<Integer> id){
-        iCategoryService.delete(id)
-        ;
+    public void deleteList (@RequestBody List<Integer> id){
+        iCategoryService.deleteLíst(id);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void delete (@PathVariable (value = "id") Integer id){
+        iCategoryService.delete(id);
+
     }
 
 }
