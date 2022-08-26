@@ -2,26 +2,38 @@ package intern.sapo.be.controller;
 
 import intern.sapo.be.base.BaseController;
 import intern.sapo.be.base.IBaseService;
+import intern.sapo.be.dto.request.Product.ProductVariantDTO;
 import intern.sapo.be.entity.ProductVariant;
 import intern.sapo.be.service.IProductVariantService;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/product-variants")
 public class ProductVariantController extends BaseController<ProductVariant> {
     private final IProductVariantService productVariantService;
 
-    public ProductVariantController(IBaseService<ProductVariant> baseService, IProductVariantService productVariantService) {
+
+
+    public ProductVariantController(IBaseService<ProductVariant> baseService, IProductVariantService productVariantService, JdbcTemplate jdbcTemplate) {
         super(baseService);
         this.productVariantService = productVariantService;
+
     }
 
     @GetMapping("search")
     public List<ProductVariant> findProductByName(@RequestParam(defaultValue = "") String name) {
         return productVariantService.findProductByName(name);
+    }
+    @GetMapping("/findProductVariant")
+    public List<ProductVariantDTO> findProductVariant(@RequestParam Integer pageNumber, @RequestParam Integer pageSize) {
+        return productVariantService.findAllProductVariantDTO(pageNumber,pageSize);
+    }
+    @GetMapping("/count-total")
+    public Integer count() {
+        return productVariantService.countTotalPage();
     }
 //    @GetMapping("{id}")
 //    public Optional<ProductVariant> findProductById(@PathVariable Integer id) {

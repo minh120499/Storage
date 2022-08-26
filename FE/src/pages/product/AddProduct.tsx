@@ -9,6 +9,7 @@ import { addProduct } from '../../services/productServices';
 import { getSuppliers } from '../../services/api';
 import { ISupplier } from '../../services/customType';
 import ToastCustom from '../../features/toast/Toast';
+import SelectSupplier from "../../components/SelectSupplier";
 
 
 
@@ -39,7 +40,7 @@ function AddProduct() {
     //state
     const [options, setOptions] = useState<Array<OX>>(initOptions)
     const [supplierId, setSupplierId] = useState<number>();
-    const [suppliers, setSuppliers] = useState<ISupplier[]>([]);
+
 
     const [variants, setVariants] = useState(initVariants)
     const [product, setProduct] = useState<AddProductInput>(initProduct)
@@ -49,9 +50,8 @@ function AddProduct() {
     //function
     const handleOpen = () => { setOpen(true); }
     const handleClose = () => { setOpen(false); }
-    const handleSelectSupplier = (key: number) => {
-        setSupplierId(key)
-    }
+
+
     const onSubmit = (data: any) => {
         let { salePrice, wholesalePrice, importPrice, ...other } = { ...product }
         let newProduct = { ...other, supplierId: supplierId, accountId: 1, statusId: 1 }
@@ -166,11 +166,7 @@ function AddProduct() {
         setProduct(y)
     }, [supplierId, options])
 
-    useEffect(()=>{
-        getSuppliers().then((r) => {
-            setSuppliers(r.data.reverse())
-        })
-    },[])
+
 
     // Component
     const ProductInfo = () => {
@@ -186,10 +182,8 @@ function AddProduct() {
                             localStorage.setItem('product', JSON.stringify(value))
                         }}
                     >
-                        <Antd.Form.Item label='Nhà cung cấp' name={'supplierId'} labelCol={{ span: 24 }}>
-                            <SelectSupplier ></SelectSupplier>
+                            <SelectSupplier changeSupplierId={setSupplierId}/>
 
-                        </Antd.Form.Item>
                         <Antd.Form.Item labelCol={{ span: 24 }} labelAlign='left' label='Tên sản phẩm' name="name"
                             rules={[
                                 { required: true, message: 'Tên sản phẩm không được để trống' }
@@ -240,38 +234,7 @@ function AddProduct() {
             </>
         )
     }
-    const SelectSupplier = () => {
-        return (
-            <>
-                <Antd.Select style={{ width: '100%', marginBottom: 10, borderRadius: 5 }} size={'large'}
-                    showSearch
-                    placeholder="Nhấn để chọn nhà cung cấp"
-                    optionFilterProp="children"
-                    defaultValue={supplierId}
-                    onChange={handleSelectSupplier}
-                    filterOption={(input, option) => (option!.children as unknown as string).includes(input)}
-                    filterSort={(optionA, optionB) =>
-                        (optionA!.children as unknown as string)
-                            .toLowerCase()
-                            .localeCompare((optionB!.children as unknown as string).toLowerCase())
-                    }
 
-                >
-                    {
-                        suppliers.map((supplier, index) => {
-                            return (
-                                <Antd.Select.Option key={supplier.id} value={supplier.id}>
-
-                                    {supplier.code+' | '+supplier.name}
-
-                                </Antd.Select.Option>
-                            )
-                        })
-                    }
-                </Antd.Select>
-            </>
-        )
-    }
     const OptionInfo = () => {
         return (
             <>

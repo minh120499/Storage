@@ -21,6 +21,7 @@ import Employee from "./components/Employee/Employee";
 import RoleManager from "./components/RoleManager/RoleManager";
 import DetailsProduct from "./pages/product/DetailsProduct";
 import { exact } from "prop-types";
+import CreateImport from "./pages/Import/CreateImport";
 const App: React.FC = () => {
   const router = useRoutes([
     {
@@ -46,6 +47,14 @@ const App: React.FC = () => {
             // {path: "add", element: <CategoryAdd/>},
             { path: "", element: <SupplierList /> },
             { path: "details/:id", element: <SupplierDetails /> },
+          ],
+        },
+        {
+          path: "/purchase_orders",
+          children: [
+            // {path: "add", element: <CategoryAdd/>},
+            { path: "", element: "" },
+            { path: "create", element: <CreateImport /> },
           ],
         },
         {

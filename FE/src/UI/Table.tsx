@@ -42,7 +42,7 @@ const T = (props: any) => {
       icon: "error",
       title: "Oops...",
       text: "Fails",
-    });
+    }).then();
 
     return <div>Api not found</div>;
   }

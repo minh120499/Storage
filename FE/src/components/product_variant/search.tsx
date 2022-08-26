@@ -217,7 +217,7 @@ const Search: React.FC = () => {
                 key={item.id}
                 value={item.id}
               >
-                {item.name + "---" + item.code + " : " + item.product.name}
+                {item.name + "---" + item.code}
               </Select.Option>
             ))}
           </Select>

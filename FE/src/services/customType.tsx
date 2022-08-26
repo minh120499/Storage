@@ -22,3 +22,10 @@ export type TypeSupplier = {
     phone: string;
     accountId: number;
 }
+export interface IProductVariant{
+    id: number,
+    code: string;
+    name: string;
+    quantity: number,
+    importPrice: string
+}

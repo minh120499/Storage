@@ -1,5 +1,6 @@
 package intern.sapo.be.entity;
 
+import intern.sapo.be.dto.request.Product.ProductVariantDTO;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -11,6 +12,30 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
+@NamedNativeQuery(
+		name = "getFeaturedProductDTO",
+		query = "select pv.id,pv.code,pv.name,IF(quantity >0, quantity,0) as quantity,IF(import_price > 0,import_price,0) as importPrice\n" +
+				"from product_variants pv\n" +
+				"         left join inventories_product_variant ipv on pv.id = ipv.product_variant_id\n" +
+				"inner join products p on pv.product_id = p.id\n" +
+				"where p.is_delete = false",
+		resultSetMapping = "FeaturedProductVariant"
+)
+@SqlResultSetMapping(
+		name = "FeaturedProductVariant",
+		classes = {
+				@ConstructorResult(
+						targetClass = ProductVariantDTO.class,
+						columns = {
+								@ColumnResult(name="id", type = Integer.class),
+								@ColumnResult(name="code", type = String.class),
+								@ColumnResult(name="name", type = String.class),
+								@ColumnResult(name="quantity", type = Integer.class),
+								@ColumnResult(name="importPrice", type = BigDecimal.class),
+						}
+				)
+		}
+)
 public class ProductVariant {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
