@@ -23,5 +23,5 @@ public interface IBaseService<T> {
 
     void deleteById(Integer entityId);
 
-    List<T> getList(Integer page, Integer perPage, String sort, String sortBy);
+    ResponseListDto<T> getList(Integer page, Integer perPage, String sort, String sortBy);
 }

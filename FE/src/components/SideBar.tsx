@@ -29,17 +29,15 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-
   getItem("Quản lý sản phẩm", "sub1", <AppstoreOutlined />, [
-  
     getItem("Thêm sản phẩm", "/productsAdd"),
     getItem("Danh sách sản phẩm", "/products"),
     getItem("Danh mục sản phẩm", "/categories"),
-    
+    getItem("Chuyển hàng", "/storage"),
   ]),
   getItem("Đơn vị vận chuyển", "/transport-companies", <AppstoreOutlined />),
 
-  getItem("Nhà cung cấp", "/supplier",<CalendarOutlined/>), 
+  getItem("Nhà cung cấp", "/supplier", <CalendarOutlined />),
 
   getItem("Navigation Two", "2", <CalendarOutlined />),
   getItem(
@@ -55,7 +53,7 @@ const SideBar: React.FC = () => {
   const [mode, setMode] = useState<"vertical" | "inline">("inline");
   const [theme, setTheme] = useState<MenuTheme>("dark");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const changeMode = (value: boolean) => {
     setMode(value ? "vertical" : "inline");
@@ -91,7 +89,7 @@ const SideBar: React.FC = () => {
           theme={theme}
           items={items}
           onClick={(e) => {
-            navigate(e.key)
+            navigate(e.key);
           }}
         />
       </div>
