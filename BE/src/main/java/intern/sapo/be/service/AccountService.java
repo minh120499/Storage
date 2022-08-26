@@ -47,7 +47,7 @@ public class AccountService {
 		employee.setFullName(accountDTO.getFullName());
 
 		Set<Role> roles = new HashSet<>();
-		for(String role: accountDTO.getRoleIds()) {
+		for(String role : accountDTO.getRoleIds()) {
 			Role roleId = roleRepository.findRoleByName(role);
 			roles.add(roleId);
 		}
@@ -64,7 +64,7 @@ public class AccountService {
 		Account account = modelMapper.map(accountDTO, Account.class);
 
 		Set<Role> roles = new HashSet<>();
-		for(String role: accountDTO.getRoleIds()) {
+		for(String role : accountDTO.getRoleIds()) {
 			Role roleId = roleRepository.findRoleByName(role);
 			roles.add(roleId);
 		}
@@ -80,9 +80,10 @@ public class AccountService {
 	}
 
 	public Account getAllDetails(Integer id) {
-		Account account = accountRepository.findById(id).get();
-
-		return account;
-
+		try {
+			return accountRepository.findById(id).get();
+		} catch(Exception e) {
+			throw new NoSuchElementException("Account don't exist");
+		}
 	}
 }
