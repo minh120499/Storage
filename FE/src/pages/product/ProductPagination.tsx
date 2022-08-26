@@ -46,14 +46,14 @@ const ProductPagination = (props: any) => {
       </Mui.IconButton>
       <Mui.IconButton
         onClick={handleNextButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        disabled={page >= Math.ceil(count / rowsPerPage)}
         aria-label="next page"
       >
         {theme.direction === 'rtl' ? <ArrowLeft /> : <ArrowRight />}
       </Mui.IconButton>
       <Mui.IconButton
         onClick={handleLastPageButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        disabled={page >= Math.ceil(count / rowsPerPage) }
         aria-label="last page"
       >
         {theme.direction === 'rtl' ? <FirstPage /> : <LastPage />}

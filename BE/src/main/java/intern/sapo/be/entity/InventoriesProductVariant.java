@@ -6,10 +6,10 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "inventoies_product_variant")
+@Table(name = "inventories_product_variant")
 @Getter
 @Setter
-public class InventoiesProductVariant {
+public class InventoriesProductVariant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EmbeddedId
     private InventoiesProductVariantId id;

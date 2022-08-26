@@ -18,6 +18,9 @@ import TransportCompanies from "./pages/transport_company/TransportCompanies";
 import HomePage from "./components/HomePage";
 import EmployeeDetails from "./components/Employee/Details";
 import Employee from "./components/Employee/Employee";
+import RoleManager from "./components/RoleManager/RoleManager";
+import DetailsProduct from "./pages/product/DetailsProduct";
+import { exact } from "prop-types";
 const App: React.FC = () => {
   const router = useRoutes([
     {
@@ -25,15 +28,14 @@ const App: React.FC = () => {
       element: <Login />,
     },
     {
-      path: "/home",
-      element: <HomePage />,
-    },
-    {
       path: "/",
       element: <Dashboard />,
 
       children: [
-        
+        {
+          path: "/home",
+          element: <HomePage />,
+        },
         {
           path: "/storage",
           element: <Storage />
@@ -52,7 +54,11 @@ const App: React.FC = () => {
         },
         {
           path: "/products",
-          element: <ListProduct />
+          
+          children: [
+            { index: true, element: <ListProduct /> },            
+            { path: "/products/:id", element: <DetailsProduct /> },
+          ],
         },
         {
 
@@ -68,8 +74,12 @@ const App: React.FC = () => {
           element: <EmployeeDetails />,
         },
         {
-          path: "/employees",
+          path: "/api/admin/employees",
           element: <Employee />,
+        },
+        {
+          path: "/api/admin/roles",
+          element: <RoleManager />
         }
       ]
     }

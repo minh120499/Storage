@@ -36,7 +36,7 @@ public class ExceptionController {
 	@ExceptionHandler(value = NoSuchElementException.class)
 	@ResponseStatus(HttpStatus.EXPECTATION_FAILED)
 	@ResponseBody
-	public ApiResponse handleNotFoundElementException(AccountException ex, WebRequest request) {
+	public ApiResponse handleNotFoundElementException(NoSuchElementException ex, WebRequest request) {
 		return new ApiResponse(false, ex.getMessage(), ex.getClass().getName(), resolvePathFromRequest(request));
 	}
 }
