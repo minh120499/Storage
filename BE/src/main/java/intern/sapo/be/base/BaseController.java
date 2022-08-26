@@ -22,26 +22,24 @@ public abstract class BaseController<T> {
         return baseService.save(request);
     }
 
-
     @PutMapping("/{id}")
     public T update(@RequestBody @Valid T request, @PathVariable Integer id) {
         return baseService.updateById(request, id);
     }
-
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
         baseService.deleteById(id);
     }
 
-
     @GetMapping
-    public List<T> listAll(@RequestParam(required = false) Integer page,
-                           @RequestParam(required = false) Integer perPage,
-                           @RequestParam(required = false) String sort,
-                           @RequestParam(required = false) String sortBy) {
+    public ResponseListDto<T> listAll(@RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer perPage,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String sortBy) {
         return baseService.getList(page, perPage, sort, sortBy);
     }
+
     @GetMapping("{id}")
     public Optional<T> findById(@PathVariable Integer id) {
         return baseService.findById(id);

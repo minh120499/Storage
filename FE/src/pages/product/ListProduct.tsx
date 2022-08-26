@@ -73,6 +73,19 @@ const ListProduct = () => {
         onChange: onSelectChange,
     };
 
+// <<<<<<< HEAD
+//     }, [productFilter])
+//     useEffect(() => {
+//         countProductByFilter(productFilter).then((response) => response.json())
+//             .then((res) => {
+//                 setTotalPage(res)
+//             }).catch(error=>{
+//                 console.log(error);     
+//             })
+
+//     }, [])
+// =======
+// >>>>>>> 5628737534f51c8c5596d8e7c15566fc672ddc3f
 
     let hasSelected = selectProduct.length > 0;
     let hasOneSelected = selectProduct.length === 1;

@@ -22,18 +22,22 @@ const T = (props: any) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
 
+
   const query = useQuery(["id", page, pageSize], async () => {
     // console.log(page, pageSize);
 
     return (
-      await axios.get(props.api, {
+      await axios.get(props.api, /*{
         params: {
           limit: page,
           offset: pageSize,
         },
-      })
+      }*/)
     ).data;
   });
+  props.refetch = () => {
+    query.refetch()
+  }
 
   if (query.isError) {
     // console.log(query.error);
@@ -47,10 +51,11 @@ const T = (props: any) => {
     return <div>Api not found</div>;
   }
 
+
   return (
     <div>
       <Spin spinning={query.isLoading} tip="Loading...">
-        <Table {...props} pagination={false} />
+        <Table {...props} pagination={false} dataSource={props.dataSource || query.data} />
         <div className="flex flex-row-reverse mt-5">
           {!!props.total && (
             <Pagination

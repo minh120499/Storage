@@ -17,6 +17,15 @@ export interface receiveInventory {
   isDelete: boolean;
 }
 export interface exportValue {
-  exportInventory?: exportInventory | undefined;
-  receiveInventory?: receiveInventory | undefined;
+  exportInventory?: number | undefined;
+  receiveInventory?: number | undefined;
+}
+export interface DataType {
+  getProductById?: any;
+  id?: number;
+  code?: string;
+  name?: string;
+  product?: {};
+  stock?: number;
+  quantity?: number;
 }

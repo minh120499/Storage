@@ -36,6 +36,10 @@ const items: MenuItem[] = [
     getItem("Thêm sản phẩm", "/productsAdd"),
     getItem("Danh sách sản phẩm", "/products"),
     getItem("Danh mục sản phẩm", "/categories"),
+<<<<<<< HEAD
+    getItem("Chuyển hàng", "/storage"),
+=======
+>>>>>>> a3ff0c9c0851dfee0909bb7ff33ff15c00a76b47
   ]),
   getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
 

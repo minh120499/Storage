@@ -1,14 +1,15 @@
-import { Select, Form, Button } from "antd";
-import React, { useState } from "react";
+import { Select, Form, Popconfirm } from "antd";
+import React, { useRef, useState } from "react";
 import { findProductById, getProducts } from "../../api/product_variant";
 import "./file.css";
-import { findInventoryById, getAllInventory } from "../../api/inventory";
+import { getAllInventory } from "../../api/inventory";
 import { Radio, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createExport } from "../../api/export";
 import { creatDetailExport } from "../../api/detail_export";
-import { randomInt } from "crypto";
+<<<<<<< HEAD
+
 
 interface DataType {
   getProductById: any;
@@ -37,89 +38,134 @@ type receiveInventory = {
   updateAt: null;
   isDelete: boolean;
 };
+=======
+import { Button } from "antd";
+import { DataType } from "../type/data_type";
+import { DeleteTwoTone } from "@ant-design/icons";
+>>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
 
 const Search: React.FC = () => {
   const [product, setProduct] = useState([]);
   const [products, setProducts] = useState([] as any);
   const data: DataType[] = products;
 
-  const [inventorySend, setInventorySend] = useState<exportInventory>();
-  const [inventoryReceive, setInventoryReceive] = useState<receiveInventory>();
+  const [inventorySend, setInventorySend] = useState<number>();
+  const [inventoryReceive, setInventoryReceive] = useState<number>();
 
   const exportValue = {
     exportInventory: inventorySend,
     receiveInventory: inventoryReceive,
   };
-
+  const [status, setStatus] = useState(true);
   const handleQuantity = (e: any) => {
     const quantity = e.target.value;
     const id = e.target.id * 1;
-    console.log(id);
 
-    const isFound = products.findIndex((element: any) => {
-      return element.getProductById.id === id;
+    setProducts((prev: any) => {
+      prev.map((prod: any) => {
+        if (prod.getProductById.data.id === id) {
+          prod.quantity = quantity;
+        }
+      });
+      return [...prev];
     });
-
-    if (isFound >= 0) {
-      products[isFound].quantity = quantity * 1;
-      setProducts(products);
-    }
+  };
+  console.log(products);
+  const handleDelete = (e: any) => {
+    // const id = e.target.id * 1;
+    const newData = products.filter(
+      (item: any) => item.getProductById.data.id !== e
+    );
+    setProducts(newData);
   };
   const columns: ColumnsType<DataType> = [
     {
       title: "Mã hàng",
       dataIndex: "getProductById",
       render: (text) => {
-        return <div>{text?.code}</div>;
+<<<<<<< HEAD
+        return <div>{text?.data.code}</div>;
+=======
+        return <div>{text?.data?.code}</div>;
+>>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
       },
     },
     {
       title: "Tên sản phẩm",
       dataIndex: "getProductById",
       render: (text) => {
-        return <div>{text?.name}</div>;
+<<<<<<< HEAD
+        return <div>{text?.data.name}</div>;
+=======
+        return <div>{text?.data?.name}</div>;
+>>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
       },
     },
     {
       title: "Số lượng",
       dataIndex: ["quantity", "getProductById"],
       render: (a, text) => {
+        console.log(text)
         return (
           <input
             type={"number"}
             style={{ width: "50px" }}
             onChange={handleQuantity}
-            id={text?.getProductById.id}
+            id={text?.getProductById.data.id}
+<<<<<<< HEAD
             value={text?.quantity}
-            key={text?.getProductById.id}
+            key={text?.getProductById.data.id}
+=======
+            key={text?.getProductById.data.id}
+            value={text.quantity}
+>>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
             min={"0"}
           ></input>
         );
       },
     },
     {
-      dataIndex: ["quantity", "getProductById"],
-      render: () => {
-        return <Button>X</Button>;
+      dataIndex: ["getProductById"],
+      render: (text) => {
+        return (
+          <Popconfirm
+            id={text?.data.id}
+            key={text?.data.id}
+            // onClick={handleDelete}
+            title="Sure to delete?"
+            onConfirm={() => handleDelete(text?.data.id)}
+          >
+            <DeleteTwoTone />
+          </Popconfirm>
+        );
       },
     },
   ];
 
+<<<<<<< HEAD
   useQuery(
     ["ListProduct"],
     () => {
       const searchProduct = async () => {
         const getList = await getProducts();
-        setProduct(getList);
+        setProduct(getList.data);
       };
       searchProduct();
-    },
-    { refetchOnWindowFocus: false }
+    }
   );
+=======
+  useQuery(["ListProduct"], () => {
+    const searchProduct = async () => {
+      const getList = await getProducts();
+      setProduct(getList.data);
+    };
+    searchProduct();
+  });
+>>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
 
   const handleClickOptionProduct = (e: any) => {
     const isFound = products.findIndex((element: any) => {
-      if (element.getProductById.id === e) {
+      if (element.getProductById.data.id === e) {
         return true;
       }
       return false;
@@ -132,41 +178,59 @@ const Search: React.FC = () => {
         getProductById,
         quantity: 1,
       };
-      setProducts([...products, a]);
+      setProducts([a, ...products]);
     };
     if (isFound < 0) {
       hanldeClick();
     } else {
-      console.log(products);
-      products[isFound].quantity += 1;
-      console.log(products);
-
-      setProducts(products);
+      setProducts((prev: any) => {
+        prev.map((prod: any) => {
+          if (prod.getProductById.data.id === e) {
+            prod.quantity = prod.quantity * 1 + 1;
+          }
+        });
+        return [...prev];
+      });
       console.log("san pham da chon");
     }
   };
   /* ------------------ select inventory --------------- */
-  // console.log(products);
+
   const [inventories, setInventory] = useState([] as any);
+<<<<<<< HEAD
   useQuery(
     ["getListInventory"],
     () => {
       const getListInventories = async () => {
-        await getAllInventory().then((res) => {
-          setInventory(res.data);
-        });
-      };
+       const listInventory= await getAllInventory();
+          setInventory(listInventory.data);
+        };
+
       getListInventories();
-    },
-    { refetchInterval: false, enabled: false }
+    }
   );
   const handleClickOptionSend = async (e: any) => {
     const inventorySend = await findInventoryById(e);
-    setInventorySend(inventorySend);
+    setInventorySend(inventorySend.data);
   };
   const handleClickOptionReceive = async (e: any) => {
     const inventoryReceive = await findInventoryById(e);
-    setInventoryReceive(inventoryReceive);
+    setInventoryReceive(inventoryReceive.data);
+=======
+  useQuery(["getListInventory"], () => {
+    const getListInventories = async () => {
+      const listInventory = await getAllInventory();
+      setInventory(listInventory.data.data);
+      console.log(listInventory.data);
+    };
+    getListInventories();
+  });
+  const handleClickOptionSend = (e: number) => {
+    setInventorySend(e);
+  };
+  const handleClickOptionReceive = (e: number) => {
+    setInventoryReceive(e);
+>>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
   };
   //--------------------- form -------------------
 
@@ -175,7 +239,7 @@ const Search: React.FC = () => {
     const exportId = saveExport.data.id;
     const detailExport = products.map((e: any) => {
       return {
-        productVariant: e.getProductById.id,
+        productVariant: e.getProductById.data.id,
         quantity: e.quantity,
         export: exportId,
       };
@@ -190,46 +254,118 @@ const Search: React.FC = () => {
   return (
     <>
       <div className="content">
+        <div className="content-top">
+          <div className="select-inventory">
+            <div className="title">
+              <h3>Thông tin phiếu</h3>
+            </div>
+            <div className="select-inventory-left">
+              <div className="select-inventory-top">
+                <div className="title-p">
+                  <p>Chi nhánh chuyển</p>
+                </div>
+                <Select
+                  showSearch
+                  style={{ width: "100%" }}
+                  dropdownStyle={{ height: 150, width: 1000000 }}
+                  placeholder="Tìm kiếm chi nhánh"
+                  optionFilterProp="children"
+                  onSelect={handleClickOptionSend}
+                >
+                  {inventories.map((item: any) => (
+                    <Select
+                      style={{ width: "100%" }}
+                      key={item.id}
+                      value={item.id}
+                    >
+                      {item.name}
+                    </Select>
+                  ))}
+                </Select>
+              </div>
+              <div className="select-inventory-top">
+                <div className="title-p">
+                  <p>Chi nhánh nhận</p>
+                </div>
+                <Select
+                  showSearch
+                  style={{ width: "100%" }}
+                  dropdownStyle={{ height: 150, width: 3000000 }}
+                  placeholder="Tìm kiếm chi nhánh"
+                  optionFilterProp="children"
+                  onSelect={handleClickOptionReceive}
+                >
+                  {inventories.map((item: any) => (
+                    <Select
+                      style={{ width: "100%" }}
+                      key={item.id}
+                      value={item.id}
+                    >
+                      {item.name}
+                    </Select>
+                  ))}
+                </Select>
+              </div>
+            </div>
+          </div>
+          <div className="additional-information">
+            <div className="title">
+              <h3>Thông tin bổ sung</h3>
+            </div>
+            <div>
+              <p>Ghi chú</p>
+              <textarea
+                rows={3}
+                style={{ width: "100%" }}
+                placeholder={"VD : Giao hàng nhanh"}
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
         <div className="background-export">
-          <h3>Thông tin sản phẩm</h3>
+          <div className="title">
+            <h3>Thông tin sản phẩm</h3>
+          </div>
           <Select
             showSearch
-            clearIcon
-            style={{ width: "100%" }}
-            dropdownStyle={{ height: 150, width: 1000 }}
-            placeholder="Search to Select"
+            style={{ width: "70%" }}
+            dropdownStyle={{ width: 1000 }}
+            placeholder="Tìm kiếm sản phẩm"
             optionFilterProp="children"
-            // filterOption={(input, option) =>
-            //   (option!.children as unknown as string).includes(input)
-            // }
-            // filterSort={(optionA, optionB) =>
-            //   (optionA!.children as unknown as string)
-            //     .toLowerCase()
-            //     .localeCompare(
-            //       (optionB!.children as unknown as string).toLowerCase()
-            //     )
-            // }
             onSelect={handleClickOptionProduct}
+            value=""
           >
             {product.map((item: any) => (
+<<<<<<< HEAD
               <Select.Option
                 style={{ width: 600 }}
                 key={item.id}
                 value={item.id}
               >
-                {item.name + "---" + item.code + " : " + item.product.name}
+                {item.name}
               </Select.Option>
+=======
+              <Select style={{ width: "100%" }} key={item.id} value={item.id}>
+                <div>
+                  <div>{item.name}</div>
+                  <div>Tồn : {item.salePrice} | Có thể bán : 10</div>
+                </div>
+              </Select>
+>>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
             ))}
           </Select>
 
           <Radio.Group value={"checkbox"}></Radio.Group>
 
           <Table
+            rowKey="uid"
             columns={columns}
             dataSource={data}
             style={{ width: "100%" }}
           />
         </div>
+<<<<<<< HEAD
 
         <div className="select-inventory">
           <div>
@@ -242,16 +378,7 @@ const Search: React.FC = () => {
             dropdownStyle={{ height: 150, width: 300 }}
             placeholder="Search to Select"
             optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option!.children as unknown as string).includes(input)
-            }
-            filterSort={(optionA, optionB) =>
-              (optionA!.children as unknown as string)
-                .toLowerCase()
-                .localeCompare(
-                  (optionB!.children as unknown as string).toLowerCase()
-                )
-            }
+          
             onSelect={handleClickOptionSend}
           >
             {inventories.map((item: any) => (
@@ -271,16 +398,7 @@ const Search: React.FC = () => {
             dropdownStyle={{ height: 150, width: 300 }}
             placeholder="Search to Select"
             optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option!.children as unknown as string).includes(input)
-            }
-            filterSort={(optionA, optionB) =>
-              (optionA!.children as unknown as string)
-                .toLowerCase()
-                .localeCompare(
-                  (optionB!.children as unknown as string).toLowerCase()
-                )
-            }
+
             onSelect={handleClickOptionReceive}
           >
             {inventories.map((item: any) => (
@@ -302,6 +420,8 @@ const Search: React.FC = () => {
             ></textarea>
           </div>
         </div>
+=======
+>>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
       </div>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

@@ -14,5 +14,7 @@ ICategoryService {
 
     CategoriesDTO update(Integer id, CategoriesDTO categoriesDTO, BindingResult bindingResult);
 
-    void  delete(List<Integer> id);
+    void  deleteLíst(List<Integer> id);
+
+    void delete (Integer id);
 }

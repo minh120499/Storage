@@ -1,6 +1,8 @@
+<<<<<<< HEAD
+
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
 
 
 body {
@@ -26,15 +28,12 @@ code {
   object-fit: contain;
   width: 100%;
   height: 100%;
+}
+.ant-select-arrow {
+  right: 16px !important;
+  margin-top: -10px !important;
+}
 
-}
-.ant-select-arrow{
-  right: 16px!important;
-  margin-top: -10px!important;
-}
-input[type="file"] {
-  /*position: absolute; left: -99999rem*/
-}
 .custom-file-upload {
   padding: 15px 0;
   width: 100%;
