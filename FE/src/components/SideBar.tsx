@@ -3,8 +3,11 @@ import {
   CalendarOutlined,
   LinkOutlined,
   MailOutlined,
-  SettingOutlined,
+  RocketOutlined,
+  TeamOutlined,
+  ShopOutlined
 } from "@ant-design/icons";
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { Divider, Menu, Switch } from "antd";
 import type { MenuProps, MenuTheme } from "antd/es/menu";
 import React, { useState } from "react";
@@ -34,11 +37,11 @@ const items: MenuItem[] = [
     getItem("Danh sách sản phẩm", "/products"),
     getItem("Danh mục sản phẩm", "/categories"),
   ]),
-  getItem("Đơn vị vận chuyển", "/transport-companies", <AppstoreOutlined />),
+  getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
 
-  getItem("Nhà cung cấp", "/supplier", <CalendarOutlined />),
+  getItem("Nhà cung cấp", "/supplier", <ShopOutlined />),
 
-  getItem("Nhân viên", null, <LinkOutlined />, [
+  getItem("Nhân viên", null, <TeamOutlined />, [
     getItem("Danh sách", "/api/admin/employees"),
     getItem("Roles", "/api/admin/roles"),
   ]),

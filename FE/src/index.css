@@ -1,6 +1,6 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities; */
+@tailwind utilities;
 
 
 body {
@@ -53,3 +53,15 @@ input[type="file"] {
 /*  max-height: 550px;*/
 /*  overflow-y: auto;*/
 /*}*/
+main {
+  height: calc(100vh - 50px);
+  overflow: scroll;
+}
+main::-webkit-scrollbar {
+  width: 5px;
+}
+main::-webkit-scrollbar-thumb {
+  background: rgb(193 193 193);
+  border-radius: 10px;
+  border-radius: 10px;
+}
