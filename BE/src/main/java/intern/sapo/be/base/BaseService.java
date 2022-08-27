@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.validation.BindingResult;
-import intern.sapo.be.base.ResponseListDto;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,8 +32,8 @@ public abstract class BaseService<T> implements IBaseService<T> {
 
     @Override
     public T updateById(T entity, Integer entityId) {
-        Optional<T> optional = baseRepo.findById(entityId);
-        if (optional.isPresent()) {
+        T t  = baseRepo.findById(entityId).orElseThrow(() -> new IllegalArgumentException("id not found:" + entityId));
+        if (t != null) {
             return baseRepo.save(entity);
         } else {
             return null;

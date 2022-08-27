@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Form, Input, Space } from 'antd';
 import ToastCustom from "../../features/toast/Toast";
 import { Category } from "../../type/allType";
-import { createCategory } from "../../services/apiCategory";
+import { createCategory } from "../../api/apiCategory";
 import Button from "../../UI/Button"
 
 

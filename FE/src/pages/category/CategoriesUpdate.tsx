@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Form, Input, Space } from 'antd';
 import ToastCustom from "../../features/toast/Toast";
 import { Category } from "../../type/allType";
-import { updateCategory } from "../../services/apiCategory";
+import { updateCategory } from "../../api/apiCategory";
 import Button from "../../UI/Button"
 
 type props = {
@@ -46,7 +46,9 @@ export default function CategoryUpdate({ status, categoryProp }: props) {
     };
 
     const handleUpdate = (category: Category) => {
-        updateCategory(category, categoryProp.id);
+        updateCategory(category, categoryProp.id).catch(error=>{
+            console.log(error);
+        });
         ToastCustom.fire({
             icon: 'success',
             title: 'Sửa thành công!'

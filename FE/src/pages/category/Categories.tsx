@@ -5,7 +5,7 @@ import "../../styles/Category.css";
 import CategoryCreate from "./CategoryCreate";
 import CategoryUpdate from "./CategoriesUpdate";
 import { Category} from "../../type/allType"
-import { deleteCategory, deleteListCategory, getCategories } from "../../services/apiCategory";
+import { deleteCategory, deleteListCategory, getCategories } from "../../api/apiCategory";
 import { Link } from "react-router-dom";
 import { DeleteOutlined, DownOutlined } from '@ant-design/icons';
 import Swal from "sweetalert2";
