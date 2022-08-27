@@ -60,8 +60,8 @@ const DetailsProduct = () => {
                supplier && (
                    <div>
                        <h2 style={{margin:20}}>
-                           <Link to="/supplier/">
-                               <LeftOutlined /> Danh sách nhà cung cấp
+                           <Link to="/products">
+                               <LeftOutlined /> Danh sách sản phẩm
                             </Link>
                        </h2>
                        <div style={{background:"white",margin:20}}>

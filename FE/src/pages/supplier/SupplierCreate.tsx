@@ -78,7 +78,7 @@ const SupplierCreate = ({reload}: SupplierProps) => {
                     Thêm mới
                 </Space>
             </Button>
-            <Modal
+            {visible && <Modal
                 title="Thêm mới nhà cung cấp"
                 visible={visible}
                 // confirmLoading={confirmLoading}
@@ -165,7 +165,7 @@ const SupplierCreate = ({reload}: SupplierProps) => {
                         </Row>
                     </Form>
                 </div>
-            </Modal>
+            </Modal>}
 
         </div>
     )
