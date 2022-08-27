@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { Form, Input,Spin  } from "antd";
 import axios from "axios";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 import { ILoginData } from "../interface";
 import Button from '../UI/Button'
 

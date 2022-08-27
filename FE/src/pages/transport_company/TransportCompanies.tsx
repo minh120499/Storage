@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React, { useEffect, useState } from "react";
 import { TransportCompany } from "../../type/allType";
 import type { ColumnsType } from 'antd/es/table';
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { Table } from "antd";
 import TransoprtCompanyCreate from "./TransoprtCompanyCreate";
 
@@ -50,8 +51,8 @@ export default function TransportCompanies() {
         onChange: onSelectChange,
       };
 
-      let hasSelected = selectedRowKeys.length > 0;
-      let hasOneSelected = selectedRowKeys.length === 1;
+    //   let hasSelected = selectedRowKeys.length > 0;
+    //   let hasOneSelected = selectedRowKeys.length === 1;
 
     return (
         <>  <h1 className="ant-typography">Đơn vị vận chuyển</h1>

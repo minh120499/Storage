@@ -2,7 +2,7 @@ import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {ISupplier} from "../../services/customType";
 import {getSupplierById} from "../../services/api";
-import {Button, Col, Dropdown, Menu, MenuProps, Row, Space} from "antd";
+import {Col, Dropdown, Menu, MenuProps, Row, Space} from "antd";
 import Moment from "react-moment";
 import {DeleteOutlined, DownOutlined, InfoCircleOutlined,LeftOutlined} from "@ant-design/icons";
 import SupplierUpdate from "./SupplierUpdate";
@@ -16,6 +16,7 @@ const SupplierDetails = () => {
         getSupplierById(parseInt(id as string)).then(supplier => {
             setSupplier(supplier.data)
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
 

@@ -21,6 +21,7 @@ import Employee from "./components/Employee/Employee";
 import RoleManager from "./components/RoleManager/RoleManager";
 import DetailsProduct from "./pages/product/DetailsProduct";
 import { exact } from "prop-types";
+import Inventory from "./components/inventory/Inventory";
 const App: React.FC = () => {
   const router = useRoutes([
     {
@@ -35,6 +36,10 @@ const App: React.FC = () => {
         {
           path: "/home",
           element: <HomePage />,
+        },
+        {
+          path: "/stoker/storage",
+          element: <Inventory />,
         },
         {
           path: "/storage",

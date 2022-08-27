@@ -1,6 +1,7 @@
-import {Button, Col, Form, Input, Modal, Row, Select, Space} from "antd";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {Button, Col, Form, Input, Modal, Row, Select} from "antd";
 import {ISupplier, TypeSupplier} from "../../services/customType";
-import {createSupplier, updateSupplier} from "../../services/api";
+import {updateSupplier} from "../../services/api";
 import ToastCustom from "../../features/toast/Toast";
 import React, {useState} from "react";
 

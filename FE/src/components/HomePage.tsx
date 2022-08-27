@@ -4,5 +4,4 @@ import Tablee from "../UI/Table";
 
 export default function HomePage() {
   return <Tablee />;
-
 }

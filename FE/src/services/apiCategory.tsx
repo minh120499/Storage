@@ -1,7 +1,4 @@
 import axios from "axios";
-import React, { Key } from "react";
-import { idText } from "typescript";
-let configValue : string | undefined  = process.env.REACT_APP_API
 
 export const getCategories = async () => { 
     return await axios.get(`http://localhost:8080/api/categories`)

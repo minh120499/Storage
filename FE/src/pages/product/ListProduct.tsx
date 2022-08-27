@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Antd from 'antd'
 
 import * as Mui from '@mui/material'
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React, { useEffect, useLayoutEffect, useState } from "react";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ISupplier, TypeSupplier } from "../../services/customType";
 
 
@@ -12,10 +15,10 @@ import "../../styles/Table.css";
 
 import { IProductCount, IProductFilter } from '../../type/allType';
 import { countProductByFilter, getProducts } from '../../services/productServices';
-import ProductPagination from './ProductPagination';
+// import ProductPagination from './ProductPagination';
 import { DeleteOutlined, DownOutlined, PlusOutlined, SortDescendingOutlined, StopOutlined,DownloadOutlined } from '@ant-design/icons';
-import { Sort } from '@mui/icons-material';
-import { margin } from '@mui/system';
+// import { Sort } from '@mui/icons-material';
+// import { margin } from '@mui/system';
 const initFilter: IProductFilter = {
     key: '',
     isDelete: false,

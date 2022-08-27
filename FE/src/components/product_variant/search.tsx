@@ -1,5 +1,5 @@
 import { Select, Form, Popconfirm } from "antd";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { findProductById, getProducts } from "../../api/product_variant";
 import "./file.css";
 import { getAllInventory } from "../../api/inventory";
@@ -8,6 +8,7 @@ import type { ColumnsType } from "antd/es/table";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createExport } from "../../api/export";
 import { creatDetailExport } from "../../api/detail_export";
+
 import { Button } from "antd";
 import { DataType } from "../type/data_type";
 import { DeleteTwoTone } from "@ant-design/icons";
@@ -24,7 +25,7 @@ const Search: React.FC = () => {
     exportInventory: inventorySend,
     receiveInventory: inventoryReceive,
   };
-  const [status, setStatus] = useState(true);
+  // const [status, setStatus] = useState(true);
   const handleQuantity = (e: any) => {
     const quantity = e.target.value;
     const id = e.target.id * 1;
@@ -51,9 +52,7 @@ const Search: React.FC = () => {
       title: "Mã hàng",
       dataIndex: "getProductById",
       render: (text) => {
-
-        return <div>{text?.data.code}</div>;
-
+        return <div>{text?.data?.code}</div>;
       },
     },
     {
@@ -61,8 +60,7 @@ const Search: React.FC = () => {
       dataIndex: "getProductById",
       render: (text) => {
 
-        return <div>{text?.data.name}</div>;
-
+        return <div>{text?.data?.name}</div>;
       },
     },
     {
@@ -102,16 +100,13 @@ const Search: React.FC = () => {
   ];
 
 
-  useQuery(
-    ["ListProduct"],() => {
-      const searchProduct = async () => {
-        const getList = await getProducts();
-        setProduct(getList.data);
-      };
-      searchProduct();
-    }
-  );
-
+  useQuery(["ListProduct"], () => {
+    const searchProduct = async () => {
+      const getList = await getProducts();
+      setProduct(getList.data);
+    };
+    searchProduct();
+  });
 
   const handleClickOptionProduct = (e: any) => {
     const isFound = products.findIndex((element: any) => {
@@ -134,6 +129,7 @@ const Search: React.FC = () => {
       hanldeClick();
     } else {
       setProducts((prev: any) => {
+        // eslint-disable-next-line array-callback-return
         prev.map((prod: any) => {
           if (prod.getProductById.data.id === e) {
             prod.quantity = prod.quantity * 1 + 1;
@@ -147,11 +143,10 @@ const Search: React.FC = () => {
   /* ------------------ select inventory --------------- */
 
   const [inventories, setInventory] = useState([] as any);
-
   useQuery(["getListInventory"], () => {
     const getListInventories = async () => {
       const listInventory = await getAllInventory();
-      setInventory(listInventory.data.data);
+      setInventory(listInventory.data);
       console.log(listInventory.data);
     };
     getListInventories();
@@ -202,7 +197,7 @@ const Search: React.FC = () => {
                   optionFilterProp="children"
                   onSelect={handleClickOptionSend}
                 >
-                  {inventories.map((item: any) => (
+                  {inventories?.map((item: any) => (
                     <Select
                       style={{ width: "100%" }}
                       key={item.id}
@@ -273,7 +268,6 @@ const Search: React.FC = () => {
                   <div>Tồn : {item.salePrice} | Có thể bán : 10</div>
                 </div>
               </Select>
-
             ))}
           </Select>
 
@@ -287,6 +281,7 @@ const Search: React.FC = () => {
           />
         </div>
       </div>
+
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <Button type="primary" htmlType="submit" onClick={handleSubmit}>
           Submit

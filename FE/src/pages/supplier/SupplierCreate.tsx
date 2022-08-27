@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {Button, Col, Form, Input, Modal, Row, Select, Space} from 'antd';
+import {Col, Form, Input, Modal, Row, Select, Space} from 'antd';
 import "antd/dist/antd.css";
 import {TypeSupplier} from "../../services/customType";
-import {createSupplier, getDistrict, getProvince, getWard} from "../../services/api";
+import {createSupplier} from "../../services/api";
 import ToastCustom from "../../features/toast/Toast";
 import AddAddress from "../../components/AddAddress";
 import {PlusOutlined} from '@ant-design/icons';
+import Button from "../../UI/Button";
 
 type SupplierProps = {
     reload: () => void
@@ -64,6 +65,7 @@ const SupplierCreate = ({reload}: SupplierProps) => {
          form.setFieldsValue({
             address: fullAddress
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[fullAddress])
 
     return (
