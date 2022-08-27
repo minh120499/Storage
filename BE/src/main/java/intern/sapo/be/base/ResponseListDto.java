@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseListDto<T> {
+public  class ResponseListDto<T> {
     Integer page;
     Integer perPage;
     List<T> data;

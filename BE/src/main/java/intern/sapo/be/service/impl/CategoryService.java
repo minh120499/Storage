@@ -86,8 +86,7 @@ public class CategoryService implements ICategoryService {
         } else {
             if (category != null)
             {
-                categoriesDTO.setId(id)
-                ;
+                categoriesDTO.setId(id);
                 category = toEntity(categoriesDTO);
                 iCategoryRepo.save(category);
                 categoriesDTO = toDto(category);

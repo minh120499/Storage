@@ -23,7 +23,7 @@ public abstract class BaseController<T> {
     }
 
     @PutMapping("/{id}")
-    public T update(@RequestBody @Valid T request, @PathVariable Integer id) {
+    public T update(@RequestBody @Valid T request, @PathVariable(value = "id") Integer id) {
         return baseService.updateById(request, id);
     }
 
