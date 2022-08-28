@@ -32,7 +32,7 @@ public abstract class BaseService<T> implements IBaseService<T> {
 
     @Override
     public T updateById(T entity, Integer entityId) {
-        T t  = baseRepo.findById(entityId).orElseThrow(() -> new IllegalArgumentException("id not found:" + entityId));
+        T t  = baseRepo.findById(entityId).orElseThrow(() -> new IllegalArgumentException(("id not found: " + entityId ))) ;
         if (t != null) {
             return baseRepo.save(entity);
         } else {

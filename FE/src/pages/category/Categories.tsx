@@ -4,7 +4,7 @@ import type { ColumnsType } from 'antd/es/table';
 import "../../styles/Category.css";
 import CategoryCreate from "./CategoryCreate";
 import CategoryUpdate from "./CategoriesUpdate";
-import { Category} from "../../type/allType"
+import { Category } from "../../type/allType"
 import { deleteCategory, deleteListCategory, getCategories } from "../../api/apiCategory";
 import { Link } from "react-router-dom";
 import { DeleteOutlined, DownOutlined } from '@ant-design/icons';
@@ -36,7 +36,7 @@ export default function Categories() {
     onChange: onSelectChange,
   };
   let hasSelected = selectedRowKeys.length > 0;
-  
+
   const data: Category[] = response;
 
   const columns: ColumnsType<Category> = [
@@ -54,13 +54,13 @@ export default function Categories() {
     },
     {
       title: 'Thao tác',
-      
+
       render: (row) => {
         return (
           <>
-            <div style={{  display: "flex", alignItems: "center", width:"55px"}}>
-              <CategoryUpdate  status={() => setStatus(!status)} categoryProp={row} />
-              <Button style={{ background: "red", width: "55px", fontSize: '14px', marginLeft:"15px" }} onClick={() =>onDelete(row)}>Xoá</Button>
+            <div style={{ display: "flex", alignItems: "center", width: "55px" }}>
+              <CategoryUpdate status={() => setStatus(!status)} categoryProp={row} />
+              <Button style={{ background: "red", width: "55px", fontSize: '14px', marginLeft: "15px" }} onClick={() => onDelete(row)}>Xoá</Button>
             </div>
           </>
         )
@@ -69,29 +69,27 @@ export default function Categories() {
   ];
 
 
-  
+
 
   const handleMenuClick: MenuProps['onClick'] = (e: any) => {
     switch (e.key) {
-      case '1':
-        onDeleteList(selectedRowKeys);
-        break
+        case '1':
+          onDeleteList(selectedRowKeys);
     }
-  };
+};
 
   const menu = (
     <Menu
-      onClick={handleMenuClick}
-      items={[
-        {
-          label: <Link to="#">Xóa danh mục</Link>,
-          key: '1',
-          icon: <DeleteOutlined />,
-        },
-      ]}
+        onClick={handleMenuClick}
+        items={[
+            {
+                label: <Link to="#">Xóa nhà cung cấp</Link>,
+                key: '1',
+                icon: <DeleteOutlined/>,
+            },
+        ]}
     />
-  );
-
+);
 
   const onDeleteList = async (listId: React.Key[]) => {
     Swal.fire({
@@ -118,7 +116,7 @@ export default function Categories() {
     })
   }
 
-  const onDelete = (row:any) =>{
+  const onDelete = (row: any) => {
     Swal.fire({
       title: 'Bạn có chắc?',
       text: "Bạn không thể hồi phục lại dữ liệu!",
@@ -140,10 +138,10 @@ export default function Categories() {
         })
 
       }
-    })  
+    })
   }
 
-  
+
 
   return (
     <>
@@ -161,7 +159,7 @@ export default function Categories() {
           <span style={{ marginLeft: 8, marginRight: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} istems` : ''}</span>
         </div>
         <CategoryCreate status={() => setStatus(!status)} />
-        
+
       </div>
       <Table rowKey={'id'} rowSelection={rowSelection} columns={columns} dataSource={data} />
     </>
