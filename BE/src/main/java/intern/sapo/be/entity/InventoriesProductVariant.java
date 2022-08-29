@@ -24,9 +24,7 @@ public class InventoriesProductVariant {
     @JoinColumn(name = "product_variant_id", nullable = false)
     private ProductVariant productVariant;
 
-    @Column(name = "qantity", nullable = false)
-    private Integer qantity;
-
-
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
 
 }

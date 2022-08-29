@@ -2,9 +2,11 @@ package intern.sapo.be.controller;
 
 import intern.sapo.be.base.BaseController;
 import intern.sapo.be.base.IBaseService;
+import intern.sapo.be.dto.response.Inventory.InventoryResponse;
 import intern.sapo.be.entity.Category;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.service.IInventoryService;
+import intern.sapo.be.service.impl.InventoryServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.data.relational.core.sql.In;
 import org.springframework.validation.BindingResult;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequestMapping("/inventories")
 public class InventoryController {
     private final IInventoryService iInventoryService;
+    private final InventoryServiceImpl inventoryService;
 
 
     @GetMapping("")
@@ -44,4 +47,11 @@ public class InventoryController {
     {
         iInventoryService.delete(id);
     }
+
+    @GetMapping("/productvariant/{id}")
+    public InventoryResponse getAll(@PathVariable(value = "id") Integer id)
+    {
+        return inventoryService.getAll(id);
+    }
+
 }
