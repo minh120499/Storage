@@ -39,7 +39,11 @@ const items: MenuItem[] = [
   getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
 
   getItem("Nhà cung cấp", "/supplier", <ShopOutlined />),
-  getItem("Kho hàng", "/stoker/storage", <WarehouseIcon />),
+  getItem("Kho hàng", "", <WarehouseIcon />, [
+    getItem("Danh sách", "/stocker/inventories"),
+    getItem("Quản lý", "/stocker/storage"),
+
+  ]),
 
   getItem("Nhân viên", null, <TeamOutlined />, [
     getItem("Danh sách", "/api/admin/employees"),

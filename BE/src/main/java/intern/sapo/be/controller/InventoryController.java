@@ -18,41 +18,39 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/inventories")
+@CrossOrigin("*")
 public class InventoryController {
-    private final IInventoryService iInventoryService;
+	private final IInventoryService iInventoryService;
     private final InventoryServiceImpl inventoryService;
 
 
-    @GetMapping("")
-    public List<Inventory> getAll()
-    {
-        return iInventoryService.findAll();
-    }
+	@GetMapping("")
+	public List<Inventory> getAll() {
+		return iInventoryService.findAll();
+	}
 
-    @PostMapping("")
-    public Inventory createInventory(@RequestBody @Valid Inventory inventory, BindingResult bindingResult)
-    {
-        return iInventoryService.create(inventory,bindingResult);
-    }
+	@PostMapping("")
+	public Inventory createInventory(@RequestBody @Valid Inventory inventory, BindingResult bindingResult) {
+		return iInventoryService.create(inventory, bindingResult);
+	}
 
 
-    @GetMapping("/{id}")
-    public Inventory getById(@PathVariable(value = "id") Integer id)
-    {
-        return iInventoryService.findById(id);
-    }
-    @PutMapping("/{id}")
+	@GetMapping("/{id}")
+	public Inventory getById(@PathVariable(value = "id") Integer id) {
+		return iInventoryService.findById(id);
+	}
 
-    public Inventory update (@RequestBody @Valid Inventory inventory, BindingResult bindingResult,
-                            @PathVariable(value = "id") Integer id){
-        return iInventoryService.update(id,inventory,bindingResult);
-    }
+	@PutMapping("/{id}")
 
-    @DeleteMapping("/{id}")
-    public void deleteInventory (@PathVariable(value = "id") Integer id)
-    {
-        iInventoryService.delete(id);
-    }
+	public Inventory update(@RequestBody @Valid Inventory inventory, BindingResult bindingResult,
+	                        @PathVariable(value = "id") Integer id) {
+		return iInventoryService.update(id, inventory, bindingResult);
+	}
+
+	@DeleteMapping("/{id}")
+	public void deleteInventory(@PathVariable(value = "id") Integer id) {
+		iInventoryService.delete(id);
+	}
 
     @GetMapping("/productvariant/{id}")
     public InventoryResponse getAll(@PathVariable(value = "id") Integer id)
