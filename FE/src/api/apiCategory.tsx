@@ -1,7 +1,11 @@
 import axios from "axios";
 
-export const getCategories = async () => { 
+export const getCategoriesByPage = async () => { 
     return await axios.get(`http://localhost:8080/api/categories`)
+}
+
+export const getCategories = async () => { 
+    return await axios.get(`http://localhost:8080/api/categories/findall`)
 }
 
 export const createCategory = async (category:object)=>{

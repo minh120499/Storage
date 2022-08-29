@@ -6,3 +6,11 @@ export const getAllInventory = async () => {
 export const findInventoryById = async (id:number) => {
     return await axios.get(`http://localhost:8080/inventories/${id}`)
 }
+
+export const createInventory = async (inventory:object) => {
+    return await axios.post(`http://localhost:8080/inventories`,inventory)    
+}
+
+export const updateInvetory = async (inventory:object, id:number) => {
+    return await axios.put(`http://localhost:8080/inventories/${id}`, inventory)
+}
