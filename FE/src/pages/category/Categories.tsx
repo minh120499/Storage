@@ -53,15 +53,13 @@ export default function Categories() {
       dataIndex: 'description',
     },
     {
-      title: 'Thao tác',
-
       render: (row) => {
         return (
           <>
-            <div style={{ display: "flex", alignItems: "center", width: "55px" }}>
+            <Space>
               <CategoryUpdate status={() => setStatus(!status)} categoryProp={row} />
-              <Button style={{ background: "red", width: "55px", fontSize: '14px', marginLeft: "15px" }} onClick={() => onDelete(row)}>Xoá</Button>
-            </div>
+              <DeleteOutlined onClick={() => onDelete(row)}>Xoá</DeleteOutlined>
+            </Space>
           </>
         )
       }
@@ -73,23 +71,23 @@ export default function Categories() {
 
   const handleMenuClick: MenuProps['onClick'] = (e: any) => {
     switch (e.key) {
-        case '1':
-          onDeleteList(selectedRowKeys);
+      case '1':
+        onDeleteList(selectedRowKeys);
     }
-};
+  };
 
   const menu = (
     <Menu
-        onClick={handleMenuClick}
-        items={[
-            {
-                label: <Link to="#">Xóa nhà cung cấp</Link>,
-                key: '1',
-                icon: <DeleteOutlined/>,
-            },
-        ]}
+      onClick={handleMenuClick}
+      items={[
+        {
+          label: <Link to="#">Xóa danh mục</Link>,
+          key: '1',
+          icon: <DeleteOutlined />,
+        },
+      ]}
     />
-);
+  );
 
   const onDeleteList = async (listId: React.Key[]) => {
     Swal.fire({
@@ -149,7 +147,7 @@ export default function Categories() {
       <div style={{ marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Dropdown overlay={menu} disabled={!hasSelected}>
-            <Button style={{ width: "180px", fontSize: '14px' }} type="primary">
+            <Button>
               <Space>
                 Thao tác
                 <DownOutlined />
