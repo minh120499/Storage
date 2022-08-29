@@ -38,3 +38,6 @@ export const getProductVariant = async (pageNumber:number) => {
 export const getCountTotalProductVariant = async () => {
     return await axios.get(`http://localhost:8080/api/product-variants/count-total`)
 }
+export const createImport = async (im: object) => {
+    return await axios.post(`http://localhost:8080/api/imports/`,im)
+}

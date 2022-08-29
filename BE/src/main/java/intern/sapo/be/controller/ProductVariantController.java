@@ -6,7 +6,10 @@ import intern.sapo.be.dto.request.Product.ProductVariantDTO;
 import intern.sapo.be.entity.ProductVariant;
 import intern.sapo.be.service.IProductVariantService;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -27,10 +30,17 @@ public class ProductVariantController extends BaseController<ProductVariant> {
     public List<ProductVariant> findProductByName(@RequestParam(defaultValue = "") String name) {
         return productVariantService.findProductByName(name);
     }
+
     @GetMapping("/findProductVariant")
     public List<ProductVariantDTO> findProductVariant(@RequestParam Integer pageNumber, @RequestParam Integer pageSize) {
-        return productVariantService.findAllProductVariantDTO(pageNumber,pageSize);
+        return productVariantService.findAllProductVariantDTO(pageNumber, pageSize);
     }
+
+    @GetMapping("/findAllProductVariant")
+    public List<ProductVariantDTO> findAllProductVariant() {
+        return productVariantService.findAllProductVariantDTO();
+    }
+
     @GetMapping("/count-total")
     public Integer count() {
         return productVariantService.countTotalPage();

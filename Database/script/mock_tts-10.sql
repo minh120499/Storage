@@ -411,3 +411,76 @@ drop table products_count;
 
 
 END
+
+alter table mock_tts_10.imports
+drop foreign key imports_ibfk_3;
+
+
+alter table mock_tts_10.imports
+    modify transport_company_id int null;
+
+alter table mock_tts_10.imports
+    drop foreign key imports_ibfk_4;
+
+alter table mock_tts_10.imports
+    drop column status_id;
+
+alter table mock_tts_10.imports
+    drop column create_at;
+
+alter table mock_tts_10.imports
+    drop column update_at;
+
+alter table mock_tts_10.imports
+    drop column is_delete;
+
+alter table mock_tts_10.imports
+    add total_price  decimal(20,2) not null ;
+
+alter table mock_tts_10.imports
+    add code  nvarchar(50) unique ;
+
+alter table mock_tts_10.imports
+    add note nvarchar(250) null;
+
+drop index transport_company_id on mock_tts_10.imports;
+
+alter table mock_tts_10.imports
+    drop foreign key imports_ibfk_1;
+
+alter table mock_tts_10.imports
+    drop column contact_id;
+
+alter table mock_tts_10.details_imports
+    add total_price  decimal(20,2) not null ;
+
+
+CREATE TABLE import_seqId
+(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+
+DELIMITER $$
+CREATE TRIGGER tg_import_insert_code
+    BEFORE INSERT ON imports
+    FOR EACH ROW
+    IF NEW.code is null or NEW.code = '' THEN
+        begin
+            INSERT INTO import_seqId VALUES (NULL);
+            SET NEW.code = CONCAT('PON', LPAD(LAST_INSERT_ID(), 5, '0'));
+        end;
+    end if $$
+DELIMITER ;
+
+
+
+alter table mock_tts_10.details_imports
+    add product_variant_code varchar(100) not null;
+
+alter table mock_tts_10.details_imports
+    add constraint details_imports_ibkf_3
+        foreign key (product_variant_code) references mock_tts_10.product_variants (code);
+
+alter table mock_tts_10.details_imports
+    modify import_id int null;
+

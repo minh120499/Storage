@@ -1,9 +1,7 @@
 package intern.sapo.be.service;
 
-import intern.sapo.be.base.IBaseService;
 import intern.sapo.be.entity.Supplier;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 

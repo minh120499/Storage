@@ -7,9 +7,6 @@ import intern.sapo.be.entity.ProductVariant;
 import intern.sapo.be.repository.IProductVariantRepo;
 import intern.sapo.be.repository.ProductVariantsRepository;
 import intern.sapo.be.service.IProductVariantService;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -48,8 +45,14 @@ public class ProductVariantServiceImpl extends BaseService<ProductVariant> imple
     @Override
     public List<ProductVariantDTO> findAllProductVariantDTO(Integer pageNumber, Integer pageSize) {
         Query query = entityManager.createNamedQuery("getFeaturedProductDTO")
-                .setFirstResult((pageNumber-1) * pageSize).setMaxResults(pageSize);
+                .setFirstResult((pageNumber - 1) * pageSize).setMaxResults(pageSize);
 
+        return (List<ProductVariantDTO>) query.getResultList();
+    }
+
+    @Override
+    public List<ProductVariantDTO> findAllProductVariantDTO() {
+        Query query = entityManager.createNamedQuery("getFeaturedProductDTO");
         return (List<ProductVariantDTO>) query.getResultList();
     }
 

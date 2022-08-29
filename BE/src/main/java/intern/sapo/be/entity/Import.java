@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import javax.validation.constraints.Size;
+import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "imports")
@@ -16,29 +18,22 @@ public class Import {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "contact_id", nullable = false)
-    private Contact contact;
+    private Integer transport_company_id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "transport_company_id", nullable = false)
-    private TransportCompany transportCompany;
+    @JoinColumn(name = "account_id", insertable = false, updatable = false, nullable = false)
+    private Integer accountId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "status_id", nullable = false)
-    private Status status;
+    @Column(name = "total_price", nullable = false, precision = 20, scale = 2, columnDefinition = " default (0)")
+    private BigDecimal totalPrice;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    @Column(name = "note", nullable = false, length = 250)
+    private String note;
 
-    @Column(name = "create_at", nullable = false)
-    private Timestamp createAt;
+    @Column(name = "code", nullable = false, length = 50)
+    @Size(max = 100, message = "code can not be more then 50 character")
+    private String code;
 
-    @Column(name = "update_at")
-    private Timestamp updateAt;
 
-    @Column(name = "is_delete", nullable = false)
-    private Boolean isDelete = false;
-
+    @OneToMany(mappedBy = "anImport", cascade = CascadeType.ALL)
+    private List<DetailsImport> detailsImports;
 }
