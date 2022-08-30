@@ -1,12 +1,5 @@
 package intern.sapo.be.base;
 
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.validation.BindingResult;
-
-
-import java.util.List;
 import java.util.Optional;
 
 public interface IBaseService<T> {
@@ -23,5 +16,5 @@ public interface IBaseService<T> {
 
     void deleteById(Integer entityId);
 
-    List<T> getList(Integer page, Integer perPage, String sort, String sortBy);
+    ResponseListDto<T> getList(Integer page, Integer perPage, String sort, String sortBy);
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from "axios";
 import React from "react";
 let configValue : string | undefined  = process.env.REACT_APP_API

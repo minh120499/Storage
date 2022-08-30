@@ -1,18 +1,21 @@
 package intern.sapo.be.service.impl;
-
+import intern.sapo.be.dto.request.CategoriesDTO;
 import intern.sapo.be.entity.Category;
 import intern.sapo.be.repository.ICategoryRepo;
 import intern.sapo.be.security.jwt.util.Utils;
 import intern.sapo.be.service.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -27,12 +30,12 @@ public class CategoryService implements ICategoryService {
         if (sortDir != null) {
             Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
             return iCategoryRepo.findAll(PageRequest.of(pageNumber - 1, limit, sort));
-        } else
-            return iCategoryRepo.findAll(PageRequest.of(pageNumber - 1, limit));
+        }else
+        return iCategoryRepo.findAll(PageRequest.of(pageNumber - 1, limit));
     }
 
     @Override
-    public Category findById(Integer id) {
+    public  Category findById(Integer id) {
         Category category = iCategoryRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found: " + id));
         return category;
     }
@@ -46,7 +49,7 @@ public class CategoryService implements ICategoryService {
     public Category create(Category category, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw utils.invalidInputException(bindingResult);
-        } else {
+        }else {
             return iCategoryRepo.save(category);
         }
     }
@@ -66,7 +69,7 @@ public class CategoryService implements ICategoryService {
     @Override
     @Transactional
     public void deleteLíst(List<Integer> id) {
-        for (Integer item : id) {
+        for (Integer item:  id) {
             iCategoryRepo.delete(item.intValue());
         }
     }

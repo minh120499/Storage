@@ -68,3 +68,16 @@ input[type="file"] {
   border-radius: 6%;
   padding: 5px;
 }
+
+main {
+  height: calc(100vh - 50px);
+  overflow: scroll;
+}
+main::-webkit-scrollbar {
+  width: 5px;
+}
+main::-webkit-scrollbar-thumb {
+  background: rgb(193 193 193);
+  border-radius: 10px;
+  border-radius: 10px;
+}

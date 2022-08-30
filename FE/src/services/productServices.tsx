@@ -1,5 +1,3 @@
-import { IProductFilter } from "../type/allType";
-
 const baseUrl = 'http://localhost:8080/api/'
 
 

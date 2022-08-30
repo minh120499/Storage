@@ -1,5 +1,9 @@
 package intern.sapo.be.controller;
 
+import intern.sapo.be.base.BaseController;
+import intern.sapo.be.base.IBaseService;
+import intern.sapo.be.dto.response.Inventory.InventoryResponse;
+import intern.sapo.be.entity.Category;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.service.IInventoryService;
 import lombok.AllArgsConstructor;
@@ -8,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+
 
 @RestController
 @AllArgsConstructor
@@ -20,6 +25,11 @@ public class InventoryController {
     @GetMapping("")
     public List<Inventory> getAll() {
         return iInventoryService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Inventory getById(@PathVariable(value = "id") Integer id) {
+        return iInventoryService.findById(id);
     }
 
     @PostMapping("")
@@ -38,4 +48,10 @@ public class InventoryController {
     public void deleteInventory(@PathVariable(value = "id") Integer id) {
         iInventoryService.delete(id);
     }
+    @GetMapping("/productvariant/{id}")
+    public InventoryResponse getAll(@PathVariable(value = "id") Integer id)
+    {
+        return inventoryService.getAll(id);
+    }
+
 }

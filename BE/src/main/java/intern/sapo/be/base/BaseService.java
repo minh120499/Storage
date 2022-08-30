@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.validation.BindingResult;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -35,8 +32,8 @@ public abstract class BaseService<T> implements IBaseService<T> {
 
     @Override
     public T updateById(T entity, Integer entityId) {
-        Optional<T> optional = baseRepo.findById(entityId);
-        if (optional.isPresent()) {
+        T t  = baseRepo.findById(entityId).orElseThrow(() -> new IllegalArgumentException(("id not found: " + entityId ))) ;
+        if (t != null) {
             return baseRepo.save(entity);
         } else {
             return null;
@@ -54,20 +51,24 @@ public abstract class BaseService<T> implements IBaseService<T> {
     }
 
     @Override
-    public List<T> getList(Integer page, Integer perPage, String sort, String sortBy) {
-
+    public ResponseListDto<T> getList(Integer page, Integer perPage, String sort, String sortBy) {
+        Page<T> pageList;
         List<T> data;
         if (sort == null) {
-            data = page == null && perPage == null
-                    ?
-                    baseRepo.findAll()
-                    :
-                    baseRepo.findAll(PageRequest.of(page - 1, perPage)).getContent();
-
+                pageList = baseRepo.findAll(PageRequest.of(page - 1, perPage));
         } else {
             Sort sortList = sort.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-            data = baseRepo.findAll(PageRequest.of(page - 1, perPage, sortList)).getContent();
+            pageList = baseRepo.findAll(PageRequest.of(page - 1, perPage, sortList));
         }
-        return data;
+        data = pageList.getContent();
+        long total = pageList.getTotalElements();
+        ResponseListDto<T> dto = new ResponseListDto<>();
+        dto.setData(data);
+        dto.setPage(page);
+        dto.setPerPage(perPage);
+        dto.setTotal(total);
+        dto.setNumberPage((total % perPage == 0) ? (total / perPage) : (total / perPage + 1));
+        dto.setBegin(page - 2 <= 1 ? 1 : page - 1);
+        return dto;
     }
 }

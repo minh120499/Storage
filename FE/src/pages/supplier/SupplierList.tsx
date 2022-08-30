@@ -7,7 +7,7 @@ import {deleteSupplier, getSuppliers, updateStatusSupplier} from "../../services
 import {SupplierColumn} from "../../components/Datatablesource";
 import {Link, useNavigate} from "react-router-dom";
 import "../../styles/Table.css";
-import {DeleteOutlined, DownOutlined, InfoCircleOutlined, StopOutlined, UploadOutlined} from '@ant-design/icons';
+import {DeleteOutlined, DownOutlined, InfoCircleOutlined, StopOutlined} from '@ant-design/icons';
 import ToastCustom from "../../features/toast/Toast";
 import Swal from "sweetalert2";
 import SupplierCreate from "./SupplierCreate";
@@ -111,7 +111,7 @@ const SupplierList = () => {
         })
     }
 
-    const [visible, setVisible] = useState(false);
+    // const [visible, setVisible] = useState(false);
     const menu = (
         <Menu
             onClick={handleMenuClick}
