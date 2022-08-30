@@ -1,6 +1,5 @@
-import Search from "./product_variant/search";
-// import SelectInventory from "./inventory/select_inventory";
-import "./product_variant/file.css";
+import "./stock_transfers/file.css";
+import Create from "./stock_transfers/create";
 
 export default function Storage() {
   return (
@@ -8,10 +7,9 @@ export default function Storage() {
       <div>
         <h2>Tạo phiếu chuyển hàng</h2>
       </div>
-     
-        <Search />
-      
-      
+
+      <Create />
+
       {/* <SelectInventory /> */}
     </div>
   );

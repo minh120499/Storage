@@ -21,17 +21,17 @@ public class Export implements Serializable {
     @Column(name = "receive_inventory_id", nullable = false)
     private Integer receiveInventory;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "status_id", nullable = false)
-    private Status status;
+    // @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @Column(name = "status_id", nullable = false)
+    private Integer status;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "transport_company_id", nullable = false)
-    private TransportCompany transportCompany;
+    // @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @Column(name = "transport_company_id", nullable = false)
+    private Integer transportCompany;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    // @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @Column(name = "account_id", nullable = false)
+    private Integer account;
 
     @Column(name = "create_at", nullable = false)
     private Timestamp createAt;

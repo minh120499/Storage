@@ -41,7 +41,7 @@ public abstract class BaseController<T> {
     }
 
     @GetMapping("{id}")
-    public Optional<T> findById(@PathVariable Integer id) {
+    public Optional<T> findById(@PathVariable(value = "id") Integer id) {
         return baseService.findById(id);
     }
 }
