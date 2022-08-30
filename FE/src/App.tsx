@@ -15,7 +15,7 @@ import HomePage from "./components/HomePage";
 import EmployeeDetails from "./components/Employee/Details";
 import Employee from "./components/Employee/Employee";
 import RoleManager from "./components/RoleManager/RoleManager";
-import DetailsProduct from "./pages/product/DetailsProduct";
+// import DetailsProduct from "./pages/product/DetailsProduct";
 import { exact } from "prop-types";
 import CreateImport from "./pages/Import/CreateImport";
 
@@ -78,7 +78,7 @@ const App: React.FC = () => {
 
           children: [
             { index: true, element: <ListProduct /> },
-            { path: "/products/:id", element: <DetailsProduct /> },
+            // { path: "/products/:id", element: <DetailsProduct /> },
           ],
         },
         {
