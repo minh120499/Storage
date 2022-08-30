@@ -129,6 +129,7 @@ const InventoryList = () => {
         Swal.fire("Đã xóa!", "Đã xóa thành công", "success");
       }
     });
+    setIsModalVisible(false)
   };
   return (
     <>

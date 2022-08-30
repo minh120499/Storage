@@ -1,13 +1,9 @@
 package intern.sapo.be.service.impl;
 import intern.sapo.be.dto.request.ProductVariantsDTO;
 import intern.sapo.be.dto.response.Inventory.InventoryResponse;
-import intern.sapo.be.dto.request.ProductVariantsDTO;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.entity.ProductVariant;
-import intern.sapo.be.entity.ProductVariant;
 import intern.sapo.be.repository.InventoryRepository;
-import intern.sapo.be.repository.ProductVariantsRepository;
-import intern.sapo.be.security.jwt.util.Utils;
 import intern.sapo.be.repository.ProductVariantsRepository;
 import intern.sapo.be.security.jwt.util.Utils;
 import intern.sapo.be.service.IInventoryService;
@@ -15,11 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-
-import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+
 
 
 @RequiredArgsConstructor
@@ -31,8 +26,7 @@ public class InventoryServiceImpl implements IInventoryService {
 
     private final ProductVariantsRepository productVariantsRepository;
 
-    public ProductVariantsDTO toDto (ProductVariant productVariant)
-    {
+    public ProductVariantsDTO toDto(ProductVariant productVariant) {
         ProductVariantsDTO productVariantsDTO = new ProductVariantsDTO();
         productVariantsDTO.setId(productVariant.getId());
         productVariantsDTO.setCode(productVariant.getCode());
@@ -92,20 +86,28 @@ public class InventoryServiceImpl implements IInventoryService {
         inventoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found: " + id));
         inventoryRepository.deleteById(id);
     }
-    public InventoryResponse getAll(Integer id)
-    {
-        List<ProductVariantsDTO> results = new ArrayList<>();
+
+    @Override
+    public InventoryResponse getProductVariantByInventoryId(Integer id) {
         InventoryResponse inventoryResponse = new InventoryResponse();
+        List<ProductVariantsDTO> results = new ArrayList<>();
+        Integer totalProductVariant = 0;
         Inventory inventory = inventoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found:" + id));
-        inventoryResponse.setInventory(inventory);
-        List<Integer> listId = inventoryRepository.listId(id);
-        List<ProductVariant> productVariants = productVariantsRepository.findAllById(listId);
-        for (ProductVariant item: productVariants) {
-            ProductVariantsDTO productVariantsDTO = toDto(item);
-            productVariantsDTO.setQuantity(inventoryRepository.Quantity(id,item.getId()));
-            results.add(productVariantsDTO);
+        try {
+            inventoryResponse.setInventory(inventory);
+            List<Integer> listId = inventoryRepository.listId(id);
+            List<ProductVariant> productVariants = productVariantsRepository.findAllById(listId);
+            for (ProductVariant item : productVariants) {
+                ProductVariantsDTO productVariantsDTO = toDto(item);
+                productVariantsDTO.setQuantity(inventoryRepository.Quantity(id, item.getId()));
+                results.add(productVariantsDTO);
+                totalProductVariant = totalProductVariant + inventoryRepository.Quantity(id, item.getId());
+            }
+            inventoryResponse.setProductVariantsDTOS(results);
+            inventoryResponse.setTotalProductVariant(totalProductVariant);
+        } catch (Exception e) {
+            System.out.println("error" + e.getMessage());
         }
-        inventoryResponse.setProductVariantsDTOS(results);
         return inventoryResponse;
     }
 }

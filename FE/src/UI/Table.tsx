@@ -18,7 +18,7 @@ const T = (props: any) => {
   if (query.isError) {
     // console.log(query.error);
     // Swal.fire({
-    //   icon: "error",
+    //in   icon: "error",
     //   title: "Oops...",
     //   text: "Fails",
     // });

@@ -5,7 +5,7 @@ import {IProductVariant} from "../../services/customType";
 import {createImport, getCountTotalProductVariant, getProductVariant} from "../../services/api";
 import {BackwardOutlined, DeleteOutlined, FastForwardOutlined} from '@ant-design/icons';
 import {ColumnProps} from "antd/es/table";
-import {default as NumberFormat} from 'react-number-format';
+import {default as NumberFormat} from "react-number-format";
 import {getAllInventory} from "../../api/inventory";
 import ToastCustom from "../../features/toast/Toast";
 
