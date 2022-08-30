@@ -15,6 +15,7 @@ import { DeleteOutlined, DownOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import ToastCustom from "../../features/toast/Toast";
 import Buttonn from "../../UI/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Categories() {
   const [response, setResponse] = useState<Category[]>([]);
@@ -64,12 +65,16 @@ export default function Categories() {
 
       render: (row) => {
         return (
-          <>
-            <div style={{ display: "flex", alignItems: "center", width: "55px" }}>
-              <CategoryUpdate status={() => setStatus(!status)} categoryProp={row} />
-              <Button style={{ background: "red", width: "55px", fontSize: '14px', marginLeft: "15px" }} onClick={() => onDelete(row)}>Xoá</Button>
-            </div>
-          </>
+          <Space>
+            <CategoryUpdate
+              status={() => setStatus(!status)}
+              categoryProp={row}
+            />
+            <DeleteIcon
+              className="text-red-500"
+              onClick={() => onDelete(row)}
+            />
+          </Space>
         );
       },
     },
@@ -154,9 +159,9 @@ export default function Categories() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Dropdown overlay={menu} disabled={!hasSelected}>
-            <Button type="primary" style={{width: "180px", fontSize: '14px'}}>
-                Thao tác
-                <DownOutlined />
+            <Button type="primary" style={{ width: "180px", fontSize: "14px" }}>
+              Thao tác
+              <DownOutlined />
             </Button>
           </Dropdown>
           <span style={{ marginLeft: 8, marginRight: 8 }}>
