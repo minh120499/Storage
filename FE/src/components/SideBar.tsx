@@ -58,18 +58,7 @@ const items: MenuItem[] = [
 ];
 
 const SideBar: React.FC = () => {
-  const [mode, setMode] = useState<"vertical" | "inline">("inline");
-  const [theme, setTheme] = useState<MenuTheme>("dark");
-
   const navigate = useNavigate();
-
-  const changeMode = (value: boolean) => {
-    setMode(value ? "vertical" : "inline");
-  };
-
-  const changeTheme = (value: boolean) => {
-    setTheme(value ? "dark" : "light");
-  };
 
   return (
     <div className="side-bar">
@@ -83,18 +72,10 @@ const SideBar: React.FC = () => {
         </a>
       </div>
       <div className="side-bar_menu">
-        {/* <Switch onChange={changeMode} /> Change Mode */}
-        {/* <Divider type="vertical" />
-            <Switch onChange={changeTheme} /> Change Style */}
-        {/* <br />
-            <br /> */}
-
         <Menu
           style={{ width: 256, height: "100%" }}
-          // defaultSelectedKeys={["1"]}
-          // defaultOpenKeys={["sub1"]}
-          mode={mode}
-          theme={theme}
+          mode="inline"
+          theme="dark"
           items={items}
           onClick={(e) => {
             navigate(e.key);
