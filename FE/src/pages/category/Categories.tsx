@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dropdown, Menu, MenuProps, Space, Table } from "antd";
+import { Dropdown, Menu, MenuProps, Space, Table, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import "../../styles/Category.css";
 import CategoryCreate from "./CategoryCreate";
@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { DeleteOutlined, DownOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import ToastCustom from "../../features/toast/Toast";
-import Button from "../../UI/Button";
+import Buttonn from "../../UI/Button";
 
 export default function Categories() {
   const [response, setResponse] = useState<Category[]>([]);
@@ -67,7 +67,7 @@ export default function Categories() {
           <>
             <div style={{ display: "flex", alignItems: "center", width: "55px" }}>
               <CategoryUpdate status={() => setStatus(!status)} categoryProp={row} />
-              <Button style={{ background: "red", width: "55px", fontSize: '14px', marginLeft: "15px" }} onClick={() => onDelete(row)}>Xoá</Button>
+              <Buttonn style={{ background: "red", width: "55px", fontSize: '14px', marginLeft: "15px" }} onClick={() => onDelete(row)}>Xoá</Buttonn>
             </div>
           </>
         )
@@ -154,11 +154,9 @@ export default function Categories() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Dropdown overlay={menu} disabled={!hasSelected}>
-            <Button>
-              <Space>
+            <Button type="primary" style={{width: "180px", fontSize: '14px'}}>
                 Thao tác
                 <DownOutlined />
-              </Space>
             </Button>
           </Dropdown>
           <span style={{ marginLeft: 8, marginRight: 8 }}>
