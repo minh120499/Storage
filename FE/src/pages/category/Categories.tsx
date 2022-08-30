@@ -60,38 +60,38 @@ export default function Categories() {
       dataIndex: "description",
     },
     {
-      title: 'Thao tác',
+      title: "Thao tác",
 
       render: (row) => {
         return (
           <>
             <div style={{ display: "flex", alignItems: "center", width: "55px" }}>
               <CategoryUpdate status={() => setStatus(!status)} categoryProp={row} />
-              <Buttonn style={{ background: "red", width: "55px", fontSize: '14px', marginLeft: "15px" }} onClick={() => onDelete(row)}>Xoá</Buttonn>
+              <Button style={{ background: "red", width: "55px", fontSize: '14px', marginLeft: "15px" }} onClick={() => onDelete(row)}>Xoá</Button>
             </div>
           </>
-        )
-      }
-    }
+        );
+      },
+    },
   ];
 
   const handleMenuClick: MenuProps["onClick"] = (e: any) => {
     switch (e.key) {
-        case '1':
-          onDeleteList(selectedRowKeys);
+      case "1":
+        onDeleteList(selectedRowKeys);
     }
   };
 
   const menu = (
     <Menu
-        onClick={handleMenuClick}
-        items={[
-            {
-                label: <Link to="#">Xóa nhà cung cấp</Link>,
-                key: '1',
-                icon: <DeleteOutlined/>,
-            },
-        ]}
+      onClick={handleMenuClick}
+      items={[
+        {
+          label: <Link to="#">Xóa nhà cung cấp</Link>,
+          key: "1",
+          icon: <DeleteOutlined />,
+        },
+      ]}
     />
   );
 
@@ -160,7 +160,7 @@ export default function Categories() {
             </Button>
           </Dropdown>
           <span style={{ marginLeft: 8, marginRight: 8 }}>
-            {hasSelected ? `Selected ${selectedRowKeys.length} istems` : ""}
+            {hasSelected ? `Đã chọn ${selectedRowKeys.length} danh mục` : ""}
           </span>
         </div>
         <CategoryCreate status={() => setStatus(!status)} />

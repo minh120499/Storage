@@ -29,6 +29,8 @@ function getItem(
 }
 
 const items: MenuItem[] = [
+  getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
+
   getItem("Quản lý sản phẩm", "sub1", <AppstoreOutlined />, [
     getItem("Thêm sản phẩm", "/productsAdd"),
     getItem("Danh sách sản phẩm", "/products"),
@@ -40,14 +42,13 @@ const items: MenuItem[] = [
     getItem("Nhập hàng", "/purchase_orders/create"),
     // getItem("Chuyển hàng", "/321"),
   ]),
-  getItem("Đơn vị vận chuyển", "/transport-companies", <AppstoreOutlined />),
-  getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
+  // getItem("Đơn vị vận chuyển", "/transport-companies", <AppstoreOutlined />),
+  // getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
 
   getItem("Nhà cung cấp", "/supplier", <ShopOutlined />),
   getItem("Kho hàng", "", <WarehouseIcon />, [
     getItem("Danh sách", "/stocker/inventories"),
-    getItem("Quản lý", "/stocker/storage"),
-
+    getItem("Quản lý", "/stocker/manager"),
   ]),
 
   getItem("Nhân viên", null, <TeamOutlined />, [
@@ -90,8 +91,8 @@ const SideBar: React.FC = () => {
 
         <Menu
           style={{ width: 256, height: "100%" }}
-          defaultSelectedKeys={["1"]}
-          defaultOpenKeys={["sub1"]}
+          // defaultSelectedKeys={["1"]}
+          // defaultOpenKeys={["sub1"]}
           mode={mode}
           theme={theme}
           items={items}

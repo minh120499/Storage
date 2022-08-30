@@ -54,7 +54,9 @@ const InventoryList = () => {
           >
             Sửa
           </Button>
-          <Button onClick={() => deleteInvetoryHandler(record)}>Xóa</Button>
+          <Button mode="cancel" onClick={() => deleteInvetoryHandler(record)}>
+            Xóa
+          </Button>
         </Space>
       ),
     },
@@ -93,7 +95,7 @@ const InventoryList = () => {
       inventoriesUpdate.mutate(payload);
     }
 
-    // setIsModalVisible(false);
+    setIsModalVisible(false);
   };
 
   const handleCancel = () => {
@@ -122,7 +124,7 @@ const InventoryList = () => {
       confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
       showCancelButton: true,
-      cancelButtonColor: '#d33',
+      cancelButtonColor: "#d33",
     }).then((e: any) => {
       if (e.isConfirmed) {
         inventoriesDelete.mutate(record?.id || 0);
@@ -141,13 +143,21 @@ const InventoryList = () => {
       >
         Add
       </Button>
-      <Table columns={columns} query={inventories} rowKey="id" total={10}/>
+      <Table columns={columns} query={inventories} rowKey="id" total={10} />
       {isModalVisible && (
         <Modal
           visible={isModalVisible}
           onOk={handleOk}
           onCancel={handleCancel}
           title={mode === "new" ? "Tạo Kho mới" : "Sửa thông tin kho"}
+          footer={
+            <div>
+              <Space size="small">
+                <Button>{mode === "new" ? "Tạo" : "Cập nhập"}</Button>
+                <Button mode="cancel">Hủy</Button>
+              </Space>
+            </div>
+          }
         >
           <Form form={formInventory}>
             <Form.Item name="id" style={{ display: "none" }}>
