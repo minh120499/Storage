@@ -12,7 +12,7 @@ import ToastCustom from "../../features/toast/Toast";
 // Import * as CurrencyFormat from 'react-currency-format';
 
 interface IMyTableData {
-    id:number
+    id: number
     code: string
     name: string;
     quantity: number;
@@ -30,6 +30,7 @@ interface IInventories {
 const CreateImport = () => {
     const {Option} = Select;
     const [supplierId, setSupplierId] = useState<number>();
+    const [inventoryId, setInventoryId] = useState<number>(0);
     const [productVariants, setProductVariants] = useState<IProductVariant[]>([])
     const [listAllProductVariant, setListAllProductVariant] = useState<IProductVariant[]>([])
     const [totalPage, setTotalPage] = useState<number>(0)
@@ -53,8 +54,8 @@ const CreateImport = () => {
 
     useEffect(() => {
         getProductVariant(pageNumber).then((productVariant) => {
-            setProductVariants(productVariant.data.reverse())
-            const listData = productVariants.concat(productVariant.data.reverse())
+            setProductVariants(productVariant.data)
+            const listData = productVariants.concat(productVariant.data)
             setListAllProductVariant(listData)
         })
 
@@ -67,8 +68,8 @@ const CreateImport = () => {
         for (let i = 0; i < tableData.length; i++) {
             if (tableData[i].quantity === 0) {
                 totalQuantity = 1
-                totalPrice +=tableData[i].totalPrice
-            }else {
+                totalPrice += tableData[i].totalPrice
+            } else {
                 totalQuantity += tableData[i].quantity
                 totalPrice += tableData[i].totalPrice
             }
@@ -81,12 +82,12 @@ const CreateImport = () => {
     const handleAddToTable = (item: number) => {
         const productVariant = productVariants.find(p => p.id === item) as IProductVariant
         const newData: IMyTableData = {
-            id:productVariant.id,
+            id: productVariant.id,
             code: productVariant.code,
             name: productVariant.name,
-            quantity: productVariant.quantity === 0 ? 1 : productVariant.quantity,
+            quantity: 1,
             importPrice: parseInt(productVariant.importPrice),
-            totalPrice: parseInt(productVariant.importPrice) * productVariant.quantity
+            totalPrice: parseInt(productVariant.importPrice)
         };
         let findData = tableData.find(t => t.code === productVariant.code)
 
@@ -101,7 +102,6 @@ const CreateImport = () => {
             );
             setTableData(newProjects)
         }
-
     }
 
 
@@ -175,7 +175,8 @@ const CreateImport = () => {
         {
             title: 'Tên sản phẩm',
             dataIndex: 'name',
-            width: '35%'
+            width: '35%',
+
         },
         {
             title: 'Số lượng',
@@ -186,7 +187,8 @@ const CreateImport = () => {
                     onInputChange("quantity", index, Number(value))
                 }}/>
             ),
-            width: '15%'
+            width: '15%',
+            align: 'right'
         },
         {
             title: 'Giá',
@@ -197,7 +199,8 @@ const CreateImport = () => {
                     onInputChange("importPrice", index, Number(value))
                 }}/>
             ),
-            width: '15%'
+            width: '15%',
+            align: 'right'
         },
         {
             title: 'Thành tiền',
@@ -208,7 +211,8 @@ const CreateImport = () => {
                         <NumberFormat value={text} thousandSeparator={true} displayType='text'/>
                     </div>
                 ),
-            width: '20%'
+            width: '20%',
+            align: 'right'
         },
         {
             dataIndex: 'code',
@@ -222,16 +226,15 @@ const CreateImport = () => {
 
     const handleSubmit = () => {
         let listData = [...tableData]
-
         for (let i = 0; i < selectedRowKeys.length; i++) {
             const productVariant = listAllProductVariant.find(p => p.code === selectedRowKeys[i]) as IProductVariant
             const newData: IMyTableData = {
-                id:productVariant.id,
+                id: productVariant.id,
                 code: productVariant.code,
                 name: productVariant.name,
-                quantity: productVariant.quantity === 0 ? 1 : productVariant.quantity,
+                quantity: 1,
                 importPrice: parseInt(productVariant.importPrice),
-                totalPrice: parseInt(productVariant.importPrice) * productVariant.quantity
+                totalPrice: parseInt(productVariant.importPrice)
             };
             let findData = tableData.find(t => t.code === productVariant.code)
 
@@ -276,218 +279,225 @@ const CreateImport = () => {
     }
 
 
-    const onCreateOrder = ()=> {
+    const onCreateOrder = () => {
         const list = [];
-        for (let i = 0;i < tableData.length;i++){
-            list.push({
-                productVariantId:tableData[i].id,
-                quantity: tableData[i].quantity,
-                totalPrice: tableData[i].totalPrice
+        if (tableData.length === 0) {
+            ToastCustom.fire({
+                icon: 'error',
+                title: 'Chưa chọn sản phẩm nào'
+            }).then()
+        } else {
+            for (let i = 0; i < tableData.length; i++) {
+                list.push({
+                    productVariantId: tableData[i].id,
+                    quantity: tableData[i].quantity,
+                    totalPrice: tableData[i].totalPrice
+                })
+            }
+            const anImport = {
+                accountId: 1,
+                supplierId: supplierId,
+                totalPrice: totalPrice,
+                note: "",
+                inventoryId: inventoryId,
+                detailsImports: list
+            }
+
+            createImport(anImport).then(() => {
+                ToastCustom.fire({
+                    icon: 'success',
+                    title: 'Thêm phiếu nhập thành công'
+                }).then()
             })
         }
-        const anImport = {
-            accountId:1,
-            totalPrice:totalPrice,
-            note:"",
-            detailsImports:list
-        }
-        createImport(anImport).then(() =>{
-            ToastCustom.fire({
-                icon: 'success',
-                title: 'Thêm phiếu nhập thành công'
-            }).then()
-        })
+
+    }
+
+    const onSelectInventory = (value: number) => {
+        setInventoryId(value)
     }
 
     return (
         <div>
             <h1>Tạo đơn nhập hàng</h1>
-            <Row gutter={24}>
-                <Col span={16}>
-                    <div className="block">
-                        <Form layout="vertical">
+            <Form layout="vertical">
+                <Row gutter={24}>
+                    <Col span={16}>
+                        <div className="block">
                             <SelectSupplier changeSupplierId={setSupplierId}/>
-                        </Form>
-                    </div>
+                        </div>
 
-                    <div className="block">
-                        <Form layout="vertical">
-                            <p>Chọn sản phẩm</p>
-                            <Row>
-                                <Col span={20}>
-                                    <Select style={{width: '100%', marginBottom: 10, borderRadius: 5}} size={'large'}
-                                            value={null}
-                                            showSearch
-                                            onChange={handleAddToTable}
-                                            placeholder="Nhấn để chọn nhà cung cấp"
-                                        // defaultValue={supplierId}
-                                        //          onChange={handleSelectSupplier}
-                                        //          filterOption={(input, option) => (option!.children as unknown as string).includes(input)}
-                                        //          filterSort={(optionA, optionB) =>
-                                        //              (optionA!.children as unknown as string)
-                                        //                  .toLowerCase()
-                                        //                  .localeCompare((optionB!.children as unknown as string).toLowerCase())
-                                        //          }
-                                            dropdownRender={menu => (
-                                                <>
-                                                    {menu}
-                                                    <Divider style={{margin: '8px 0'}}/>
-                                                    <Space style={{padding: '0 8px 4px'}}>
-                                                        <Button disabled={pageNumber <= 1}
-                                                                onClick={() => setPageNumber(cur => cur - 1)}
-                                                                type="primary"
-                                                                icon={<BackwardOutlined/>}>
-                                                            Back
-                                                        </Button>
-                                                        <Button disabled={pageNumber >= totalPage}
-                                                                onClick={() => setPageNumber(cur => cur + 1)}
-                                                                type="primary"
-                                                                icon={<FastForwardOutlined/>}>
-                                                            Next
-                                                        </Button>
-                                                    </Space>
-                                                </>
-                                            )}
-                                    >
-                                        {
-                                            productVariants && productVariants.map((productVariant, index) => {
-                                                return (
-                                                    <Option key={index} value={productVariant.id}>
-                                                        <div style={{
-                                                            display: "flex",
-                                                            justifyContent: "space-between",
-                                                            fontSize: '12px',
-                                                            padding: '10px'
-                                                        }}>
-                                                            <div>
-                                                                {productVariant.code} <br/> {productVariant.name}
+                        <div className="block">
+                                <p>Chọn sản phẩm</p>
+                                <Row>
+                                    <Col span={20}>
+                                        <Select style={{width: '100%', marginBottom: 10, borderRadius: 5}}
+                                                size={'large'}
+                                                value={null}
+                                                showSearch
+                                                onChange={handleAddToTable}
+                                                placeholder="Nhấn để chọn sản phẩm"
+                                                dropdownRender={menu => (
+                                                    <>
+                                                        {menu}
+                                                        <Divider style={{margin: '8px 0'}}/>
+
+                                                        <Space style={{padding: '0 8px 4px'}}>
+                                                            <Button disabled={pageNumber <= 1}
+                                                                    onClick={() => setPageNumber(cur => cur - 1)}
+                                                                    type="primary"
+                                                                    icon={<BackwardOutlined/>}>
+                                                                Back
+                                                            </Button>
+                                                            <Button disabled={pageNumber >= totalPage}
+                                                                    onClick={() => setPageNumber(cur => cur + 1)}
+                                                                    type="primary"
+                                                                    icon={<FastForwardOutlined/>}>
+                                                                Next
+                                                            </Button>
+                                                        </Space>
+                                                    </>
+                                                )}
+                                        >
+                                            {
+                                                productVariants && productVariants.map((productVariant, index) => {
+                                                    return (
+                                                        <Option key={index} value={productVariant.id}>
+                                                            <div style={{
+                                                                display: "flex",
+                                                                justifyContent: "space-between",
+                                                                fontSize: '12px',
+                                                                padding: '10px'
+                                                            }}>
+                                                                <div>
+                                                                    {productVariant.code} <br/> {productVariant.name}
+                                                                </div>
+                                                                <div>
+                                                                    <NumberFormat value={productVariant.importPrice}
+                                                                                  displayType={'text'}
+                                                                                  thousandSeparator={true}
+                                                                                  suffix={' đ'}/>
+                                                                    <br/> Số lượng: <b> {productVariant.quantity}</b>
+                                                                </div>
                                                             </div>
-                                                            <div>
-                                                                <NumberFormat value={productVariant.importPrice}
-                                                                              displayType={'text'}
-                                                                              thousandSeparator={true}
-                                                                              suffix={' đ'}/>
-                                                                <br/> Số lượng: <b> {productVariant.quantity}</b>
-                                                            </div>
-                                                        </div>
-                                                    </Option>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </Col>
-                                <Col span={4}>
-                                    <Button onClick={() => setVisible(true)} type='text'>Chọn nhiều</Button>
-                                </Col>
-                                {
-                                    visible && (
-                                        <Modal
-                                            title="Modal 1000px width"
-                                            centered
-                                            visible={visible}
-                                            onOk={() => setVisible(false)}
-                                            onCancel={onCancel}
-                                            width={1000}
-                                            footer={[
-                                                <div key={999}>
-                                                    <Button onClick={onCancel}>
-                                                        Huỷ
+                                                        </Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+
+                                    </Col>
+                                    <Col span={4}>
+                                        <Button onClick={() => setVisible(true)} type='text'>Chọn nhiều</Button>
+                                    </Col>
+                                    {
+                                        visible && (
+                                            <Modal
+                                                title="Modal 1000px width"
+                                                centered
+                                                visible={visible}
+                                                onOk={() => setVisible(false)}
+                                                onCancel={onCancel} width={1000}
+                                                footer={[
+                                                    <div key={999}>
+                                                        <Button onClick={onCancel}>
+                                                            Huỷ
+                                                        </Button>
+                                                        <Button type='primary' onClick={handleSubmit}>
+                                                            Nhập đơn
+                                                        </Button>
+                                                    </div>
+                                                ]}
+                                            >
+                                                <Table
+                                                    rowKey="code"
+                                                    columns={columnsModal}
+                                                    dataSource={productVariants}
+                                                    pagination={false}
+                                                    onRow={record => ({
+                                                        onClick: () => {
+                                                            onSelectKey(record.code)
+                                                        }
+                                                    })}
+                                                    rowSelection={rowSelection}
+                                                />
+
+                                                <div style={{marginTop: '20px'}}>
+                                                    <Button style={{margin: 0, marginRight: '15px'}}
+                                                            disabled={pageNumber <= 1}
+                                                            onClick={() => setPageNumber(cur => cur - 1)} type="primary"
+                                                            icon={<BackwardOutlined/>}>
+                                                        Back
                                                     </Button>
-                                                    <Button type='primary' onClick={handleSubmit}>
-                                                        Nhập đơn
+                                                    <Button style={{margin: 0}} disabled={pageNumber >= totalPage}
+                                                            onClick={() => setPageNumber(cur => cur + 1)} type="primary"
+                                                            icon={<FastForwardOutlined/>}>
+                                                        Next
                                                     </Button>
                                                 </div>
-                                            ]}
-                                        >
-                                            <Table
-                                                rowKey="code"
-                                                columns={columnsModal}
-                                                dataSource={productVariants}
-                                                pagination={false}
-                                                onRow={record => ({
-                                                    onClick: () => {
-                                                        onSelectKey(record.code)
-                                                    }
-                                                })}
-                                                rowSelection={rowSelection}
-                                            />
-                                            <div style={{marginTop: '20px'}}>
-                                                <Button style={{margin: 0, marginRight: '15px'}} disabled={pageNumber <= 1}
-                                                        onClick={() => setPageNumber(cur => cur - 1)} type="primary"
-                                                        icon={<BackwardOutlined/>}>
-                                                    Back
-                                                </Button>
-                                                <Button style={{margin: 0}} disabled={pageNumber >= totalPage}
-                                                        onClick={() => setPageNumber(cur => cur + 1)} type="primary"
-                                                        icon={<FastForwardOutlined/>}>
-                                                    Next
-                                                </Button>
-                                            </div>
-                                        </Modal>
-                                    )
-                                }
-                            </Row>
-                        </Form>
-                        <div style={{border: "1px solid #d9d9d9"}}>
-                            {
-                                tableData.length > 0 ? <Table
-                                    rowKey="code"
-                                    columns={columns}
-                                    dataSource={tableData}
-                                    pagination={false}
-                                /> : <div style={{
-                                    padding: '10px',
-                                    justifyContent: 'center',
-                                    'display': 'flex',
-                                    textAlign: 'center'
-                                }}>
-                                    <div>
-                                        <img style={{width: '150px', marginBottom: '10px'}}
-                                             src="https://minhhihi-test.mysapogo.com/v2/images/no-product.svg" alt=""/>
-                                        <p>Đơn nhập của bạn chưa có sản phẩm nào</p>
+                                            </Modal>
+                                        )
+                                    }
+                                </Row>
+
+                            <div style={{border: "1px solid #d9d9d9"}}>
+                                {
+                                    tableData.length > 0 ? <Table
+                                        rowKey="code"
+                                        columns={columns}
+                                        dataSource={tableData}
+                                        pagination={false}
+                                    /> : <div style={{
+                                        padding: '10px',
+                                        justifyContent: 'center',
+                                        'display': 'flex',
+                                        textAlign: 'center'
+                                    }}>
+                                        <div>
+                                            <img style={{width: '150px', marginBottom: '10px'}}
+                                                 src="https://minhhihi-test.mysapogo.com/v2/images/no-product.svg"
+                                                 alt=""/>
+                                            <p>Đơn nhập của bạn chưa có sản phẩm nào</p>
+                                        </div>
                                     </div>
-                                </div>
-                            }
+                                }
+                            </div>
                         </div>
-                    </div>
-                </Col>
-                <Col span={8}>
-                    <div className='block'>
-                        <p><b>Thông tin đơn nhập hàng</b></p>
-                        <Form layout="vertical">
+                    </Col>
+                    <Col span={8}>
+                        <div className='block'>
+                            <p><b>Thông tin đơn nhập hàng</b></p>
                             <Form.Item label="Mã đơn nhập hàng" name="code">
                                 <Input/>
                             </Form.Item>
-                            <Form.Item label="Chi nhánh" name="code123">
+                            <Form.Item label="Chi nhánh" name="inventory" rules={[{required: true}]}>
                                 <Select
                                     showSearch
                                     placeholder="Chọn chi nhánh"
                                     optionFilterProp="children"
-                                    // onChange={onChangeWard}
-                                    // listItemHeight={1} listHeight={250}
-                                    // dropdownStyle={{height: 250, width: 100}}
+                                    onChange={onSelectInventory}
                                 >
                                     {
                                         inventories && inventories.map((inventor, key) => {
-                                            return <Option key={key} style={{width: 350}}
-                                                           value={inventor.code}> {inventor.name}</Option>
+                                            return <Option key={inventor.id} style={{width: 350}}
+                                                           value={inventor.id}> {inventor.name}</Option>
                                         })
                                     }
                                 </Select>
                             </Form.Item>
-                        </Form>
-                    </div>
 
-                    <div className='block'>
-                        <p>Số lượng: {totalQuantity}</p>
-                        <p>Tổng tiền:
-                            <span><NumberFormat value={totalPrice} displayType={'text'} thousandSeparator={true}
-                                                suffix={' đ'}/></span>
-                        </p>
-                        <Button onClick={onCreateOrder}>Đặt hàng</Button>
-                    </div>
-                </Col>
-            </Row>
+                        </div>
+                        <div className='block'>
+                            <p>Số lượng: {totalQuantity}</p>
+                            <p>Tổng tiền:
+                                <span><NumberFormat value={totalPrice} displayType={'text'} thousandSeparator={true}
+                                                    suffix={' đ'}/></span>
+                            </p>
+                            <Button htmlType="submit" onClick={onCreateOrder}>Đặt hàng</Button>
+                        </div>
+                    </Col>
+                </Row>
+            </Form>
         </div>
     )
 }

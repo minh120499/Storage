@@ -20,7 +20,7 @@ const SelectSupplier = ({changeSupplierId} : Props) => {
         changeSupplierId(key)
     }
     return (
-        <Antd.Form.Item label='Nhà cung cấp' name={'supplierId'} labelCol={{ span: 24 }}>
+        <Antd.Form.Item label='Nhà cung cấp' name={'supplierId'} labelCol={{ span: 24 }} rules={[{required: true}]} >
         <Antd.Select style={{ width: '100%', marginBottom: 10, borderRadius: 5 }} size={'large'}
                          showSearch
                          placeholder="Nhấn để chọn nhà cung cấp"
