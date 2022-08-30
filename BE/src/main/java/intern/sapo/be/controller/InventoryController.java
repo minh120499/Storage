@@ -4,11 +4,14 @@ import intern.sapo.be.dto.response.Inventory.InventoryResponse;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.service.IInventoryService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -17,6 +20,18 @@ import java.util.List;
 public class InventoryController {
 	private final IInventoryService iInventoryService;
 
+
+	@GetMapping("/pagination")
+	public ResponseEntity getPagination(@RequestParam(value = "pageNumber", required = true, defaultValue = "1") int pageNumber,
+										@RequestParam(value = "pageSize", required = true, defaultValue = "10") int pageSize,
+										@RequestParam(value = "sortBy", required = false) String sortBy,
+										@RequestParam(value = "sortDir", required = false) String sortDir)
+	{
+		Map<String,Object> results = new HashMap<>();
+		results.put("data", iInventoryService.findAllBypPage(pageNumber,pageSize,sortBy,sortDir).getContent());
+		results.put("total",iInventoryService.findAllBypPage(pageNumber,pageSize,sortBy,sortDir).getTotalElements());
+		return ResponseEntity.ok(results);
+	}
 
 	@GetMapping("")
 	public List<Inventory> getAll() {

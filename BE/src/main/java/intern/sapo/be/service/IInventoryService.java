@@ -7,7 +7,7 @@ import org.springframework.validation.BindingResult;
 import java.util.List;
 
 public interface IInventoryService {
-    Page<Inventory> findAllBypPage(Integer pageNumber, Integer limit, String sortBy);
+    Page<Inventory> findAllBypPage(Integer pageNumber, Integer limit, String sortBy, String sortDir);
 
     List<Inventory> findAll();
 
