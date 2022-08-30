@@ -6,7 +6,7 @@ import { IRole } from "../../interface";
 let roleChildren: any = [];
 export default function RoleSelect(props: any) {
   useQuery(["roleid"], async () => {
-    const { data } = await axios.get("http://localhost:8080/api/roles");
+    const { data } = await axios.get("http://localhost:8080/api/admin/roles");
     roleChildren = [...data];
   });
   
