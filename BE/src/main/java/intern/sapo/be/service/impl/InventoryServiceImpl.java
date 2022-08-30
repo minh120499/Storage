@@ -23,6 +23,7 @@ import java.util.Optional;
 
 
 @RequiredArgsConstructor
+@Service
 public class InventoryServiceImpl implements IInventoryService {
 
     private final InventoryRepository inventoryRepository;

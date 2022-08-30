@@ -6,6 +6,7 @@ import intern.sapo.be.dto.response.Inventory.InventoryResponse;
 import intern.sapo.be.entity.Category;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.service.IInventoryService;
+import intern.sapo.be.service.impl.InventoryServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +19,11 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/inventories")
 @CrossOrigin("*")
+
 public class InventoryController {
     private final IInventoryService iInventoryService;
 
-
+    private final InventoryServiceImpl inventoryService;
     @GetMapping("")
     public List<Inventory> getAll() {
         return iInventoryService.findAll();

@@ -1,5 +1,6 @@
 package intern.sapo.be.entity;
 
+import intern.sapo.be.dto.request.ImportDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,31 @@ import java.util.List;
 @Table(name = "imports")
 @Getter
 @Setter
+@NamedNativeQuery(
+        name = "getFeaturedInventoryDTO",
+        query = "select imports.code,s.name,i.name,total_price,is_done,is_paid,is_import,a.username from imports\n" +
+                "inner join accounts a on imports.account_id = a.id\n" +
+                "inner join inventories i on imports.inventory_id = i.id\n" +
+                "inner join suppliers s on imports.supplier_id = s.id;",
+        resultSetMapping = "FeaturedInventory"
+)
+@SqlResultSetMapping(
+        name = "FeaturedInventory",
+        classes = {
+                @ConstructorResult(
+                        targetClass = ImportDTO.class,
+                        columns = {
+                                @ColumnResult(name="code", type = String.class),
+                                @ColumnResult(name="supplierName", type = String.class),
+                                @ColumnResult(name="inventoryName", type = String.class),
+                                @ColumnResult(name="isDone", type = Boolean.class),
+                                @ColumnResult(name="isPaid", type = Boolean.class),
+                                @ColumnResult(name="isImport", type = Boolean.class),
+                                @ColumnResult(name="userName", type = String.class),
+                        }
+                )
+        }
+)
 public class Import {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

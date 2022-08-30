@@ -1,5 +1,6 @@
 package intern.sapo.be.controller;
 
+import intern.sapo.be.dto.request.ImportDTO;
 import intern.sapo.be.entity.DetailsImport;
 import intern.sapo.be.entity.Import;
 import intern.sapo.be.service.IDetailsImportService;
@@ -33,5 +34,10 @@ public class ImportController {
     @GetMapping
     public List<Import> findAll() {
         return importService.findAll();
+    }
+
+    @GetMapping("/findAll")
+    private List<ImportDTO> findAllDTO(){
+        return importService.findAllImportDTO();
     }
 }

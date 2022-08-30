@@ -1,5 +1,7 @@
 package intern.sapo.be.service.impl;
 
+import intern.sapo.be.dto.request.ImportDTO;
+import intern.sapo.be.dto.request.Product.ProductVariantDTO;
 import intern.sapo.be.entity.Import;
 import intern.sapo.be.entity.ImportsStatus;
 import intern.sapo.be.repository.IImportRepo;
@@ -8,6 +10,8 @@ import intern.sapo.be.service.IImportService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
@@ -22,9 +26,17 @@ public class ImportService implements IImportService {
 
     private final IStatusRepo statusRepo;
 
+    private final EntityManager entityManager;
+
     @Override
     public List<Import> findAll() {
         return importRepo.findAll();
+    }
+
+    @Override
+    public List<ImportDTO> findAllImportDTO() {
+        Query query = entityManager.createNamedQuery("getFeaturedInventoryDTO");
+        return (List<ImportDTO>) query.getResultList();
     }
 
     @Override
