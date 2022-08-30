@@ -1,4 +1,3 @@
-
 import {
   AppstoreOutlined,
   TeamOutlined,
@@ -36,6 +35,12 @@ const items: MenuItem[] = [
     getItem("Danh mục sản phẩm", "/categories"),
     getItem("Chuyển hàng", "/storage"),
   ]),
+  getItem("Hàng hoá", "sub2", <AppstoreOutlined />, [
+    // getItem("Quản lý kho", ""),
+    getItem("Nhập hàng", "/purchase_orders/create"),
+    // getItem("Chuyển hàng", "/321"),
+  ]),
+  getItem("Đơn vị vận chuyển", "/transport-companies", <AppstoreOutlined />),
   getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
 
   getItem("Nhà cung cấp", "/supplier", <ShopOutlined />),
@@ -57,13 +62,13 @@ const SideBar: React.FC = () => {
 
   const navigate = useNavigate();
 
-  // const changeMode = (value: boolean) => {
-  //   setMode(value ? "vertical" : "inline");
-  // };
+  const changeMode = (value: boolean) => {
+    setMode(value ? "vertical" : "inline");
+  };
 
-  // const changeTheme = (value: boolean) => {
-  //   setTheme(value ? "dark" : "light");
-  // };
+  const changeTheme = (value: boolean) => {
+    setTheme(value ? "dark" : "light");
+  };
 
   return (
     <div className="side-bar">

@@ -32,3 +32,13 @@ export const getDistrict= async (code:string) =>{
 export const getWard= async (code:string) =>{
     return await axios.get(`https://provinces.open-api.vn/api/d/${code}?depth=2`)
 }
+
+export const getProductVariant = async (pageNumber:number) => {
+    return await axios.get(`http://localhost:8080/api/product-variants/findProductVariant?pageNumber=${pageNumber}&pageSize=5`)
+}
+export const getCountTotalProductVariant = async () => {
+    return await axios.get(`http://localhost:8080/api/product-variants/count-total`)
+}
+export const createImport = async (im: object) => {
+    return await axios.post(`http://localhost:8080/api/imports/`,im)
+}

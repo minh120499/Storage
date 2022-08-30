@@ -1,5 +1,6 @@
 package intern.sapo.be.repository;
 
+import intern.sapo.be.dto.request.Product.ProductVariantDTO;
 import intern.sapo.be.entity.Product;
 import intern.sapo.be.entity.ProductVariant;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,6 +22,7 @@ public interface IProductVariantRepo extends JpaRepository<ProductVariant,Intege
     @Transactional
     @Modifying
     void deleteAllByProductId(@Param("id") Integer id);
+
 
 
 }

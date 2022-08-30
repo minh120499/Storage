@@ -1,9 +1,13 @@
 package intern.sapo.be.service.impl;
 import intern.sapo.be.dto.request.ProductVariantsDTO;
 import intern.sapo.be.dto.response.Inventory.InventoryResponse;
+import intern.sapo.be.dto.request.ProductVariantsDTO;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.entity.ProductVariant;
+import intern.sapo.be.entity.ProductVariant;
 import intern.sapo.be.repository.InventoryRepository;
+import intern.sapo.be.repository.ProductVariantsRepository;
+import intern.sapo.be.security.jwt.util.Utils;
 import intern.sapo.be.repository.ProductVariantsRepository;
 import intern.sapo.be.security.jwt.util.Utils;
 import intern.sapo.be.service.IInventoryService;
@@ -13,16 +17,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
-@Service
 @RequiredArgsConstructor
-public class InventoryServiceImpl implements IInventoryService  {
+@Service
+public class InventoryServiceImpl implements IInventoryService {
 
     private final InventoryRepository inventoryRepository;
-    private final ProductVariantsRepository productVariantsRepository;
     private final Utils utils;
+
+    private final ProductVariantsRepository productVariantsRepository;
 
     public ProductVariantsDTO toDto (ProductVariant productVariant)
     {
@@ -37,8 +44,6 @@ public class InventoryServiceImpl implements IInventoryService  {
         productVariantsDTO.setImportPrice(productVariant.getImportPric());
         return productVariantsDTO;
     }
-
-
 
     @Override
     public Page<Inventory> findAllBypPage(Integer pageNumber, Integer limit, String sortBy) {
@@ -60,7 +65,7 @@ public class InventoryServiceImpl implements IInventoryService  {
     public Inventory create(Inventory inventory, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw utils.invalidInputException(bindingResult);
-        }else {
+        } else {
             return inventoryRepository.save(inventory);
         }
     }
@@ -83,13 +88,10 @@ public class InventoryServiceImpl implements IInventoryService  {
     }
 
     @Override
-    public void delete(Integer id)
-    {
+    public void delete(Integer id) {
         inventoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found: " + id));
         inventoryRepository.deleteById(id);
     }
-
-
     public InventoryResponse getAll(Integer id)
     {
         List<ProductVariantsDTO> results = new ArrayList<>();

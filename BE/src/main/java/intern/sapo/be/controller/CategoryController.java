@@ -1,6 +1,5 @@
 package intern.sapo.be.controller;
 
-import intern.sapo.be.dto.request.CategoriesDTO;
 import intern.sapo.be.entity.Category;
 import intern.sapo.be.service.ICategoryService;
 import lombok.AllArgsConstructor;

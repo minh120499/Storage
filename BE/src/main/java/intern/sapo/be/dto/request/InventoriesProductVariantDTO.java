@@ -5,9 +5,9 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class InventoiesProductVariantDTO {
+public class InventoriesProductVariantDTO {
     private Integer inventoryId;
     private Integer productVariantId;
-    private Integer qantity;
+    private Integer quantity;
 
 }
