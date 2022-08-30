@@ -15,10 +15,9 @@ import HomePage from "./components/HomePage";
 import EmployeeDetails from "./components/Employee/Details";
 import Employee from "./components/Employee/Employee";
 import RoleManager from "./components/RoleManager/RoleManager";
-// import DetailsProduct from "./pages/product/DetailsProduct";
+import DetailsProduct from "./pages/product/ProductDetails";
 import { exact } from "prop-types";
 import CreateImport from "./pages/Import/CreateImport";
-
 import InventoryList from "./components/inventory/InventoryList";
 import { Status } from "./components/stock_transfers/status";
 import InventoryManager from "./components/inventory/InventoryManager";
@@ -40,7 +39,7 @@ const App: React.FC = () => {
         },
         {
           path: "/stocker/manager",
-          element: <InventoryManager />,
+          element: <InventoryManager/>,
         },
         {
           path: "stocker/inventories",
@@ -82,7 +81,6 @@ const App: React.FC = () => {
           ],
         },
         {
-
           path: "/categories",
           element: <Categories />
         },
@@ -100,14 +98,11 @@ const App: React.FC = () => {
         },
         {
           path: "/api/admin/roles",
-          element: <RoleManager />
-        }
-      ]
-    }
-
-
+          element: <RoleManager />,
+        },
+      ],
+    },
   ]);
-
 
   return router;
 };

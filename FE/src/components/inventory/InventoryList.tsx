@@ -8,11 +8,17 @@ import {
   getAllInventory,
   updateInvetory,
   deleteInvetory,
+  getPagination
 } from "../../api/inventory";
 import { useState } from "react";
 import AddAddress from "../AddAddress";
 import Swal from "sweetalert2";
 
+
+type data = {
+  total:number,
+  data:[]
+}
 const InventoryList = () => {
   const columns: ColumnsType<IInventory> = [
     {
