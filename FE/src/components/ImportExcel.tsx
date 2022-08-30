@@ -1,8 +1,10 @@
 import {PlusOutlined, UploadOutlined,ArrowLeftOutlined} from "@ant-design/icons";
 import React, {useState} from "react";
-import {Button, Modal, Space, Upload, UploadProps,message} from "antd";
+import {Modal, Space, Upload, UploadProps,message} from "antd";
 import ToastCustom from "../features/toast/Toast";
 import axios from "axios";
+import Button from '../UI/Button';
+
 type Props = {
     reload: () => void
 }

@@ -1,6 +1,5 @@
 package intern.sapo.be.entity;
 
-import intern.sapo.be.base.BaseModel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;

@@ -1,10 +1,10 @@
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import {LeftOutlined}  from "@ant-design/icons";
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import * as Mui from '@mui/material'
 import * as Antd from 'antd'
-import { AddProductInput, IVariant, OptionValue, Product, Supplier } from '../../type/allType';
+import { AddProductInput, IVariant} from '../../type/allType';
 import { addProduct } from '../../services/productServices';
 import { getSuppliers } from '../../services/api';
 import { ISupplier } from '../../services/customType';
@@ -54,7 +54,7 @@ function AddProduct() {
     const [product, setProduct] = useState<AddProductInput>(initProduct)
     const [open, setOpen] = React.useState(false);
     const [isCreated, setIsCreated] = useState(false)
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState<string>();
     const navigate = useNavigate()
     //function
@@ -71,6 +71,7 @@ function AddProduct() {
             variants: variants
         }
 
+        // eslint-disable-next-line eqeqeq
         if (options.length == 0) {
             body = {
                 ...body,

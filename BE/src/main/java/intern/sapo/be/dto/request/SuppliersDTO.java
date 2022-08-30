@@ -1,6 +1,6 @@
 package intern.sapo.be.dto.request;
 
-import intern.sapo.be.base.BaseModel;
+import intern.sapo.be.base.BaseEntity;
 import lombok.*;
 
 import javax.validation.constraints.Email;
@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SuppliersDTO extends BaseModel {
+public class SuppliersDTO extends BaseEntity {
 
     @NotEmpty(message = "Code can not be null")
     @Size(max = 100,message = "code can not be more then 100 character")

@@ -6,6 +6,7 @@ import intern.sapo.be.security.jwt.util.Utils;
 import intern.sapo.be.service.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,85 +15,53 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @RequiredArgsConstructor
 @Service
 public class CategoryService implements ICategoryService {
     private final ICategoryRepo iCategoryRepo;
-    private final ModelMapper modelMapper;
     private final Utils utils;
 
 
-    private CategoriesDTO toDto(Category category){
-        CategoriesDTO categoriesDTO  = modelMapper.map(category,CategoriesDTO.class);
-        return  categoriesDTO;
+    @Override
+    public Page<Category> findAll(Integer pageNumber, Integer limit, String sortBy, String sortDir) {
+        if (sortDir != null) {
+            Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+            return iCategoryRepo.findAll(PageRequest.of(pageNumber - 1, limit, sort));
+        }else
+        return iCategoryRepo.findAll(PageRequest.of(pageNumber - 1, limit));
     }
 
-    private Category toEntity(CategoriesDTO categoriesDTO){
-        Category category = modelMapper.map(categoriesDTO,Category.class);
+    @Override
+    public  Category findById(Integer id) {
+        Category category = iCategoryRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found: " + id));
         return category;
     }
 
     @Override
-    public List<CategoriesDTO> findAll(Integer pageNumber, Integer limit, String sortBy) {
-        List<CategoriesDTO> results = new ArrayList<>();
-
-        if(pageNumber != null && limit != null) {
-            if (sortBy == null) {
-                sortBy = "id";
-            }
-            Pageable pageable = PageRequest.of(pageNumber - 1, limit, Sort.by(sortBy).descending());
-            List<Category> categories = iCategoryRepo.getAll(pageable);
-            for (Category item : categories) {
-                CategoriesDTO categoriesDTO = toDto(item);
-                results.add(categoriesDTO);
-            }
-            return results;
-        }else{
-            List<Category> categories = iCategoryRepo.getAll();
-            for (Category item : categories) {
-                CategoriesDTO categoriesDTO = toDto(item);
-                results.add(categoriesDTO);
-            }
-            return results;
-        }
+    public List<Category> getAll() {
+        return iCategoryRepo.findAll();
     }
 
     @Override
-    public  CategoriesDTO findById(Integer id) {
-        Category category = iCategoryRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found: " + id));
-        CategoriesDTO categoriesDTO = toDto(category);
-        return categoriesDTO;
-    }
-
-    @Override
-    public CategoriesDTO create(CategoriesDTO categoriesDTO, BindingResult bindingResult) {
+    public Category create(Category category, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw utils.invalidInputException(bindingResult);
+        }else {
+            return iCategoryRepo.save(category);
         }
-        Category category = toEntity(categoriesDTO);
-        iCategoryRepo.save(category);
-        categoriesDTO = toDto(category);
-        return categoriesDTO;
     }
 
     @Override
-    public CategoriesDTO update(Integer id, CategoriesDTO categoriesDTO, BindingResult bindingResult) {
-        Category category = iCategoryRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found:" + id));
-        BindingResult result = utils.getListResult(bindingResult, categoriesDTO);
-        if (result.hasErrors()) {
-            throw utils.invalidInputException(result);
+    public Category update(Integer id, Category category, BindingResult bindingResult) {
+        iCategoryRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found:" + id));
+        if (bindingResult.hasErrors()) {
+            throw utils.invalidInputException(bindingResult);
         } else {
-            if (category != null)
-            {
-                categoriesDTO.setId(id)
-                ;
-                category = toEntity(categoriesDTO);
-                iCategoryRepo.save(category);
-                categoriesDTO = toDto(category);
-            }
-            return categoriesDTO;
+            category.setId(id);
+            return iCategoryRepo.save(category);
         }
     }
 

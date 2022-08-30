@@ -1,7 +1,8 @@
-import {Button, Space} from "antd";
+import {Space} from "antd";
 import {DownloadOutlined} from "@ant-design/icons";
 import React from "react";
 import axios from "axios";
+import Button from "../UI/Button";
 
 const ExportExcel = () =>{
 

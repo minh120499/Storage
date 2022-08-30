@@ -120,7 +120,8 @@ const AddAddress = ({onChange,keyChange} : AddressProps) =>{
                             filterOption={(input, option) =>
                                 (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
                             }
-                            dropdownStyle={{height: 250, width: 100}}
+                            // dropdownStyle={{height: 250, width: 100}}
+                            dropdownMatchSelectWidth
                         >
                             {
                                 districts.length > 1 ? (

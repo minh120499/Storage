@@ -4,6 +4,7 @@ import { Button } from "antd";
 const B = (props: any) => <Button {...props} />;
 
 const Buttonn = styled(B)`
+  
   color: #fff;
   border-color: #1890ff;
   background: #1890ff;

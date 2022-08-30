@@ -1,5 +1,5 @@
 import { Select, Form, Popconfirm } from "antd";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { findProductById, getProducts } from "../../api/product_variant";
 import "./file.css";
 import { getAllInventory } from "../../api/inventory";
@@ -8,41 +8,10 @@ import type { ColumnsType } from "antd/es/table";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createExport } from "../../api/export";
 import { creatDetailExport } from "../../api/detail_export";
-<<<<<<< HEAD
 
-
-interface DataType {
-  getProductById: any;
-  id: number;
-  code: string;
-  name: string;
-  product: {};
-  stock: number;
-  quantity: number;
-}
-type exportInventory = {
-  id: number;
-  code: string;
-  name: string;
-  address: string;
-  createAt: string;
-  updateAt: null;
-  isDelete: boolean;
-};
-type receiveInventory = {
-  id: number;
-  code: string;
-  name: string;
-  address: string;
-  createAt: string;
-  updateAt: null;
-  isDelete: boolean;
-};
-=======
 import { Button } from "antd";
 import { DataType } from "../type/data_type";
 import { DeleteTwoTone } from "@ant-design/icons";
->>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
 
 const Search: React.FC = () => {
   const [product, setProduct] = useState([]);
@@ -56,7 +25,7 @@ const Search: React.FC = () => {
     exportInventory: inventorySend,
     receiveInventory: inventoryReceive,
   };
-  const [status, setStatus] = useState(true);
+  // const [status, setStatus] = useState(true);
   const handleQuantity = (e: any) => {
     const quantity = e.target.value;
     const id = e.target.id * 1;
@@ -83,22 +52,15 @@ const Search: React.FC = () => {
       title: "Mã hàng",
       dataIndex: "getProductById",
       render: (text) => {
-<<<<<<< HEAD
-        return <div>{text?.data.code}</div>;
-=======
         return <div>{text?.data?.code}</div>;
->>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
       },
     },
     {
       title: "Tên sản phẩm",
       dataIndex: "getProductById",
       render: (text) => {
-<<<<<<< HEAD
-        return <div>{text?.data.name}</div>;
-=======
+
         return <div>{text?.data?.name}</div>;
->>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
       },
     },
     {
@@ -112,13 +74,8 @@ const Search: React.FC = () => {
             style={{ width: "50px" }}
             onChange={handleQuantity}
             id={text?.getProductById.data.id}
-<<<<<<< HEAD
-            value={text?.quantity}
-            key={text?.getProductById.data.id}
-=======
             key={text?.getProductById.data.id}
             value={text.quantity}
->>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
             min={"0"}
           ></input>
         );
@@ -142,18 +99,7 @@ const Search: React.FC = () => {
     },
   ];
 
-<<<<<<< HEAD
-  useQuery(
-    ["ListProduct"],
-    () => {
-      const searchProduct = async () => {
-        const getList = await getProducts();
-        setProduct(getList.data);
-      };
-      searchProduct();
-    }
-  );
-=======
+
   useQuery(["ListProduct"], () => {
     const searchProduct = async () => {
       const getList = await getProducts();
@@ -161,7 +107,6 @@ const Search: React.FC = () => {
     };
     searchProduct();
   });
->>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
 
   const handleClickOptionProduct = (e: any) => {
     const isFound = products.findIndex((element: any) => {
@@ -184,6 +129,7 @@ const Search: React.FC = () => {
       hanldeClick();
     } else {
       setProducts((prev: any) => {
+        // eslint-disable-next-line array-callback-return
         prev.map((prod: any) => {
           if (prod.getProductById.data.id === e) {
             prod.quantity = prod.quantity * 1 + 1;
@@ -197,30 +143,10 @@ const Search: React.FC = () => {
   /* ------------------ select inventory --------------- */
 
   const [inventories, setInventory] = useState([] as any);
-<<<<<<< HEAD
-  useQuery(
-    ["getListInventory"],
-    () => {
-      const getListInventories = async () => {
-       const listInventory= await getAllInventory();
-          setInventory(listInventory.data);
-        };
-
-      getListInventories();
-    }
-  );
-  const handleClickOptionSend = async (e: any) => {
-    const inventorySend = await findInventoryById(e);
-    setInventorySend(inventorySend.data);
-  };
-  const handleClickOptionReceive = async (e: any) => {
-    const inventoryReceive = await findInventoryById(e);
-    setInventoryReceive(inventoryReceive.data);
-=======
   useQuery(["getListInventory"], () => {
     const getListInventories = async () => {
       const listInventory = await getAllInventory();
-      setInventory(listInventory.data.data);
+      setInventory(listInventory.data);
       console.log(listInventory.data);
     };
     getListInventories();
@@ -230,7 +156,6 @@ const Search: React.FC = () => {
   };
   const handleClickOptionReceive = (e: number) => {
     setInventoryReceive(e);
->>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
   };
   //--------------------- form -------------------
 
@@ -272,7 +197,7 @@ const Search: React.FC = () => {
                   optionFilterProp="children"
                   onSelect={handleClickOptionSend}
                 >
-                  {inventories.map((item: any) => (
+                  {inventories?.map((item: any) => (
                     <Select
                       style={{ width: "100%" }}
                       key={item.id}
@@ -337,22 +262,12 @@ const Search: React.FC = () => {
             value=""
           >
             {product.map((item: any) => (
-<<<<<<< HEAD
-              <Select.Option
-                style={{ width: 600 }}
-                key={item.id}
-                value={item.id}
-              >
-                {item.name}
-              </Select.Option>
-=======
               <Select style={{ width: "100%" }} key={item.id} value={item.id}>
                 <div>
                   <div>{item.name}</div>
                   <div>Tồn : {item.salePrice} | Có thể bán : 10</div>
                 </div>
               </Select>
->>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
             ))}
           </Select>
 
@@ -365,63 +280,6 @@ const Search: React.FC = () => {
             style={{ width: "100%" }}
           />
         </div>
-<<<<<<< HEAD
-
-        <div className="select-inventory">
-          <div>
-            <h3>Thông tin phiếu chuyển</h3>
-          </div>
-          <h4>Chi nhánh gửi</h4>
-          <Select
-            showSearch
-            style={{ width: 200 }}
-            dropdownStyle={{ height: 150, width: 300 }}
-            placeholder="Search to Select"
-            optionFilterProp="children"
-          
-            onSelect={handleClickOptionSend}
-          >
-            {inventories.map((item: any) => (
-              <Select.Option
-                style={{ width: 200 }}
-                key={item.id}
-                value={item.id}
-              >
-                {item.name}
-              </Select.Option>
-            ))}
-          </Select>
-          <h4>Chi nhánh nhận</h4>
-          <Select
-            showSearch
-            style={{ width: 200 }}
-            dropdownStyle={{ height: 150, width: 300 }}
-            placeholder="Search to Select"
-            optionFilterProp="children"
-
-            onSelect={handleClickOptionReceive}
-          >
-            {inventories.map((item: any) => (
-              <Select.Option
-                style={{ width: 200 }}
-                key={item.id}
-                value={item.id}
-              >
-                {item.name}
-              </Select.Option>
-            ))}
-          </Select>
-          <div>
-            <h4>Ghi chú</h4>
-            <textarea
-              rows={4}
-              style={{ width: "100%" }}
-              defaultValue={"ok"}
-            ></textarea>
-          </div>
-        </div>
-=======
->>>>>>> 7ffea327db60f05eba478a5cf36f12888457b5d7
       </div>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

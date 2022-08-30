@@ -1,18 +1,16 @@
+
 import {
   AppstoreOutlined,
-  CalendarOutlined,
-  LinkOutlined,
-  MailOutlined,
-  RocketOutlined,
   TeamOutlined,
-  ShopOutlined
+  ShopOutlined,
 } from "@ant-design/icons";
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import { Divider, Menu, Switch } from "antd";
+import WarehouseIcon from "@mui/icons-material/Warehouse";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import { Menu } from "antd";
 import type { MenuProps, MenuTheme } from "antd/es/menu";
 import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import AddProduct from "../pages/product/AddProduct";
+import { useNavigate } from "react-router-dom";
+// import AddProduct from "../pages/product/AddProduct";
 import "../styles/SideBar.css";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -36,14 +34,16 @@ const items: MenuItem[] = [
     getItem("Thêm sản phẩm", "/productsAdd"),
     getItem("Danh sách sản phẩm", "/products"),
     getItem("Danh mục sản phẩm", "/categories"),
-<<<<<<< HEAD
     getItem("Chuyển hàng", "/storage"),
-=======
->>>>>>> a3ff0c9c0851dfee0909bb7ff33ff15c00a76b47
   ]),
   getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
 
   getItem("Nhà cung cấp", "/supplier", <ShopOutlined />),
+  getItem("Kho hàng", "", <WarehouseIcon />, [
+    getItem("Danh sách", "/stocker/inventories"),
+    getItem("Quản lý", "/stocker/storage"),
+
+  ]),
 
   getItem("Nhân viên", null, <TeamOutlined />, [
     getItem("Danh sách", "/api/admin/employees"),
@@ -57,13 +57,13 @@ const SideBar: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const changeMode = (value: boolean) => {
-    setMode(value ? "vertical" : "inline");
-  };
+  // const changeMode = (value: boolean) => {
+  //   setMode(value ? "vertical" : "inline");
+  // };
 
-  const changeTheme = (value: boolean) => {
-    setTheme(value ? "dark" : "light");
-  };
+  // const changeTheme = (value: boolean) => {
+  //   setTheme(value ? "dark" : "light");
+  // };
 
   return (
     <div className="side-bar">

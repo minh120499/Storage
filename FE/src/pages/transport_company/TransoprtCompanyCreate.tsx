@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useState } from "react";
 import { Button, Modal, Form, Input, Space, Row, Col, Select } from 'antd';
-import axios from "axios";
-import ToastCustom from "../../features/toast/Toast";
 
 export default function TransoprtCompanyCreate() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [formAdd] = Form.useForm();
     const {Option} = Select;
@@ -18,6 +18,7 @@ export default function TransoprtCompanyCreate() {
         setIsModalVisible(false)
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const validateMessages = {
         required: 'Không được để trống!',
     };

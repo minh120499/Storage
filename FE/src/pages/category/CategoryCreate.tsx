@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Modal, Form, Input, Space } from 'antd';
+import {Modal, Form, Input, Space } from 'antd';
 import ToastCustom from "../../features/toast/Toast";
 import { Category } from "../../type/allType";
-import { createCategory } from "../../services/apiCategory";
+import { createCategory } from "../../api/apiCategory";
 import Button from "../../UI/Button"
 
 
@@ -40,21 +40,28 @@ export default function CategoryCreate({ status }: props) {
     };
 
     const handleCreate = async (category: Category) => {
-        await createCategory(category).catch(error => {
-            console.log(error);
-        });
-        ToastCustom.fire({
+        await createCategory(category)
+        .then(()=>{
+            ToastCustom.fire({
             icon: 'success',
             title: 'Thêm thành công!'
-        });
+        })
         formAdd.resetFields();
         status();
         setIsModalVisible(false);
+        }).catch(() => {
+            ToastCustom.fire({
+                icon: 'error',
+                title: 'Thêm không thành công!'
+            })
+        });
+        
+        
     };
     return (
         <>
             <div>
-                <Button onClick={showModal} style={{ width: "130px" }} type="primary">
+                <Button onClick={showModal}>
                     <Space>
                         Thêm mới
                     </Space>
@@ -75,12 +82,14 @@ export default function CategoryCreate({ status }: props) {
                         <Input placeholder="Nhập mô tả" />
                     </Form.Item>
                     <Form.Item {...tailLayout}>
+                        <Space>
                         <Button htmlType="button"  onClick={handleCancel}>
                             Cancle
                         </Button>
-                        <Button type="primary" htmlType="submit" >
+                        <Button htmlType="submit">
                             Submit
                         </Button>
+                        </Space>
                     </Form.Item>
                 </Form>
             </Modal>
