@@ -1,5 +1,6 @@
 package intern.sapo.be.base;
 
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -34,9 +35,8 @@ public abstract class BaseService<T> implements IBaseService<T> {
 
     @Override
     public T updateById(T entity, Integer entityId) {
-        Optional<T> optional = baseRepo.findById(entityId);
-        if (optional.isPresent()) {
-
+        T t  = baseRepo.findById(entityId).orElseThrow(() -> new IllegalArgumentException(("id not found: " + entityId ))) ;
+        if (t != null) {
             return baseRepo.save(entity);
         } else {
             return null;
@@ -58,10 +58,9 @@ public abstract class BaseService<T> implements IBaseService<T> {
         Page<T> pageList;
         List<T> data;
         if (sort == null) {
-            pageList = baseRepo.findAll(PageRequest.of(page - 1, perPage));
+                pageList = baseRepo.findAll(PageRequest.of(page - 1, perPage));
         } else {
-            Sort sortList = sort.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
-                    : Sort.by(sortBy).descending();
+            Sort sortList = sort.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
             pageList = baseRepo.findAll(PageRequest.of(page - 1, perPage, sortList));
         }
         data = pageList.getContent();

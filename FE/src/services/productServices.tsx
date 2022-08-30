@@ -1,4 +1,4 @@
-import { IProductFilter } from "../type/allType";
+import { stringify } from "querystring";
 
 const baseUrl = 'http://localhost:8080/api/'
 
@@ -34,9 +34,12 @@ const getProducts = (data: any) => {
 const countProductByFilter=(data:any)=>{
 
   return fetch(baseUrl+"products/count",getRequest(data, 'POST', ''))
+}
+  const getProductById=(id:number)=>{
 
-
+    return fetch(baseUrl+"products/"+id,getRequest({}, 'GET', ''))
+  
   
 }
 
-export { addProduct, getProducts,countProductByFilter } 
+export { addProduct, getProducts,countProductByFilter ,getProductById} 

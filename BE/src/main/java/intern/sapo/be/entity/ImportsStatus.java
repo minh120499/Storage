@@ -2,6 +2,7 @@ package intern.sapo.be.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -16,14 +17,14 @@ public class ImportsStatus {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+
     @JoinColumn(name = "import_id", nullable = false)
-    private Import importField;
+    private Integer importId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "status_id", nullable = false)
-    private Status status;
+    private Integer statusId;
 
+    @CreatedDate
     @Column(name = "create_at", nullable = false)
     private Timestamp createAt;
 

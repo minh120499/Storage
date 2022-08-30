@@ -408,6 +408,110 @@ group by(products.id) ) limit size offset offset_number;
 
 drop table products_count;
 
-
-
 END
+
+
+
+alter table mock_tts_10.imports
+drop foreign key imports_ibfk_3;
+
+
+alter table mock_tts_10.imports
+    modify transport_company_id int null;
+
+alter table mock_tts_10.imports
+    drop foreign key imports_ibfk_4;
+
+alter table mock_tts_10.imports
+    drop column status_id;
+
+alter table mock_tts_10.imports
+    drop column create_at;
+
+alter table mock_tts_10.imports
+    drop column update_at;
+
+alter table mock_tts_10.imports
+    drop column is_delete;
+
+alter table mock_tts_10.imports
+    add total_price  decimal(20,2) not null ;
+
+alter table mock_tts_10.imports
+    add code  nvarchar(50) unique ;
+
+alter table mock_tts_10.imports
+    add note nvarchar(250) null;
+
+drop index transport_company_id on mock_tts_10.imports;
+
+alter table mock_tts_10.imports
+    drop foreign key imports_ibfk_1;
+
+alter table mock_tts_10.imports
+    drop column contact_id;
+
+alter table mock_tts_10.details_imports
+    add total_price  decimal(20,2) not null ;
+
+
+CREATE TABLE import_seqId
+(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+
+DELIMITER $$
+CREATE TRIGGER tg_import_insert_code
+    BEFORE INSERT ON imports
+    FOR EACH ROW
+    IF NEW.code is null or NEW.code = '' THEN
+        begin
+            INSERT INTO import_seqId VALUES (NULL);
+            SET NEW.code = CONCAT('PON', LPAD(LAST_INSERT_ID(), 5, '0'));
+        end;
+    end if $$
+DELIMITER ;
+
+
+alter table mock_tts_10.imports
+    change transport_company_id supplier_id int null;
+
+alter table mock_tts_10.imports
+    add constraint imports_ibkf_3
+        foreign key (supplier_id) references mock_tts_10.suppliers (id);
+
+alter table mock_tts_10.imports
+    modify supplier_id int not null;
+
+
+alter table mock_tts_10.details_imports
+    add product_variant_code varchar(100) not null;
+
+alter table mock_tts_10.details_imports
+    add constraint foreign_key_name
+        foreign key (product_variant_id) references mock_tts_10.product_variants (id);
+
+alter table mock_tts_10.details_imports
+    modify import_id int null;
+
+INSERT INTO mock_tts_10.status (id, code, name, description) VALUES (2, 'IMPORT01', 'Đang giao dịch', 'Thêm mới đơn nhập hàng');
+INSERT INTO mock_tts_10.status (id, code, name, description) VALUES (3, 'IMPORT02', 'Thanh toán hóa đơn nhập hàng', 'Thêm mới thanh toán cho đơn nhập hàng');
+INSERT INTO mock_tts_10.status (id, code, name, description) VALUES (4, 'IMPORT03', 'Tạo phiếu nhập kho', 'Thêm mới phiếu nhập kho');
+
+alter table mock_tts_10.imports
+    add inventory_id int not null;
+
+alter table mock_tts_10.imports
+    add constraint imports_ibkf_5
+        foreign key (inventory_id)
+            references mock_tts_10.inventories (id);
+
+alter table mock_tts_10.imports
+    add is_paid bit null default false;
+
+alter table mock_tts_10.imports
+    add is_import bit null default false;
+
+alter table mock_tts_10.imports
+    add is_done bit null default false;
+

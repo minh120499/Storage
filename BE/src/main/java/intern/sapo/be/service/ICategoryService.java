@@ -1,18 +1,22 @@
 package intern.sapo.be.service;
-import intern.sapo.be.dto.request.CategoriesDTO;
+import intern.sapo.be.entity.Category;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import java.util.List;
 
 
-public interface
-ICategoryService {
-    List<CategoriesDTO> findAll(Integer pageNumber, Integer limit, String sortBy);
+public interface ICategoryService {
+    Page<Category> findAll(Integer pageNumber, Integer limit, String sortBy,String sortDir);
 
-    CategoriesDTO findById(Integer id);
+    List<Category> getAll();
 
-    CategoriesDTO create(CategoriesDTO categoriesDTO, BindingResult bindingResult);
+    Category findById(Integer id);
 
-    CategoriesDTO update(Integer id, CategoriesDTO categoriesDTO, BindingResult bindingResult);
+    Category create(Category category, BindingResult bindingResult);
 
-    void  delete(List<Integer> id);
+    Category update(Integer id, Category category, BindingResult bindingResult);
+
+    void  deleteLíst(List<Integer> id);
+
+    void delete (Integer id);
 }

@@ -1,10 +1,10 @@
 package intern.sapo.be.controller;
 
-import intern.sapo.be.dto.request.CategoriesDTO;
 import intern.sapo.be.entity.Category;
 import intern.sapo.be.service.ICategoryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,35 +20,45 @@ public class CategoryController {
     public final ICategoryService iCategoryService;
 
     @GetMapping("")
-    public List<CategoriesDTO> getAll(@RequestParam(value = "page", required = false) Integer pageNumber,
-                                      @RequestParam(value = "limit", required = false) Integer limit,
-                                      @RequestParam(value = "sortby", required = false) String sortBy){
-        return iCategoryService.findAll(pageNumber,limit,sortBy);
+    public Page<Category> getAllByPage(@RequestParam(value = "page", required = true, defaultValue = "1") Integer pageNumber,
+                                 @RequestParam(value = "limit", required = true, defaultValue = "10") Integer limit,
+                                 @RequestParam(value = "sortby", required = false) String sortBy,
+                                 @RequestParam(value = "sortdir", required = false) String sortDir){
+        return iCategoryService.findAll(pageNumber,limit,sortBy,sortDir);
+    }
+
+    @GetMapping("/findall")
+    public List<Category> getdAll(){
+        return iCategoryService.getAll();
     }
 
     @GetMapping("/category/{id}")
-    public CategoriesDTO getById(@PathVariable(value = "id") Integer id)
+    public Category getById(@PathVariable(value = "id") Integer id)
     {
-        return iCategoryService.findById(id)
-                ;
+        return iCategoryService.findById(id);
     }
 
     @PostMapping("/category")
-    public CategoriesDTO create(@RequestBody @Valid CategoriesDTO categoriesDTO, BindingResult bindingResult) {
-        return iCategoryService.create(categoriesDTO,bindingResult);
+    public Category create(@RequestBody @Valid Category category, BindingResult bindingResult) {
+        return iCategoryService.create(category,bindingResult);
     }
 
 
     @PutMapping("/category/{id}")
-    public CategoriesDTO update (@RequestBody @Valid CategoriesDTO categoriesDTO,BindingResult bindingResult,
+    public Category update (@RequestBody @Valid Category category,BindingResult bindingResult,
                                  @PathVariable(value = "id") Integer id){
-        return iCategoryService.update(id,categoriesDTO,bindingResult);
+        return iCategoryService.update(id,category,bindingResult);
     }
 
     @PostMapping("/delete")
-    public void delete (@RequestBody List<Integer> id){
-        iCategoryService.delete(id)
-        ;
+    public void deleteList (@RequestBody List<Integer> id){
+        iCategoryService.deleteLíst(id);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void delete (@PathVariable (value = "id") Integer id){
+        iCategoryService.delete(id);
+
     }
 
 }
