@@ -26,3 +26,24 @@ export interface IInventory {
   isDelete?: boolean;
 }
 
+export interface IInventoryDto {
+  key?: number | string;
+  id?: number;
+  code: string;
+  name: string;
+  address: string;
+  size:number;
+  createAt?: any;
+  updateAt?: any;
+  isDelete?: boolean;
+}
+
+export interface IProductVariantDto{
+  id: number,
+  code: string,
+  name: string,
+  image:string,
+  importPrice: number,
+  quantity: number,
+}
+

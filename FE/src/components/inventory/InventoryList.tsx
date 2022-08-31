@@ -13,13 +13,17 @@ import {
 import { useState } from "react";
 import AddAddress from "../AddAddress";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 
 type data = {
-  total:number,
-  data:[]
+  total: number,
+  data: []
 }
 const InventoryList = () => {
+
+  const navigate = useNavigate();
+
   const columns: ColumnsType<IInventory> = [
     {
       title: "Id",
@@ -149,7 +153,15 @@ const InventoryList = () => {
       >
         Add
       </Button>
-      <Table columns={columns} query={inventories} rowKey="id" total={10} />
+      <Table columns={columns} 
+      onRow={(record:any) => {
+        return {
+          onClick: () => navigate({ pathname: `/stocker/manager/${record.id}` }),
+        }
+      }} 
+      query={inventories} 
+      rowKey="id" t
+      otal={10} />
       {isModalVisible && (
         <Modal
           visible={isModalVisible}

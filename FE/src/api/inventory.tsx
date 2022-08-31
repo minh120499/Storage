@@ -20,5 +20,9 @@ export const updateInvetory = async (inventory:object, id:number) => {
 }
 
 export const deleteInvetory = async (id:number) => {
-    return (await axios.delete(`http://localhost:8080/inventories/${id}`))
+    return (await axios.put(`http://localhost:8080/inventories/delete/${id}`))
+}
+
+export const getProductVariants = async (id:number) =>{
+    return (await axios.get(`http://localhost:8080/inventories/productvariant/${id}`)).data
 }

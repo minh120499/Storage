@@ -48,7 +48,7 @@ const items: MenuItem[] = [
   getItem("Nhà cung cấp", "/supplier", <ShopOutlined />),
   getItem("Kho hàng", "", <WarehouseIcon />, [
     getItem("Danh sách", "/stocker/inventories"),
-    getItem("Quản lý", "/stocker/manager"),
+    // getItem("Quản lý", "/stocker/manager"),
   ]),
 
   getItem("Nhân viên", null, <TeamOutlined />, [
