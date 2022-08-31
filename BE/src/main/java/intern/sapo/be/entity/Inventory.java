@@ -40,6 +40,12 @@ public class Inventory   {
     @Column(name = "address", nullable = false)
     private String address;
 
+
+    @NotNull
+    @NotBlank
+    @Column(name = "size", nullable = false)
+    private Integer size;
+
     @Column(name = "create_at", nullable = false)
     @CreatedDate
     private Timestamp createAt;

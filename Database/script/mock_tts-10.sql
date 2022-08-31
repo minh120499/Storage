@@ -410,6 +410,7 @@ drop table products_count;
 
 END
 
+use mock_tts_10
 
 
 alter table mock_tts_10.imports

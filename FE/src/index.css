@@ -1,6 +1,6 @@
-/*@tailwind base;*/
-/*@tailwind components;*/
-/*@tailwind utilities; *!*/
+/* @tailwind base;
+@tailwind components; */
+@tailwind utilities;
 
 
 body {
@@ -78,6 +78,5 @@ main::-webkit-scrollbar {
 }
 main::-webkit-scrollbar-thumb {
   background: rgb(193 193 193);
-  border-radius: 10px;
   border-radius: 10px;
 }

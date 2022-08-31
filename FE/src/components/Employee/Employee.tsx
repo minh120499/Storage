@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   Avatar,
-  Button,
+  // Button,
   Form,
   Input,
   Modal,
@@ -12,6 +12,7 @@ import axios from "axios";
 import { useState } from "react";
 import Role from "./Role";
 import RoleSelect from "./RoleSelect";
+import { Button } from "../../UI";
 
 interface DataType {
   key: React.Key;

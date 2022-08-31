@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dropdown, Menu, MenuProps, Space, Table } from "antd";
+import { Dropdown, Menu, MenuProps, Space, Table, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import "../../styles/Category.css";
 import CategoryCreate from "./CategoryCreate";
@@ -14,7 +14,8 @@ import { Link } from "react-router-dom";
 import { DeleteOutlined, DownOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import ToastCustom from "../../features/toast/Toast";
-import Button from "../../UI/Button";
+import Buttonn from "../../UI/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Categories() {
   const [response, setResponse] = useState<Category[]>([]);
@@ -60,38 +61,42 @@ export default function Categories() {
       dataIndex: "description",
     },
     {
-      title: 'Thao tác',
+      title: "Thao tác",
 
       render: (row) => {
         return (
-          <>
-            <div style={{ display: "flex", alignItems: "center", width: "55px" }}>
-              <CategoryUpdate status={() => setStatus(!status)} categoryProp={row} />
-              <Button style={{ background: "red", width: "55px", fontSize: '14px', marginLeft: "15px" }} onClick={() => onDelete(row)}>Xoá</Button>
-            </div>
-          </>
-        )
-      }
-    }
+          <Space>
+            <CategoryUpdate
+              status={() => setStatus(!status)}
+              categoryProp={row}
+            />
+            <DeleteIcon
+              className="text-red-500"
+              onClick={() => onDelete(row)}
+            />
+          </Space>
+        );
+      },
+    },
   ];
 
   const handleMenuClick: MenuProps["onClick"] = (e: any) => {
     switch (e.key) {
-        case '1':
-          onDeleteList(selectedRowKeys);
+      case "1":
+        onDeleteList(selectedRowKeys);
     }
   };
 
   const menu = (
     <Menu
-        onClick={handleMenuClick}
-        items={[
-            {
-                label: <Link to="#">Xóa nhà cung cấp</Link>,
-                key: '1',
-                icon: <DeleteOutlined/>,
-            },
-        ]}
+      onClick={handleMenuClick}
+      items={[
+        {
+          label: <Link to="#">Xóa nhà cung cấp</Link>,
+          key: "1",
+          icon: <DeleteOutlined />,
+        },
+      ]}
     />
   );
 
@@ -154,15 +159,13 @@ export default function Categories() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Dropdown overlay={menu} disabled={!hasSelected}>
-            <Button>
-              <Space>
-                Thao tác
-                <DownOutlined />
-              </Space>
+            <Button type="primary" style={{ width: "180px", fontSize: "14px" }}>
+              Thao tác
+              <DownOutlined />
             </Button>
           </Dropdown>
           <span style={{ marginLeft: 8, marginRight: 8 }}>
-            {hasSelected ? `Selected ${selectedRowKeys.length} istems` : ""}
+            {hasSelected ? `Đã chọn ${selectedRowKeys.length} danh mục` : ""}
           </span>
         </div>
         <CategoryCreate status={() => setStatus(!status)} />
