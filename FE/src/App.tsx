@@ -19,11 +19,11 @@ import HomePage from "./components/HomePage";
 import EmployeeDetails from "./components/Employee/Details";
 import Employee from "./components/Employee/Employee";
 import RoleManager from "./components/RoleManager/RoleManager";
-import DetailsProduct from "./pages/product/DetailsProduct";
 import { exact } from "prop-types";
 import CreateImport from "./pages/Import/CreateImport";
 import Inventory from "./components/inventory/Inventory";
 import InventoryList from "./components/inventory/InventoryList";
+import ProductDetails from "./pages/product/ProductDetails";
 const App: React.FC = () => {
   const router = useRoutes([
     {
@@ -76,7 +76,7 @@ const App: React.FC = () => {
 
           children: [
             { index: true, element: <ListProduct /> },
-            { path: "/products/:id", element: <DetailsProduct /> },
+            { path: "/products/:id", element: <ProductDetails /> },
           ],
         },
         {

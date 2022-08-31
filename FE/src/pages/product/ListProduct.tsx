@@ -14,9 +14,11 @@ import { Link, useNavigate } from "react-router-dom";
 import "../../styles/Table.css";
 
 import { IProductCount, IProductFilter } from '../../type/allType';
-import { countProductByFilter, getProducts } from '../../services/productServices';
+import { countProductByFilter, deleteProductsById, getProducts } from '../../services/productServices';
 // import ProductPagination from './ProductPagination';
 import { DeleteOutlined, DownOutlined, PlusOutlined, SortDescendingOutlined, StopOutlined,DownloadOutlined } from '@ant-design/icons';
+import Swal from 'sweetalert2';
+import ToastCustom from '../../features/toast/Toast';
 // import { Sort } from '@mui/icons-material';
 // import { margin } from '@mui/system';
 const initFilter: IProductFilter = {
@@ -32,6 +34,9 @@ const ProductCol = [
         title: 'Mã sản phẩm',
         dataIndex: 'code',
         key: 'code',
+        render: (code: string) => {
+            return (<Antd.Tag color={'orange'}>{code}</Antd.Tag>)
+        }
     },
     {
         title: 'Tên sản phẩm',
@@ -57,24 +62,7 @@ const ProductCol = [
         }
     }
 ]
-const menu = (
-    <Antd.Menu
-        items={[
-            {
-                label: <Link to="#">Ngừng giao dịch</Link>,
-                key: '1',
-                icon: <StopOutlined />,
-            },
 
-            {
-                label: <Link to="#">Xóa nhà cung cấp</Link>,
-                key: '2',
-
-                icon: <DeleteOutlined />,
-            }
-        ]}
-    />
-);
 
 
 const ListProduct = () => {
@@ -85,24 +73,92 @@ const ListProduct = () => {
     const navigate = useNavigate()
     const [totalPage, setTotalPage] = useState<number>(1);
     const [selectProduct, setSelectProduct] = useState<React.Key[]>([]);
-
     const [isOpenFilter, setIsOpenFilter] = useState(false)
+    const loadData= ()=>{
+        getProducts(productFilter).then((response) => response.json())
+        .then((res) => {
+            setProducts(res)
 
+        }).catch(error => { })
+    countProductByFilter(productFilter).then((response) => response.json())
+        .then((res) => {
+            setTotalPage(res)
+        }).catch(error => {
+
+
+        })
+    }
+
+    const handleDeleteProduct = () => {
+        Swal.fire({
+            title: 'Bạn có chắc?',
+            text: "Bạn không thể hồi phục lại dữ liệu!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete!'
+        }).then((result) => {
+            if (result.isConfirmed ) {
+                deleteProductsById(selectProduct)
+                .then(res => {
+                    if(res.ok)
+                    {
+                        ToastCustom.fire({
+                            icon:'success',
+                            title:'Xóa thành công'
+                        })
+                        loadData()
+                    }
+                 })
+                .catch(error => {
+                    ToastCustom.fire(
+                        {
+                            icon: 'error',
+                            title: 'Xóa Thất bại'
+                        }
+                    )
+    
+                })
+            }
+    
+        })
+    
+    }
+    const handleMenuClick: Antd.MenuProps['onClick'] = (e: any) => {
+        switch (e.key) {
+            case '1':
+                handleDeleteProduct() 
+                break
+            case '2':
+                           
+                break
+    
+        }
+    };
+    const menu = (
+        <Antd.Menu
+            onClick={handleMenuClick}
+            items={[
+                {
+                    key: '1',
+                    label: <Antd.Button style={{ width: '100%' }} type="text" danger>Xóa Sản phẩm<DeleteOutlined /></Antd.Button>,
+    
+                },
+                // {
+                //     label: <Antd.Button style={{ width: '100%' }} type="text" >Sửa sản phẩm<InfoCircleOutlined /></Antd.Button>,
+                //     key: '2',
+    
+    
+                // },
+            ]}
+        />
+    );
+    
 
     useLayoutEffect(() => {
 
-        getProducts(productFilter).then((response) => response.json())
-            .then((res) => {
-                setProducts(res)
-
-            }).catch(error => { })
-        countProductByFilter(productFilter).then((response) => response.json())
-            .then((res) => {
-                setTotalPage(res)
-            }).catch(error => {
-
-
-            })
+       loadData()
 
     }, [productFilter])
 
@@ -132,7 +188,10 @@ const ListProduct = () => {
                             onClick: event => navigate({ pathname: `/products/${record.id}` }),
                         }
                     }}
-                    rowSelection={undefined}
+                    rowSelection={{selectedRowKeys:selectProduct,
+                                    onChange(selectedRowKeys, selectedRows, info) {
+                                        setSelectProduct(selectedRowKeys)
+                                    },}}
 
 
                 />

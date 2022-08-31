@@ -66,6 +66,9 @@ public class ProductVariant {
 	@Column(name = "sale_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
 	private BigDecimal salePrice;
 	@Column(name = "import_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
-	private BigDecimal importPric;
+	private BigDecimal importPrice;
+
+    @Column(name = "is_delete")
+    private Boolean isDelete;
 
 }

@@ -11,6 +11,7 @@ import { ISupplier } from '../../services/customType';
 import ToastCustom from '../../features/toast/Toast';
 import { Delete } from '@mui/icons-material';
 import { RcFile } from 'antd/lib/upload';
+import ImageUpload from './ImageUpload';
 
 
 const getBase64 = (file: RcFile): Promise<string> =>
@@ -42,7 +43,7 @@ function AddProduct() {
         description: '',
         wholesalePrice: 0,
         salePrice: 0,
-        importPrice: 0
+        importPrice: 0,
 
 
     }
@@ -349,7 +350,7 @@ function AddProduct() {
             <Mui.Paper sx={{ px: 5, py: 2, height: 250, mb: 2 }}>
                 <h1>Thêm hình ảnh </h1>
                 <div style={{ margin:'20px 50px'}}>
-                    <Antd.Upload
+                    {/* <Antd.Upload
                         name="avatar"
                         listType="picture-card"
                         className="avatar-uploader"
@@ -358,10 +359,12 @@ function AddProduct() {
 
                     >      {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : UploadButton}
 
-                    </Antd.Upload>
+                    </Antd.Upload> */}
+                           <ImageUpload/>
                 </div>
 
             </Mui.Paper>
+     
         )
 
     }
