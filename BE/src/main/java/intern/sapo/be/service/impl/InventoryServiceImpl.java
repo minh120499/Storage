@@ -1,13 +1,10 @@
 package intern.sapo.be.service.impl;
+
 import intern.sapo.be.dto.request.ProductVariantsDTO;
 import intern.sapo.be.dto.response.Inventory.InventoryResponse;
-import intern.sapo.be.dto.request.ProductVariantsDTO;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.entity.ProductVariant;
-import intern.sapo.be.entity.ProductVariant;
 import intern.sapo.be.repository.InventoryRepository;
-import intern.sapo.be.repository.ProductVariantsRepository;
-import intern.sapo.be.security.jwt.util.Utils;
 import intern.sapo.be.repository.ProductVariantsRepository;
 import intern.sapo.be.security.jwt.util.Utils;
 import intern.sapo.be.service.IInventoryService;
@@ -17,9 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -41,7 +36,7 @@ public class InventoryServiceImpl implements IInventoryService {
         productVariantsDTO.setImage(productVariant.getImage());
         productVariantsDTO.setWholesalePrice(productVariant.getWholesalePrice());
         productVariantsDTO.setSalePrice(productVariant.getSalePrice());
-        productVariantsDTO.setImportPrice(productVariant.getImportPric());
+        productVariantsDTO.setImportPrice(productVariant.getImportPrice());
         return productVariantsDTO;
     }
 

@@ -40,7 +40,7 @@ const items: MenuItem[] = [
     getItem("Nhập hàng", "/purchase_orders/create"),
     // getItem("Chuyển hàng", "/321"),
   ]),
-  getItem("Đơn vị vận chuyển", "/transport-companies", <AppstoreOutlined />),
+
   getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
 
   getItem("Nhà cung cấp", "/supplier", <ShopOutlined />),

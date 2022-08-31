@@ -515,3 +515,11 @@ alter table mock_tts_10.imports
 alter table mock_tts_10.imports
     add is_done bit null default false;
 
+
+alter table mock_tts_10.imports
+    add delivery_date varchar(50) null;
+
+
+alter table mock_tts_10.details_imports
+    add import_price decimal(20,2) null;
+

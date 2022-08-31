@@ -22,9 +22,10 @@ public class DetailsImport {
     private Import anImport;
     private Integer import_id;
 
-
-    @JoinColumn(name = "product_variant_id", nullable = false)
-    private Integer productVariantId;
+    @ManyToOne
+    @JoinColumn(name = "product_variant_id", insertable = false, updatable = false)
+    private ProductVariant productVariant;
+    private Integer product_variant_id;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
@@ -32,5 +33,6 @@ public class DetailsImport {
     @Column(name = "total_price", nullable = false, precision = 20, scale = 2, columnDefinition = " default (0)")
     private BigDecimal totalPrice;
 
-
+    @Column(name = "import_price", precision = 20, scale = 2)
+    private BigDecimal importPrice;
 }

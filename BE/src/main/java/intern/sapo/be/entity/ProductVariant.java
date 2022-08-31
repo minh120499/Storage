@@ -60,12 +60,13 @@ public class ProductVariant {
 
 
 
+
 	@Column(name = "wholesale_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
 	private BigDecimal wholesalePrice;
 
-	@Column(name = "sale_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
+	@Column(name = "sale_price", nullable = false, precision = 20, scale = 2, columnDefinition = " default (0)")
 	private BigDecimal salePrice;
-	@Column(name = "import_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
-	private BigDecimal importPric;
+	@Column(name = "import_price", nullable = false, precision = 20, scale = 2, columnDefinition = " default (0)")
+	private BigDecimal importPrice;
 
 }

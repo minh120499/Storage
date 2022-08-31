@@ -156,6 +156,7 @@ const SupplierCreate = ({reload}: SupplierProps) => {
                         <Row>
                             <Col span={4}>
                                 <Form.Item>
+
                                     <Button onClick={handleCancel}>Cancel</Button>
                                 </Form.Item>
                             </Col>
