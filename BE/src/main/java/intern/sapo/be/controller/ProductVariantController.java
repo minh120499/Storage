@@ -6,24 +6,20 @@ import intern.sapo.be.dto.request.Product.ProductVariantDTO;
 import intern.sapo.be.entity.ProductVariant;
 import intern.sapo.be.service.IProductVariantService;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/product-variants")
+@CrossOrigin("*")
 public class ProductVariantController extends BaseController<ProductVariant> {
     private final IProductVariantService productVariantService;
 
-
-
-    public ProductVariantController(IBaseService<ProductVariant> baseService, IProductVariantService productVariantService, JdbcTemplate jdbcTemplate) {
+    public ProductVariantController(IBaseService<ProductVariant> baseService, IProductVariantService productVariantService) {
         super(baseService);
         this.productVariantService = productVariantService;
-
     }
 
     @GetMapping("search")

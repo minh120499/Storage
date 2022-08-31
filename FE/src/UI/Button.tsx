@@ -1,23 +1,49 @@
 import styled from "@emotion/styled";
 import { Button } from "antd";
-
+let red = "#d72503";
+let blue = "#1890ff";
+red = "#e74c3c";
+type Mode = {
+  cancel: string;
+};
+const color = {
+  cancel: red,
+};
+const hover = {
+  cancel: "#ff7875",
+};
 const B = (props: any) => <Button {...props} />;
 
-const Buttonn = styled(B)`
-  
-  color: #fff;
-  border-color: #1890ff;
-  background: #1890ff;
-  &:hover {
-    background: #40a9ff;
-    border-color: #40a9ff;
-    color: #fff;
-  }
-  &:active {
-    color: #fff;
-    border-color: #1890ff;
-    background: #1890ff;
-  }
-`;
+const Buttonn = styled(B)(
+  {
+    color: "#fff",
+    borderColor: "#1890ff",
+    background: blue,
+    ":hover": {
+      background: "#40a9ff",
+      borderColor: "#40a9ff",
+      color: "#fff",
+    },
+    ":active, :focus": {
+      color: "#fff",
+      borderColor: "#1890ff",
+      background: "#1890ff",
+    },
+  },
+  (props) => ({
+    background: props?.mode && color[props?.mode as keyof Mode],
+    borderColor: props?.mode && color[props?.mode as keyof Mode],
+    ":hover": {
+      background: props?.mode && hover[props?.mode as keyof Mode],
+      borderColor: props?.mode && hover[props?.mode as keyof Mode],
+      color: "#fff",
+    },
+    ":focus, :active": {
+      background: props?.mode && color[props?.mode as keyof Mode],
+      borderColor: props?.mode && color[props?.mode as keyof Mode],
+      color: "#fff",
+    },
+  })
+);
 
 export default Buttonn;

@@ -15,10 +15,10 @@ import "../styles/SideBar.css";
 type MenuItem = Required<MenuProps>["items"][number];
 
 function getItem(
-  label: React.ReactNode,
-  key?: React.Key | null,
-  icon?: React.ReactNode,
-  children?: MenuItem[]
+    label: React.ReactNode,
+    key?: React.Key | null,
+    icon?: React.ReactNode,
+    children?: MenuItem[]
 ): MenuItem {
   return {
     key,
@@ -29,6 +29,8 @@ function getItem(
 }
 
 const items: MenuItem[] = [
+  getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
+
   getItem("Quản lý sản phẩm", "sub1", <AppstoreOutlined />, [
     getItem("Thêm sản phẩm", "/productsAdd"),
     getItem("Danh sách sản phẩm", "/products"),
@@ -40,14 +42,13 @@ const items: MenuItem[] = [
     getItem("Nhập hàng", "/purchase_orders/create"),
     // getItem("Chuyển hàng", "/321"),
   ]),
-
-  getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
+  // getItem("Đơn vị vận chuyển", "/transport-companies", <AppstoreOutlined />),
+  // getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
 
   getItem("Nhà cung cấp", "/supplier", <ShopOutlined />),
   getItem("Kho hàng", "", <WarehouseIcon />, [
     getItem("Danh sách", "/stocker/inventories"),
-    getItem("Quản lý", "/stocker/storage"),
-
+    getItem("Quản lý", "/stocker/manager"),
   ]),
 
   getItem("Nhân viên", null, <TeamOutlined />, [
@@ -57,50 +58,31 @@ const items: MenuItem[] = [
 ];
 
 const SideBar: React.FC = () => {
-  const [mode, setMode] = useState<"vertical" | "inline">("inline");
-  const [theme, setTheme] = useState<MenuTheme>("dark");
-
   const navigate = useNavigate();
 
-  const changeMode = (value: boolean) => {
-    setMode(value ? "vertical" : "inline");
-  };
-
-  const changeTheme = (value: boolean) => {
-    setTheme(value ? "dark" : "light");
-  };
-
   return (
-    <div className="side-bar">
-      <div className="side-bar__brand-logo">
-        <a href="/home">
-          <img
-            className="img-fill"
-            src="https://bizweb.dktcdn.net/assets/admin/images/icon-svg/sub_logosapo-02.svg"
-            alt="logo"
+      <div className="side-bar">
+        <div className="side-bar__brand-logo">
+          <a href="/home">
+            <img
+                className="img-fill"
+                src="https://bizweb.dktcdn.net/assets/admin/images/icon-svg/sub_logosapo-02.svg"
+                alt="logo"
+            />
+          </a>
+        </div>
+        <div className="side-bar_menu">
+          <Menu
+              style={{ width: 256, height: "100%" }}
+              mode="inline"
+              theme="dark"
+              items={items}
+              onClick={(e) => {
+                navigate(e.key);
+              }}
           />
-        </a>
+        </div>
       </div>
-      <div className="side-bar_menu">
-        {/* <Switch onChange={changeMode} /> Change Mode */}
-        {/* <Divider type="vertical" />
-            <Switch onChange={changeTheme} /> Change Style */}
-        {/* <br />
-            <br /> */}
-
-        <Menu
-          style={{ width: 256, height: "100%" }}
-          defaultSelectedKeys={["1"]}
-          defaultOpenKeys={["sub1"]}
-          mode={mode}
-          theme={theme}
-          items={items}
-          onClick={(e) => {
-            navigate(e.key);
-          }}
-        />
-      </div>
-    </div>
   );
 };
 

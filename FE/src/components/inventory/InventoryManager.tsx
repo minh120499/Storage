@@ -39,19 +39,19 @@ const storages: SelectProps["options"] = [
   },
 ];
 
-const Inventory = () => {
+const InventoryManager = () => {
   return (
     <div>
       <h2>Kho hàng</h2>
       <div>
-        <Table columns={columns} />
+        {/* <Table columns={columns} /> */}
         <div>
           <h2>Tổng quan</h2>
-          <Select options={storages} />
+          {/* <Select options={storages} /> */}
         </div>
       </div>
     </div>
   );
 };
 
-export default Inventory;
+export default InventoryManager;

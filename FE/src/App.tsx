@@ -1,4 +1,4 @@
-import {useRoutes} from "react-router-dom";
+import { useRoutes } from "react-router-dom";
 
 import React from "react";
 import Dashboard from "./pages/Dashboard";
@@ -8,20 +8,26 @@ import AddProduct from "./pages/product/AddProduct";
 import Login from "./components/Login";
 import SupplierList from "./pages/supplier/SupplierList";
 // import SupplierDetails from "./pages/supplier/SupplierDetails";
+import SupplierCreate from "./pages/supplier/SupplierCreate";
+
 import SupplierDetails from "./pages/supplier/SupplierDetails";
 import ListProduct from "./pages/product/ListProduct";
+import TransportCompanies from "./pages/transport_company/TransportCompanies";
 
 import HomePage from "./components/HomePage";
 import EmployeeDetails from "./components/Employee/Details";
 import Employee from "./components/Employee/Employee";
 import RoleManager from "./components/RoleManager/RoleManager";
-import DetailsProduct from "./pages/product/DetailsProduct";
+import { exact } from "prop-types";
 import CreateImport from "./pages/ImportInvoice/CreateImport";
-import Inventory from "./components/inventory/Inventory";
 import InventoryList from "./components/inventory/InventoryList";
-import TransportCompanies from "./pages/transport_company/TransportCompanies";
+
 import ListImportInvoice from "./pages/ImportInvoice/ListImportInvoice";
 import DetailImportInvoice from "./pages/ImportInvoice/DetailImportInvoice";
+
+import ProductDetails from "./pages/product/ProductDetails";
+import { Status } from "./components/stock_transfers/status";
+import InventoryManager from "./components/inventory/InventoryManager";
 
 const App: React.FC = () => {
   const router = useRoutes([
@@ -39,8 +45,8 @@ const App: React.FC = () => {
           element: <HomePage />,
         },
         {
-          path: "/stocker/storage",
-          element: <Inventory />,
+          path: "/stocker/manager",
+          element: <InventoryManager/>,
         },
         {
           path: "stocker/inventories",
@@ -48,7 +54,10 @@ const App: React.FC = () => {
         },
         {
           path: "/storage",
-          element: <Storage />,
+          children: [
+            { path: "", element: <Storage /> },
+            { path: "stock_transfers/:id", element: <Status /> },
+          ],
         },
         {
           path: "/supplier",
@@ -70,23 +79,24 @@ const App: React.FC = () => {
         },
         {
           path: "/productsAdd",
-          element: <AddProduct />,
+          element: <AddProduct />
         },
         {
           path: "/products",
 
           children: [
             { index: true, element: <ListProduct /> },
-            { path: "/products/:id", element: <DetailsProduct /> },
+            { path: "/products/:id", element: <ProductDetails /> },
+
           ],
         },
         {
           path: "/categories",
-          element: <Categories />,
+          element: <Categories />
         },
         {
           path: "/transport-companies",
-          element: <TransportCompanies />,
+          element: <TransportCompanies />
         },
         {
           path: "/employees/:id",

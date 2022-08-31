@@ -29,3 +29,13 @@ export interface DataType {
   stock?: number;
   quantity?: number;
 }
+export interface exportById {
+  id?: number;
+  receiveInventory?: number;
+  status?: number;
+  transportCompany?: number;
+  account?: number;
+  createAt?: string;
+  updateAt?: string;
+  exportInventory?: number;
+}

@@ -63,3 +63,27 @@
 .title-p {
   display: flex;
 }
+.select-modal {
+  height: 350px;
+}
+.menu {
+  display: flex;
+}
+.menu-select {
+  display: flex;
+  width: 70%;
+}
+.Modal {
+  display: flex;
+}
+.export-bottom {
+  display: flex;
+  flex-direction: column;
+  width: 420px;
+  margin-left: auto;
+  /* border-top : 1px solid rgb(132, 198, 252); */
+}
+.export-bottom > li {
+  display: flex;
+  text-align: right;
+}

@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface IDetailsExportService extends IBaseService<DetailsExport> {
     List<DetailsExport> saveAll(Iterable<DetailsExport> entities);
+
+    List<DetailsExport> findByExportId(Integer id);
 }

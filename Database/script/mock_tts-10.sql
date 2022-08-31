@@ -356,7 +356,7 @@ declare search_value text ;
 set search_value=lower(concat('%',key_word,'%'));
 select  count(table1.total) from (select 0 as total  from products left join product_variants on products.id=product_variants.product_id
 left join inventories_product_variant on product_variants.id=inventories_product_variant.product_variant_id 
-where (lower(products.name) like search_value or lower(products.code) like search_value) and products.is_delete=is_delete
+where (lower(products.name) like search_value or lower(products.code) like search_value) and products.is_delete=is_delete and product_variants.is_delete=false
 group by(products.id) ) as table1  
 group by table1.total;
  
@@ -389,7 +389,7 @@ set offset_number=(page-1)*size;
 
 insert into products_count (select products.*,count(product_variants.id) as number_of_variant,sum(IF(quantity>0,quantity,0)) as total from products left join product_variants on products.id=product_variants.product_id
 left join inventories_product_variant on product_variants.id=inventories_product_variant.product_variant_id 
-where (lower(products.name) like search_value or lower(products.code) like search_value) and products.is_delete=is_delete
+where (lower(products.name) like search_value or lower(products.code) like search_value) and products.is_delete=is_delete and product_variants.is_delete=false
 group by(products.id) ) limit size offset offset_number;
  
  
@@ -410,6 +410,7 @@ drop table products_count;
 
 END
 
+use mock_tts_10
 
 
 alter table mock_tts_10.imports
@@ -514,6 +515,8 @@ alter table mock_tts_10.imports
 
 alter table mock_tts_10.imports
     add is_done bit null default false;
+ALTER TABLE product_variants
+    add COLUMN is_delete bit  default(0);
 
 
 alter table mock_tts_10.imports

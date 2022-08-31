@@ -60,7 +60,6 @@ public class ProductVariant {
 
 
 
-
 	@Column(name = "wholesale_price", nullable = false, precision = 20, scale = 2,columnDefinition = " default (0)")
 	private BigDecimal wholesalePrice;
 
@@ -68,5 +67,8 @@ public class ProductVariant {
 	private BigDecimal salePrice;
 	@Column(name = "import_price", nullable = false, precision = 20, scale = 2, columnDefinition = " default (0)")
 	private BigDecimal importPrice;
+
+    @Column(name = "is_delete")
+    private Boolean isDelete;
 
 }

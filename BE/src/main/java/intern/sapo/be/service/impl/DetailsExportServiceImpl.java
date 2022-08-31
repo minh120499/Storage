@@ -22,4 +22,11 @@ public class DetailsExportServiceImpl extends BaseService<DetailsExport> impleme
     public List<DetailsExport> saveAll(Iterable<DetailsExport> entities) {
         return repository.saveAll(entities);
     }
+
+    @Override
+    public List<DetailsExport> findByExportId(Integer id) {
+        return repository.findDetailsExportByExport(id);
+    }
+
+
 }

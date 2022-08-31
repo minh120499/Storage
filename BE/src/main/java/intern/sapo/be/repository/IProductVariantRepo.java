@@ -15,7 +15,7 @@ public interface IProductVariantRepo extends JpaRepository<ProductVariant,Intege
     @Query(value = "select * from  product_variants  order by id DESC limit 1",nativeQuery = true)
     ProductVariant getTop();
 
-    @Query("select p from ProductVariant p where p.productId = :id")
+    @Query("select p from ProductVariant p where p.productId = :id and p.isDelete= false ")
     List<ProductVariant> findAllByProductId(@Param("id") Integer id);
 
     @Query("delete from ProductVariant p where p.productId = ?1")

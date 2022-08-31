@@ -16,12 +16,12 @@ const T = (props: any) => {
   // }
 
   if (query.isError) {
-    // console.log(query.error);
-    // Swal.fire({
-    //   icon: "error",
-    //   title: "Oops...",
-    //   text: "Fails",
-    // });
+    console.log(query.error);
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Fails",
+    });
     return <div>Api not found</div>;
   }
 
@@ -32,6 +32,7 @@ const T = (props: any) => {
           {...props}
           pagination={false}
           dataSource={props?.dataSource || query?.data || []}
+          rowSelection={null}
         />
         <div className="flex flex-row-reverse mt-5">
           {!!props.total && (

@@ -1,59 +1,70 @@
 package intern.sapo.be.controller;
 
-import intern.sapo.be.base.BaseController;
-import intern.sapo.be.base.IBaseService;
 import intern.sapo.be.dto.response.Inventory.InventoryResponse;
-import intern.sapo.be.entity.Category;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.service.IInventoryService;
-import intern.sapo.be.service.impl.InventoryServiceImpl;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/inventories")
 @CrossOrigin("*")
-
 public class InventoryController {
-    private final IInventoryService iInventoryService;
+	private final IInventoryService iInventoryService;
 
-    private final InventoryServiceImpl inventoryService;
-    @GetMapping("")
-    public List<Inventory> getAll() {
-        return iInventoryService.findAll();
-    }
 
-    @GetMapping("/{id}")
-    public Inventory getById(@PathVariable(value = "id") Integer id) {
-        return iInventoryService.findById(id);
-    }
+	@GetMapping("/pagination")
+	public ResponseEntity getPagination(@RequestParam(value = "pageNumber", required = true, defaultValue = "1") int pageNumber,
+										@RequestParam(value = "pageSize", required = true, defaultValue = "10") int pageSize,
+										@RequestParam(value = "sortBy", required = false) String sortBy,
+										@RequestParam(value = "sortDir", required = false) String sortDir)
+	{
+		Map<String,Object> results = new HashMap<>();
+		results.put("data", iInventoryService.findAllBypPage(pageNumber,pageSize,sortBy,sortDir).getContent());
+		results.put("total",iInventoryService.findAllBypPage(pageNumber,pageSize,sortBy,sortDir).getTotalElements());
+		return ResponseEntity.ok(results);
+	}
 
-    @PostMapping("")
-    public Inventory createInventory(@RequestBody @Valid Inventory inventory, BindingResult bindingResult) {
-        return iInventoryService.create(inventory, bindingResult);
-    }
+	@GetMapping("")
+	public List<Inventory> getAll() {
+		return iInventoryService.findAll();
+	}
 
-    @PutMapping("/{id}")
+	@PostMapping("")
+	public Inventory createInventory(@RequestBody @Valid Inventory inventory, BindingResult bindingResult) {
+		return iInventoryService.create(inventory, bindingResult);
+	}
 
-    public Inventory update(@RequestBody @Valid Inventory inventory, BindingResult bindingResult,
-                            @PathVariable(value = "id") Integer id) {
-        return iInventoryService.update(id, inventory, bindingResult);
-    }
 
-    @DeleteMapping("/{id}")
-    public void deleteInventory(@PathVariable(value = "id") Integer id) {
-        iInventoryService.delete(id);
-    }
+	@GetMapping("/{id}")
+	public Inventory getById(@PathVariable(value = "id") Integer id) {
+		return iInventoryService.findById(id);
+	}
+
+	@PutMapping("/{id}")
+
+	public Inventory update(@RequestBody @Valid Inventory inventory, BindingResult bindingResult,
+	                        @PathVariable(value = "id") Integer id) {
+		return iInventoryService.update(id, inventory, bindingResult);
+	}
+
+	@DeleteMapping("/{id}")
+	public void deleteInventory(@PathVariable(value = "id") Integer id) {
+		iInventoryService.delete(id);
+	}
+
     @GetMapping("/productvariant/{id}")
     public InventoryResponse getAll(@PathVariable(value = "id") Integer id)
     {
-        return inventoryService.getAll(id);
+        return iInventoryService.getProductVariantByInventoryId(id);
     }
 
 }

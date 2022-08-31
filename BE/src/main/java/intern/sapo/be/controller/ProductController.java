@@ -62,6 +62,10 @@ public class ProductController {
     public void delete(@PathVariable(value = "id") Integer id) {
         productService.deleteById(id);
     }
+    @DeleteMapping()
+    public void deleteProducts(@RequestBody Integer[] listId) {
+        productService.deleteProductsById(listId);
+    }
 
 
 //update
@@ -76,5 +80,13 @@ public class ProductController {
         return ResponseEntity.ok(options);
     }
 
+    @DeleteMapping("/variants/{id}")
+    public void deleteVariant(@PathVariable Integer id) {
+         productService.deleteVariantById(id);
+    }
+    @DeleteMapping("/variants")
+    public void deleteVariant(@RequestBody Integer[] listId) {
+         productService.deleteVariantsById(listId);
+    }
 
 }
