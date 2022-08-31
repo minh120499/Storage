@@ -5,20 +5,22 @@ import axios from "axios";
 import { useState } from "react";
 import { rolesApi } from "../../api";
 import { IRole } from "../../interface";
-import Button from "../../UI/Button"
+import { EditIcon } from "../../UI";
+import Button from "../../UI/Button";
 
 const RoleManager = () => {
   const columns: ColumnsType<IRole> = [
     {
-      title: "Id",
+      title: <b>STT</b>,
       dataIndex: "id",
+      render: (index, t) => <div>{index}</div>
     },
     {
-      title: "Name",
+      title: <b>Chức vụ</b>,
       dataIndex: "name",
     },
     {
-      title: "Description",
+      title: <b>Mô tả</b>,
       dataIndex: "description",
       render: (text: string) => {
         return hasSelected ? <Input defaultValue={text} /> : <div>{text}</div>;
@@ -28,12 +30,12 @@ const RoleManager = () => {
       render: () => {
         return (
           <div>
-            <Button
+            <EditIcon
               type="primary"
               // onClick={() => }
             >
               Update
-            </Button>
+            </EditIcon>
           </div>
         );
       },
@@ -91,9 +93,7 @@ const RoleManager = () => {
         >
           Delete
         </Button>
-        <Button
-         type="primary" onClick={() => setAddRoleModal(true)}
-         >
+        <Button type="primary" onClick={() => setAddRoleModal(true)}>
           Add
         </Button>
         <span style={{ marginLeft: 8 }}>

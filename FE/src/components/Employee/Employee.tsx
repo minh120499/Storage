@@ -6,13 +6,14 @@ import {
   Input,
   Modal,
   Skeleton,
+  Space,
 } from "antd";
 import Table, { ColumnsType } from "antd/lib/table";
 import axios from "axios";
 import { useState } from "react";
 import Role from "./Role";
 import RoleSelect from "./RoleSelect";
-import { Button } from "../../UI";
+import { Button, EditIcon, DeletedIcon } from "../../UI";
 
 interface DataType {
   key: React.Key;
@@ -23,37 +24,12 @@ interface DataType {
 
 const columns: ColumnsType<DataType> = [
   {
-    title: "Id",
+    title: <b>ID</b>,
     dataIndex: "id",
     render: (text: string) => <a href={`./employees/${text}`}>{text}</a>,
   },
   {
-    title: "Name",
-    dataIndex: "employee",
-    render: ([employees]) => <div>{employees?.fullName || "--.--"}</div>,
-  },
-  {
-    title: "Phone",
-    dataIndex: "employee",
-    render: ([employees]) => <div>{employees?.phone || "--.--"}</div>,
-  },
-  {
-    title: "Email",
-    dataIndex: "employee",
-    render: ([employees]) => <div>{employees?.email || "--.--"}</div>,
-  },
-  {
-    title: "Address",
-    dataIndex: "employee",
-    render: ([employees]) => <div>{employees?.address || "--.--"}</div>,
-  },
-  {
-    title: "Role",
-    dataIndex: ["roles"],
-    render: (roles, empId: any) => <Role roles={roles} empId={empId?.id} />,
-  },
-  {
-    title: "Avatar",
+    title: <b>Ảnh</b>,
     dataIndex: "employee",
     render: ([employees]) => (
       <Avatar
@@ -62,6 +38,41 @@ const columns: ColumnsType<DataType> = [
       >
         {employees?.avatar || employees?.fullName}
       </Avatar>
+    ),
+  },
+  {
+    title: <b>Họ & Tên</b>,
+    dataIndex: "employee",
+    render: ([employees]) => <div>{employees?.fullName || "--.--"}</div>,
+  },
+  {
+    title: <b>SĐT</b>,
+    dataIndex: "employee",
+    render: ([employees]) => <div>{employees?.phone || "--.--"}</div>,
+  },
+  {
+    title: <b>Email</b>,
+    dataIndex: "employee",
+    render: ([employees]) => <div>{employees?.email || "--.--"}</div>,
+  },
+  {
+    title: <b>Địa chỉ</b>,
+    dataIndex: "employee",
+    render: ([employees]) => <div>{employees?.address || "--.--"}</div>,
+  },
+  {
+    title: <b>Chức vụ</b>,
+    dataIndex: ["roles"],
+    render: (roles, empId: any) => <Role roles={roles} empId={empId?.id} />,
+  },
+  {
+    title: "",
+    dataIndex: "id",
+    render: () => (
+      <Space>
+        <EditIcon />
+        <DeletedIcon />
+      </Space>
     ),
   },
 ];
@@ -131,7 +142,7 @@ function Employee() {
         closeIcon={<div></div>}
       >
         <Form
-          {...{ labelCol: { span: 4 }, wrapperCol: { span: 16 } }}
+          {...{ labelCol: { span: 6 }, wrapperCol: { span: 16 } }}
           name="addEmployee"
           onFinish={addEmployeeHandle}
           onFinishFailed={() => console.log(currentRoles)}

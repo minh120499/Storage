@@ -8,6 +8,7 @@ export interface IRole {
 export interface IRoleLable {
   staff: string;
   stocker: string;
+  admin: string
 }
 
 export interface ILoginData {

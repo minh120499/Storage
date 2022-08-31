@@ -51,10 +51,11 @@ export default function Role({ roles, empId }: props) {
         })
       ) : (
         <Tag className="cursor-pointer" onClick={() => setModal(true)}>
-          Add role
+          Add role 
+          {/* <AddIcon /> */}
         </Tag>
       )}
-      <Modal
+      {modal && <Modal
         title="Role"
         visible={modal}
         onOk={() => updateRoles()}
@@ -63,7 +64,7 @@ export default function Role({ roles, empId }: props) {
         <Form>
           <RoleSelect getRole={setRole} empRole={roles.map((e) => e.name)} />
         </Form>
-      </Modal>
+      </Modal>}
     </div>
   );
 }

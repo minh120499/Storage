@@ -1,4 +1,5 @@
 export const roleColor = {
     stocker: 'magenta',
-    staff: 'gold'
+    staff: 'gold',
+    admin: 'gold'
 }

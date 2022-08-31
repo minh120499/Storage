@@ -6,11 +6,14 @@ import {
 import WarehouseIcon from "@mui/icons-material/Warehouse";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { Menu } from "antd";
-import type { MenuProps, MenuTheme } from "antd/es/menu";
-import React, { useState } from "react";
+import type { MenuProps } from "antd/es/menu";
 import { useNavigate } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
 // import AddProduct from "../pages/product/AddProduct";
+
 import "../styles/SideBar.css";
+import { useSelector } from "react-redux";
+import { RootState } from "../app/store";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -55,9 +58,14 @@ const items: MenuItem[] = [
     getItem("Danh sách", "/api/admin/employees"),
     getItem("Roles", "/api/admin/roles"),
   ]),
+  getItem("Đăng xuất", "/login", <LogoutIcon />),
 ];
 
 const SideBar: React.FC = () => {
+  const roles = useSelector((state: RootState) => state.user.authorities);
+  console.log(roles);
+  
+
   const navigate = useNavigate();
 
   return (

@@ -1,4 +1,4 @@
-import { Table, Button } from "../../UI";
+import { Table, Button, EditIcon, DeletedIcon } from "../../UI";
 import type { ColumnsType } from "antd/es/table";
 import { IInventory } from "../../interface";
 import { Space, Modal, Form, Input } from "antd";
@@ -8,17 +8,11 @@ import {
   getAllInventory,
   updateInvetory,
   deleteInvetory,
-  getPagination
 } from "../../api/inventory";
 import { useState } from "react";
 import AddAddress from "../AddAddress";
 import Swal from "sweetalert2";
 
-
-type data = {
-  total:number,
-  data:[]
-}
 const InventoryList = () => {
   const columns: ColumnsType<IInventory> = [
     {
@@ -51,7 +45,7 @@ const InventoryList = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button
+          <EditIcon
             onClick={() => {
               setMode("edit");
               updateInventory(record);
@@ -59,10 +53,10 @@ const InventoryList = () => {
             }}
           >
             Sửa
-          </Button>
-          <Button mode="cancel" onClick={() => deleteInvetoryHandler(record)}>
+          </EditIcon>
+          <DeletedIcon mode="cancel" onClick={() => deleteInvetoryHandler(record)}>
             Xóa
-          </Button>
+          </DeletedIcon>
         </Space>
       ),
     },
@@ -137,7 +131,7 @@ const InventoryList = () => {
         Swal.fire("Đã xóa!", "Đã xóa thành công", "success");
       }
     });
-    setIsModalVisible(false)
+    setIsModalVisible(false);
   };
   return (
     <>
