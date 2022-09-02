@@ -12,7 +12,7 @@ const ListImportInvoice = () =>{
 
     useEffect(() =>{
         getImportInvoices().then((r) =>{
-            setImportInvoices(r.data.reverse())
+            setImportInvoices(r.data)
         })
     },[])
     return(

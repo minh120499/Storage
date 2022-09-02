@@ -19,7 +19,7 @@ import java.util.List;
         query = "select imports.code,s.code as 'supplierCode',i.name as 'inventoryName',total_price as 'totalPrice',is_done as 'isDone',is_paid as 'isPaid',is_import as 'isImport',a.username as 'userName',delivery_date as 'deliveryDate' from imports\n" +
                 "inner join accounts a on imports.account_id = a.id\n" +
                 "inner join inventories i on imports.inventory_id = i.id\n" +
-                "inner join suppliers s on imports.supplier_id = s.id;",
+                "inner join suppliers s on imports.supplier_id = s.id order by imports.id desc;",
         resultSetMapping = "FeaturedInventory"
 )
 @SqlResultSetMapping(

@@ -51,3 +51,6 @@ export const getDetailImportInvoice = async (code:string) =>{
 export const updateStatusInvoice = async (importId: number, status: string) =>{
     return await axios.put(`http://localhost:8080/api/imports/updateStatus?id=${importId}&status=${status}`)
 }
+export const getHistoryStatusImportInvoice = async (importId: number) =>{
+    return await axios.get(`http://localhost:8080/api/imports/getStatusHistory/${importId}`)
+}

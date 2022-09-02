@@ -6,8 +6,10 @@ import intern.sapo.be.entity.DetailsImport;
 import intern.sapo.be.entity.Import;
 import intern.sapo.be.service.IDetailsImportService;
 import intern.sapo.be.service.IImportService;
+import intern.sapo.be.service.IImportsStatusService;
 import intern.sapo.be.service.IInventoriesProductVariantService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,16 +21,15 @@ import java.util.List;
 public class ImportController {
 
     private final IImportService importService;
+    private final IImportsStatusService importsStatusService;
 
     private final IDetailsImportService detailsImportService;
 
-    private final IInventoriesProductVariantService inventoriesProductVariantService;
 
     @PostMapping()
     public Import save(@RequestBody Import im) {
         Import anImport = importService.save(im);
         List<DetailsImport> list = detailsImportService.save(im.getDetailsImports(), anImport.getId());
-        inventoriesProductVariantService.importProductVariantToInventory(list, im.getInventoryId());
         return anImport;
     }
 
@@ -50,5 +51,10 @@ public class ImportController {
     @PutMapping("/updateStatus")
     private void updateStatus(@RequestParam Integer id, @RequestParam String status) {
         importService.updateStatusImport(id, status);
+    }
+
+    @GetMapping("/getStatusHistory/{importId}")
+    private ResponseEntity<?> updateStatus(@PathVariable Integer importId) {
+       return ResponseEntity.ok(importsStatusService.findDetailsImportStatus(importId));
     }
 }

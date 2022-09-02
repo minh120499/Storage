@@ -2,9 +2,10 @@ import { Link, useNavigate } from "react-router-dom";
 import {default as NumberFormat} from 'react-number-format';
 import React from "react";
 import {ColumnProps} from "antd/es/table";
-import {IImportInvoice, IMyTableData} from "../services/customType";
+import {IHistoryStatus, IImportInvoice, IMyTableData} from "../services/customType";
 import {Popconfirm} from "antd";
 import {DeleteOutlined} from "@ant-design/icons";
+import moment from "moment/moment";
 
 
 export const SupplierColumn = [
@@ -148,5 +149,40 @@ export const columnsDetailImportInvoice= [
                 <NumberFormat value={data} thousandSeparator={true} displayType='text'/>
             ),
         width: '20%'
+    },
+];
+
+export const columnsHistoryStatus: ColumnProps<IHistoryStatus>[] = [
+    {
+        title: 'Người thao tác',
+        key: "accountName",
+        dataIndex: 'accountName',
+
+    },
+    {
+        title: 'Người thao tác',
+        key: "accountName",
+        dataIndex: 'accountName',
+    },
+    {
+        title: 'Chức năng',
+        key: "statusName",
+        dataIndex: 'statusName',
+    },
+    {
+        title: 'Thao tác',
+        key: "statusDesc",
+        dataIndex: 'statusDesc',
+    },
+    {
+        title: 'Thời gian',
+        key: "createdAt",
+        dataIndex: 'createdAt',
+        render: (data:string) =>
+        {
+            const moment = require('moment');
+            const d = new Date(data);
+           return <p>{ moment(d).format('DD/MM/YYYY hh:mm:ss')}</p>;
+        }
     },
 ];

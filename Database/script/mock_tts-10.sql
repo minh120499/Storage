@@ -485,8 +485,7 @@ alter table mock_tts_10.imports
     modify supplier_id int not null;
 
 
-alter table mock_tts_10.details_imports
-    add product_variant_code varchar(100) not null;
+
 
 alter table mock_tts_10.details_imports
     add constraint foreign_key_name

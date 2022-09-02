@@ -8,7 +8,7 @@ import { Outlet } from "react-router";
 const { Sider, Content, Header } = Layout;
 
 const Dashboard: React.FC = () => {
-  console.log(useParams(), useLocation());
+
   
   const [collapsed, setCollapsed] = useState(false);
   return (

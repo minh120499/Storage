@@ -1,14 +1,15 @@
 import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import {getDetailImportInvoice, updateStatusInvoice} from "../../services/api";
-import {IDetailImportInvoice} from "../../services/customType";
+import {getDetailImportInvoice, getHistoryStatusImportInvoice, updateStatusInvoice} from "../../services/api";
+import {IDetailImportInvoice, IHistoryStatus} from "../../services/customType";
 import {Button, Col, Row, Steps, Table, Tag} from "antd";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import {ShopFilled,} from '@ant-design/icons';
 import {columnsDetailImportInvoice} from "../../components/Datatablesource";
-import NumberFormat from "react-number-format";
-import PaymentIcon from '@mui/icons-material/Payment';
 import ToastCustom from "../../features/toast/Toast";
+import ImportInvoiceHistory from "./ImportInvoiceHistory";
+import PaymentImport from "./PaymentImport";
+import ImportWarehouse from "./ImportWarehouse";
 
 const DetailImportInvoice = () => {
 
@@ -16,13 +17,19 @@ const DetailImportInvoice = () => {
 
     const [detailInvoices, setDetailInvoices] = useState<IDetailImportInvoice>();
     const [reload, setReload] = useState(false)
-    const [currentStauts, setCurrentStatus] = useState(0);
+    const [currentStatus, setCurrentStatus] = useState(0);
+    const [invoiceStatusHistory, setInvoiceStatusHistory] = useState<IHistoryStatus[]>([])
+
     useEffect(() => {
         getDetailImportInvoice(code as string).then(result => {
             setDetailInvoices(result.data)
             result.data.anImport.isDone && setCurrentStatus(2)
+            getHistoryStatusImportInvoice(result.data?.anImport.id as number).then((result) => {
+                setInvoiceStatusHistory(result.data)
+            })
         })
     }, [reload])
+
 
     const {Step} = Steps;
 
@@ -46,9 +53,7 @@ const DetailImportInvoice = () => {
             }).then()
             setReload(!reload)
         })
-
     }
-
 
     return (
         <div>
@@ -58,12 +63,43 @@ const DetailImportInvoice = () => {
                         <div>
                             <h1>{detailInvoices?.anImport.code}</h1>
                         </div>
-                        <div>
-                            <Steps current={currentStauts}>
-                                <Step title="Đặt hàng" description="This is a description."/>
-                                <Step title="Nhập kho" description="This is a description."/>
-                                <Step title="Hoàn thành" description="This is a description."/>
-                            </Steps>
+                        <div style={{width:'45%'}}>
+                            {  (() => {
+                                if (invoiceStatusHistory.length === 3) {
+                                    return (
+                                        <Steps current={currentStatus}>
+                                            <Step title="Đặt hàng" description={invoiceStatusHistory[2].createdAt}/>
+                                            <Step title="Nhập kho" description={invoiceStatusHistory[1].createdAt}/>
+                                            <Step title="Hoàn thành" description={invoiceStatusHistory[0].createdAt}/>
+                                        </Steps>
+                                    )
+                                } else if (invoiceStatusHistory.length === 2 && invoiceStatusHistory[0].statusName === 'Tạo phiếu nhập kho') {
+                                    return (
+                                        <Steps current={currentStatus+1}>
+                                            <Step title="Đặt hàng" description={invoiceStatusHistory[1].createdAt}/>
+                                            <Step title="Nhập kho" description={invoiceStatusHistory[0].createdAt}/>
+                                            <Step title="Hoàn thành"/>
+                                        </Steps>
+                                    )
+                                }else if (invoiceStatusHistory.length === 2 && invoiceStatusHistory[0].statusName === 'Thanh toán hóa đơn nhập hàng') {
+                                    return (
+                                        <Steps current={currentStatus}>
+                                            <Step title="Đặt hàng" description={invoiceStatusHistory[1].createdAt}/>
+                                            <Step title="Nhập kho"/>
+                                            <Step title="Hoàn thành"/>
+                                        </Steps>
+                                    )
+                                }
+                                else if (invoiceStatusHistory.length === 1) {
+                                    return (
+                                        <Steps current={currentStatus}>
+                                            <Step title="Đặt hàng" description={invoiceStatusHistory[0].createdAt}/>
+                                            <Step title="Nhập kho"/>
+                                            <Step title="Hoàn thành"/>
+                                        </Steps>
+                                    )
+                                }
+                            })()}
                         </div>
                     </div>
                     <div style={{marginTop: '45px'}}>
@@ -129,7 +165,7 @@ const DetailImportInvoice = () => {
 
                                 <div className="block" style={{padding: 0}}>
                                     <div style={{padding: 20, paddingBottom: 5, marginBottom: '5px'}}>
-                                        <p style={{marginBottom: 0, fontSize: "16px"}}><b>Thông tin nhà sản phẩm</b></p>
+                                        <p style={{marginBottom: 0, fontSize: "16px"}}><b>Thông tin sản phẩm</b></p>
                                     </div>
                                     <hr/>
                                     <div style={{padding: 20}}>
@@ -145,53 +181,12 @@ const DetailImportInvoice = () => {
                                     </div>
                                 </div>
 
-                                <div className="block" style={{
-                                    padding: 0,
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center'
-                                }}>
-                                    <div style={{padding: 20, paddingBottom: 5}}>
-                                        <p style={{marginBottom: 0, fontSize: "16px"}}>
-                                            <b style={{display: 'flex', alignItems: 'center'}}>
-                                                <span style={{
-                                                    marginRight: 3,
-                                                    display: 'flex',
-                                                    alignItems: 'center'
-                                                }}><PaymentIcon/></span>
-                                                Thanh toán
-                                            </b></p>
-                                        <p style={{marginTop: 10}}>Số tiền phải trả: <NumberFormat
-                                            value={detailInvoices.anImport.totalPrice} thousandSeparator={true}
-                                            displayType='text'/></p>
-                                    </div>
-                                    <div style={{padding: 20}}>
-                                        <Button type='default'>Thanh toán</Button>
-                                    </div>
-                                </div>
+                                <PaymentImport total={detailInvoices?.anImport.totalPrice}
+                                               isPaid={detailInvoices?.anImport.isPaid}/>
 
-                                <div className="block" style={{
-                                    padding: 0,
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center'
-                                }}>
-                                    <div style={{padding: 20, paddingBottom: 5, paddingTop: 0}}>
-                                        <p style={{marginBottom: 0, fontSize: "16px"}}>
-                                            <b style={{display: 'flex', alignItems: 'center'}}>
-                                                <span style={{
-                                                    marginRight: 3,
-                                                    display: 'flex',
-                                                    alignItems: 'center'
-                                                }}><LocalShippingIcon/></span>
-                                                Nhập kho
-                                            </b>
-                                        </p>
-                                    </div>
-                                    <div style={{padding: 20}}>
-                                        <Button type='primary'>Nhập kho</Button>
-                                    </div>
-                                </div>
+                               <ImportWarehouse createDate={invoiceStatusHistory[0].createdAt}
+                                                importDate ={invoiceStatusHistory[1].createdAt}
+                                                invoice={detailInvoices} isImport={detailInvoices?.anImport.isImport}/>
                             </Col>
                             <Col span={8}>
                                 <div className="block" style={{padding: 0}}>
@@ -233,14 +228,20 @@ const DetailImportInvoice = () => {
                                 </div>
                                 <div className="block" style={{padding: 0}}>
                                     <div style={{padding: 20}}>
-                                        <Button type='default'>Xem lịch sử thao tác đơn hàng</Button>
+                                        <ImportInvoiceHistory reload={reload} data={invoiceStatusHistory}/>
                                     </div>
                                 </div>
                             </Col>
                         </Row>
                         {
                             !detailInvoices.anImport.isDone && (
-                                <div style={{display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid #dfe4e8', paddingTop: '15px', marginTop: ' 50px'}}>
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'flex-end',
+                                    borderTop: '1px solid #dfe4e8',
+                                    paddingTop: '15px',
+                                    marginTop: ' 50px'
+                                }}>
                                     {
                                         !detailInvoices.anImport.isPaid &&
                                         <Button onClick={updateStatusPaidPayment} type='default'>Xác nhận thanh toán</Button>

@@ -88,3 +88,9 @@ export interface IInventories {
     name: string,
     address: string
 }
+export interface IHistoryStatus {
+    accountName: string,
+    statusName: string,
+    statusDesc: string,
+    createdAt: string
+}

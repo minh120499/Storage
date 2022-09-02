@@ -2,13 +2,16 @@ package intern.sapo.be.service.impl;
 
 import intern.sapo.be.dto.response.ImportInvoice.DetailsImportsInvoiceResponse;
 import intern.sapo.be.dto.response.ImportInvoice.ImportResponse;
+import intern.sapo.be.entity.DetailsImport;
 import intern.sapo.be.entity.Import;
 import intern.sapo.be.entity.ImportsStatus;
 import intern.sapo.be.repository.IImportRepo;
 import intern.sapo.be.repository.IStatusRepo;
 import intern.sapo.be.repository.ISupplierRepo;
 import intern.sapo.be.repository.InventoryRepository;
+import intern.sapo.be.service.IDetailsImportService;
 import intern.sapo.be.service.IImportService;
+import intern.sapo.be.service.IInventoriesProductVariantService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +36,10 @@ public class ImportService implements IImportService {
 
     private final EntityManager entityManager;
 
+    private final IDetailsImportService detailsImportService;
+
+    private final IInventoriesProductVariantService inventoriesProductVariantService;
+
     @Override
     public List<Import> findAll() {
         return importRepo.findAll();
@@ -47,7 +54,6 @@ public class ImportService implements IImportService {
     @Override
     public Import save(Import importField) {
         Import anImport = importRepo.save(importField);
-        ImportsStatus importsStatus = new ImportsStatus();
         updateStatus(anImport.getId(), "IMPORT01");
         return anImport;
     }
@@ -75,6 +81,10 @@ public class ImportService implements IImportService {
             case "paidPayment": {
                 updateStatus(importId, "IMPORT02");
                 anImport.setIsPaid(true);
+                if (anImport.getIsImport() && anImport.getIsPaid()) {
+                    anImport.setIsDone(true);
+                }
+                anImport.setIsImport(false);
                 break;
             }
             case "importWarehouse": {
@@ -90,9 +100,16 @@ public class ImportService implements IImportService {
                 break;
             }
         }
+        if (anImport.getIsImport()){;
+            inventoriesProductVariantService.importProductVariantToInventory(anImport.getDetailsImports(), anImport.getInventoryId());
+        }
+        if(anImport.getIsDone()){
+            anImport.setIsImport(true);
+        }
         if (anImport.getIsImport() && anImport.getIsPaid()) {
             anImport.setIsDone(true);
         }
+
         importRepo.save(anImport);
     }
 
