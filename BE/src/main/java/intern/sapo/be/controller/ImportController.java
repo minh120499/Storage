@@ -1,6 +1,7 @@
 package intern.sapo.be.controller;
 
-import intern.sapo.be.dto.request.ImportDTO;
+import intern.sapo.be.dto.response.ImportInvoice.DetailsImportsInvoiceResponse;
+import intern.sapo.be.dto.response.ImportInvoice.ImportResponse;
 import intern.sapo.be.entity.DetailsImport;
 import intern.sapo.be.entity.Import;
 import intern.sapo.be.service.IDetailsImportService;
@@ -37,7 +38,17 @@ public class ImportController {
     }
 
     @GetMapping("/findAll")
-    private List<ImportDTO> findAllDTO(){
+    private List<ImportResponse> findAllDTO() {
         return importService.findAllImportDTO();
+    }
+
+    @GetMapping("/getDetails/{code}")
+    private DetailsImportsInvoiceResponse getDetails(@PathVariable String code) {
+        return importService.getDetailInvoiceByCode(code);
+    }
+
+    @PutMapping("/updateStatus")
+    private void updateStatus(@RequestParam Integer id, @RequestParam String status) {
+        importService.updateStatusImport(id, status);
     }
 }

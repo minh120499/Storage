@@ -1,6 +1,7 @@
-/* @tailwind base;
-@tailwind components; */
+/*@tailwind base;*/
+/*@tailwind components;*/
 @tailwind utilities;
+
 
 
 body {
@@ -71,15 +72,21 @@ input[type="file"] {
 
 main {
   height: calc(100vh - 50px);
-  overflow: scroll;
+  overflow-y: scroll;
 }
 main::-webkit-scrollbar {
   width: 5px;
+  height: 0px;
 }
 main::-webkit-scrollbar-thumb {
   background: rgb(193 193 193);
   border-radius: 10px;
 }
-.ant-table-tbody > tr.ant-table-row:hover > td {
+
+/* main::-webkit-scrollbar{
+  background: rgb(193 193 193);
+  border-radius: 10px;
+} */
+/* .ant-table-tbody > tr.ant-table-row:hover > td {
   cursor: default !important;
-}
+} */

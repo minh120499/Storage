@@ -21,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import javax.transaction.Transactional;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -61,6 +62,7 @@ public class ProductService  implements IProductService {
 
     @Override
     public ProductReponse findById(Integer id) {
+     
         ProductReponse reponse=new ProductReponse(productRepo.findById(id).get(),variantRepo.findAllByProductId(id));
         return reponse;
     }
@@ -69,7 +71,7 @@ public class ProductService  implements IProductService {
     @Transactional
     public void deleteById(Integer integer) {
 
-        Product product=productRepo.findById(integer).orElseThrow(()->new RuntimeException("Id is not exisr"));
+        Product product=productRepo.findById(integer).orElseThrow(()->new RuntimeException("Id is not exist"));
             product.setIsDelete(true);
             productRepo.save(product);
     }
@@ -81,20 +83,6 @@ public class ProductService  implements IProductService {
     }
 
 
-//    @Override
-//    @Transactional(rollbackOn = SQLException.class)
-//    public Product save(ProductAdd request, BindingResult bindingResult) {
-//        Product product= request.getProduct();
-//        var options=request.getOptions();
-////        option.setProductId(product.getId());
-//
-//        product.setCode(getNewCode());
-//        product=productRepo.save(product);
-//
-//        options=createOption(options, product.getId());
-//        createVariant(options,0, options.size());
-//        return product;
-//    }
 
     // Thêm sản phẩm  và biến thể
     @Override
@@ -137,6 +125,35 @@ public class ProductService  implements IProductService {
 //                filter.getKey(),filter.getSortBy(),filter.getIsDesc(),filter.getPage(),filter.getSize(),filter.getIsDelete());
 //
       return productRepo.countProductByFilter( filter.getKey(),filter.getSortBy(),filter.getIsDesc(),filter.getPage(),filter.getSize(),filter.getIsDelete());
+    }
+
+    @Override
+    @Transactional(rollbackOn = SQLException.class)
+    public void deleteVariantById(Integer id) {
+        var variant=variantRepo.findById(id).orElseThrow(()->new RuntimeException("Id is not exist"));
+        variant.setIsDelete(true);
+        variantRepo.save(variant);
+    }
+
+    @Override
+    @Transactional(rollbackOn = SQLException.class)
+    public void deleteVariantsById(Integer[] listId) {
+        var variants= variantRepo.findAllById(Arrays.asList(listId));
+        for (ProductVariant variant : variants) {
+            variant.setIsDelete(true);
+        }
+        variantRepo.saveAll(variants);
+
+    }
+
+    @Override
+    @Transactional(rollbackOn = SQLException.class)
+    public void deleteProductsById(Integer[] listId) {
+       var products= productRepo.findAllById(Arrays.asList(listId));
+        for (Product product : products) {
+            product.setIsDelete(true);
+        }
+        productRepo.saveAll(products);
     }
 
     public String getNewCode() {

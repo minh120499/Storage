@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 
 @Entity
 @Table(name = "inventories_product_variant")
@@ -37,7 +38,7 @@ public class InventoriesProductVariant {
     @Column(name = "product_variant_id", insertable = false, updatable = false, nullable = false)
     private Integer product_variant_id;
 
-
+    @Min(0)
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 

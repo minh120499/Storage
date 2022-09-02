@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface AccountRepository extends CrudRepository<Account, Integer> {
 	Optional<Account> findAccountByUsername(String username);
 
-	List<Account> findAllByIsDelete() ;
+//	List<Account> findAllByIsDelete() ;
 }

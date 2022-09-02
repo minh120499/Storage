@@ -51,7 +51,7 @@ const items: MenuItem[] = [
   getItem("Nhà cung cấp", "/supplier", <ShopOutlined />),
   getItem("Kho hàng", "", <WarehouseIcon />, [
     getItem("Danh sách", "/stocker/inventories"),
-    getItem("Quản lý", "/stocker/manager"),
+    // getItem("Quản lý", "/stocker/manager"),
   ]),
 
   getItem("Nhân viên", null, <TeamOutlined />, [
@@ -64,12 +64,12 @@ const items: MenuItem[] = [
 const SideBar: React.FC = () => {
   const roles = useSelector((state: RootState) => state.user.authorities);
   console.log(roles);
-  
 
   const navigate = useNavigate();
 
   return (
-    <div className="side-bar">
+    // <div className="side-bar">
+    <>
       <div className="side-bar__brand-logo">
         <a href="/home">
           <img
@@ -79,9 +79,10 @@ const SideBar: React.FC = () => {
           />
         </a>
       </div>
+
       <div className="side-bar_menu">
         <Menu
-          style={{ width: 256, height: "100%" }}
+          // style={{ width: 256 }}
           mode="inline"
           theme="dark"
           items={items}
@@ -90,7 +91,8 @@ const SideBar: React.FC = () => {
           }}
         />
       </div>
-    </div>
+      {/* </div> */}
+    </>
   );
 };
 

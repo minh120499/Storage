@@ -12,6 +12,6 @@ import java.util.List;
 @Data
 public class InventoryResponse {
     private Inventory inventory;
-    private List<ProductVariantsDTO> productVariantsDTOS;
+    private List<ProductVariantsDTO> productVariants;
     private Integer totalProductVariant;
 }

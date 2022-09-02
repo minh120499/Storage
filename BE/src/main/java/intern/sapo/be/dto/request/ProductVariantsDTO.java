@@ -15,9 +15,6 @@ public class ProductVariantsDTO {
     private Integer productId;
     private String name;
     private String image;
-    private BigDecimal wholesalePrice;
-    private BigDecimal salePrice;
     private BigDecimal importPrice;
     private Integer quantity;
-
 }

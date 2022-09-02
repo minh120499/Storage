@@ -1,6 +1,6 @@
 import { IRole, IRoleLable } from "../../interface";
 import { roleColor } from "../../constant";
-import { Form, Modal, Tag } from "antd";
+import { Form, Modal, Tag, Tooltip } from "antd";
 import { useState } from "react";
 import RoleSelect from "./RoleSelect";
 import { useMutation } from "@tanstack/react-query";
@@ -39,32 +39,36 @@ export default function Role({ roles, empId }: props) {
       {roles.length > 0 ? (
         roles.map((role: IRole) => {
           return (
-            <Tag
-              className="cursor-pointer"
-              onClick={() => setModal(true)}
-              key={role?.id}
-              color={roleColor[role.name as keyof IRoleLable]}
-            >
-              {role?.name}
-            </Tag>
+            <Tooltip title={role?.description}>
+              <Tag
+                className="cursor-pointer"
+                onClick={() => setModal(true)}
+                key={role?.id}
+                color={roleColor[role.name as keyof IRoleLable]}
+              >
+                {role?.name}
+              </Tag>
+            </Tooltip>
           );
         })
       ) : (
         <Tag className="cursor-pointer" onClick={() => setModal(true)}>
-          Add role 
+          Add role
           {/* <AddIcon /> */}
         </Tag>
       )}
-      {modal && <Modal
-        title="Role"
-        visible={modal}
-        onOk={() => updateRoles()}
-        onCancel={() => setModal(false)}
-      >
-        <Form>
-          <RoleSelect getRole={setRole} empRole={roles.map((e) => e.name)} />
-        </Form>
-      </Modal>}
+      {modal && (
+        <Modal
+          title="Role"
+          visible={modal}
+          onOk={() => updateRoles()}
+          onCancel={() => setModal(false)}
+        >
+          <Form>
+            <RoleSelect getRole={setRole} empRole={roles.map((e) => e.name)} />
+          </Form>
+        </Modal>
+      )}
     </div>
   );
 }

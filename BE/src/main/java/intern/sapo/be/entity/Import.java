@@ -1,6 +1,6 @@
 package intern.sapo.be.entity;
 
-import intern.sapo.be.dto.request.ImportDTO;
+import intern.sapo.be.dto.response.ImportInvoice.ImportResponse;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @NamedNativeQuery(
         name = "getFeaturedInventoryDTO",
-        query = "select imports.code,s.name,i.name,total_price,is_done,is_paid,is_import,a.username from imports\n" +
+        query = "select imports.code,s.code as 'supplierCode',i.name as 'inventoryName',total_price as 'totalPrice',is_done as 'isDone',is_paid as 'isPaid',is_import as 'isImport',a.username as 'userName',delivery_date as 'deliveryDate' from imports\n" +
                 "inner join accounts a on imports.account_id = a.id\n" +
                 "inner join inventories i on imports.inventory_id = i.id\n" +
                 "inner join suppliers s on imports.supplier_id = s.id;",
@@ -26,15 +26,17 @@ import java.util.List;
         name = "FeaturedInventory",
         classes = {
                 @ConstructorResult(
-                        targetClass = ImportDTO.class,
+                        targetClass = ImportResponse.class,
                         columns = {
-                                @ColumnResult(name="code", type = String.class),
-                                @ColumnResult(name="supplierName", type = String.class),
-                                @ColumnResult(name="inventoryName", type = String.class),
-                                @ColumnResult(name="isDone", type = Boolean.class),
-                                @ColumnResult(name="isPaid", type = Boolean.class),
-                                @ColumnResult(name="isImport", type = Boolean.class),
-                                @ColumnResult(name="userName", type = String.class),
+                                @ColumnResult(name = "code", type = String.class),
+                                @ColumnResult(name = "supplierCode", type = String.class),
+                                @ColumnResult(name = "inventoryName", type = String.class),
+                                @ColumnResult(name = "totalPrice", type = BigDecimal.class),
+                                @ColumnResult(name = "isDone", type = Boolean.class),
+                                @ColumnResult(name = "isPaid", type = Boolean.class),
+                                @ColumnResult(name = "isImport", type = Boolean.class),
+                                @ColumnResult(name = "userName", type = String.class),
+                                @ColumnResult(name = "deliveryDate", type = String.class),
                         }
                 )
         }
@@ -77,6 +79,9 @@ public class Import {
 
     @Column(name = "is_import")
     private Boolean isImport = false;
+
+    @Column(name = "delivery_date")
+    private String deliveryDate;
 
 
     @OneToMany(mappedBy = "anImport", cascade = CascadeType.ALL)

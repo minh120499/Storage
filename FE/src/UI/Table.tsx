@@ -25,26 +25,25 @@ const T = (props: any) => {
     return <div>Api not found</div>;
   }
 
+  console.log(props.total);
+
   return (
     <div>
       <Spin spinning={query?.isLoading || false} tip="Loading...">
         <Table
           {...props}
           pagination={false}
-          dataSource={props?.dataSource || query?.data || []}
-          rowSelection={null}
+          dataSource={props?.dataSource || query?.data?.data || []}
         />
         <div className="flex flex-row-reverse mt-5">
-          {!!props.total && (
-            <Pagination
-              onChange={(page, pageSize) => {
-                setPage(page);
-                setPageSize(pageSize);
-                query?.refetch();
-              }}
-              total={props.total}
-            />
-          )}
+          <Pagination
+            onChange={(page, pageSize) => {
+              setPage(page);
+              setPageSize(pageSize);
+              query?.refetch();
+            }}
+            total={props?.total || query?.data?.total}
+          />
         </div>
       </Spin>
     </div>

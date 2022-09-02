@@ -30,7 +30,7 @@ public class InventoryServiceImpl implements IInventoryService {
     private final ProductVariantsRepository productVariantsRepository;
 
     public ProductVariantsDTO toDto(ProductVariant productVariant) {
-        ProductVariantsDTO productVariantsDTO = modelMapper.map(productVariant,ProductVariantsDTO.class);
+        ProductVariantsDTO productVariantsDTO = modelMapper.map(productVariant, ProductVariantsDTO.class);
         return productVariantsDTO;
     }
 
@@ -83,8 +83,9 @@ public class InventoryServiceImpl implements IInventoryService {
 
     @Override
     public void delete(Integer id) {
-        inventoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found: " + id));
-        inventoryRepository.deleteById(id);
+        Inventory inventory = inventoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found: " + id));
+        inventory.setIsDelete(!inventory.getIsDelete());
+        inventoryRepository.save(inventory);
     }
 
     @Override
@@ -103,7 +104,7 @@ public class InventoryServiceImpl implements IInventoryService {
                 results.add(productVariantsDTO);
                 totalProductVariant = totalProductVariant + inventoryRepository.Quantity(id, item.getId());
             }
-            inventoryResponse.setProductVariantsDTOS(results);
+            inventoryResponse.setProductVariants(results);
             inventoryResponse.setTotalProductVariant(totalProductVariant);
         } catch (Exception e) {
             System.out.println("error" + e.getMessage());

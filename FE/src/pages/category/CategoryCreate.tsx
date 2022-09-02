@@ -83,10 +83,10 @@ export default function CategoryCreate({ status }: props) {
           </Form.Item>
           <Form.Item {...tailLayout}>
             <Space>
+              <Button htmlType="submit">Submit</Button>
               <Button mode="cancel" onClick={handleCancel}>
                 Cancle
               </Button>
-              <Button htmlType="submit">Submit</Button>
             </Space>
           </Form.Item>
         </Form>

@@ -1,31 +1,33 @@
 import React, {useEffect, useState} from "react";
-import {Button, Col, Divider, Form, Input, Modal, Popconfirm, Row, Select, Space, Table} from "antd";
+import {
+    Button,
+    Col,
+    DatePicker,
+    DatePickerProps,
+    Divider,
+    Form,
+    Input,
+    Modal,
+    Popconfirm,
+    Row,
+    Select,
+    Space,
+    Table
+} from "antd";
 import SelectSupplier from "../../components/SelectSupplier";
-import {IProductVariant} from "../../services/customType";
+import {IInventories, IMyTableData, IProductVariant} from "../../services/customType";
 import {createImport, getCountTotalProductVariant, getProductVariant} from "../../services/api";
 import {BackwardOutlined, DeleteOutlined, FastForwardOutlined} from '@ant-design/icons';
 import {ColumnProps} from "antd/es/table";
 import {default as NumberFormat} from "react-number-format";
 import {getAllInventory} from "../../api/inventory";
 import ToastCustom from "../../features/toast/Toast";
+import {RangePickerProps} from "antd/es/date-picker";
+import moment from "moment";
 
-// Import * as CurrencyFormat from 'react-currency-format';
+// ImportInvoice * as CurrencyFormat from 'react-currency-format';
 
-interface IMyTableData {
-    id: number
-    code: string
-    name: string;
-    quantity: number;
-    importPrice: number;
-    totalPrice: number
-}
 
-interface IInventories {
-    id: number,
-    code: string,
-    name: string,
-    address: string
-}
 
 const CreateImport = () => {
     const {Option} = Select;
@@ -41,6 +43,7 @@ const CreateImport = () => {
     const [inventories, setInventories] = useState<IInventories[]>([])
     const [totalQuantity, setTotalQuantity] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
+    const [date, setDate] = useState("0");
 
 
     useEffect(() => {
@@ -289,9 +292,10 @@ const CreateImport = () => {
         } else {
             for (let i = 0; i < tableData.length; i++) {
                 list.push({
-                    productVariantId: tableData[i].id,
+                    product_variant_id: tableData[i].id,
                     quantity: tableData[i].quantity,
-                    totalPrice: tableData[i].totalPrice
+                    totalPrice: tableData[i].totalPrice,
+                    importPrice: tableData[i].importPrice
                 })
             }
             const anImport = {
@@ -300,7 +304,8 @@ const CreateImport = () => {
                 totalPrice: totalPrice,
                 note: "",
                 inventoryId: inventoryId,
-                detailsImports: list
+                detailsImports: list,
+                deliveryDate: date
             }
 
             createImport(anImport).then(() => {
@@ -316,6 +321,16 @@ const CreateImport = () => {
     const onSelectInventory = (value: number) => {
         setInventoryId(value)
     }
+
+    const onChangeDate = (
+        value: DatePickerProps['value'] | RangePickerProps['value'],
+        dateString: [string, string] | string,
+    ) => {
+        setDate(dateString.toString())
+    };
+
+
+
 
     return (
         <div>
@@ -484,6 +499,13 @@ const CreateImport = () => {
                                         })
                                     }
                                 </Select>
+                            </Form.Item>
+                            <Form.Item label="Ngày hẹn giao" name="date">
+                                    <DatePicker  format="DD-MM-YYYY HH:mm"
+                                                 showTime={{ format: 'HH:mm' }}
+                                                 style={{width:'100%'}}
+                                                 onChange={onChangeDate}
+                                    />
                             </Form.Item>
 
                         </div>

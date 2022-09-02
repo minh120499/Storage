@@ -31,7 +31,7 @@ public class AccountService {
 	ModelMapper modelMapper;
 
 	public Iterable<Account> getAll() {
-		List<Account> a = accountRepository.findAllByIsDelete();
+//		List<Account> a = accountRepository.findAllByIsDelete();
 
 		return accountRepository.findAll();
 	}
