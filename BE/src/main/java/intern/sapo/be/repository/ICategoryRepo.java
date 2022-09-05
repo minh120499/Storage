@@ -23,7 +23,8 @@ public interface ICategoryRepo extends JpaRepository<Category,Integer>{
     @Transactional
     @Query("select c from Category  c order by  c.id desc ")
     List<Category> getAll();
-
     @Query("select c from Category c inner join CategoriesProduct cp on c.id=cp.category.id where cp.product.id=:id")
     List<Category> findAllByProductId(@Param("id") Integer id);
+
+
 }

@@ -159,18 +159,18 @@ const Search: React.FC = () => {
   };
   //--------------------- form -------------------
 
-  const handleSubmit = async () => {
-    const saveExport = await createExport(exportValue);
-    const exportId = saveExport.data.id;
-    const detailExport = products.map((e: any) => {
-      return {
-        productVariant: e.getProductById.data.id,
-        quantity: e.quantity,
-        export: exportId,
-      };
-    });
-    creatDetailExportSubmit.mutate(detailExport);
-  };
+  // const handleSubmit = async () => {
+  //   const saveExport = await createExport(exportValue);
+  //   const exportId = saveExport.data.id;
+  //   const detailExport = products.map((e: any) => {
+  //     return {
+  //       productVariant: e.getProductById.data.id,
+  //       quantity: e.quantity,
+  //       export: exportId,
+  //     };
+  //   });
+  //   creatDetailExportSubmit.mutate(detailExport);
+  // };
 
   const creatDetailExportSubmit = useMutation((item: any) =>
     creatDetailExport(item)
@@ -283,9 +283,9 @@ const Search: React.FC = () => {
       </div>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button type="primary" htmlType="submit" onClick={handleSubmit}>
-          Submit
-        </Button>
+        {/*<Button type="primary" htmlType="submit" onClick={handleSubmit}>*/}
+        {/*  Submit*/}
+        {/*</Button>*/}
       </Form.Item>
     </>
   );

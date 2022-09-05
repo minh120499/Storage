@@ -55,10 +55,5 @@ public class CategoryController {
         iCategoryService.deleteLíst(id);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void delete (@PathVariable (value = "id") Integer id){
-        iCategoryService.delete(id);
-
-    }
 
 }

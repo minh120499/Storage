@@ -210,11 +210,13 @@ export const ListExport = () => {
   const [loading, setLoading] = useState(true);
   const [colSettingModal, setColSettingModal] = useState(false);
   const data = async () => {
+    // @ts-ignore
     const exportData = await getExport();
 
     exportData.data.map(async (e: exportById) => {
       const detailExport = await findDetailByExport(e.id);
       const exportStatus = await findExportStatusById(e.id);
+      // @ts-ignore
       setListExport((pre: listExport[]) => {
         return [
           ...pre,

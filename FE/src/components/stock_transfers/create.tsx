@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { ModalTable } from "./create/modal_table";
 import { SelectInventory } from "./create/select_inventory";
 import { createExportStatus } from "../../api/export_status";
+import {AxiosResponse} from "axios";
 
 const Create: React.FC = () => {
   const [products, setProducts] = useState<any>([]);
@@ -155,7 +156,7 @@ const Create: React.FC = () => {
       },
       {
         queryKey: ["id1"],
-        queryFn: (): Promise<inventory[]> => getAllInventory(),
+        queryFn: (): Promise<AxiosResponse<any>> => getAllInventory(),
       },
     ],
   });

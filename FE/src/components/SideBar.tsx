@@ -63,7 +63,8 @@ const items: MenuItem[] = [
 ];
 
 const SideBar: React.FC = () => {
-  const roles = useSelector((state: RootState) => state.user.authorities);
+  // @ts-ignore
+  const roles = useSelector((state: RootState) => state?.user?.authorities);
   // console.log(roles);
 
   const navigate = useNavigate();
