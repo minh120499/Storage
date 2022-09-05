@@ -177,17 +177,20 @@ const InventoryManager = () => {
       ]}
     />
   );
+  const handleSearch = (e:string) =>{
+    setName(e);
+  }
 
 
 
   return (
-    <div>
+    <div className="m-5">
       <h2>Quản lý kho</h2>
       <Row gutter={24}>
         <Col span={18}>
           <div className="block">
             <h1 style={{ color: "#1890FF" }}>Tất cả phiên bản sản phẩm</h1>
-            <Search placeholder="Tìm kiếm theo tên sản phẩm" size="large" onChange={e =>{setName(e.target.value)}} />
+            <Search placeholder="Tìm kiếm theo tên sản phẩm" size="large" onSearch={(e)=>handleSearch(e)} />
             <div style={{ display: "flex", alignItems: "center", gap:"10px", marginTop: "10px", marginBottom: "10px" }}>
               <Dropdown overlay={menu} disabled={!hasSelected}>
                 <Button type="primary" style={{ width: "180px", fontSize: "14px", marginLeft: "0px" }}>

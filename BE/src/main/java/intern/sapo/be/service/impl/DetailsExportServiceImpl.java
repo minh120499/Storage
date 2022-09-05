@@ -6,7 +6,6 @@ import intern.sapo.be.entity.DetailsExport;
 import intern.sapo.be.repository.DetailsExportRepository;
 import intern.sapo.be.service.IDetailsExportService;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -27,6 +26,5 @@ public class DetailsExportServiceImpl extends BaseService<DetailsExport> impleme
     public List<DetailsExport> findByExportId(Integer id) {
         return repository.findDetailsExportByExport(id);
     }
-
 
 }

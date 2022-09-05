@@ -12,9 +12,6 @@ public interface ProductVariantsRepository extends IBaseRepo<ProductVariant, Int
     @Query(value = "SELECT * FROM product_variants WHERE NAME LIKE %?%", nativeQuery = true)
     List<ProductVariant> findProductVariantByName(String name);
 
-    @Query(value = "call get_productvariant(?1)",nativeQuery = true)
-    List<ProductVariant> listProductVariant(Integer id);
-
     @Query(value = "call get_productvariant_byname(?1,?2)", nativeQuery = true)
     List<ProductVariant> listProductVariantByName(Integer id, String name);
 }

@@ -38,11 +38,12 @@ const items: MenuItem[] = [
     getItem("Thêm sản phẩm", "/productsAdd"),
     getItem("Danh sách sản phẩm", "/products"),
     getItem("Danh mục sản phẩm", "/categories"),
-    getItem("Chuyển hàng", "/storage"),
   ]),
   getItem("Hàng hoá", "sub2", <AppstoreOutlined />, [
     // getItem("Quản lý kho", ""),
     getItem("Nhập hàng", "/purchase_orders/create"),
+    getItem("Chuyển hàng", "/storage"),
+
     // getItem("Chuyển hàng", "/321"),
   ]),
   // getItem("Đơn vị vận chuyển", "/transport-companies", <AppstoreOutlined />),

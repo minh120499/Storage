@@ -148,7 +148,7 @@ export default function Categories() {
   };
 
   return (
-    <>
+    <div className="m-5">
       <h1 className="ant-typography">Danh mục</h1>
       <div
         style={{
@@ -177,6 +177,6 @@ export default function Categories() {
         columns={columns}
         dataSource={data}
       />
-    </>
+    </div>
   );
 }

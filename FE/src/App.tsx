@@ -20,7 +20,7 @@ import ListImportInvoice from "./pages/ImportInvoice/ListImportInvoice";
 import DetailImportInvoice from "./pages/ImportInvoice/DetailImportInvoice";
 import ProductDetails from "./pages/product/ProductDetails";
 import { Status } from "./components/stock_transfers/status";
-import InventoryManager from "./components/inventory/InventoryManager";
+import Create from "./components/stock_transfers/create";
 
 const App: React.FC = () => {
   const router = useRoutes([
@@ -50,6 +50,7 @@ const App: React.FC = () => {
           children: [
             { path: "", element: <Storage /> },
             { path: "stock_transfers/:id", element: <Status /> },
+            { path: "stock_transfers/create", element: <Create /> },
           ],
         },
         {
@@ -72,7 +73,7 @@ const App: React.FC = () => {
         },
         {
           path: "/productsAdd",
-          element: <AddProduct />
+          element: <AddProduct />,
         },
         {
           path: "/products",
@@ -85,11 +86,11 @@ const App: React.FC = () => {
         },
         {
           path: "/categories",
-          element: <Categories />
+          element: <Categories />,
         },
         {
           path: "/transport-companies",
-          element: <TransportCompanies />
+          element: <TransportCompanies />,
         },
         {
           path: "/employees/:id",
@@ -100,7 +101,7 @@ const App: React.FC = () => {
           element: <Employee />,
         },
         {
-          path: "/api/admin/roles/",
+          path: "/api/admin/roles",
           element: <RoleManager />,
         },
       ],
