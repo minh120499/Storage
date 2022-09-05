@@ -97,7 +97,6 @@ function AddProduct(props: any) {
                     title: 'Thêm sản phẩm thành công'
                 }).then()
                 localStorage.removeItem('products')
-                navigate(`/products`)
             }
             else {
                 ToastCustom.fire({
@@ -109,7 +108,13 @@ function AddProduct(props: any) {
 
             handleClose()
 
+                return response.json()
+        }).then((data)=>{
+            if(data.product.id)
+            {
+                navigate(`/products/${data.product.id}`)
 
+            }
         })
             .catch((erorr) => {
                 ToastCustom.fire({
