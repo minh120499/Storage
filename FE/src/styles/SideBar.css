@@ -34,15 +34,15 @@
     background: #182537;
 }
 
-.side-bar_menu {
+/* .side-bar_menu {
     background: #fff;
     height: calc(100vh - 98px);
-}
+} */
 
-.ant-menu.ant-menu-root {
+.ant-menu.ant-menu-root.ant-menu-inline {
+    max-height: calc(100vh - var(--headerHeight) - 48px);
     overflow: scroll;
     overflow-x: hidden;
-    height: 100%;
 }
 
 .ant-menu.ant-menu-root::-webkit-scrollbar {

@@ -1,33 +1,31 @@
 import React, {useEffect, useState} from "react";
-import {
-    Button,
-    Col,
-    DatePicker,
-    DatePickerProps,
-    Divider,
-    Form,
-    Input,
-    Modal,
-    Popconfirm,
-    Row,
-    Select,
-    Space,
-    Table
-} from "antd";
+import {Button, Col, Divider, Form, Input, Modal, Popconfirm, Row, Select, Space, Table} from "antd";
 import SelectSupplier from "../../components/SelectSupplier";
-import {IInventories, IMyTableData, IProductVariant} from "../../services/customType";
+import {IProductVariant} from "../../services/customType";
 import {createImport, getCountTotalProductVariant, getProductVariant} from "../../services/api";
 import {BackwardOutlined, DeleteOutlined, FastForwardOutlined} from '@ant-design/icons';
 import {ColumnProps} from "antd/es/table";
 import {default as NumberFormat} from "react-number-format";
-import {getAllActiveInventory} from "../../api/inventory";
+import {getAllInventory} from "../../api/inventory";
 import ToastCustom from "../../features/toast/Toast";
-import {RangePickerProps} from "antd/es/date-picker";
-import moment from "moment";
 
-// ImportInvoice * as CurrencyFormat from 'react-currency-format';
+// Import * as CurrencyFormat from 'react-currency-format';
 
+interface IMyTableData {
+    id: number
+    code: string
+    name: string;
+    quantity: number;
+    importPrice: number;
+    totalPrice: number
+}
 
+interface IInventories {
+    id: number,
+    code: string,
+    name: string,
+    address: string
+}
 
 const CreateImport = () => {
     const {Option} = Select;
@@ -43,14 +41,13 @@ const CreateImport = () => {
     const [inventories, setInventories] = useState<IInventories[]>([])
     const [totalQuantity, setTotalQuantity] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
-    const [date, setDate] = useState("0");
 
 
     useEffect(() => {
         getCountTotalProductVariant().then(r => {
             setTotalPage(r.data)
         })
-        getAllActiveInventory().then(r => {
+        getAllInventory().then(r => {
             setInventories(r.data.reverse())
         })
     }, [])
@@ -292,10 +289,9 @@ const CreateImport = () => {
         } else {
             for (let i = 0; i < tableData.length; i++) {
                 list.push({
-                    product_variant_id: tableData[i].id,
+                    productVariantId: tableData[i].id,
                     quantity: tableData[i].quantity,
-                    totalPrice: tableData[i].totalPrice,
-                    importPrice: tableData[i].importPrice
+                    totalPrice: tableData[i].totalPrice
                 })
             }
             const anImport = {
@@ -304,11 +300,8 @@ const CreateImport = () => {
                 totalPrice: totalPrice,
                 note: "",
                 inventoryId: inventoryId,
-                detailsImports: list,
-                deliveryDate: date
+                detailsImports: list
             }
-           
-            
 
             createImport(anImport).then(() => {
                 ToastCustom.fire({
@@ -323,16 +316,6 @@ const CreateImport = () => {
     const onSelectInventory = (value: number) => {
         setInventoryId(value)
     }
-
-    const onChangeDate = (
-        value: DatePickerProps['value'] | RangePickerProps['value'],
-        dateString: [string, string] | string,
-    ) => {
-        setDate(dateString.toString())
-    };
-
-
-
 
     return (
         <div>
@@ -501,13 +484,6 @@ const CreateImport = () => {
                                         })
                                     }
                                 </Select>
-                            </Form.Item>
-                            <Form.Item label="Ngày hẹn giao" name="date">
-                                    <DatePicker  format="DD-MM-YYYY HH:mm"
-                                                 showTime={{ format: 'HH:mm' }}
-                                                 style={{width:'100%'}}
-                                                 onChange={onChangeDate}
-                                    />
                             </Form.Item>
 
                         </div>

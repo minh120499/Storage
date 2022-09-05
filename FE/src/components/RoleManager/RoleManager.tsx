@@ -1,78 +1,66 @@
-import { useMutation } from "@tanstack/react-query";
-import { Form, Input, Modal } from "antd";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Form, Input, Modal, Skeleton, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
 import { useState } from "react";
 import { rolesApi } from "../../api";
 import { IRole } from "../../interface";
-import { EditIcon } from "../../UI";
-import { Table, Button } from "../../UI";
+import Button from "../../UI/Button"
 
 const RoleManager = () => {
   const columns: ColumnsType<IRole> = [
     {
-      title: <b>STT</b>,
+      title: "Id",
       dataIndex: "id",
-      render: (index, t) => <div>{index}</div>,
-      sorter: (a, b) => a.id - b.id,
     },
     {
-      title: <b>Chức vụ</b>,
+      title: "Name",
       dataIndex: "name",
-      sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: <b>Mô tả</b>,
+      title: "Description",
       dataIndex: "description",
       render: (text: string) => {
-        return <div>{text}</div>;
+        return hasSelected ? <Input defaultValue={text} /> : <div>{text}</div>;
       },
     },
     {
-      render: (_, record: IRole) => {
+      render: () => {
         return (
           <div>
-            <EditIcon
+            <Button
               type="primary"
-              onClick={() => {
-                addRoleForm.setFieldsValue({
-                  id: record.id,
-                  name: record.name,
-                  description: record.description,
-                });
-                setAddRoleModal(true);
-                setMode("update");
-              }}
-            ></EditIcon>
+              // onClick={() => }
+            >
+              Update
+            </Button>
           </div>
         );
       },
     },
   ];
-
+  const { data, isLoading, error, isError } = useQuery(["roles"], rolesApi);
   const addRoleMutation = useMutation((roleData: IRole) => {
     return axios.post("http://localhost:8080/api/admin/roles", roleData);
-  });
-  const updateRoleMutation = useMutation((roleData: IRole) => {
-    return axios.patch("http://localhost:8080/api/admin/roles", roleData);
-  });
-  const deleteRoleMutation = useMutation((roleData: any) => {
-    return axios.delete("http://localhost:8080/api/admin/roles", {
-      data: roleData,
-    });
   });
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [addRoleForm] = Form.useForm();
+  const [loading, setLoading] = useState(false);
   const [addRoleModal, setAddRoleModal] = useState(false);
-  const [mode, setMode] = useState("new");
   const hasSelected = selectedRowKeys.length > 0;
 
-  const deleteRoles = () => {
-    deleteRoleMutation.mutate(selectedRowKeys);
+  const start = () => {
+    setLoading(true);
+    // ajax request after empty completing
+    setTimeout(() => {
+      setSelectedRowKeys([]);
+      setLoading(false);
+    }, 1000);
   };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    console.log("selectedRowKeys changed: ", selectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
@@ -81,101 +69,82 @@ const RoleManager = () => {
     onChange: onSelectChange,
   };
   const addNewRole = () => {
-    const { name, description, id } = addRoleForm.getFieldsValue();
-    const data: IRole = {
-      id: 0,
+    const { name, description } = addRoleForm.getFieldsValue();
+    addRoleMutation.mutate({
       name,
       description,
-    };
-    if (mode !== "new ") {
-      data.id = id;
-      updateRoleMutation.mutate(data);
-    } else {
-      addRoleMutation.mutate(data);
-    }
+    });
   };
-  const handleCancel = () => {
-    setAddRoleModal(false);
-  };
-
-  if (updateRoleMutation.isSuccess) {
-    updateRoleMutation.reset();
-    setAddRoleModal(false);
-  }
-
+  addRoleMutation.data && setAddRoleModal(false);
+  // UI //
   return (
-    <div className="p-5">
-      <h2>Chức vụ</h2>
+    <div>
+      <h2>Roles List</h2>
+      {isLoading && <Skeleton />}
+      {isError && <div>{"Network Error"}</div>}
       <div style={{ marginBottom: 16 }}>
         <Button
           type="primary"
-          onClick={deleteRoles}
+          onClick={start}
           disabled={!hasSelected}
-          loading={deleteRoleMutation.isLoading}
+          loading={loading}
         >
-          Xóa
+          Delete
         </Button>
         <Button
-          type="primary"
-          onClick={() => {
-            setAddRoleModal(true);
-            setMode("new");
-          }}
-        >
-          Thêm
+         type="primary" onClick={() => setAddRoleModal(true)}
+         >
+          Add
         </Button>
         <span style={{ marginLeft: 8 }}>
-          {hasSelected ? `Đã chọn ${selectedRowKeys.length} mục` : ""}
+          {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
         </span>
       </div>
       <Table
         rowSelection={rowSelection}
-        query={rolesApi}
+        dataSource={data}
         columns={columns}
         rowKey="id"
       />
 
       {addRoleModal && (
         <Modal
-          title={mode === "new" ? "Thêm chức vụ" : "Sửa thông tin"}
+          title="Add role"
           visible={addRoleModal}
-          onOk={addNewRole}
-          onCancel={handleCancel}
-          footer={[
-            <Button
-              key="submit"
-              onClick={addNewRole}
-              loading={updateRoleMutation.isLoading}
-            >
-              {mode === "new" ? "Tạo" : "Cập nhập"}
-            </Button>,
-            <Button key="back" onClick={handleCancel} mode="cancel">
-              Hủy
-            </Button>,
-          ]}
+          onOk={() => addNewRole()}
+          onCancel={() => setAddRoleModal(false)}
+          footer={null}
         >
           <Form
             form={addRoleForm}
             name="addRoleForm"
             {...{ labelCol: { span: 6 }, wrapperCol: { span: 16 } }}
           >
-            <Form.Item label="Tên" name="id" style={{ display: "none" }}>
-              <Input />
-            </Form.Item>
             <Form.Item
-              label="Tên"
+              label="Name"
               name="name"
-              rules={[{ required: true }, { message: "Tên không để trống!" }]}
+              rules={[{ required: true }, { message: "Name is required!" }]}
             >
               <Input />
             </Form.Item>
             <Form.Item
-              label="Mô tả"
+              label="Description"
               name="description"
-              rules={[{ required: true }, { message: "Mô tả không để trống!" }]}
+              rules={[
+                { required: true },
+                { message: "Description is required!" },
+              ]}
             >
               <Input />
             </Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={addRoleMutation.isLoading}
+              {...{ wrapperCol: { offset: 6, span: 16 } }}
+            >
+              Add
+            </Button>
           </Form>
         </Modal>
       )}

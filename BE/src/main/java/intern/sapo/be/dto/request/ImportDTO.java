@@ -1,23 +1,19 @@
-package intern.sapo.be.dto.response.ImportInvoice;
+package intern.sapo.be.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @AllArgsConstructor
 @Data
-@NoArgsConstructor
-public class ImportResponse {
+public class ImportDTO {
     private String code;
-    private String supplierCode;
+    private String supplierName;
     private String inventoryName;
     private BigDecimal totalPrice;
     private Boolean isDone;
     private Boolean isPaid;
     private Boolean isImport;
     private String userName;
-    private String deliveryDate;
-
 }

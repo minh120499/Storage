@@ -1,12 +1,18 @@
-import { useMutation } from "@tanstack/react-query";
-import { Avatar, Form, Input, Modal, Space } from "antd";
-import { ColumnsType } from "antd/lib/table";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import {
+  Avatar,
+  // Button,
+  Form,
+  Input,
+  Modal,
+  Skeleton,
+} from "antd";
+import Table, { ColumnsType } from "antd/lib/table";
 import axios from "axios";
 import { useState } from "react";
 import Role from "./Role";
 import RoleSelect from "./RoleSelect";
-import { Button, EditIcon, DeletedIcon, Table } from "../../UI";
-import { accountApi } from "../../api";
+import { Button } from "../../UI";
 
 interface DataType {
   key: React.Key;
@@ -15,80 +21,76 @@ interface DataType {
   address: string;
 }
 
+const columns: ColumnsType<DataType> = [
+  {
+    title: "Id",
+    dataIndex: "id",
+    render: (text: string) => <a href={`./employees/${text}`}>{text}</a>,
+  },
+  {
+    title: "Name",
+    dataIndex: "employee",
+    render: ([employees]) => <div>{employees?.fullName || "--.--"}</div>,
+  },
+  {
+    title: "Phone",
+    dataIndex: "employee",
+    render: ([employees]) => <div>{employees?.phone || "--.--"}</div>,
+  },
+  {
+    title: "Email",
+    dataIndex: "employee",
+    render: ([employees]) => <div>{employees?.email || "--.--"}</div>,
+  },
+  {
+    title: "Address",
+    dataIndex: "employee",
+    render: ([employees]) => <div>{employees?.address || "--.--"}</div>,
+  },
+  {
+    title: "Role",
+    dataIndex: ["roles"],
+    render: (roles, empId: any) => <Role roles={roles} empId={empId?.id} />,
+  },
+  {
+    title: "Avatar",
+    dataIndex: "employee",
+    render: ([employees]) => (
+      <Avatar
+        style={{ backgroundColor: "#f56a00", verticalAlign: "middle" }}
+        src={employees?.avatar}
+      >
+        {employees?.avatar || employees?.fullName}
+      </Avatar>
+    ),
+  },
+];
+
+let currentRoles: string[] = [];
+
+const setRole = (e: any) => {
+  currentRoles = e;
+};
+
 function Employee() {
-  const columns: ColumnsType<DataType> = [
-    {
-      title: <b>ID</b>,
-      dataIndex: "id",
-      render: (text: string) => <a href={`./employees/${text}`}>{text}</a>,
-    },
-    {
-      title: <b>Ảnh</b>,
-      dataIndex: "employee",
-      render: ([employees]) => (
-        <Avatar
-          style={{ backgroundColor: "#f56a00", verticalAlign: "middle" }}
-          src={employees?.avatar}
-        >
-          {employees?.avatar || employees?.fullName}
-        </Avatar>
-      ),
-    },
-    {
-      title: <b>Họ & Tên</b>,
-      dataIndex: "employee",
-      render: ([employees]) => <div>{employees?.fullName || "--.--"}</div>,
-    },
-    {
-      title: <b>SĐT</b>,
-      dataIndex: "employee",
-      render: ([employees]) => <div>{employees?.phone || "--.--"}</div>,
-    },
-    {
-      title: <b>Email</b>,
-      dataIndex: "employee",
-      render: ([employees]) => <div>{employees?.email || "--.--"}</div>,
-    },
-    {
-      title: <b>Địa chỉ</b>,
-      dataIndex: "employee",
-      render: ([employees]) => <div>{employees?.address || "--.--"}</div>,
-    },
-    {
-      title: <b>Chức vụ</b>,
-      dataIndex: ["roles"],
-      render: (roles, empId: any) => (
-        <Role roles={roles} empId={empId?.id} />
-      ),
-    },
-    {
-      title: "",
-      dataIndex: "id",
-      render: () => (
-        <Space>
-          <EditIcon />
-          <DeletedIcon />
-        </Space>
-      ),
-    },
-  ];
-
-  let currentRoles: string[] = [];
-
-  const setRole = (e: any) => {
-    currentRoles = e;
-  };
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [employeeForm] = Form.useForm();
+  const { data, isLoading } = useQuery(["empid"], async () => {
+    const { data } = await axios.get("http://localhost:8080/api/account");
+    return data;
+  });
+
   const postEmployee = useMutation((newEmployee: any) => {
     return axios.post("http://localhost:8080/api/account", newEmployee);
   });
 
+  if (isLoading) {
+    return <Skeleton />;
+  }
+
   const addEmployeeHandle = () => {
     const { username, password, fullName, email, phone, address, roles } =
       employeeForm.getFieldsValue();
-      console.log(roles);
-      
     postEmployee.mutate({
       username,
       password,
@@ -96,27 +98,29 @@ function Employee() {
       email,
       phone,
       address,
-      roleString: roles,
+      roleIds: roles,
     });
 
-    // setIsModalVisible(false);
+    setIsModalVisible(false);
   };
 
   return (
-    <div className="m-5">
+    <div>
       <div>
-        <Button onClick={() => setIsModalVisible(true)}>Thêm nhân viên</Button>
+        <Button onClick={() => setIsModalVisible(true)}>Add employee</Button>
       </div>
-      <Table
-        rowSelection={{
-          type: "checkbox",
-        }}
-        columns={columns}
-        query={accountApi}
-        rowKey="id"
-      />
+      {data && (
+        <Table
+          rowSelection={{
+            type: "checkbox",
+          }}
+          columns={columns}
+          dataSource={data}
+          rowKey="id"
+        />
+      )}
       <Modal
-        title={"Thêm nhân viên"}
+        title="Add New Employee"
         visible={isModalVisible}
         // onOk={handleOk}
         onCancel={() => {
@@ -127,7 +131,7 @@ function Employee() {
         closeIcon={<div></div>}
       >
         <Form
-          {...{ labelCol: { span: 6 }, wrapperCol: { span: 16 } }}
+          {...{ labelCol: { span: 4 }, wrapperCol: { span: 16 } }}
           name="addEmployee"
           onFinish={addEmployeeHandle}
           onFinishFailed={() => console.log(currentRoles)}
@@ -136,13 +140,13 @@ function Employee() {
         >
           <Form.Item
             rules={[{ required: true, message: "Please input your username!" }]}
-            label="Tài khoản"
+            label="User name"
             name="username"
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="Mật khẩu"
+            label="Password"
             name="password"
             rules={[{ required: true, message: "Please input your password!" }]}
           >
@@ -150,7 +154,7 @@ function Employee() {
           </Form.Item>
           <Form.Item
             rules={[{ required: true, message: "Please input your name!" }]}
-            label="Họ tên"
+            label="Full name"
             name="fullName"
           >
             <Input />
@@ -169,14 +173,14 @@ function Employee() {
             <Input />
           </Form.Item>
           <Form.Item
-            label="SĐT"
+            label="Phone"
             name="phone"
             rules={[{ required: true, message: "Please input your phone!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="Địa chỉ"
+            label="Address"
             name="address"
             rules={[{ required: true, message: "Please input your address!" }]}
           >
