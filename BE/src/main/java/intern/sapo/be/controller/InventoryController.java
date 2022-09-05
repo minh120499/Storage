@@ -63,7 +63,7 @@ public class InventoryController {
 		return iInventoryService.update(id, inventory, bindingResult);
 	}
 
-	@PutMapping("/delete/{id}")
+	@DeleteMapping("/delete/{id}")
 	public void deleteInventory(@PathVariable(value = "id") Integer id) {
 		iInventoryService.delete(id);
 	}

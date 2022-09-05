@@ -1,6 +1,6 @@
 export interface IRole {
   key?: React.Key;
-  id?: number;
+  id: number;
   name: string;
   description: string;
 }
@@ -8,6 +8,7 @@ export interface IRole {
 export interface IRoleLable {
   staff: string;
   stocker: string;
+  admin: string
 }
 
 export interface ILoginData {
@@ -16,6 +17,7 @@ export interface ILoginData {
 }
 
 export interface IInventory {
+  STT?: any,
   key?: number | string;
   id?: number;
   code: string;

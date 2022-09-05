@@ -6,7 +6,7 @@ export const getAllInventory = async () => {
 }
 
 export const getAllActiveInventory = async () => {
-    return (await axios.get(`http://localhost:8080/inventories/active`))    
+    return (await axios.get(`http://localhost:8080/inventories/active`))
 }
 
 export const getPagination = async () => {
