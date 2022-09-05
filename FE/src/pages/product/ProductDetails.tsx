@@ -20,6 +20,7 @@ export interface ProductInfo {
     categories: Category[],
 
 }
+
 const ProductDetails = () => {
 
     const { id } = useParams();
@@ -31,8 +32,10 @@ const ProductDetails = () => {
     const [isUpdate, setIsUpdate] = useState(false)
     const [productInfo, setProductInfo] = useState<ProductInfo>()
     const [page, setPage] = useState(1)
-
-
+    const [openDes, setOpenDes] = useState(false)
+    const openDescription = () => {
+        setOpenDes(true)
+    }
     const setActionUpdate = (status: boolean) => {
         setIsUpdate(status)
     }
@@ -94,7 +97,7 @@ const ProductDetails = () => {
     useEffect(() => {
 
         loadData()
-        document.title='Chi tiết sản phẩm'
+        document.title = 'Chi tiết sản phẩm'
     }, [])
     useEffect(() => {
         if (!isUpdate) loadData()
@@ -179,7 +182,7 @@ const ProductDetails = () => {
                                         <p>Ngày tạo: </p>
                                     </Col>
                                     <Col span={12}>
-                                       <Moment format="DD/MM/YYYY HH:mm:ss">
+                                        <Moment format="DD/MM/YYYY HH:mm:ss">
                                             {product?.createAt}
                                         </Moment>
 
@@ -190,9 +193,9 @@ const ProductDetails = () => {
                                         <p>Ngày cập nhật: </p>
                                     </Col>
                                     <Col span={12}>
-                                            <Moment format="DD/MM/YYYY HH:mm:ss">
-                                                {product?.createAt}
-                                            </Moment>
+                                        <Moment format="DD/MM/YYYY HH:mm:ss">
+                                            {product?.createAt}
+                                        </Moment>
 
 
 
@@ -204,8 +207,8 @@ const ProductDetails = () => {
                         </Row>
 
                         <p style={{ marginTop: 20 }}>Mô tả:</p>
-                        <p style={{ height:113, overflow: "hidden", maxHeight: 113, textOverflow: 'ellipsis', marginBottom: 0 }}>{product?.description}</p>
-                        <div style={{ display: 'flex', justifyContent: 'right', fontStyle: 'italic', margin: 0, padding: 0 }}>Xem thêm&gt;&gt;</div>
+                        <p style={{ height: 113, overflow: "hidden", maxHeight: 113, textOverflow: 'ellipsis', marginBottom: 0 }}>{product?.description}</p>
+                        <div style={{ display: 'flex', justifyContent: 'right', fontStyle: 'italic', margin: 0, padding: 0 }} onClick={openDescription}>Xem thêm&gt;&gt;</div>
                     </div>
 
                 </div>
@@ -359,7 +362,7 @@ const ProductDetails = () => {
                     <div>Thông tin chi tiết</div>
                     <hr />
                     <div style={{ marginLeft: '20%', marginRight: '20%', marginTop: 10 }}>
-                        <img height={'80%'} width={"100%%"} src={focusVariant?.image ? focusVariant.image : 'https://phapluat.me/images/noimage.jpg'}></img>
+                        <Antd.Image height={'80%'} width={"100%%"} src={focusVariant?.image ? focusVariant.image : 'https://phapluat.me/images/noimage.jpg'}></Antd.Image>
                     </div>
                     <Antd.Row style={{ marginTop: 30 }}>
 
@@ -463,6 +466,10 @@ const ProductDetails = () => {
     }
     return (
         <>
+            <Antd.Modal width={1000}  title="Mô tả sản phẩm" visible={openDes} footer={null} onCancel={()=>{setOpenDes(false)}}>
+                <textarea style={{width:'100%',height:'500px',padding:10}} disabled={true}>{productInfo?.product.description}</textarea>
+            </Antd.Modal>
+           
             {isUpdate ? <UpdateProduct
                 product={productInfo?.product} variants={productInfo?.variants} categories={productInfo?.categories} setIsUpdate={setActionUpdate}></UpdateProduct>
                 : <View></View>}
