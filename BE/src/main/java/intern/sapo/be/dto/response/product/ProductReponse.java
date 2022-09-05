@@ -1,16 +1,18 @@
 package intern.sapo.be.dto.response.product;
 
+import intern.sapo.be.entity.Category;
 import intern.sapo.be.entity.Product;
 import intern.sapo.be.entity.ProductVariant;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Getter
+@Setter
 public class ProductReponse {
     private Product product;
     private List<ProductVariant> variants;
+    private List<Category> categories;
 }
