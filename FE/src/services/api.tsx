@@ -42,12 +42,3 @@ export const getCountTotalProductVariant = async () => {
 export const createImport = async (im: object) => {
     return await axios.post(`http://localhost:8080/api/imports/`,im)
 }
-export const getImportInvoices = async () => {
-    return await axios.get(`http://localhost:8080/api/imports/findAll`)
-}
-export const getDetailImportInvoice = async (code:string) =>{
-    return await axios.get(`http://localhost:8080/api/imports/getDetails/${code}`)
-}
-export const updateStatusInvoice = async (importId: number, status: string) =>{
-    return await axios.put(`http://localhost:8080/api/imports/updateStatus?id=${importId}&status=${status}`)
-}

@@ -1,8 +1,6 @@
 import { UseQueryResult } from "@tanstack/react-query";
-import { Input, Select } from "antd";
+import { Select } from "antd";
 import React from "react";
-import { findInventoryById } from "../../../api/inventory";
-import { inventory } from "../../type/data_type";
 
 type prop = {
   setInventorySend: (e: any) => void;
@@ -15,13 +13,11 @@ export const SelectInventory = ({
   setInventoryReceive,
   listInventory,
 }: prop) => {
-  const handleClickOptionSend = async (e?: number) => {
-    const exportByInventory = await findInventoryById(e);
-    setInventorySend(exportByInventory);
+  const handleClickOptionSend = (e: number) => {
+    setInventorySend(e);
   };
-  const handleClickOptionReceive = async (e?: number) => {
-    const exportReceive = await findInventoryById(e);
-    setInventoryReceive(exportReceive);
+  const handleClickOptionReceive = (e: number) => {
+    setInventoryReceive(e);
   };
   return (
     <div className="select-inventory">
@@ -41,8 +37,8 @@ export const SelectInventory = ({
             optionFilterProp="children"
             onSelect={handleClickOptionSend}
           >
-            {listInventory?.data &&
-              listInventory.data.map((item: any) => (
+            {listInventory?.data?.data &&
+              listInventory.data.data.map((item: any) => (
                 <Select.Option
                   style={{ width: "100%" }}
                   key={item.id}
@@ -65,8 +61,8 @@ export const SelectInventory = ({
             optionFilterProp="children"
             onSelect={handleClickOptionReceive}
           >
-            {listInventory?.data &&
-              listInventory.data.map((item: any) => (
+            {listInventory?.data?.data &&
+              listInventory.data.data.map((item: any) => (
                 <Select.Option
                   style={{ width: "100%" }}
                   key={item.id}
@@ -77,15 +73,6 @@ export const SelectInventory = ({
               ))}
           </Select>
         </div>
-      </div>
-      <div className="select-inventory-left">
-        <div className="select-inventory-top">
-          <div className="title-p">
-            <p>Mã phiếu chuyển</p>
-          </div>
-          <Input placeholder="Nhập mã phiếu" />
-        </div>
-        <div className="select-inventory-top"></div>
       </div>
     </div>
   );

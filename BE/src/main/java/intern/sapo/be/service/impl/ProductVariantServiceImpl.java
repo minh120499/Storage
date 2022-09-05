@@ -61,10 +61,8 @@ public class ProductVariantServiceImpl extends BaseService<ProductVariant> imple
         Query queryTotal = entityManager.createNativeQuery
                 ("select count(*) as total from product_variants\n" +
                         "    inner join products p on product_variants.product_id = p.id\n" +
-                        "where product_variants.is_delete = false;");
+                        "where is_delete = false;");
         Long countResult = queryTotal.getSingleResult() != null ? Long.parseLong(queryTotal.getSingleResult().toString()) : 0;
         return (int) ((countResult / 5) + 1);
     }
-
-
 }

@@ -32,6 +32,7 @@ public class Account implements UserDetails {
 	@Column(name = "id", nullable = false)
 	private Integer id;
 
+
 	@Column(name = "username", nullable = false, length = 200)
 	private String username;
 

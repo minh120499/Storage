@@ -6,6 +6,7 @@ import CategoryCreate from "./CategoryCreate";
 import CategoryUpdate from "./CategoriesUpdate";
 import { Category } from "../../type/allType";
 import {
+  deleteCategory,
   deleteListCategory,
   getCategories,
 } from "../../api/apiCategory";
@@ -13,8 +14,8 @@ import { Link } from "react-router-dom";
 import { DeleteOutlined, DownOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import ToastCustom from "../../features/toast/Toast";
+import Buttonn from "../../UI/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
-
 
 export default function Categories() {
   const [response, setResponse] = useState<Category[]>([]);
@@ -62,7 +63,8 @@ export default function Categories() {
     {
       title: "Thao tác",
 
-      render: (row) => (
+      render: (row) => {
+        return (
           <Space>
             <CategoryUpdate
               status={() => setStatus(!status)}
@@ -73,8 +75,9 @@ export default function Categories() {
               onClick={() => onDelete(row)}
             />
           </Space>
-        )
+        );
       },
+    },
   ];
 
   const handleMenuClick: MenuProps["onClick"] = (e: any) => {
@@ -89,11 +92,9 @@ export default function Categories() {
       onClick={handleMenuClick}
       items={[
         {
-          
-          label: <Link  to="#">Xóa danh mục</Link>,
+          label: <Link to="#">Xóa nhà cung cấp</Link>,
           key: "1",
           icon: <DeleteOutlined />,
-          danger: true
         },
       ]}
     />
@@ -133,9 +134,7 @@ export default function Categories() {
       confirmButtonText: "Delete!",
     }).then((result) => {
       if (result.isConfirmed) {
-        const listId: number[]=[];
-        listId.push(row.id)
-        deleteListCategory(listId).then(() => {
+        deleteCategory(row.id).then(() => {
           ToastCustom.fire({
             icon: "success",
             title: "Xoá thành công!",
@@ -148,7 +147,7 @@ export default function Categories() {
   };
 
   return (
-    <div className="m-5">
+    <>
       <h1 className="ant-typography">Danh mục</h1>
       <div
         style={{
@@ -160,7 +159,7 @@ export default function Categories() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Dropdown overlay={menu} disabled={!hasSelected}>
-            <Button type="primary" style={{ width: "180px", fontSize: "14px", marginLeft:"0px" }}>
+            <Button type="primary" style={{ width: "180px", fontSize: "14px" }}>
               Thao tác
               <DownOutlined />
             </Button>
@@ -177,6 +176,6 @@ export default function Categories() {
         columns={columns}
         dataSource={data}
       />
-    </div>
+    </>
   );
 }

@@ -6,5 +6,4 @@ public interface IImportsStatusService {
 
     ImportsStatus save(ImportsStatus importsStatus);
 
-    ImportsStatus findByImportIdAndStatusId(Integer importId, Integer statusId);
 }

@@ -1,5 +1,6 @@
 package intern.sapo.be.dto.request.Product;
 
+import intern.sapo.be.entity.Category;
 import intern.sapo.be.entity.Product;
 import intern.sapo.be.entity.ProductVariant;
 import lombok.AllArgsConstructor;
@@ -14,4 +15,6 @@ import java.util.List;
 public class ProductAddDTO {
     private Product product;
     private List<ProductVariant> variants;
+    private List<Category> categories;
+
 }

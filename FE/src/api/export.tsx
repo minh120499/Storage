@@ -1,10 +1,7 @@
 import axios from "axios";
 import { exportValue } from "../components/type/data_type";
 
-export const getExport = async () => {
-  return (await axios.get(`http://localhost:8080/exports`)).data;
-};
-export const createExport = async (item?: exportValue) => {
+export const createExport = async (item: exportValue) => {
   return await axios.post(`http://localhost:8080/exports`, item);
 };
 export const findExportById = async (id?: number) => {

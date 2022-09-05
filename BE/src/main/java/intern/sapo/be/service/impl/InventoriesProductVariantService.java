@@ -30,7 +30,7 @@ public class InventoriesProductVariantService implements IInventoriesProductVari
             throw new IllegalArgumentException("id not found");
         }
         for (DetailsImport detailsImport : list) {
-            Integer productVariantId = detailsImport.getProduct_variant_id();
+            Integer productVariantId = detailsImport.getProductVariantId();
             InventoriesProductVariant inventoriesProductVariant = inventoriesProductVariantRepo
                     .findByInventoryIdAndProductVariantId(inventoryId, productVariantId);
             if (inventoriesProductVariant == null) {

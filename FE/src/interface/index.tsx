@@ -1,6 +1,6 @@
 export interface IRole {
   key?: React.Key;
-  id: number;
+  id?: number;
   name: string;
   description: string;
 }
@@ -8,7 +8,6 @@ export interface IRole {
 export interface IRoleLable {
   staff: string;
   stocker: string;
-  admin: string
 }
 
 export interface ILoginData {
@@ -17,7 +16,6 @@ export interface ILoginData {
 }
 
 export interface IInventory {
-  STT?: any,
   key?: number | string;
   id?: number;
   code: string;
@@ -26,31 +24,5 @@ export interface IInventory {
   createAt?: any;
   updateAt?: any;
   isDelete?: boolean;
-}
-
-export interface IInventoryDto {
-  key?: number | string;
-  id?: number;
-  code: string;
-  name: string;
-  address: string;
-  size:number;
-  createAt?: any;
-  updateAt?: any;
-  isDelete?: boolean;
-}
-
-export interface IProductVariantDto{
-  id: number,
-  code: string,
-  name: string,
-  image:string,
-  importPrice: number,
-  quantity: number,
-}
-
-export interface IResultId{
-  idInventory: any,
-  idProductVariant:any
 }
 

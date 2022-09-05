@@ -1,37 +1,28 @@
 import { Link, useNavigate } from 'react-router-dom';
 
-import {LeftOutlined}  from "@ant-design/icons";
+import { LeftOutlined } from "@ant-design/icons";
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import * as Mui from '@mui/material'
 import * as Antd from 'antd'
-import { AddProductInput, IVariant} from '../../type/allType';
+import { AddProductInput, Category, IVariant, OptionAdd } from '../../type/allType';
 import { addProduct } from '../../services/productServices';
 import { getSuppliers } from '../../services/api';
 import { ISupplier } from '../../services/customType';
 import ToastCustom from '../../features/toast/Toast';
 import { Delete } from '@mui/icons-material';
 import { RcFile } from 'antd/lib/upload';
+import { getCategories } from '../../api/apiCategory';
+import SelectCategory from './SelectCategory';
+import SelectOption from './SelectOption';
 import ImageUpload from './ImageUpload';
 
 
-const getBase64 = (file: RcFile): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = error => reject(error);
-  });
 
 
-function AddProduct() {
+function AddProduct(props: any) {
     //init values
-    interface OX {
-        name: string,
-        values: Array<string>
-    }
-    var initOptions: Array<OX> = []
-
-
+ 
+    var initOptions: Array<OptionAdd> = []
     var valuesForName: string[] = []
     var variantsAll: IVariant[] = []
     const initVariants: Array<IVariant> = []
@@ -48,43 +39,54 @@ function AddProduct() {
 
     }
     //state
-    const [options, setOptions] = useState<Array<OX>>(initOptions)
+    const [options, setOptions] = useState<Array<OptionAdd>>(initOptions)
     const [suppliers, setSuppliers] = useState<ISupplier[]>([]);
-
     const [variants, setVariants] = useState(initVariants)
-    const [product, setProduct] = useState<AddProductInput>(initProduct)
+    const [product, setProduct] = useState<AddProductInput>(props.product)
+    const [categories, setCategories] = useState<Category[]>([])
+    const [selectCategories, setSelectCategories] = useState<Category[]>([])
+
     const [open, setOpen] = React.useState(false);
     const [isCreated, setIsCreated] = useState(false)
-    // const [loading, setLoading] = useState(false);
+
+    
     const [imageUrl, setImageUrl] = useState<string>();
     const navigate = useNavigate()
     //function
     const handleOpen = () => { setOpen(true); }
     const handleClose = () => { setOpen(false); }
-
+    const onImageChange=(url:string)=>{
+        setImageUrl(url)
+    }
     const onSubmit = (data: AddProductInput) => {
-        console.log(data)
         let { salePrice, wholesalePrice, importPrice, ...other } = { ...data }
         let newProduct = { ...other, accountId: 1, statusId: 1 }
-
+        
+        
         let body = {
             product: newProduct,
-            variants: variants
+            variants: variants,
+            categories:selectCategories
         }
 
-        // eslint-disable-next-line eqeqeq
         if (options.length == 0) {
             body = {
                 ...body,
-                variants: [{ name: newProduct.name, salePrice, importPrice, wholesalePrice }]
+                variants: [{ name: newProduct.name, salePrice,image:imageUrl, importPrice, wholesalePrice }]
             }
         }
         else {
+            var variantsSt1=variants.map((variant,index)=>{
+                var x=variant
+                x.image=imageUrl
+                return x
+            })
             body = {
                 ...body,
                 variants: variants
             }
         }
+        console.log(body)
         handleOpen()
 
         addProduct(body).then(response => {
@@ -95,7 +97,7 @@ function AddProduct() {
                     title: 'Thêm sản phẩm thành công'
                 }).then()
                 localStorage.removeItem('products')
-                navigate('/products')
+                navigate(`/products`)
             }
             else {
                 ToastCustom.fire({
@@ -108,28 +110,23 @@ function AddProduct() {
             handleClose()
 
 
-        }).catch((erorr) => {
-            ToastCustom.fire({
-                icon: 'error',
-                title: 'Thêm sản phẩm thất bại'
-            }).then()
-            handleClose()
         })
-
-    }
-    const addNewOptionUI = () => {
-        if (options.length < 4) {
-
-            setOptions(options.concat([{
-                name: '',
-                values: []
-            }]))
-
-        }
+            .catch((erorr) => {
+                ToastCustom.fire({
+                    icon: 'error',
+                    title: 'Thêm sản phẩm thất bại'
+                }).then()
+                handleClose()
+            })
 
     }
 
-    const createVariants = (options: Array<OX>, i: number, n: number) => {
+    const setNewOptions = (options:Array<OptionAdd>) => {
+       setOptions(options)
+
+    }
+
+    const createVariants = (options: Array<OptionAdd>, i: number, n: number) => {
 
         if (i < n) {
             let values = options[i].values
@@ -143,10 +140,11 @@ function AddProduct() {
                         code: null,
                         productId: null,
                         name: product.name + '-' + valuesForName.join('-'),
-                        image: null,
+                        image: imageUrl,
                         wholesalePrice: product.wholesalePrice,
                         salePrice: product.salePrice,
-                        importPrice: product.importPrice
+                        importPrice: product.importPrice,
+                        
                     })
 
 
@@ -160,12 +158,6 @@ function AddProduct() {
 
     }
 
-    const deleteOption = (key: number) => {
-
-        options.splice(key, 1)
-        onOptionChange()
-    }
-
     const onOptionChange = () => {
 
         createVariants(options, 0, options.length)
@@ -173,6 +165,15 @@ function AddProduct() {
 
 
     }
+
+    const onCategoriesSelect = (data:Category[]) => {
+        setSelectCategories(data)
+        
+    }
+
+
+
+
     useLayoutEffect(() => {
         let x = localStorage.getItem('product')
         let y = x ? JSON.parse(x) : initProduct
@@ -183,6 +184,15 @@ function AddProduct() {
         getSuppliers().then((r) => {
             setSuppliers(r.data.reverse())
         })
+        setVariants(props.variants)
+
+        getCategories().then(res => {
+            setCategories(res.data.reverse())
+        }).catch(error => {
+
+        })
+
+        document.title='Thêm sản phẩm'
     }, [])
 
     // Component
@@ -192,7 +202,7 @@ function AddProduct() {
             <>
                 <Mui.Paper sx={{ px: 5, py: 2, height: 565 }}>
                     <h1>Thông tin chung</h1>
-
+                    <hr/>
                     {/* <SelectSupplier ></SelectSupplier> */}
 
                     <Antd.Form.Item style={{ marginTop: 50 }} labelCol={{ span: 24 }} labelAlign='left' label='Tên sản phẩm' name="name"
@@ -244,151 +254,23 @@ function AddProduct() {
             </>
         )
     }
-    const SelectSupplier = () => {
-        return (
-            <>
-                <Antd.Form.Item name={'supplierId'} label={'Nhà cung cấp'} labelCol={{ span: 24 }}
-                    rules={[
-                        { required: true, message: 'Không được để trống nhà cung cấp' }
 
-                    ]}>
-                    <Antd.Select style={{ width: '100%', marginBottom: 10, borderRadius: 5 }} size={'large'}
-                        showSearch
-                        placeholder="Nhấn để chọn nhà cung cấp"
-                        optionFilterProp="children"
-                        defaultValue={null}
-                        // onChange={handleSelectSupplier}
-                        filterOption={(input, option) => (option!.children as unknown as string).includes(input)}
-                        filterSort={(optionA, optionB) =>
-                            (optionA!.children as unknown as string)
-                                .toLowerCase()
-                                .localeCompare((optionB!.children as unknown as string).toLowerCase())
-                        }
-
-                    >
-                        {
-                            suppliers.map((supplier, index) => {
-                                return (
-                                    <Antd.Select.Option key={supplier.id} value={supplier.id}>
-
-                                        {supplier.code + ' | ' + supplier.name}
-
-                                    </Antd.Select.Option>
-                                )
-                            })
-                        }
-                    </Antd.Select>
-                </Antd.Form.Item>
-
-            </>
-        )
-    }
-    const OptionInfo = () => {
-        return (
-            <>
-                <Mui.Paper sx={{ px: 5, py: 2, height: 300 }} >
-                    <h1>Thêm thuộc tính</h1>
-
-                    {
-                        options.map
-                            ((option, index) => {
-                                return (
-                                    <>
-
-                                        <Antd.Input size={'large'} style={{
-
-                                            width: '20%',
-                                            margin: '10px 10px',
-                                            borderRadius: 5
-
-
-
-                                        }}
-                                            defaultValue={option.name}
-                                            onChange={(data) => {
-                                                let { name, values } = { ...option }
-                                                options[index].name = data.target.value.toString()
-                                            }}
-                                        ></Antd.Input>
-
-
-                                        <Antd.Select key={index}
-                                            size={'large'}
-                                            mode="tags"
-                                            placeholder="Please select"
-                                            style={{
-                                                width: '60%',
-                                            }}
-                                            defaultValue={[...option.values]}
-                                            onChange={(values) => {
-                                                options[index].values = values
-                                            }}
-                                            onBlur={() => {
-                                                onOptionChange()
-
-                                            }}
-                                        >
-
-                                        </Antd.Select>
-                                        {index === options.length - 1 ? <Mui.Button onClick={() => deleteOption(index)} endIcon={<Delete />} color={'error'} ></Mui.Button> : null}
-                                    </>
-
-
-                                )
-                            })}
-                    {options.length < 4 ? <Mui.Button sx={{ ml: 3 }} onClick={addNewOptionUI}>+ Thêm Thuộc tính</Mui.Button> : null
-                    }                    {/* <Mui.Button sx={{ ml: 6 }} onClick={() => { onOptionChange() }}>Tạo các phiên bản</Mui.Button> */}
-
-
-                </Mui.Paper>
-            </>
-        )
-    }
     const ImageSelect = () => {
 
         return (
             <Mui.Paper sx={{ px: 5, py: 2, height: 250, mb: 2 }}>
                 <h1>Thêm hình ảnh </h1>
-                <div style={{ margin:'20px 50px'}}>
-                    {/* <Antd.Upload
-                        name="avatar"
-                        listType="picture-card"
-                        className="avatar-uploader"
-                        showUploadList={false}
-                        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-
-                    >      {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : UploadButton}
-
-                    </Antd.Upload> */}
-                           <ImageUpload/>
+                <div style={{ margin: '20px 20px' }}>
+                
+                    <ImageUpload imageUrl={imageUrl} setUrl={onImageChange}/>
                 </div>
 
             </Mui.Paper>
-     
+
         )
 
     }
-    const SelectCategory = () => {
-        return (
-            <>
 
-                <Mui.Paper sx={{ px: 5, py: 2, height: 250, mb: 2 }}>
-                    <h1>Chọn Danh mục </h1>
-                    <Antd.Select
-                    style={{ width: '100%', marginTop:'40px',marginBottom: 10, borderRadius: 5 }} size={'large'}
-                    showSearch
-                    placeholder="Nhấn để chọn "
-                    optionFilterProp="children"
-                    defaultValue={null}
-                    
-                    >
-
-                    </Antd.Select>
-                </Mui.Paper>
-            </>
-
-        )
-    }
     const Variants = () => {
         return (
             <>
@@ -458,19 +340,15 @@ function AddProduct() {
             </>
         )
     }
-    const UploadButton = (
-        <div>
-            <div style={{ marginTop: 10 }}>Upload</div>
-        </div>
-    );
+
 
     return (
         <div>
-            <h2 style={{margin:20}}>
-                           <Link to="/products">
-                               <LeftOutlined /> Danh sách sản phẩm
-                            </Link>
-                       </h2>
+            <h2 style={{ margin: 20 }} >
+                <Link to="/products">
+                    <LeftOutlined /> Danh sách sản phẩm
+                </Link>
+            </h2>
             <Mui.Modal sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -504,12 +382,12 @@ function AddProduct() {
                                     <ImageSelect />
                                 </Mui.Grid>
                                 <Mui.Grid item xs={6}>
-                                    <SelectCategory></SelectCategory>
-
+                                    <SelectCategory selectCategories={selectCategories} onChange={onCategoriesSelect} />
                                 </Mui.Grid>
 
                             </Mui.Grid>
-                            <OptionInfo></OptionInfo>
+                            {/* <OptionInfo></OptionInfo> */}
+                            <SelectOption options={options} onOptionChange={onOptionChange} setOptions={setNewOptions} size={4}  />
 
                         </Mui.Grid>
 
@@ -518,12 +396,12 @@ function AddProduct() {
 
                 {options[0]?.values.length > 0 ? <Variants /> : null}
 
-<div style={{display:'flex',justifyContent:'flex-end' }}>
-<Antd.Button type='primary' htmlType='submit' style={{ margin: '20px 0px', width: 150 }}>Lưu</Antd.Button>
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Antd.Button type='primary' htmlType='submit' style={{ margin: '20px 0px', width: 150 }}>Lưu</Antd.Button>
 
 
-</div>
-              
+                </div>
+
             </Antd.Form>
 
         </div >

@@ -16,9 +16,4 @@ public class ImportStatusService implements IImportsStatusService {
     public ImportsStatus save(ImportsStatus importsStatus) {
         return importStatusRepo.save(importsStatus);
     }
-
-    @Override
-    public ImportsStatus findByImportIdAndStatusId(Integer importId, Integer statusId) {
-        return importStatusRepo.findByImportIdAndStatusId(importId, statusId);
-    }
 }
