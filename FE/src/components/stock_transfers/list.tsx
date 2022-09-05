@@ -272,8 +272,11 @@ export const ListExport = () => {
             targetKeys={targetKeys}
             onChange={handleChange}
             render={(item) => item.title}
-            selectAllLabels={(info: { selectedCount: number, totalCount: number }) => ["a","b"]}
-            // selectAllLabels={["a"]}
+            // selectAllLabels={(info: {
+            //   selectedCount: number;
+            //   totalCount: number;
+            // }) => [<div>a</div>]}
+            // // selectAllLabels={["a"]}
           />
         </Modal>
       )}
