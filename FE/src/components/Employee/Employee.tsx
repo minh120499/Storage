@@ -17,22 +17,25 @@ interface DataType {
 
 function Employee() {
   const columns: ColumnsType<DataType> = [
-    {
-      title: <b>ID</b>,
-      dataIndex: "id",
-      render: (text: string) => <a href={`./employees/${text}`}>{text}</a>,
-    },
+    // {
+    //   title: <b>ID</b>,
+    //   dataIndex: "id",
+    //   render: (text: string) => <a href={`./employees/${text}`}>{text}</a>,
+    // },
     {
       title: <b>Ảnh</b>,
       dataIndex: "employee",
-      render: ([employees]) => (
+      render: ([employees]) => { 
+        console.log(employees)
+        
+        return(
         <Avatar
           style={{ backgroundColor: "#f56a00", verticalAlign: "middle" }}
           src={employees?.avatar}
         >
           {employees?.avatar || employees?.fullName}
         </Avatar>
-      ),
+      )},
     },
     {
       title: <b>Họ & Tên</b>,

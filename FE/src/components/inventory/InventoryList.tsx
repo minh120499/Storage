@@ -94,7 +94,7 @@ const InventoryList = () => {
   );
   const inventoriesDelete = useMutation((id: number) => deleteInvetory(id));
 
-  const inventories = useQuery(["id"], getPagination, { retry: 0 });
+  // const inventories = useQuery(["id"], getPagination, { retry: 0 });
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fullAddress, setFullAddress] = useState("");
   const [keyChange, setKeyChange] = useState(0);
@@ -172,10 +172,10 @@ const InventoryList = () => {
         onRow={(record: any) => {
           return {
             onClick: () =>
-              navigate({ pathname: `/stocker/manager/${record.id}` }),
+              navigate({ pathname: `/stocker/inventories/${record.id}` }),
           };
         }}
-        query={inventories}
+        query={getPagination}
         rowKey="id"
         // total={20}
       />

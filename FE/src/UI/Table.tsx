@@ -9,7 +9,7 @@ const T = (props: any) => {
   const query = useQuery(
     ["id", page, pageSize],
     () => props.query(page, pageSize),
-    { keepPreviousData: true }
+    { keepPreviousData: true, retry: 0 }
   );
 
   if (query?.isError) {

@@ -44,7 +44,6 @@ public class InventoryController {
 	public List<Inventory> getAllActiveInventory() {
 		return iInventoryService.findAllActiveInventory();
 	}
-
 	@PostMapping("")
 	public Inventory createInventory(@RequestBody @Valid Inventory inventory, BindingResult bindingResult) {
 		return iInventoryService.create(inventory, bindingResult);
