@@ -5,15 +5,14 @@ import intern.sapo.be.base.IBaseService;
 import intern.sapo.be.dto.request.Product.ProductVariantDTO;
 import intern.sapo.be.entity.ProductVariant;
 import intern.sapo.be.service.IProductVariantService;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/product-variants")
 @CrossOrigin("*")
+
 public class ProductVariantController extends BaseController<ProductVariant> {
     private final IProductVariantService productVariantService;
 
@@ -41,8 +40,5 @@ public class ProductVariantController extends BaseController<ProductVariant> {
     public Integer count() {
         return productVariantService.countTotalPage();
     }
-//    @GetMapping("{id}")
-//    public Optional<ProductVariant> findProductById(@PathVariable Integer id) {
-//        return productVariantService.findProductById(id);
-//    }
+
 }

@@ -1,5 +1,6 @@
 package intern.sapo.be.service;
 
+import intern.sapo.be.dto.request.Inventory.ListIdRequest;
 import intern.sapo.be.dto.response.Inventory.InventoryResponse;
 import intern.sapo.be.entity.Inventory;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,8 @@ public interface IInventoryService {
 
     List<Inventory> findAll();
 
+    List<Inventory> findAllActiveInventory();
+
     Inventory findById(Integer id);
 
     Inventory create(Inventory inventory, BindingResult bindingResult);
@@ -21,6 +24,8 @@ public interface IInventoryService {
 
     void delete (Integer id);
 
-    InventoryResponse getProductVariantByInventoryId(Integer id);
+    InventoryResponse getProductVariantByInventoryId(Integer id, String name);
+
+    void deleteListProductVanriant(ListIdRequest listIdRequest);
 
 }

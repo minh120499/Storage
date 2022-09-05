@@ -78,6 +78,7 @@ export default function CategoryUpdate({ status, categoryProp }: props) {
           validateMessages={validateMessages}
           onFinish={handleUpdate}
           form={formUpdate}
+          
         >
           <Form.Item name="name" label="Nhập tên" rules={[{ required: true }]}>
             <Input placeholder="Tên" />
@@ -91,10 +92,10 @@ export default function CategoryUpdate({ status, categoryProp }: props) {
           </Form.Item>
           <Form.Item {...tailLayout}>
             <Space>
-              <Button htmlType="button" onClick={handleCancel}>
+              <Button htmlType="submit">Submit</Button>
+              <Button htmlType="button" mode="cancel" onClick={handleCancel}>
                 Cancle
               </Button>
-              <Button htmlType="submit">Submit</Button>
             </Space>
           </Form.Item>
         </Form>

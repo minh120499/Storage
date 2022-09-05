@@ -22,7 +22,7 @@ public abstract class BaseController<T> {
         return baseService.save(request);
     }
 
-    @PatchMapping ("/{id}")
+    @PatchMapping("/{id}")
     public T update(@RequestBody @Valid T request, @PathVariable(value = "id") Integer id) {
         return baseService.updateById(request, id);
     }
@@ -34,9 +34,9 @@ public abstract class BaseController<T> {
 
     @GetMapping
     public ResponseListDto<T> listAll(@RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer perPage,
-            @RequestParam(required = false) String sort,
-            @RequestParam(required = false) String sortBy) {
+                                      @RequestParam(defaultValue = "10") Integer perPage,
+                                      @RequestParam(required = false, defaultValue = "DESC") String sort,
+                                      @RequestParam(required = false, defaultValue = "id") String sortBy) {
         return baseService.getList(page, perPage, sort, sortBy);
     }
 

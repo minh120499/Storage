@@ -1,25 +1,23 @@
-import { Table, Button } from "../../UI";
+import { Table, Button, EditIcon, DeletedIcon } from "../../UI";
 import type { ColumnsType } from "antd/es/table";
 import { IInventory } from "../../interface";
-import { Space, Modal, Form, Input } from "antd";
+import { Space, Modal, Form, Input, Tag } from "antd";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   createInventory,
   getAllInventory,
   updateInvetory,
   deleteInvetory,
-  getPagination
+  getPagination,
 } from "../../api/inventory";
 import { useState } from "react";
 import AddAddress from "../AddAddress";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
-
-type data = {
-  total:number,
-  data:[]
-}
 const InventoryList = () => {
+  const navigate = useNavigate();
+
   const columns: ColumnsType<IInventory> = [
     {
       title: "Id",
@@ -45,13 +43,30 @@ const InventoryList = () => {
       title: "Status",
       dataIndex: "isDelete",
       key: "isDelete",
+      render: (status: boolean) => {
+        return status ? (
+          <Tag
+            style={{ borderRadius: "15px" }}
+            color={"volcano" || `rgb(246 76 114)`}
+          >
+            Ngừng hoạt động
+          </Tag>
+        ) : (
+          <Tag
+            style={{ borderRadius: "15px" }}
+            color={"green" || `rgb(159 237 207)`}
+          >
+            Đang hoạt động
+          </Tag>
+        );
+      },
     },
     {
       title: "Action",
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button
+          <EditIcon
             onClick={() => {
               setMode("edit");
               updateInventory(record);
@@ -59,10 +74,13 @@ const InventoryList = () => {
             }}
           >
             Sửa
-          </Button>
-          <Button mode="cancel" onClick={() => deleteInvetoryHandler(record)}>
+          </EditIcon>
+          <DeletedIcon
+            mode="cancel"
+            onClick={() => deleteInvetoryHandler(record)}
+          >
             Xóa
-          </Button>
+          </DeletedIcon>
         </Space>
       ),
     },
@@ -76,7 +94,7 @@ const InventoryList = () => {
   );
   const inventoriesDelete = useMutation((id: number) => deleteInvetory(id));
 
-  const inventories = useQuery(["id"], getAllInventory, { retry: 0 });
+  const inventories = useQuery(["id"], getPagination, { retry: 0 });
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fullAddress, setFullAddress] = useState("");
   const [keyChange, setKeyChange] = useState(0);
@@ -84,7 +102,7 @@ const InventoryList = () => {
   const [mode, setMode] = useState("new");
 
   const handleOk = () => {
-    const { code, name, detailsAddress } = formInventory.getFieldsValue();
+    const { code, name, detailsAddress, id } = formInventory.getFieldsValue();
     console.log(detailsAddress + fullAddress);
     const payload = {
       data: {
@@ -92,7 +110,7 @@ const InventoryList = () => {
         name,
         address: detailsAddress + fullAddress,
       },
-      id: 1,
+      id: id,
     };
 
     if (mode === "new") {
@@ -137,7 +155,7 @@ const InventoryList = () => {
         Swal.fire("Đã xóa!", "Đã xóa thành công", "success");
       }
     });
-    setIsModalVisible(false)
+    setIsModalVisible(false);
   };
   return (
     <>
@@ -149,7 +167,18 @@ const InventoryList = () => {
       >
         Add
       </Button>
-      <Table columns={columns} query={inventories} rowKey="id" total={10} />
+      <Table
+        columns={columns}
+        onRow={(record: any) => {
+          return {
+            onClick: () =>
+              navigate({ pathname: `/stocker/manager/${record.id}` }),
+          };
+        }}
+        query={inventories}
+        rowKey="id"
+        // total={20}
+      />
       {isModalVisible && (
         <Modal
           visible={isModalVisible}
@@ -159,8 +188,8 @@ const InventoryList = () => {
           footer={
             <div>
               <Space size="small">
-                <Button>{mode === "new" ? "Tạo" : "Cập nhập"}</Button>
-                <Button mode="cancel">Hủy</Button>
+                <Button key="submit">{mode === "new" ? "Tạo" : "Cập nhập"}</Button>
+                <Button key="back" mode="cancel">Hủy</Button>
               </Space>
             </div>
           }
