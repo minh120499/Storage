@@ -7,7 +7,6 @@ import intern.sapo.be.entity.Import;
 import intern.sapo.be.service.IDetailsImportService;
 import intern.sapo.be.service.IImportService;
 import intern.sapo.be.service.IImportsStatusService;
-import intern.sapo.be.service.IInventoriesProductVariantService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,6 @@ public class ImportController {
     private final IImportsStatusService importsStatusService;
 
     private final IDetailsImportService detailsImportService;
-
 
     @PostMapping()
     public Import save(@RequestBody Import im) {
@@ -53,8 +51,23 @@ public class ImportController {
         importService.updateStatusImport(id, status);
     }
 
+    @PutMapping("/updateStatusReturn")
+    private void updateStatusReturn(@RequestParam Integer id, @RequestParam String status) {
+        importService.updateStatusImportReturn(id, status);
+    }
+
     @GetMapping("/getStatusHistory/{importId}")
     private ResponseEntity<?> updateStatus(@PathVariable Integer importId) {
-       return ResponseEntity.ok(importsStatusService.findDetailsImportStatus(importId));
+        return ResponseEntity.ok(importsStatusService.findDetailsImportStatus(importId));
+    }
+
+    @GetMapping("/getReturnImport/{code}")
+    private ResponseEntity<?> getAllReturnImport(@PathVariable String code) {
+        return ResponseEntity.ok(importService.getAllReturnImport(code));
+    }
+
+    @GetMapping("/getDetailsReturnImport/{code}")
+    private ResponseEntity<?> getDetailsReturn(@PathVariable String code) {
+        return ResponseEntity.ok(importService.getDetailsReturnImport(code));
     }
 }

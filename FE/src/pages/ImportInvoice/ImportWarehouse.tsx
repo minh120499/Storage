@@ -1,35 +1,42 @@
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import {Button} from "antd";
+import {Button, Space} from "antd";
 import React from "react";
-import { PDFViewer,PDFDownloadLink } from "@react-pdf/renderer";
+import {PDFViewer, PDFDownloadLink} from "@react-pdf/renderer";
 import PDFImportFile from "./PDFImportFile";
-import {IDetailImportInvoice} from "../../services/customType";
-type Props = {
-    isImport: boolean,
-    invoice:IDetailImportInvoice,
-    createDate:string,
-    importDate:string
-}
-const ImportWarehouse = ({isImport,invoice,createDate,importDate}:Props) =>{
 
-    return(
+import {IDetailImportInvoice} from "../../services/customType";
+import {DownloadOutlined} from "@ant-design/icons";
+
+type Props = {
+    createDate: string,
+    importDate: string
+    invoice: IDetailImportInvoice,
+    updateStatusImportWarehouse:()=>void
+}
+const ImportWarehouse = ({invoice, createDate, importDate,updateStatusImportWarehouse}: Props) => {
+    return (
         <div className="block" style={{
             padding: 0,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center'
         }}>
-            <div style={{padding: 20, paddingBottom: 5,paddingTop:0}}>
-                <p style={isImport ? {marginBottom: 0, fontSize: "16px",paddingTop:20} :{marginBottom: 0, fontSize: "16px"}}>
+            <div style={{padding: 20, paddingBottom: 5, paddingTop: 0}}>
+                <p style={invoice.anImport.isImport ? {
+                    marginBottom: 0,
+                    fontSize: "16px",
+                    paddingTop: 20
+                } : {marginBottom: 0, fontSize: "16px"}}>
                     <b style={{display: 'flex', alignItems: 'center'}}>
-                        <span style={{marginRight: 3, display: 'flex', alignItems: 'center'}}><LocalShippingIcon/></span>
+                        <span
+                            style={{marginRight: 3, display: 'flex', alignItems: 'center'}}><LocalShippingIcon/></span>
                         Nhập kho
                     </b>
                 </p>
                 {
-                    isImport && (
+                    invoice.anImport.isImport && (
                         <p style={{marginTop: 10}}>
-                            <b style={{color:'#1890ff'}}>
+                            <b style={{color: '#1890ff'}}>
                                 Xác nhận nhập kho thành công
                             </b>
                         </p>
@@ -39,17 +46,23 @@ const ImportWarehouse = ({isImport,invoice,createDate,importDate}:Props) =>{
             </div>
             <div style={{padding: 20}}>
                 {
-                    isImport ? (
-                            <>
-                                <PDFDownloadLink document={ <PDFImportFile invoice={invoice} createdDate={createDate} importDate={importDate}/>} fileName="somename.pdf">
-                                    {({ blob, url, loading, error }) =>
-                                        loading ? 'Loading document...' : 'Download now!'
-                                    }
-                                </PDFDownloadLink>
+                    invoice.anImport.isImport && createDate !== '' ? (
+                        <>
+                            <PDFDownloadLink document={<PDFImportFile createDate={createDate} importDate={importDate}
+                                                                      invoice={invoice}/>} fileName={ "phieuNhapKho - " +invoice.anImport.code +".pdf"}>
+                                {({blob, url, loading, error}) =>
+                                    loading ?
+                                        <Button type='primary'>Nhập kho</Button> :
+                                        <Button type='primary'> <Space>
+                                            <DownloadOutlined/>
+                                            In phiếu nhập kho
+                                        </Space></Button>
+                                }
+                            </PDFDownloadLink>
 
-                            </>
-                    ): (
-                        <Button type='primary'>Nhập kho</Button>
+                        </>
+                    ) : (
+                        <Button onClick={updateStatusImportWarehouse} type='primary'>Nhập kho</Button>
                     )
                 }
             </div>

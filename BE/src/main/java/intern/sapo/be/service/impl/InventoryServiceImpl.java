@@ -1,4 +1,5 @@
 package intern.sapo.be.service.impl;
+
 import intern.sapo.be.dto.request.ProductVariantsDTO;
 import intern.sapo.be.dto.response.Inventory.InventoryResponse;
 import intern.sapo.be.entity.Inventory;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,4 +112,6 @@ public class InventoryServiceImpl implements IInventoryService {
         }
         return inventoryResponse;
     }
+
+
 }

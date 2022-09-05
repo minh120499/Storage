@@ -16,7 +16,12 @@ import {
 } from "antd";
 import SelectSupplier from "../../components/SelectSupplier";
 import {IInventories, IMyTableData, IProductVariant} from "../../services/customType";
-import {createImport, getCountTotalProductVariant, getProductVariant} from "../../services/api";
+import {
+    createImport,
+    getCountTotalProductVariant,
+    getCurrentQuantityInventory,
+    getProductVariant
+} from "../../services/api";
 import {BackwardOutlined, DeleteOutlined, FastForwardOutlined} from '@ant-design/icons';
 import {ColumnProps} from "antd/es/table";
 import {default as NumberFormat} from "react-number-format";
@@ -24,9 +29,9 @@ import {getAllInventory} from "../../api/inventory";
 import ToastCustom from "../../features/toast/Toast";
 import {RangePickerProps} from "antd/es/date-picker";
 import moment from "moment";
+import {useNavigate} from "react-router-dom";
 
 // ImportInvoice * as CurrencyFormat from 'react-currency-format';
-
 
 
 const CreateImport = () => {
@@ -44,6 +49,7 @@ const CreateImport = () => {
     const [totalQuantity, setTotalQuantity] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [date, setDate] = useState("0");
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -93,7 +99,6 @@ const CreateImport = () => {
             totalPrice: parseInt(productVariant.importPrice)
         };
         let findData = tableData.find(t => t.code === productVariant.code)
-
         if (findData === undefined) {
             setTableData([...tableData, newData]);
         } else {
@@ -313,10 +318,11 @@ const CreateImport = () => {
                     icon: 'success',
                     title: 'Thêm phiếu nhập thành công'
                 }).then()
+                navigate("/purchase_orders")
             })
         }
-
     }
+
 
     const onSelectInventory = (value: number) => {
         setInventoryId(value)
@@ -330,11 +336,9 @@ const CreateImport = () => {
     };
 
 
-
-
     return (
         <div>
-            <h1>Tạo đơn nhập hàng</h1>
+            <h1 style={{fontSize:'30px',margin:0,marginRight:10,marginBottom:'45px'}}>Tạo đơn nhập hàng</h1>
             <Form layout="vertical">
                 <Row gutter={24}>
                     <Col span={16}>
@@ -343,117 +347,127 @@ const CreateImport = () => {
                         </div>
 
                         <div className="block">
-                                <p>Chọn sản phẩm</p>
-                                <Row>
-                                    <Col span={20}>
-                                        <Select style={{width: '100%', marginBottom: 10, borderRadius: 5}}
-                                                size={'large'}
-                                                value={null}
-                                                showSearch
-                                                onChange={handleAddToTable}
-                                                placeholder="Nhấn để chọn sản phẩm"
-                                                dropdownRender={menu => (
-                                                    <>
-                                                        {menu}
-                                                        <Divider style={{margin: '8px 0'}}/>
+                            <p><b>Chọn sản phẩm</b></p>
+                            <Row>
+                                <Col span={20}>
+                                    <Select style={{width: '100%', marginBottom: 10, borderRadius: 5}}
+                                            size={'large'}
+                                            value={null}
+                                            showSearch
+                                            optionFilterProp="children"
+                                            filterOption={(input, option) => {
+                                                return (
+                                                    option?.key.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+                                                    option?.title.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                );
 
-                                                        <Space style={{padding: '0 8px 4px'}}>
-                                                            <Button disabled={pageNumber <= 1}
-                                                                    onClick={() => setPageNumber(cur => cur - 1)}
-                                                                    type="primary"
-                                                                    icon={<BackwardOutlined/>}>
-                                                                Back
-                                                            </Button>
-                                                            <Button disabled={pageNumber >= totalPage}
-                                                                    onClick={() => setPageNumber(cur => cur + 1)}
-                                                                    type="primary"
-                                                                    icon={<FastForwardOutlined/>}>
-                                                                Next
-                                                            </Button>
-                                                        </Space>
-                                                    </>
-                                                )}
-                                        >
-                                            {
-                                                productVariants && productVariants.map((productVariant, index) => {
-                                                    return (
-                                                        <Option key={index} value={productVariant.id}>
-                                                            <div style={{
-                                                                display: "flex",
-                                                                justifyContent: "space-between",
-                                                                fontSize: '12px',
-                                                                padding: '10px'
-                                                            }}>
-                                                                <div>
-                                                                    {productVariant.code} <br/> {productVariant.name}
-                                                                </div>
-                                                                <div>
-                                                                    <NumberFormat value={productVariant.importPrice}
-                                                                                  displayType={'text'}
-                                                                                  thousandSeparator={true}
-                                                                                  suffix={' đ'}/>
-                                                                    <br/> Số lượng: <b> {productVariant.quantity}</b>
-                                                                </div>
+                                            }}
+                                            onChange={handleAddToTable}
+                                            placeholder="Tìm kiếm sản phẩm theo tên"
+                                            dropdownRender={menu => (
+                                                <>
+                                                    {menu}
+                                                    <Divider style={{margin: '8px 0'}}/>
+
+                                                    <Space style={{padding: '0 8px 4px'}}>
+                                                        <Button disabled={pageNumber <= 1}
+                                                                onClick={() => setPageNumber(cur => cur - 1)}
+                                                                type="primary"
+                                                                icon={<BackwardOutlined/>}>
+                                                            Back
+                                                        </Button>
+                                                        <Button disabled={pageNumber >= totalPage}
+                                                                onClick={() => setPageNumber(cur => cur + 1)}
+                                                                type="primary"
+                                                                icon={<FastForwardOutlined/>}>
+                                                            Next
+                                                        </Button>
+                                                    </Space>
+                                                </>
+                                            )}
+                                    >
+                                        {
+                                            productVariants && productVariants.map((productVariant, index) => {
+                                                return (
+                                                    <Option id={index} title={productVariant.name} value={productVariant.id} key={productVariant.name}>
+                                                        <div style={{
+                                                            display: "flex",
+                                                            justifyContent: "space-between",
+                                                            fontSize: '12px',
+                                                            padding: '10px'
+                                                        }}>
+                                                            <div>
+                                                                {productVariant.code} <br/> {productVariant.name}
                                                             </div>
-                                                        </Option>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
+                                                            <div  style={{width:'70px'}}>
+                                                                <NumberFormat value={productVariant.importPrice}
+                                                                              displayType={'text'}
+                                                                              thousandSeparator={true}
+                                                                              suffix={' đ'}/>
+                                                                <br/> Số lượng: <b> {productVariant.quantity}</b>
+                                                            </div>
+                                                        </div>
+                                                    </Option>
+                                                )
+                                            })
+                                        }
+                                    </Select>
 
-                                    </Col>
-                                    <Col span={4}>
-                                        <Button onClick={() => setVisible(true)} type='text'>Chọn nhiều</Button>
-                                    </Col>
-                                    {
-                                        visible && (
-                                            <Modal
-                                                title="Modal 1000px width"
-                                                centered
-                                                visible={visible}
-                                                onOk={() => setVisible(false)}
-                                                onCancel={onCancel} width={1000}
-                                                footer={[
-                                                    <div key={999}>
-                                                        <Button onClick={onCancel}>
-                                                            Huỷ
-                                                        </Button>
-                                                        <Button type='primary' onClick={handleSubmit}>
-                                                            Nhập đơn
-                                                        </Button>
-                                                    </div>
-                                                ]}
-                                            >
-                                                <Table
-                                                    rowKey="code"
-                                                    columns={columnsModal}
-                                                    dataSource={productVariants}
-                                                    pagination={false}
-                                                    onRow={record => ({
-                                                        onClick: () => {
-                                                            onSelectKey(record.code)
-                                                        }
-                                                    })}
-                                                    rowSelection={rowSelection}
-                                                />
-
-                                                <div style={{marginTop: '20px'}}>
-                                                    <Button style={{margin: 0, marginRight: '15px'}}
-                                                            disabled={pageNumber <= 1}
-                                                            onClick={() => setPageNumber(cur => cur - 1)} type="primary"
-                                                            icon={<BackwardOutlined/>}>
-                                                        Back
+                                </Col>
+                                <Col span={4} style={{display:'flex',alignItems:'center'}}>
+                                    <Button style={{marginBottom:'10px'}} onClick={() => setVisible(true)} type='text'>Chọn nhiều</Button>
+                                </Col>
+                                {
+                                    visible && (
+                                        <Modal
+                                            title="Chọn nhiều sản phẩm"
+                                            centered
+                                            visible={visible}
+                                            onOk={() => setVisible(false)}
+                                            onCancel={onCancel} width={1000}
+                                            footer={[
+                                                <div key={999}>
+                                                    <Button onClick={onCancel}>
+                                                        Huỷ
                                                     </Button>
-                                                    <Button style={{margin: 0}} disabled={pageNumber >= totalPage}
-                                                            onClick={() => setPageNumber(cur => cur + 1)} type="primary"
-                                                            icon={<FastForwardOutlined/>}>
-                                                        Next
+                                                    <Button type='primary' onClick={handleSubmit}>
+                                                        Nhập đơn
                                                     </Button>
                                                 </div>
-                                            </Modal>
-                                        )
-                                    }
-                                </Row>
+                                            ]}
+                                        >
+                                            <Input placeholder="Tìm kiếm sản phẩm theo tên" />
+                                            <br/>
+                                            <Table
+                                                rowKey="code"
+                                                columns={columnsModal}
+                                                dataSource={productVariants}
+                                                pagination={false}
+                                                onRow={record => ({
+                                                    onClick: () => {
+                                                        onSelectKey(record.code)
+                                                    }
+                                                })}
+                                                rowSelection={rowSelection}
+                                            />
+
+                                            <div style={{marginTop: '20px'}}>
+                                                <Button style={{margin: 0, marginRight: '15px'}}
+                                                        disabled={pageNumber <= 1}
+                                                        onClick={() => setPageNumber(cur => cur - 1)} type="primary"
+                                                        icon={<BackwardOutlined/>}>
+                                                    Back
+                                                </Button>
+                                                <Button style={{margin: 0}} disabled={pageNumber >= totalPage}
+                                                        onClick={() => setPageNumber(cur => cur + 1)} type="primary"
+                                                        icon={<FastForwardOutlined/>}>
+                                                    Next
+                                                </Button>
+                                            </div>
+                                        </Modal>
+                                    )
+                                }
+                            </Row>
 
                             <div style={{border: "1px solid #d9d9d9"}}>
                                 {
@@ -463,7 +477,7 @@ const CreateImport = () => {
                                         dataSource={tableData}
                                         pagination={false}
                                     /> : <div style={{
-                                        padding: '10px',
+                                        padding: '5px',
                                         justifyContent: 'center',
                                         'display': 'flex',
                                         textAlign: 'center'
@@ -501,21 +515,21 @@ const CreateImport = () => {
                                 </Select>
                             </Form.Item>
                             <Form.Item label="Ngày hẹn giao" name="date">
-                                    <DatePicker  format="DD-MM-YYYY HH:mm"
-                                                 showTime={{ format: 'HH:mm' }}
-                                                 style={{width:'100%'}}
-                                                 onChange={onChangeDate}
-                                    />
+                                <DatePicker format="DD-MM-YYYY HH:mm"
+                                            showTime={{format: 'HH:mm'}}
+                                            style={{width: '100%'}}
+                                            onChange={onChangeDate}
+                                />
                             </Form.Item>
 
                         </div>
                         <div className='block'>
                             <p>Số lượng: {totalQuantity}</p>
                             <p>Tổng tiền:
-                                <span><NumberFormat value={totalPrice} displayType={'text'} thousandSeparator={true}
+                                <span style={{marginLeft:5}}><NumberFormat value={totalPrice} displayType={'text'} thousandSeparator={true}
                                                     suffix={' đ'}/></span>
                             </p>
-                            <Button htmlType="submit" onClick={onCreateOrder}>Đặt hàng</Button>
+                            <Button  htmlType="submit" onClick={onCreateOrder}>Đặt hàng</Button>
                         </div>
                     </Col>
                 </Row>

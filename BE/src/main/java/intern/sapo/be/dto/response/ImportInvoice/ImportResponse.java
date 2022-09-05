@@ -17,6 +17,7 @@ public class ImportResponse {
     private Boolean isDone;
     private Boolean isPaid;
     private Boolean isImport;
+    private Boolean isReturn;
     private String userName;
     private String deliveryDate;
 

@@ -497,6 +497,7 @@ alter table mock_tts_10.details_imports
 INSERT INTO mock_tts_10.status (id, code, name, description) VALUES (2, 'IMPORT01', 'Đang giao dịch', 'Thêm mới đơn nhập hàng');
 INSERT INTO mock_tts_10.status (id, code, name, description) VALUES (3, 'IMPORT02', 'Thanh toán hóa đơn nhập hàng', 'Thêm mới thanh toán cho đơn nhập hàng');
 INSERT INTO mock_tts_10.status (id, code, name, description) VALUES (4, 'IMPORT03', 'Tạo phiếu nhập kho', 'Thêm mới phiếu nhập kho');
+INSERT INTO mock_tts_10.status (id, code, name, description) VALUES (5, 'IMPORT03', 'Tạo phiếu trả hàng', 'Thêm mới phiếu trả hàng');
 
 alter table mock_tts_10.imports
     add inventory_id int not null;
@@ -524,4 +525,54 @@ alter table mock_tts_10.imports
 
 alter table mock_tts_10.details_imports
     add import_price decimal(20,2) null;
+
+create table mock_tts_10.return_import
+(
+    id         int auto_increment,
+    createDate datetime default(now()),
+    import_id  int     not null,
+    constraint id
+        primary key (id),
+    constraint tbl_import_return
+        foreign key (import_id) references mock_tts_10.imports (id)
+);
+
+
+
+create table mock_tts_10.details_return_import
+(
+    id                int auto_increment,
+    details_import_id int not null,
+    quantity          int not null,
+    constraint id
+        primary key (id),
+    constraint tbl_return_import_key
+        foreign key (details_import_id) references mock_tts_10.details_imports (id)
+);
+
+alter table mock_tts_10.details_return_import
+    add return_import_id int not null;
+
+alter table mock_tts_10.details_return_import
+    add constraint tbl_return_import_2
+        foreign key (return_import_id) references mock_tts_10.return_import (id);
+
+alter table mock_tts_10.return_import
+    change createDate create_date datetime default (now()) null;
+
+alter table mock_tts_10.details_return_import
+    modify details_import_id int null;
+
+
+
+alter table mock_tts_10.details_return_import
+    add refund_reason nvarchar(250) null;
+
+alter table mock_tts_10.imports
+    add is_return bit null;
+
+alter table mock_tts_10.details_return_import
+    modify return_import_id int null;
+
+
 

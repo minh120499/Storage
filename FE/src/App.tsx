@@ -28,6 +28,7 @@ import DetailImportInvoice from "./pages/ImportInvoice/DetailImportInvoice";
 import ProductDetails from "./pages/product/ProductDetails";
 import { Status } from "./components/stock_transfers/status";
 import InventoryManager from "./components/inventory/InventoryManager";
+import CreateReturnImportInvoice from "./pages/ImportInvoice/CreateReturnImportInvoice";
 
 const App: React.FC = () => {
   const router = useRoutes([
@@ -74,7 +75,7 @@ const App: React.FC = () => {
             { path: "", element: <ListImportInvoice/> },
             { path: "create", element: <CreateImport /> },
             { path: "details/:code", element: <DetailImportInvoice /> },
-
+            { path: "return/:code", element: <CreateReturnImportInvoice /> },
           ],
         },
         {

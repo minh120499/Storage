@@ -1,7 +1,12 @@
 import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import {getDetailImportInvoice, getHistoryStatusImportInvoice, updateStatusInvoice} from "../../services/api";
-import {IDetailImportInvoice, IHistoryStatus} from "../../services/customType";
+import {
+    getDetailImportInvoice,
+    getDetailsImportReturn,
+    getHistoryStatusImportInvoice,
+    updateStatusInvoice
+} from "../../services/api";
+import {IDetailImportInvoice, IHistoryStatus, IImportReturn, IImportReturnMyTableData} from "../../services/customType";
 import {Button, Col, Row, Steps, Table, Tag} from "antd";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import {ShopFilled,} from '@ant-design/icons';
@@ -10,6 +15,7 @@ import ToastCustom from "../../features/toast/Toast";
 import ImportInvoiceHistory from "./ImportInvoiceHistory";
 import PaymentImport from "./PaymentImport";
 import ImportWarehouse from "./ImportWarehouse";
+import ReturnInvoiceImport from "./ReturnInvoiceImport";
 
 const DetailImportInvoice = () => {
 
@@ -19,6 +25,11 @@ const DetailImportInvoice = () => {
     const [reload, setReload] = useState(false)
     const [currentStatus, setCurrentStatus] = useState(0);
     const [invoiceStatusHistory, setInvoiceStatusHistory] = useState<IHistoryStatus[]>([])
+
+    const [createDate, setCreatDate] = useState("----")
+    const [importDate, setImportDate] = useState("----")
+    const [returnInvoice, setReturnInvoice] = useState<IImportReturn[]>([])
+    const [totalPriceReturnInvoice, setTotalPriceReturnInvoice] = useState(0)
 
     useEffect(() => {
         getDetailImportInvoice(code as string).then(result => {
@@ -30,6 +41,20 @@ const DetailImportInvoice = () => {
         })
     }, [reload])
 
+    useEffect(() => {
+        getDetailsImportReturn(code as string).then((res) => {
+            setReturnInvoice(res.data)
+        })
+    }, [])
+
+
+    useEffect(() => {
+        const invoiceStatusHistoryList = invoiceStatusHistory.filter((obj: IHistoryStatus) => obj.statusName !== "Tạo phiếu trả hàng")
+        if (invoiceStatusHistoryList.length === 3) {
+            setCreatDate(invoiceStatusHistoryList[2].createdAt)
+            setImportDate(invoiceStatusHistoryList[1].createdAt)
+        }
+    }, [invoiceStatusHistory])
 
     const {Step} = Steps;
 
@@ -59,41 +84,44 @@ const DetailImportInvoice = () => {
         <div>
             {
                 detailInvoices && (<div>
-                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                        <div>
-                            <h1>{detailInvoices?.anImport.code}</h1>
+                    <div style={{display: 'flex', justifyContent: 'space-between',alignItems:"center"}}>
+                        <div style={{display: 'flex',alignItems:"center"}}>
+                            <h1 style={{fontSize:'30px',margin:0,marginRight:10}}>{detailInvoices?.anImport.code}</h1>
+                            <span style={{marginBottom:10}} >{createDate}</span>
                         </div>
-                        <div style={{width:'45%'}}>
-                            {  (() => {
-                                if (invoiceStatusHistory.length === 3) {
+                        <div style={{width: '45%'}}>
+                            {(() => {
+                                const invoiceStatusHistoryList = invoiceStatusHistory.filter((obj: IHistoryStatus) => obj.statusName !== "Tạo phiếu trả hàng")
+                                if (invoiceStatusHistoryList.length === 3) {
                                     return (
                                         <Steps current={currentStatus}>
-                                            <Step title="Đặt hàng" description={invoiceStatusHistory[2].createdAt}/>
-                                            <Step title="Nhập kho" description={invoiceStatusHistory[1].createdAt}/>
-                                            <Step title="Hoàn thành" description={invoiceStatusHistory[0].createdAt}/>
+                                            <Step title="Đặt hàng" description={invoiceStatusHistoryList[2].createdAt}/>
+                                            <Step title="Nhập kho" description={invoiceStatusHistoryList[1].createdAt}/>
+                                            <Step title="Hoàn thành" description={invoiceStatusHistoryList[0].createdAt}/>
                                         </Steps>
                                     )
-                                } else if (invoiceStatusHistory.length === 2 && invoiceStatusHistory[0].statusName === 'Tạo phiếu nhập kho') {
+                                } else if (invoiceStatusHistoryList.length === 2 && invoiceStatusHistoryList[0].statusName === 'Tạo phiếu nhập kho') {
+
                                     return (
-                                        <Steps current={currentStatus+1}>
-                                            <Step title="Đặt hàng" description={invoiceStatusHistory[1].createdAt}/>
-                                            <Step title="Nhập kho" description={invoiceStatusHistory[0].createdAt}/>
+                                        <Steps current={currentStatus + 1}>
+                                            <Step title="Đặt hàng" description={invoiceStatusHistoryList[1].createdAt}/>
+                                            <Step title="Nhập kho" description={invoiceStatusHistoryList[0].createdAt}/>
                                             <Step title="Hoàn thành"/>
                                         </Steps>
                                     )
-                                }else if (invoiceStatusHistory.length === 2 && invoiceStatusHistory[0].statusName === 'Thanh toán hóa đơn nhập hàng') {
+                                } else if (invoiceStatusHistoryList.length === 2 && invoiceStatusHistoryList[0].statusName === 'Thanh toán hóa đơn nhập hàng') {
                                     return (
                                         <Steps current={currentStatus}>
-                                            <Step title="Đặt hàng" description={invoiceStatusHistory[1].createdAt}/>
+                                            <Step title="Đặt hàng" description={invoiceStatusHistoryList[1].createdAt}/>
                                             <Step title="Nhập kho"/>
                                             <Step title="Hoàn thành"/>
                                         </Steps>
                                     )
-                                }
-                                else if (invoiceStatusHistory.length === 1) {
+                                } else if (invoiceStatusHistoryList.length === 1) {
+
                                     return (
                                         <Steps current={currentStatus}>
-                                            <Step title="Đặt hàng" description={invoiceStatusHistory[0].createdAt}/>
+                                            <Step title="Đặt hàng" description={invoiceStatusHistoryList[0].createdAt}/>
                                             <Step title="Nhập kho"/>
                                             <Step title="Hoàn thành"/>
                                         </Steps>
@@ -181,12 +209,12 @@ const DetailImportInvoice = () => {
                                     </div>
                                 </div>
 
-                                <PaymentImport total={detailInvoices?.anImport.totalPrice}
+                                <PaymentImport updateStatusPaidPayment={updateStatusPaidPayment} total={detailInvoices?.anImport.totalPrice}
                                                isPaid={detailInvoices?.anImport.isPaid}/>
 
-                               <ImportWarehouse createDate={invoiceStatusHistory[0].createdAt}
-                                                importDate ={invoiceStatusHistory[1].createdAt}
-                                                invoice={detailInvoices} isImport={detailInvoices?.anImport.isImport}/>
+                                <ImportWarehouse updateStatusImportWarehouse={updateStatusImportWarehouse} invoice={detailInvoices} createDate={createDate} importDate={importDate}/>
+
+                                <ReturnInvoiceImport returnInvoice={returnInvoice} invoice={detailInvoices}/>
                             </Col>
                             <Col span={8}>
                                 <div className="block" style={{padding: 0}}>
