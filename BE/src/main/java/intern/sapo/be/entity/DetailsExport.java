@@ -19,9 +19,9 @@ public class DetailsExport {
     @Column(name = "export_id", nullable = false)
     private Integer export;
 
-    // @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @Column(name = "product_variant_id", nullable = false)
-    private Integer productVariant;
+     @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "product_variant_id", nullable = false)
+    private ProductVariant productVariant;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;

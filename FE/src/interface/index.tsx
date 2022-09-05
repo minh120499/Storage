@@ -43,10 +43,14 @@ export interface IInventoryDto {
 export interface IProductVariantDto{
   id: number,
   code: string,
+  productId?: number,
   name: string,
   image:string,
   importPrice: number,
   quantity: number,
+  salePrice?: number,
+  wholesalePrice?: number,
+  createAt?: string
 }
 
 export interface IResultId{

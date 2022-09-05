@@ -6,6 +6,7 @@ import intern.sapo.be.dto.request.Product.ProductFilter;
 import intern.sapo.be.service.IProductService;
 import intern.sapo.be.service.ISupplierService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 

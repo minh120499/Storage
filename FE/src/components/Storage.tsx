@@ -1,5 +1,6 @@
 import "./stock_transfers/file.css";
 import Create from "./stock_transfers/create";
+import {ListExport} from "./stock_transfers/list";
 
 export default function Storage() {
   return (
@@ -8,7 +9,7 @@ export default function Storage() {
         <h2>Tạo phiếu chuyển hàng</h2>
       </div>
 
-      <Create />
+      <ListExport />
 
       {/* <SelectInventory /> */}
     </div>

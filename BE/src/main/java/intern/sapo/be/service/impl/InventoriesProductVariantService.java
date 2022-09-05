@@ -1,6 +1,7 @@
 package intern.sapo.be.service.impl;
 
 import intern.sapo.be.dto.request.InventoriesProductVariantDTO;
+import intern.sapo.be.entity.DetailsExport;
 import intern.sapo.be.entity.DetailsImport;
 import intern.sapo.be.entity.InventoriesProductVariant;
 import intern.sapo.be.repository.IInventoriesProductVariantRepo;
@@ -41,6 +42,26 @@ public class InventoriesProductVariantService implements IInventoriesProductVari
                 inventoriesProductVariant.setQuantity(inventoriesProductVariant.getQuantity() + detailsImport.getQuantity());
                 inventoriesProductVariantRepo.save(inventoriesProductVariant);
             }
+        }
+    }
+
+    @Override
+    public void exportProductVariantToInventory(List<DetailsExport> detailsExports, Integer inventoryId) {
+        for(DetailsExport proId : detailsExports){
+            InventoriesProductVariant inventoriesProductVariant = inventoriesProductVariantRepo
+                    .findByInventoryIdAndProductVariantId(inventoryId, proId.getProductVariant().getId());
+            inventoriesProductVariant.setQuantity(inventoriesProductVariant.getQuantity()-proId.getQuantity());
+            inventoriesProductVariantRepo.save(inventoriesProductVariant);
+        }
+    }
+
+    @Override
+    public void importQuantityProductVariantToInventory(List<DetailsExport> detailsExports, Integer inventoryId) {
+        for(DetailsExport proId : detailsExports){
+            InventoriesProductVariant inventoriesProductVariant = inventoriesProductVariantRepo
+                    .findByInventoryIdAndProductVariantId(inventoryId, proId.getProductVariant().getId());
+            inventoriesProductVariant.setQuantity(inventoriesProductVariant.getQuantity()+proId.getQuantity());
+            inventoriesProductVariantRepo.save(inventoriesProductVariant);
         }
     }
 }

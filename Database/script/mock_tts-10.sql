@@ -607,3 +607,36 @@ ALTER TABLE products DROP CONSTRAINT products_ibfk_1;
 alter table mock_tts_10.products
     modify supplier_id int null;
 
+alter table mock_tts_10.exports
+    modify status_id int default (0) null;
+
+alter table mock_tts_10.exports
+    modify transport_company_id int null;
+
+alter table mock_tts_10.exports
+    modify account_id int null;
+
+alter table mock_tts_10.exports_status
+    modify account_create int null;
+
+alter table mock_tts_10.exports_status
+    modify account_receive int null;
+
+alter table mock_tts_10.exports_status
+    modify account_send int null;
+
+alter table mock_tts_10.exports_status
+    modify code varchar(255) null;
+
+alter table mock_tts_10.exports_status
+    modify date_receive varchar(255) null;
+
+alter table mock_tts_10.exports_status
+    modify date_send varchar(255) null;
+
+alter table mock_tts_10.exports_status
+    modify status_id int null;
+
+alter table mock_tts_10.exports_status
+    drop foreign key exports_status_ibfk_2;
+

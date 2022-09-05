@@ -6,7 +6,6 @@ import CategoryCreate from "./CategoryCreate";
 import CategoryUpdate from "./CategoriesUpdate";
 import { Category } from "../../type/allType";
 import {
-  deleteCategory,
   deleteListCategory,
   getCategories,
 } from "../../api/apiCategory";
@@ -14,8 +13,8 @@ import { Link } from "react-router-dom";
 import { DeleteOutlined, DownOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import ToastCustom from "../../features/toast/Toast";
-import Buttonn from "../../UI/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
+
 
 export default function Categories() {
   const [response, setResponse] = useState<Category[]>([]);
@@ -23,16 +22,16 @@ export default function Categories() {
   const [status, setStatus] = useState(false);
 
   useEffect(
-    function getAll() {
-      getCategories()
-        .then((response) => {
-          setResponse(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    [status]
+      function getAll() {
+        getCategories()
+            .then((response) => {
+              setResponse(response.data);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+      },
+      [status]
   );
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -63,20 +62,18 @@ export default function Categories() {
     {
       title: "Thao tác",
 
-      render: (row) => {
-        return (
+      render: (row) => (
           <Space>
             <CategoryUpdate
-              status={() => setStatus(!status)}
-              categoryProp={row}
+                status={() => setStatus(!status)}
+                categoryProp={row}
             />
             <DeleteIcon
-              className="text-red-500"
-              onClick={() => onDelete(row)}
+                className="text-red-500"
+                onClick={() => onDelete(row)}
             />
           </Space>
-        );
-      },
+      )
     },
   ];
 
@@ -88,16 +85,18 @@ export default function Categories() {
   };
 
   const menu = (
-    <Menu
-      onClick={handleMenuClick}
-      items={[
-        {
-          label: <Link to="#">Xóa nhà cung cấp</Link>,
-          key: "1",
-          icon: <DeleteOutlined />,
-        },
-      ]}
-    />
+      <Menu
+          onClick={handleMenuClick}
+          items={[
+            {
+
+              label: <Link  to="#">Xóa danh mục</Link>,
+              key: "1",
+              icon: <DeleteOutlined />,
+              danger: true
+            },
+          ]}
+      />
   );
 
   const onDeleteList = async (listId: React.Key[]) => {
@@ -108,7 +107,8 @@ export default function Categories() {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Delete!",
+      confirmButtonText: "Xác nhận",
+      cancelButtonText:"Thoát"
     }).then((result) => {
       if (result.isConfirmed) {
         deleteListCategory(listId).then(() => {
@@ -131,10 +131,13 @@ export default function Categories() {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Delete!",
+      confirmButtonText: "Xác nhận",
+      cancelButtonText:"Thoát"
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteCategory(row.id).then(() => {
+        const listId: number[]=[];
+        listId.push(row.id)
+        deleteListCategory(listId).then(() => {
           ToastCustom.fire({
             icon: "success",
             title: "Xoá thành công!",
@@ -147,35 +150,35 @@ export default function Categories() {
   };
 
   return (
-    <>
-      <h1 className="ant-typography">Danh mục</h1>
-      <div
-        style={{
-          marginBottom: 16,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <Dropdown overlay={menu} disabled={!hasSelected}>
-            <Button type="primary" style={{ width: "180px", fontSize: "14px" }}>
-              Thao tác
-              <DownOutlined />
-            </Button>
-          </Dropdown>
-          <span style={{ marginLeft: 8, marginRight: 8 }}>
+      <div className="m-5">
+        <h1 className="ant-typography">Danh mục</h1>
+        <div
+            style={{
+              marginBottom: 16,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <Dropdown overlay={menu} disabled={!hasSelected}>
+              <Button type="primary" style={{ width: "180px", fontSize: "14px", marginLeft:"0px" }}>
+                Thao tác
+                <DownOutlined />
+              </Button>
+            </Dropdown>
+            <span style={{ marginLeft: 8, marginRight: 8 }}>
             {hasSelected ? `Đã chọn ${selectedRowKeys.length} danh mục` : ""}
           </span>
+          </div>
+          <CategoryCreate status={() => setStatus(!status)} />
         </div>
-        <CategoryCreate status={() => setStatus(!status)} />
+        <Table
+            rowKey={"id"}
+            rowSelection={rowSelection}
+            columns={columns}
+            dataSource={data}
+        />
       </div>
-      <Table
-        rowKey={"id"}
-        rowSelection={rowSelection}
-        columns={columns}
-        dataSource={data}
-      />
-    </>
   );
 }

@@ -37,60 +37,60 @@ export default function CategoryCreate({ status }: props) {
 
   const handleCreate = async (category: Category) => {
     await createCategory(category)
-      .then(() => {
-        ToastCustom.fire({
-          icon: "success",
-          title: "Thêm thành công!",
+        .then(() => {
+          ToastCustom.fire({
+            icon: "success",
+            title: "Thêm thành công!",
+          });
+          formAdd.resetFields();
+          status();
+          setIsModalVisible(false);
+        })
+        .catch(() => {
+          ToastCustom.fire({
+            icon: "error",
+            title: "Thêm không thành công!",
+          });
         });
-        formAdd.resetFields();
-        status();
-        setIsModalVisible(false);
-      })
-      .catch(() => {
-        ToastCustom.fire({
-          icon: "error",
-          title: "Thêm không thành công!",
-        });
-      });
   };
   return (
-    <>
-      <div>
-        <Button onClick={showModal}>Thêm mới</Button>
-      </div>
-      <Modal
-        title="Thêm mới Danh Mục"
-        visible={isModalVisible}
-        footer={null}
-        onCancel={handleCancel}
-      >
-        <Form
-          {...layout}
-          name="nest-messages"
-          validateMessages={validateMessages}
-          onFinish={handleCreate}
-          form={formAdd}
+      <>
+        <div>
+          <Button onClick={showModal}>Thêm mới</Button>
+        </div>
+        <Modal
+            title="Thêm mới Danh Mục"
+            visible={isModalVisible}
+            footer={null}
+            onCancel={handleCancel}
         >
-          <Form.Item name="name" label="Tên" rules={[{ required: true }]}>
-            <Input placeholder="Nhập Tên" />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Mô tả"
-            rules={[{ required: true }]}
+          <Form
+              {...layout}
+              name="nest-messages"
+              validateMessages={validateMessages}
+              onFinish={handleCreate}
+              form={formAdd}
           >
-            <Input placeholder="Nhập mô tả" />
-          </Form.Item>
-          <Form.Item {...tailLayout}>
-            <Space>
-              <Button mode="cancel" onClick={handleCancel}>
-                Cancle
-              </Button>
-              <Button htmlType="submit">Submit</Button>
-            </Space>
-          </Form.Item>
-        </Form>
-      </Modal>
-    </>
+            <Form.Item name="name" label="Tên" rules={[{ required: true }]}>
+              <Input placeholder="Nhập Tên" />
+            </Form.Item>
+            <Form.Item
+                name="description"
+                label="Mô tả"
+                rules={[{ required: true }]}
+            >
+              <Input placeholder="Nhập mô tả" />
+            </Form.Item>
+            <Form.Item {...tailLayout}>
+              <Space>
+                <Button htmlType="submit">Xác nhận</Button>
+                <Button mode="cancel" onClick={handleCancel}>
+                  Thoát
+                </Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </>
   );
 }

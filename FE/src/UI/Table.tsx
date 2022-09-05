@@ -11,7 +11,6 @@ const T = (props: any) => {
     () => props.query(page, pageSize),
     { keepPreviousData: true, retry: 0 }
   );
-
   if (query?.isError) {
     Swal.fire({
       icon: "error",

@@ -28,7 +28,7 @@ public class ReturnImportService implements IReturnImportService {
     @Override
     public void saveAllDetails(List<DetailsReturnImport> returnImport, Integer inventoryId, Integer importReturnId) {
         for (DetailsReturnImport detailsReturnImport : returnImport) {
-            DetailsImport detailsImport = detailImportRepo.findById(Long.valueOf(detailsReturnImport.getDetailsImportId())).orElseThrow(() -> new IllegalArgumentException(("id not found: " + detailsReturnImport.getDetailsImportId())));
+            DetailsImport detailsImport = detailImportRepo.findById(detailsReturnImport.getDetailsImportId()).orElseThrow(() -> new IllegalArgumentException(("id not found: " + detailsReturnImport.getDetailsImportId())));
             ProductVariant productVariant = productVariantRepo.findById((detailsImport.getProduct_variant_id())).orElseThrow(() -> new IllegalArgumentException(("id not found: " + detailsImport.getProduct_variant_id())));
             InventoriesProductVariant inventoriesProductVariant = inventoriesProductVariantRepo
                     .findByInventoryIdAndProductVariantId(inventoryId, productVariant.getId());

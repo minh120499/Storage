@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/product-variants")
+    @RequestMapping("/api/product-variants")
 @CrossOrigin("*")
 public class ProductVariantController extends BaseController<ProductVariant> {
     private final IProductVariantService productVariantService;

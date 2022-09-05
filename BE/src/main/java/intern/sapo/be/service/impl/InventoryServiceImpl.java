@@ -1,7 +1,7 @@
 package intern.sapo.be.service.impl;
 import intern.sapo.be.dto.request.Inventory.ListIdRequest;
 import intern.sapo.be.dto.request.ProductVariantsDTO;
-import intern.sapo.be.dto.response.Inventory.InventoryResponse;
+import intern.sapo.be.dto.response.product.Inventory.InventoryResponse;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.entity.ProductVariant;
 import intern.sapo.be.repository.IInventoriesProductVariantRepo;
@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import java.util.ArrayList;
 import java.util.List;
+
+
+
 
 @RequiredArgsConstructor
 @Service
@@ -75,7 +78,8 @@ public class InventoryServiceImpl implements IInventoryService {
         if (bindingResult.hasErrors()) {
             throw utils.invalidInputException(bindingResult);
         } else {
-            inventory.setId(id);
+            inventory.setId(id)
+            ;
             inventory.setCreateAt(inventoryOld.getCreateAt());
             return inventoryRepository.save(inventory);
         }

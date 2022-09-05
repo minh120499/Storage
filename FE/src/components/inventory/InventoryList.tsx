@@ -45,19 +45,19 @@ const InventoryList = () => {
       key: "isDelete",
       render: (status: boolean) => {
         return status ? (
-          <Tag
-            style={{ borderRadius: "15px" }}
-            color={"volcano" || `rgb(246 76 114)`}
-          >
-            Ngừng hoạt động
-          </Tag>
+            <Tag
+                style={{ borderRadius: "15px" }}
+                color={"volcano" || `rgb(246 76 114)`}
+            >
+              Ngừng hoạt động
+            </Tag>
         ) : (
-          <Tag
-            style={{ borderRadius: "15px" }}
-            color={"green" || `rgb(159 237 207)`}
-          >
-            Đang hoạt động
-          </Tag>
+            <Tag
+                style={{ borderRadius: "15px" }}
+                color={"green" || `rgb(159 237 207)`}
+            >
+              Đang hoạt động
+            </Tag>
         );
       },
     },
@@ -65,32 +65,32 @@ const InventoryList = () => {
       title: "Action",
       key: "action",
       render: (_, record) => (
-        <Space size="middle">
-          <EditIcon
-            onClick={() => {
-              setMode("edit");
-              updateInventory(record);
-              setIsModalVisible(true);
-            }}
-          >
-            Sửa
-          </EditIcon>
-          <DeletedIcon
-            mode="cancel"
-            onClick={() => deleteInvetoryHandler(record)}
-          >
-            Xóa
-          </DeletedIcon>
-        </Space>
+          <Space size="middle">
+            <EditIcon
+                onClick={() => {
+                  setMode("edit");
+                  updateInventory(record);
+                  setIsModalVisible(true);
+                }}
+            >
+              Sửa
+            </EditIcon>
+            <DeletedIcon
+                mode="cancel"
+                onClick={() => deleteInvetoryHandler(record)}
+            >
+              Xóa
+            </DeletedIcon>
+          </Space>
       ),
     },
   ];
 
   const inventoryMutation = useMutation((inventory: IInventory) =>
-    createInventory(inventory)
+      createInventory(inventory)
   );
   const inventoriesUpdate = useMutation((inventory: any) =>
-    updateInvetory(inventory.data, inventory.id)
+      updateInvetory(inventory.data, inventory.id)
   );
   const inventoriesDelete = useMutation((id: number) => deleteInvetory(id));
 
@@ -158,75 +158,75 @@ const InventoryList = () => {
     setIsModalVisible(false);
   };
   return (
-    <>
-      <Button
-        onClick={() => {
-          setIsModalVisible(true);
-          setMode("new");
-        }}
-      >
-        Add
-      </Button>
-      <Table
-        columns={columns}
-        onRow={(record: any) => {
-          return {
-            onClick: () =>
-              navigate({ pathname: `/stocker/inventories/${record.id}` }),
-          };
-        }}
-        query={getPagination}
-        rowKey="id"
-        // total={20}
-      />
-      {isModalVisible && (
-        <Modal
-          visible={isModalVisible}
-          onOk={handleOk}
-          onCancel={handleCancel}
-          title={mode === "new" ? "Tạo Kho mới" : "Sửa thông tin kho"}
-          footer={
-            <div>
-              <Space size="small">
-                <Button key="submit">{mode === "new" ? "Tạo" : "Cập nhập"}</Button>
-                <Button key="back" mode="cancel">Hủy</Button>
-              </Space>
-            </div>
-          }
+      <>
+        <Button
+            onClick={() => {
+              setIsModalVisible(true);
+              setMode("new");
+            }}
         >
-          <Form form={formInventory}>
-            <Form.Item name="id" style={{ display: "none" }}>
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Code"
-              name="code"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
+          Add
+        </Button>
+        <Table
+            columns={columns}
+            onRow={(record: any) => {
+              return {
+                onClick: () =>
+                    navigate({ pathname: `/stocker/inventories/${record.id}` }),
+              };
+            }}
+            query={getPagination}
+            rowKey="id"
+            // total={20}
+        />
+        {isModalVisible && (
+            <Modal
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                title={mode === "new" ? "Tạo Kho mới" : "Sửa thông tin kho"}
+                footer={
+                  <div>
+                    <Space size="small">
+                      <Button key="submit">{mode === "new" ? "Tạo" : "Cập nhập"}</Button>
+                      <Button key="back" mode="cancel">Hủy</Button>
+                    </Space>
+                  </div>
+                }
             >
-              <Input />
-            </Form.Item>
+              <Form form={formInventory}>
+                <Form.Item name="id" style={{ display: "none" }}>
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                    label="Code"
+                    name="code"
+                    rules={[
+                      {
+                        required: true,
+                      },
+                    ]}
+                >
+                  <Input />
+                </Form.Item>
 
-            <Form.Item
-              label="Name"
-              name="name"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+                <Form.Item
+                    label="Name"
+                    name="name"
+                    rules={[
+                      {
+                        required: true,
+                      },
+                    ]}
+                >
+                  <Input />
+                </Form.Item>
 
-            <AddAddress onChange={setFullAddress} keyChange={keyChange} />
-          </Form>
-        </Modal>
-      )}
-    </>
+                <AddAddress onChange={setFullAddress} keyChange={keyChange} />
+              </Form>
+            </Modal>
+        )}
+      </>
   );
 };
 
