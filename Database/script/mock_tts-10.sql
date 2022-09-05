@@ -543,15 +543,14 @@ select create_at from products inner join product_variants on products.id = prod
 END;$$
 
 DELIMITER $$
-CREATE  PROCEDURE get_productvariant(in inventoryId int)
+CREATE PROCEDURE get_productvariant_byname(in inventoryId int, productVariantName varchar(20))
 BEGIN
 		start transaction;
         begin
 			select * from product_variants inner join inventories_product_variant 
             on product_variants.id = inventories_product_variant.product_variant_id 
-            where inventories_product_variant.inventory_id = inventoryId;
+            where inventories_product_variant.inventory_id = inventoryId and product_variants.name like concat("%", productVariantName, "%");
 		commit;
 		end;								
 END;$$
-
 
