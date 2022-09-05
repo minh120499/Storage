@@ -65,17 +65,10 @@ public class CategoryService implements ICategoryService {
         }
     }
 
-
     @Override
-    @Transactional
     public void deleteLíst(List<Integer> id) {
         for (Integer item:  id) {
             iCategoryRepo.delete(item.intValue());
         }
-    }
-
-    @Override
-    public void delete(Integer id) {
-        iCategoryRepo.delete(id);
     }
 }

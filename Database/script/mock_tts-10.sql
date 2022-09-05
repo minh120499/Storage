@@ -356,7 +356,7 @@ declare search_value text ;
 set search_value=lower(concat('%',key_word,'%'));
 select  count(table1.total) from (select 0 as total  from products left join product_variants on products.id=product_variants.product_id
 left join inventories_product_variant on product_variants.id=inventories_product_variant.product_variant_id 
-where (lower(products.name) like search_value or lower(products.code) like search_value) and products.is_delete=is_delete
+where (lower(products.name) like search_value or lower(products.code) like search_value) and products.is_delete=is_delete and product_variants.is_delete=false
 group by(products.id) ) as table1  
 group by table1.total;
  
@@ -389,7 +389,7 @@ set offset_number=(page-1)*size;
 
 insert into products_count (select products.*,count(product_variants.id) as number_of_variant,sum(IF(quantity>0,quantity,0)) as total from products left join product_variants on products.id=product_variants.product_id
 left join inventories_product_variant on product_variants.id=inventories_product_variant.product_variant_id 
-where (lower(products.name) like search_value or lower(products.code) like search_value) and products.is_delete=is_delete
+where (lower(products.name) like search_value or lower(products.code) like search_value) and products.is_delete=is_delete and product_variants.is_delete=false
 group by(products.id) ) limit size offset offset_number;
  
  
@@ -461,6 +461,9 @@ CREATE TABLE import_seqId
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
 );
 
+
+
+
 DELIMITER $$
 CREATE TRIGGER tg_import_insert_code
     BEFORE INSERT ON imports
@@ -485,8 +488,6 @@ alter table mock_tts_10.imports
     modify supplier_id int not null;
 
 
-alter table mock_tts_10.details_imports
-    add product_variant_code varchar(100) not null;
 
 alter table mock_tts_10.details_imports
     add constraint foreign_key_name
@@ -515,4 +516,41 @@ alter table mock_tts_10.imports
 
 alter table mock_tts_10.imports
     add is_done bit null default false;
+ALTER TABLE product_variants
+    add COLUMN is_delete bit  default(0);
+
+
+alter table mock_tts_10.imports
+    add delivery_date varchar(50) null;
+
+
+alter table mock_tts_10.details_imports
+    add import_price decimal(20,2) null;
+    
+alter table mock_tts_10.inventories
+	add column is_delete bit  default(0);
+    
+alter table mock_tts_10.inventories
+add column is_delete bit  default(0);
+
+alter table mock_tts_10.inventories_product_variant
+add column is_delete bit  default(0);
+
+DELIMITER $$
+CREATE  PROCEDURE select_create_at(in producVariantId int)
+BEGIN
+select create_at from products inner join product_variants on products.id = product_variants.product_id where product_variants.id = producVariantId;
+END;$$
+
+DELIMITER $$
+CREATE PROCEDURE get_productvariant_byname(in inventoryId int, productVariantName varchar(20))
+BEGIN
+		start transaction;
+        begin
+			select * from product_variants inner join inventories_product_variant 
+            on product_variants.id = inventories_product_variant.product_variant_id 
+            where inventories_product_variant.inventory_id = inventoryId and product_variants.name like concat("%", productVariantName, "%");
+		commit;
+		end;								
+END;$$
 

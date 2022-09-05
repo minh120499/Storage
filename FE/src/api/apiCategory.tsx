@@ -19,7 +19,3 @@ export const deleteListCategory = async (listId: React.Key[])=>{
 export const updateCategory = async (category:object, idUpdate:number)=>{
     return axios.put(`http://localhost:8080/api/categories/category/${idUpdate}`,category)
 }
-
-export const deleteCategory = async (id: number)=>{
-    return axios.delete(`http://localhost:8080/api/categories/delete/${id}`)
-}

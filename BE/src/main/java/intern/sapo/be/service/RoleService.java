@@ -8,7 +8,11 @@ import intern.sapo.be.repository.AccountRepository;
 import intern.sapo.be.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import java.util.*;
 
@@ -30,8 +34,16 @@ public class RoleService {
 		return roleRepository.findAll();
 	}
 
+	public Page<Role> getAll(Integer size, Integer page) {
+		return roleRepository.findAll(PageRequest.of(page - 1, size, Sort.by("id")));
+	}
+
 	public Role save(RolesDTO rolesDTO) {
-		Role role = modelMapper.map(rolesDTO, Role.class);
+		Role role = new Role();
+		int max = roleRepository.maxId();
+//		role.setId(max + 1);
+		role.setName(rolesDTO.getName());
+		role.setDescription(rolesDTO.getDescription());
 		return roleRepository.save(role);
 	}
 
@@ -52,5 +64,26 @@ public class RoleService {
 		old.setRoles(new HashSet<>(roles));
 		accountRepository.save(old);
 		return old;
+	}
+
+	public Role update(RolesDTO rolesDTO) {
+		try {
+			roleRepository.findById(rolesDTO.getId());
+			Role role = modelMapper.map(rolesDTO, Role.class);
+			return roleRepository.save(role);
+		} catch(NoSuchElementException e) {
+			throw new NoSuchElementException("Id không tồn tại");
+		} catch(Exception ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	public boolean delete(List<Integer> ids) {
+		try {
+			roleRepository.deleteAllByIdInBatch(ids);
+			return true;
+		} catch(Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 }
