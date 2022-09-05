@@ -4,13 +4,17 @@ import intern.sapo.be.dto.request.Product.OptionAdd;
 import intern.sapo.be.dto.request.Product.ProductAdd;
 import intern.sapo.be.dto.request.Product.ProductAddDTO;
 import intern.sapo.be.dto.request.Product.ProductFilter;
+import intern.sapo.be.dto.response.product.ProductReponse;
 import intern.sapo.be.entity.Product;
 import intern.sapo.be.service.IProductService;
 import intern.sapo.be.service.ISupplierService;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -28,12 +32,7 @@ public class ProductController {
     }
 
 
-    //    @GetMapping()
-//    public ResponseEntity getPagination(@RequestParam(value = "pageNumber",required = false) Integer pageNumber,
-//                                       @RequestParam(value = "pageSize",required = false) Integer pageSize
-//                                    ){
-//        return ResponseEntity.ok(productService.findAll(pageNumber,pageSize).toList());
-//    }
+
     @PostMapping("/count")
     public ResponseEntity countProductByFilter(@RequestBody @Valid ProductFilter filter, BindingResult bindingResult) {
 
@@ -68,17 +67,12 @@ public class ProductController {
     }
 
 
-//update
 
     @PutMapping
-    public Product update(@RequestBody @Valid Product entity, BindingResult bindingResult) {
-        return productService.save(entity, bindingResult);
+    public ProductReponse update(@RequestBody @Valid ProductAddDTO request, BindingResult bindingResult) {
+        return productService.update(request, bindingResult);
     }
 
-    @DeleteMapping("/options/{id}")
-    public ResponseEntity update(@PathVariable Integer id, @RequestBody OptionAdd[] options) {
-        return ResponseEntity.ok(options);
-    }
 
     @DeleteMapping("/variants/{id}")
     public void deleteVariant(@PathVariable Integer id) {
