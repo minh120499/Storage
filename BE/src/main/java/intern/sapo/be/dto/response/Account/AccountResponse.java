@@ -14,6 +14,7 @@ public class AccountResponse {
 	private String username;
 	private java.sql.Timestamp createAt;
 	private java.sql.Timestamp updateAt;
+	private boolean isDelete;
 	private List<Integer> roleIds;
 	private List<String> authorities;
 	private String fullName;

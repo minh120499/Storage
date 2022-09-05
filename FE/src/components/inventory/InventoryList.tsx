@@ -45,9 +45,19 @@ const InventoryList = () => {
       key: "isDelete",
       render: (status: boolean) => {
         return status ? (
-          <Tag style={{borderRadius: "15px"}} color={"volcano" || `rgb(246 76 114)`}>Ngừng hoạt động</Tag>
+          <Tag
+            style={{ borderRadius: "15px" }}
+            color={"volcano" || `rgb(246 76 114)`}
+          >
+            Ngừng hoạt động
+          </Tag>
         ) : (
-          <Tag style={{borderRadius: "15px"}} color={"green" || `rgb(159 237 207)`}>Đang hoạt động</Tag>
+          <Tag
+            style={{ borderRadius: "15px" }}
+            color={"green" || `rgb(159 237 207)`}
+          >
+            Đang hoạt động
+          </Tag>
         );
       },
     },
@@ -92,7 +102,7 @@ const InventoryList = () => {
   const [mode, setMode] = useState("new");
 
   const handleOk = () => {
-    const { code, name, detailsAddress } = formInventory.getFieldsValue();
+    const { code, name, detailsAddress, id } = formInventory.getFieldsValue();
     console.log(detailsAddress + fullAddress);
     const payload = {
       data: {
@@ -100,7 +110,7 @@ const InventoryList = () => {
         name,
         address: detailsAddress + fullAddress,
       },
-      id: 1,
+      id: id,
     };
 
     if (mode === "new") {
@@ -178,8 +188,8 @@ const InventoryList = () => {
           footer={
             <div>
               <Space size="small">
-                <Button>{mode === "new" ? "Tạo" : "Cập nhập"}</Button>
-                <Button mode="cancel">Hủy</Button>
+                <Button key="submit">{mode === "new" ? "Tạo" : "Cập nhập"}</Button>
+                <Button key="back" mode="cancel">Hủy</Button>
               </Space>
             </div>
           }

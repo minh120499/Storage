@@ -15,7 +15,9 @@ const Dashboard: React.FC = () => {
       </Sider>
       <Layout className="site-layout">
         {!useLocation().pathname.includes("stock_transfers") && (
-          <Header className="top-header z-10" style={{ padding: 0,boxShadow: "1px 0px 5px 1px black" }}>
+          <Header className="top-header z-10" 
+          // style={{ padding: 0,boxShadow: "1px 0px 5px 1px black" }}
+          >
             <HeaderMenu />
           </Header>
         )}

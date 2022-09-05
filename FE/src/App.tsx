@@ -100,7 +100,7 @@ const App: React.FC = () => {
           element: <Employee />,
         },
         {
-          path: "/api/admin/roles",
+          path: "/api/admin/roles/",
           element: <RoleManager />,
         },
       ],

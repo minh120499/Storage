@@ -1,6 +1,6 @@
 export interface IRole {
   key?: React.Key;
-  id?: number;
+  id: number;
   name: string;
   description: string;
 }

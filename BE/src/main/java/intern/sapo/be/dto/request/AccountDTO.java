@@ -16,7 +16,8 @@ public class AccountDTO {
 	private java.sql.Timestamp createAt;
 	private java.sql.Timestamp updateAt;
 	private Boolean isDelete;
-	private List<String> roleIds;
+	private List<Integer> roleId;
+	private List<String> roleString;
 	private String fullName;
 	private String image;
 	private String email;

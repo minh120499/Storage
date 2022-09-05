@@ -5,11 +5,16 @@ import intern.sapo.be.dto.response.Account.AccountResponse;
 import intern.sapo.be.entity.Account;
 import intern.sapo.be.entity.Employee;
 import intern.sapo.be.entity.Role;
+import intern.sapo.be.exception.AccountException;
 import intern.sapo.be.repository.AccountRepository;
 import intern.sapo.be.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +30,6 @@ public class AccountService {
 	@Autowired
 	private RoleRepository roleRepository;
 
-	private PasswordEncoder passwordEncoder;
-
 	@Autowired
 	ModelMapper modelMapper;
 
@@ -37,40 +40,43 @@ public class AccountService {
 	}
 
 	public Account save(AccountDTO accountDTO) {
-		Account account = modelMapper.map(accountDTO, Account.class);
-		account.setCreateAt(new Timestamp(new Date().getTime()));
-		account.setUpdateAt(new Timestamp(new Date().getTime()));
-		if(!accountDTO.getPassword().isEmpty()) {
-			account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
+		try {
+			Account account = modelMapper.map(accountDTO, Account.class);
+			if(!accountDTO.getPassword().isEmpty()) {
+				account.setPassword(new BCryptPasswordEncoder().encode(accountDTO.getPassword()));
+			}
+			account.setIsDelete(false);
+
+			Employee employee = new Employee();
+			employee.setAddress(accountDTO.getAddress());
+			employee.setEmail(accountDTO.getEmail());
+			employee.setPhone(accountDTO.getPhone());
+			employee.setImage(accountDTO.getImage());
+			employee.setFullName(accountDTO.getFullName());
+
+			Set<Role> roles = new HashSet<>();
+			for(String role : accountDTO.getRoleString()) {
+				Role roleId = roleRepository.findRoleByName(role);
+				roles.add(roleId);
+			}
+
+			employee.setAccount(account);
+
+			account.setEmployee(List.of(employee));
+			account.setRoles(roles);
+			Account account1 = accountRepository.save(account);
+			account1.getEmployee();
+			return account1;
+		} catch(Exception e) {
+			throw new AccountException(e.getMessage(), e.getCause());
 		}
-		account.setIsDelete(false);
-
-		Employee employee = new Employee();
-		employee.setAddress(accountDTO.getAddress());
-		employee.setEmail(accountDTO.getEmail());
-		employee.setPhone(accountDTO.getPhone());
-		employee.setImage(accountDTO.getImage());
-		employee.setFullName(accountDTO.getFullName());
-
-		Set<Role> roles = new HashSet<>();
-		for(String role : accountDTO.getRoleIds()) {
-			Role roleId = roleRepository.findRoleByName(role);
-			roles.add(roleId);
-		}
-
-		employee.setAccount(account);
-
-		account.setEmployee(List.of(employee));
-		account.setRoles(roles);
-		return accountRepository.save(account);
-
 	}
 
 	public Account edit(AccountDTO accountDTO) {
 		Account account = modelMapper.map(accountDTO, Account.class);
 
 		Set<Role> roles = new HashSet<>();
-		for(String role : accountDTO.getRoleIds()) {
+		for(String role : accountDTO.getRoleString()) {
 			Role roleId = roleRepository.findRoleByName(role);
 			roles.add(roleId);
 		}
@@ -106,5 +112,9 @@ public class AccountService {
 			e.printStackTrace();
 			throw new NoSuchElementException("Account don't exist");
 		}
+	}
+
+	public Page<Account> getPerPage(Integer size, Integer page) {
+		return accountRepository.findAll(PageRequest.of(page - 1, size, Sort.by("id")));
 	}
 }

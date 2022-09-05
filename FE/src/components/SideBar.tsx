@@ -56,7 +56,7 @@ const items: MenuItem[] = [
 
   getItem("Nhân viên", null, <TeamOutlined />, [
     getItem("Danh sách", "/api/admin/employees"),
-    getItem("Roles", "/api/admin/roles"),
+    getItem("Roles", "/api/admin/roles/"),
   ]),
   getItem("Đăng xuất", "/login", <LogoutIcon />),
 ];

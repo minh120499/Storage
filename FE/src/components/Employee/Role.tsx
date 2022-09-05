@@ -5,45 +5,39 @@ import { useState } from "react";
 import RoleSelect from "./RoleSelect";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { Button } from "../../UI";
 
 type props = {
   roles: [IRole];
   empId?: any;
+  refetch?: any
 };
 
-let currentRoles: string[] = [];
-
-export default function Role({ roles, empId }: props) {
+export default function Role({ roles, empId, refetch }: props) {
   const updateRole = useMutation<Response, unknown, any>((data) => {
-    return axios.post(`http://localhost:8080/api/roles/emp/${empId}`, data, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
+    return axios.patch(`http://localhost:8080/api/admin/roles/emp/${empId}`, data);
   });
+  const [roleForm] = Form.useForm();
   const [modal, setModal] = useState(false);
-  const setRole = (e: any) => {
-    currentRoles = e;
-  };
   const updateRoles = () => {
-    if (currentRoles.length === 0) {
-      console.log("canot update");
-    } else {
-      updateRole.mutate({ rolesString: currentRoles });
-    }
+    updateRole.mutate({ rolesString: roleForm.getFieldValue("roles") });
   };
+
+  if (updateRole.isSuccess) {
+    setModal(false);
+    updateRole.reset();
+    refetch()
+  }
 
   return (
     <div className="w-max">
       {roles.length > 0 ? (
         roles.map((role: IRole) => {
           return (
-            <Tooltip title={role?.description}>
+            <Tooltip title={role?.description} key={role?.id}>
               <Tag
                 className="cursor-pointer"
                 onClick={() => setModal(true)}
-                key={role?.id}
                 color={roleColor[role.name as keyof IRoleLable]}
               >
                 {role?.name}
@@ -53,7 +47,7 @@ export default function Role({ roles, empId }: props) {
         })
       ) : (
         <Tag className="cursor-pointer" onClick={() => setModal(true)}>
-          Add role
+          Gán chức vụ
           {/* <AddIcon /> */}
         </Tag>
       )}
@@ -63,9 +57,21 @@ export default function Role({ roles, empId }: props) {
           visible={modal}
           onOk={() => updateRoles()}
           onCancel={() => setModal(false)}
+          footer={[
+            <Button
+              loading={updateRole.isLoading}
+              key="submit"
+              onClick={() => updateRoles()}
+            >
+              Sửa
+            </Button>,
+            <Button key="cancel" onClick={() => setModal(false)} mode="cancel">
+              Hủy
+            </Button>,
+          ]}
         >
-          <Form>
-            <RoleSelect getRole={setRole} empRole={roles.map((e) => e.name)} />
+          <Form form={roleForm}>
+            <RoleSelect empRole={roles.map((e) => e.name)} />
           </Form>
         </Modal>
       )}
