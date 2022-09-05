@@ -28,7 +28,7 @@ public class Product {
     private String name;
 
     @Lob
-    @Column(name = "description", nullable = true)
+    @Column(name = "description", nullable = false)
     private String description;
 
 

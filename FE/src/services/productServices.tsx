@@ -1,5 +1,6 @@
 import { stringify } from "querystring";
 import React from "react";
+
 const baseUrl = 'http://localhost:8080/api/'
 
 
@@ -62,9 +63,6 @@ const deleteVariantsById=(listId:Array<React.Key>)=>{
   return fetch(baseUrl+"products/variants",getRequest(listId, 'Delete', ''))
 
 
-}
-export const updateProduct=(productInfo:any)=>{
-  return fetch(baseUrl+"products",getRequest(productInfo,'Put',''))
 }
 
 

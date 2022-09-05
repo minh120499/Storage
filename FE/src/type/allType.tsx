@@ -72,7 +72,7 @@ export interface IVariant {
     code?: string | null,
     productId?: number | null
     name: string,
-    image?: string ,
+    image?: string | null,
     wholesalePrice: number,
     salePrice: number,
     importPrice: number
@@ -112,7 +112,3 @@ export interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     index: number;
     children: React.ReactNode;
   }
-  export interface OptionAdd {
-    name: string,
-    values: Array<string>
-}
