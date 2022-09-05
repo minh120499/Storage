@@ -14,9 +14,6 @@ import org.springframework.validation.BindingResult;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
 @RequiredArgsConstructor
 @Service
 public class InventoryServiceImpl implements IInventoryService {

@@ -12,12 +12,10 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/inventories")
+@RequestMapping("inventories")
 @CrossOrigin("*")
 public class InventoryController {
 	private final IInventoryService iInventoryService;
-
-
 	@GetMapping("")
 	public List<Inventory> getAll() {
 		return iInventoryService.findAll();
@@ -28,14 +26,12 @@ public class InventoryController {
 		return iInventoryService.create(inventory, bindingResult);
 	}
 
-
 	@GetMapping("/{id}")
 	public Inventory getById(@PathVariable(value = "id") Integer id) {
 		return iInventoryService.findById(id);
 	}
 
 	@PutMapping("/{id}")
-
 	public Inventory update(@RequestBody @Valid Inventory inventory, BindingResult bindingResult,
 	                        @PathVariable(value = "id") Integer id) {
 		return iInventoryService.update(id, inventory, bindingResult);

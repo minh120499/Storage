@@ -1,26 +1,16 @@
 package intern.sapo.be.security.jwt;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.Claim;
-import intern.sapo.be.common.AppUtils;
 import intern.sapo.be.entity.Account;
-import intern.sapo.be.exception.InvalidTokenRequestException;
-
 import io.jsonwebtoken.*;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 @Log4j2

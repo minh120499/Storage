@@ -41,10 +41,10 @@ public class Inventory   {
     private String address;
 
 
-    @NotNull
-    @NotBlank
-    @Column(name = "size", nullable = false)
-    private Integer size;
+//    @NotNull
+//    @NotBlank
+//    @Column(name = "size", nullable = false)
+//    private Integer size;
 
     @Column(name = "create_at", nullable = false)
     @CreatedDate
