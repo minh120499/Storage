@@ -62,6 +62,8 @@ const CreateImport = () => {
         })
     }, [])
 
+
+
     useEffect(() => {
         getProductVariant(pageNumber).then((productVariant) => {
             setProductVariants(productVariant.data)

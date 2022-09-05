@@ -7,8 +7,9 @@ import {IDetailImportInvoice} from "../../services/customType";
 type Props = {
     total: number,
     isPaid: boolean
+    updateStatusPaidPayment: () =>void
 }
-const PaymentImport = ({total, isPaid}: Props) => {
+const PaymentImport = ({total, isPaid,updateStatusPaidPayment}: Props) => {
     return (
         <div className="block" style={{
             padding: 0,
@@ -41,7 +42,7 @@ const PaymentImport = ({total, isPaid}: Props) => {
             {
                 !isPaid && (
                     <div style={{padding: 20}}>
-                        <Button type='default'>Thanh toán</Button>
+                        <Button  onClick={updateStatusPaidPayment} type='default'>Thanh toán</Button>
                     </div>
                 )
             }

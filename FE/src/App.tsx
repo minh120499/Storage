@@ -1,4 +1,4 @@
-import { useRoutes } from "react-router-dom";
+import {useRoutes} from "react-router-dom";
 
 import React from "react";
 import Dashboard from "./pages/Dashboard";
@@ -15,13 +15,14 @@ import HomePage from "./components/HomePage";
 import EmployeeDetails from "./components/Employee/Details";
 import Employee from "./components/Employee/Employee";
 import RoleManager from "./components/RoleManager/RoleManager";
-import { exact } from "prop-types";
-import CreateImport from "./pages/Import/CreateImport";
+import CreateImport from "./pages/ImportInvoice/CreateImport";
 import InventoryList from "./components/inventory/InventoryList";
 import ProductDetails from "./pages/product/ProductDetails";
-import { Status } from "./components/stock_transfers/status";
+import {Status} from "./components/stock_transfers/status";
 import InventoryManager from "./components/inventory/InventoryManager";
 import CreateReturnImportInvoice from "./pages/ImportInvoice/CreateReturnImportInvoice";
+import ListImportInvoice from "./pages/ImportInvoice/ListImportInvoice";
+import DetailImportInvoice from "./pages/ImportInvoice/DetailImportInvoice";
 
 const App: React.FC = () => {
   const router = useRoutes([

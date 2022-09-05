@@ -574,5 +574,27 @@ alter table mock_tts_10.imports
 alter table mock_tts_10.details_return_import
     modify return_import_id int null;
 
+# --------------------------------------
+alter table mock_tts_10.inventories
+    add column is_delete bit  default(0);
 
+alter table mock_tts_10.inventories_product_variant
+    add column is_delete bit  default(0);
 
+DELIMITER $$
+CREATE  PROCEDURE select_create_at(in producVariantId int)
+BEGIN
+    select create_at from products inner join product_variants on products.id = product_variants.product_id where product_variants.id = producVariantId;
+END;$$
+
+DELIMITER $$
+CREATE PROCEDURE get_productvariant_byname(in inventoryId int, productVariantName varchar(20))
+BEGIN
+    start transaction;
+    begin
+        select * from product_variants inner join inventories_product_variant
+                                                  on product_variants.id = inventories_product_variant.product_variant_id
+        where inventories_product_variant.inventory_id = inventoryId and product_variants.name like concat("%", productVariantName, "%");
+        commit;
+    end;
+END;$$

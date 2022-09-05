@@ -1,6 +1,5 @@
 package intern.sapo.be.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,7 +27,7 @@ public class Product {
     private String name;
 
     @Lob
-    @Column(name = "description", nullable = true)
+    @Column(name = "description", nullable = false)
     private String description;
 
 

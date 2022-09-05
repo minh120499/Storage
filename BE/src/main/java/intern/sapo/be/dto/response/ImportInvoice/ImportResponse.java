@@ -1,15 +1,17 @@
-package intern.sapo.be.dto.request;
+package intern.sapo.be.dto.response.ImportInvoice;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @AllArgsConstructor
 @Data
-public class ImportDTO {
+@NoArgsConstructor
+public class ImportResponse {
     private String code;
-    private String supplierName;
+    private String supplierCode;
     private String inventoryName;
     private BigDecimal totalPrice;
     private Boolean isDone;
@@ -17,4 +19,6 @@ public class ImportDTO {
     private Boolean isImport;
     private Boolean isReturn;
     private String userName;
+    private String deliveryDate;
+
 }

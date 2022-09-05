@@ -1,31 +1,26 @@
 package intern.sapo.be.service.impl;
 
-import intern.sapo.be.dto.request.Product.*;
+import intern.sapo.be.dto.request.Product.OptionValuesAdd;
+import intern.sapo.be.dto.request.Product.ProductAddDTO;
+import intern.sapo.be.dto.request.Product.ProductFilter;
 import intern.sapo.be.dto.response.product.ProductFilterResponse;
 import intern.sapo.be.dto.response.product.ProductReponse;
-import intern.sapo.be.entity.*;
+import intern.sapo.be.entity.Product;
+import intern.sapo.be.entity.ProductVariant;
 import intern.sapo.be.repository.*;
-import intern.sapo.be.service.IProductService;
-
-import org.modelmapper.ModelMapper;
 import intern.sapo.be.security.jwt.util.Utils;
+import intern.sapo.be.service.IProductService;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import javax.transaction.Transactional;
-import java.sql.ParameterMetaData;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,21 +31,20 @@ public class ProductService implements IProductService {
     private final ModelMapper mapper;
     private final IProductRepo productRepo;
     private final IProductVariantRepo variantRepo;
-    private final ICategoryRepo categoryRepo;
+    private final IOptionRepo optionRepo;
+    private final IOptionValueRepo optionValueRepo;
     private final JdbcTemplate jdbcTemplate;
     private final IProductVariantOptionRepo variantOptionRepo;
-    private final ICategoryProductRepo categoryProductRepo;
 
     public ProductService(ModelMapper mapper, IProductRepo productRepo, IProductVariantRepo variantRepo, IOptionRepo optionRepo,
-                          ICategoryRepo categoryRepo, JdbcTemplate jdbcTemplate, IProductVariantOptionRepo variantOptionRepo, ICategoryProductRepo categoryProductRepo) {
+                          IOptionValueRepo optionValueRepo, JdbcTemplate jdbcTemplate, IProductVariantOptionRepo variantOptionRepo) {
         this.mapper = mapper;
         this.productRepo = productRepo;
         this.variantRepo = variantRepo;
-        this.categoryRepo = categoryRepo;
-
+        this.optionRepo = optionRepo;
+        this.optionValueRepo = optionValueRepo;
         this.jdbcTemplate = jdbcTemplate;
         this.variantOptionRepo = variantOptionRepo;
-        this.categoryProductRepo = categoryProductRepo;
     }
 
     List<OptionValuesAdd> list = new ArrayList<>();
@@ -71,7 +65,8 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductReponse findById(Integer id) {
-        ProductReponse reponse = new ProductReponse(productRepo.findById(id).get(), variantRepo.findAllByProductId(id), categoryRepo.findAllByProductId(id));
+
+        ProductReponse reponse = new ProductReponse(productRepo.findById(id).get(), variantRepo.findAllByProductId(id));
         return reponse;
     }
 
@@ -91,6 +86,7 @@ public class ProductService implements IProductService {
     }
 
 
+
     // Thêm sản phẩm  và biến thể
     @Override
     @Transactional(rollbackOn = SQLException.class)
@@ -104,15 +100,7 @@ public class ProductService implements IProductService {
         for (ProductVariant variant : request.getVariants()) {
             variant.setProductId(request.getProduct().getId());
             variant.setCode(getNewVariantCode());
-            variant.setIsDelete(false);
             variant = variantRepo.save(variant);
-        }
-        for (Category category : request.getCategories()) {
-            CategoriesProductId id = new CategoriesProductId(request.getProduct().getId(), category.getId());
-            CategoriesProduct categoriesProduct = new CategoriesProduct(id, request.getProduct(), category);
-
-            categoryProductRepo.save(categoriesProduct);
-
         }
         return request;
     }
@@ -170,22 +158,6 @@ public class ProductService implements IProductService {
         productRepo.saveAll(products);
     }
 
-    @Override
-    @Transactional(rollbackOn = SQLException.class)
-    public ProductReponse update(ProductAddDTO request, BindingResult bindingResult) {
-        request.getProduct().setUpdateAt(Timestamp.valueOf(LocalDateTime.now()));
-        productRepo.save(request.getProduct());
-        variantRepo.saveAll(request.getVariants());
-        categoryProductRepo.deleteAllByProductId(request.getProduct().getId());
-        for (Category category : request.getCategories()) {
-            String q="insert into categories_products values (?,?)";
-
-        jdbcTemplate.update(q, request.getProduct().getId(),category.getId());
-        }
-        return findById(request.getProduct().getId());
-    }
-
-
     public String getNewCode() {
         String newCode = "SP";
         Product product = productRepo.getTop();
@@ -204,5 +176,63 @@ public class ProductService implements IProductService {
         return newCode;
     }
 
-
+//    public void createVariant(List<OptionAdd> options,int n,int length)
+//    {
+//        if (n<length) {
+//            var optionAdd = options.get(n);
+//            var values = optionAdd.getValues();
+//            var m = values.size();
+//            for (int j = 0; j < m; j++) {
+//                list.add(values.get(j));
+//                if (list.size()==length)
+//                {
+//                    ProductVariant variant=new ProductVariant();
+//                    variant.setCode(getNewVariantCode());
+//                    variant.setProductId(optionAdd.getProductId());
+//                    variant.setName("1");
+//                    variant=variantRepo.save(variant);
+//                    addOptionVariant(variant.getId(),list);
+//
+//                }
+//                createVariant(options, n + 1, length);
+//                list.remove(values.get(j));
+//
+//            }
+//        }
+//
+//
+//    }
+//    public  List<OptionAdd> createOption(List<OptionAdd> options,Integer productId)
+//    {
+//        for (OptionAdd item : options) {
+//
+//            //thêm thuộc tính cho sản phẩm
+//            item.setProductId(productId);
+//            Option option=item.toEntity();
+//           item.setId( optionRepo.save(option).getId());
+//
+//            var optionValues=item.getValues();
+//            // thêm giá trị của thuộc tính
+//            for (OptionValuesAdd valueItem : optionValues) {
+//                valueItem.setOptionId(option.getId());
+//                valueItem.setName("tets");
+//                var value=valueItem.toEntity();
+//                valueItem.setId( optionValueRepo.save(value).getId());
+//
+//            }
+//        }
+//
+//        return options;
+//    }
+//
+//    public  void addOptionVariant(Integer variantId,List<OptionValuesAdd> optionValuesAdds)
+//    {
+//        optionValuesAdds.forEach(item->{
+//            ProductVariantOption productVariantOption=new ProductVariantOption();
+//            productVariantOption.setVariantId(variantId);
+//            productVariantOption.setOptionValueId(item.getId());
+//            variantOptionRepo.save(productVariantOption);
+//
+//        });
+//    }
 }

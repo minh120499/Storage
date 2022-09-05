@@ -6,16 +6,16 @@ import {
     getHistoryStatusImportInvoice,
     updateStatusInvoice
 } from "../../services/api";
-import {IDetailImportInvoice, IHistoryStatus, IImportReturn, IImportReturnMyTableData} from "../../services/customType";
+import {IDetailImportInvoice, IHistoryStatus, IImportReturn} from "../../services/customType";
 import {Button, Col, Row, Steps, Table, Tag} from "antd";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import {ShopFilled,} from '@ant-design/icons';
 import {columnsDetailImportInvoice} from "../../components/Datatablesource";
 import ToastCustom from "../../features/toast/Toast";
-import ImportInvoiceHistory from "./ImportInvoiceHistory";
 import PaymentImport from "./PaymentImport";
 import ImportWarehouse from "./ImportWarehouse";
 import ReturnInvoiceImport from "./ReturnInvoiceImport";
+
+import ImportInvoiceHistory from "./ImportInvoiceHistory";
 
 const DetailImportInvoice = () => {
 
@@ -87,7 +87,7 @@ const DetailImportInvoice = () => {
                     <div style={{display: 'flex', justifyContent: 'space-between',alignItems:"center"}}>
                         <div style={{display: 'flex',alignItems:"center"}}>
                             <h1 style={{fontSize:'30px',margin:0,marginRight:10}}>{detailInvoices?.anImport.code}</h1>
-                            <span style={{marginBottom:10}} >{createDate}</span>
+                            <span style={{marginTop:10}} >{createDate}</span>
                         </div>
                         <div style={{width: '45%'}}>
                             {(() => {

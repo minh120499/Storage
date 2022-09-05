@@ -1,22 +1,17 @@
 package intern.sapo.be.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class CategoriesProductId implements Serializable {
     private static final long serialVersionUID = 1462444433333616601L;
     @Column(name = "product_id", nullable = false)

@@ -22,7 +22,8 @@ public interface IProductService {
 
     Page<Product> findAll(Integer pageNumber, Integer pageSize);
 
-    ProductAddDTO save(ProductAddDTO request, BindingResult bindingResult);
+//    Product save(ProductAdd request, BindingResult bindingResult);
+ProductAddDTO save(ProductAddDTO request, BindingResult bindingResult);
 
 
     List<Product> findAllVariant(Integer pageNumber, Integer pageSize, String name);
@@ -36,6 +37,4 @@ public interface IProductService {
     void deleteVariantsById(Integer[] listId);
 
     void deleteProductsById(Integer[] listId);
-
-    ProductReponse update(ProductAddDTO entity, BindingResult bindingResult);
 }
