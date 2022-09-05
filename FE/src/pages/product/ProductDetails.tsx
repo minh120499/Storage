@@ -94,6 +94,7 @@ const ProductDetails = () => {
     useEffect(() => {
 
         loadData()
+        document.title='Chi tiết sản phẩm'
     }, [])
     useEffect(() => {
         if (!isUpdate) loadData()
@@ -203,7 +204,7 @@ const ProductDetails = () => {
                         </Row>
 
                         <p style={{ marginTop: 20 }}>Mô tả:</p>
-                        <p style={{ maxLines: 3, overflow: "hidden", maxHeight: 113, textOverflow: 'ellipsis', marginBottom: 0 }}>{product?.description}</p>
+                        <p style={{ height:113, overflow: "hidden", maxHeight: 113, textOverflow: 'ellipsis', marginBottom: 0 }}>{product?.description}</p>
                         <div style={{ display: 'flex', justifyContent: 'right', fontStyle: 'italic', margin: 0, padding: 0 }}>Xem thêm&gt;&gt;</div>
                     </div>
 
@@ -322,6 +323,7 @@ const ProductDetails = () => {
                         sticky
                         columns={variantCol}
                         rowKey="id"
+                        bordered
                         pagination={{
                             pageSize: 6, current: page, onChange(page, pageSize) {
                                 setPage(page)
@@ -433,7 +435,7 @@ const ProductDetails = () => {
 
 
                             </Mui.Paper>
-                            <Mui.Paper style={{ width: '100%', height: 180, padding: 20, marginTop: 20 }}>
+                            <Mui.Paper style={{ width: '100%', height: 190, padding: 20, marginTop: 20 }}>
                                 <div>Thông tin khác</div>
                                 <hr></hr>
 

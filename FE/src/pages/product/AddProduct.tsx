@@ -191,6 +191,8 @@ function AddProduct(props: any) {
         }).catch(error => {
 
         })
+
+        document.title='Thêm sản phẩm'
     }, [])
 
     // Component

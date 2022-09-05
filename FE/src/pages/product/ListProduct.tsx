@@ -212,11 +212,12 @@ const ListProduct = () => {
     useLayoutEffect(() => {
 
        loadData()
+       document.title='Danh sách sản phẩm'
 
     }, [productFilter])
-
+   
     const onPageChange = (page: number, size: number) => {
-        setProductFilter({ ...productFilter, page: page, size: size })
+        setProductFilter({ ...productFilter, page: page,size:size })
 
     }
 
@@ -234,6 +235,7 @@ const ListProduct = () => {
                     sticky
                     columns={ProductCol}
                     rowKey="id"
+                    bordered
                     pagination={false}
                     style={{ height: 600, maxHeight: 600, overflow: 'scroll' }}
                     // onRow={(record) => {
@@ -319,7 +321,7 @@ const ListProduct = () => {
                     <Mui.Paper sx={{ pb: 2 }} >
                         <Products />
                         <div style={{ display: 'flex', justifyContent: 'end' }}>
-                            <Antd.Pagination responsive  style={{ marginTop: 10, marginRight: 10 }} showQuickJumper defaultCurrent={1} total={totalPage} onChange={onPageChange}   />
+                            <Antd.Pagination responsive  style={{ marginTop: 10, marginRight: 10 }} pageSize={ productFilter.size} showSizeChanger showQuickJumper defaultCurrent={1} total={totalPage} onChange={onPageChange} pageSizeOptions={[7,10,20,50]}   />
 
                         </div>
 
