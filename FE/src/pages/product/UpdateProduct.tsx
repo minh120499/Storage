@@ -119,6 +119,7 @@ const UpdateProduct = (props: ProductUpdateProps) => {
     }
     useEffect(() => {
         setVariant(productInfo.variants?.at(index))
+        document.title='Cập nhật thông tin sản phẩm'
     }, [])
 
 
@@ -180,6 +181,8 @@ const UpdateProduct = (props: ProductUpdateProps) => {
                         sticky
                         columns={variantCol}
                         rowKey="id"
+                        bordered
+
                         pagination={{
                             pageSize: 6, current: page, onChange(page, pageSize) {
                                 setPage(page)
