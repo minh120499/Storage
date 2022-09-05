@@ -10,63 +10,80 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import { ISupplier, TypeSupplier } from "../../services/customType";
 
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "../../styles/Table.css";
 
 import { IProductCount, IProductFilter } from '../../type/allType';
-import { countProductByFilter, deleteProductsById, getProducts } from '../../services/productServices';
+import { countProductByFilter, deleteProductById, deleteProductsById, getProducts } from '../../services/productServices';
 // import ProductPagination from './ProductPagination';
 import { DeleteOutlined, DownOutlined, PlusOutlined, SortDescendingOutlined, StopOutlined,DownloadOutlined } from '@ant-design/icons';
 import Swal from 'sweetalert2';
 import ToastCustom from '../../features/toast/Toast';
+import { Delete, PreviewOutlined } from '@mui/icons-material';
+import { margin } from '@mui/system';
 // import { Sort } from '@mui/icons-material';
 // import { margin } from '@mui/system';
-const initFilter: IProductFilter = {
-    key: '',
-    isDelete: false,
-    sortBy: 'name',
-    isDesc: true,
-    page: 1,
-    size: 10
-}
-const ProductCol = [
-    {
-        title: 'Mã sản phẩm',
-        dataIndex: 'code',
-        key: 'code',
-        render: (code: string) => {
-            return (<Antd.Tag color={'orange'}>{code}</Antd.Tag>)
-        }
-    },
-    {
-        title: 'Tên sản phẩm',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Số lượng phiên bản',
-        dataIndex: "numberOfVariant",
-        key: "numberOfVariant"
-    },
-    {
-        title: "Số lượng",
-        dataIndex: "total",
-        key: "total"
-    },
-    {
-        title: "Trạng thái",
-        dataIndex: "total",
-        key: "total",
-        render: (total: number) => {
-            return total > 0 ? <p style={{ color: 'blue' }}>Có thể bán</p> : <p style={{ color: 'red' }}>Hết hàng</p>
-        }
-    }
-]
+
 
 
 
 const ListProduct = () => {
     var keyWord = ''
+    const {searchKey}=useParams()
+    const initFilter: IProductFilter = {
+        key:searchKey?searchKey:'',
+        isDelete: false,
+        sortBy: 'name',
+        isDesc: true,
+        page: 1,
+        size: 7
+    }
+    const ProductCol = [
+        {
+            title: 'Mã sản phẩm',
+            dataIndex: 'code',
+            key: 'code',
+            render: (code: string) => {
+                return (<Antd.Tag color={'orange'}>{code}</Antd.Tag>)
+            }
+        },
+        {
+            title: 'Tên sản phẩm',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Số lượng phiên bản',
+            dataIndex: "numberOfVariant",
+            key: "numberOfVariant"
+        },
+        {
+            title: "Số lượng",
+            dataIndex: "total",
+            key: "total"
+        },
+        {
+            title: "Trạng thái",
+            dataIndex: "total",
+            key: "total",
+            render: (total: number) => {
+                return total > 0 ? <p style={{ color: 'blue' }}>Có thể bán</p> : <p style={{ color: 'red' }}>Hết hàng</p>
+            }
+        },  {
+            title: "Thao tác",
+            key:'id',
+            dataIndex: "id",
+            render: (id:number) => {
+                return (
+                        <>
+                        <Antd.Button style={{width:'40%' ,margin:5}} danger type={'ghost'}  icon={<Delete />} onClick={()=>deleteProduct(id)}></Antd.Button>
+                        <Antd.Button style={{width:'40%'}}  type={'ghost'}  icon={<PreviewOutlined />} onClick={()=> navigate({ pathname: `/products/${   id}` })}></Antd.Button>
+                        </>
+                )
+            }
+        }
+    ]
+    
     const [productFilter, setProductFilter] = useState<IProductFilter>(initFilter)
     const [products, setProducts] = useState<Array<IProductCount>>([])
     const [reload, setReload] = useState(false)
@@ -89,6 +106,42 @@ const ListProduct = () => {
         })
     }
 
+    const deleteProduct = (id:number) => {
+        Swal.fire({
+            title: 'Bạn có chắc?',
+            text: "Bạn không thể hồi phục lại dữ liệu!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete!'
+        }).then((result) => {
+            if (result.isConfirmed ) {
+                deleteProductById(id)
+                .then(res => {
+                    if(res.ok)
+                    {
+                        ToastCustom.fire({
+                            icon:'success',
+                            title:'Xóa thành công'
+                        })
+                        loadData()
+                    }
+                 })
+                .catch(error => {
+                    ToastCustom.fire(
+                        {
+                            icon: 'error',
+                            title: 'Xóa Thất bại'
+                        }
+                    )
+    
+                })
+            }
+    
+        })
+    
+    }
     const handleDeleteProduct = () => {
         Swal.fire({
             title: 'Bạn có chắc?',
@@ -182,15 +235,17 @@ const ListProduct = () => {
                     columns={ProductCol}
                     rowKey="id"
                     pagination={false}
-                    style={{ height: 550, maxHeight: 550, overflow: 'scroll' }}
-                    onRow={(record) => {
-                        return {
-                            onClick: event => navigate({ pathname: `/products/${record.id}` }),
-                        }
-                    }}
+                    style={{ height: 600, maxHeight: 600, overflow: 'scroll' }}
+                    // onRow={(record) => {
+                    //     return {
+                            
+                    //     }
+                    // }}
+                    
                     rowSelection={{selectedRowKeys:selectProduct,
                                     onChange(selectedRowKeys, selectedRows, info) {
                                         setSelectProduct(selectedRowKeys)
+                                        // selectProduct=selectedRowKeys
                                     },}}
 
 
@@ -208,7 +263,7 @@ const ListProduct = () => {
             </Antd.Drawer>
             <Mui.Grid container spacing={2} sx={{ mb: 2 }}>
                 <Mui.Grid item xs={1.5}>
-                    <Antd.Dropdown overlay={menu} >
+                    <Antd.Dropdown overlay={menu} disabled={selectProduct.length<1}>
                         <Antd.Button style={{ width: "100%", fontSize: '14px' ,margin:0}} type="primary">
                             <Antd.Space>
                                 Thao tác
@@ -264,7 +319,7 @@ const ListProduct = () => {
                     <Mui.Paper sx={{ pb: 2 }} >
                         <Products />
                         <div style={{ display: 'flex', justifyContent: 'end' }}>
-                            <Antd.Pagination responsive style={{ marginTop: 10, marginRight: 10 }} showQuickJumper defaultCurrent={1} total={totalPage} onChange={onPageChange} pageSizeOptions={[5, 10, 20, 50, 100]} />
+                            <Antd.Pagination responsive  style={{ marginTop: 10, marginRight: 10 }} showQuickJumper defaultCurrent={1} total={totalPage} onChange={onPageChange}   />
 
                         </div>
 

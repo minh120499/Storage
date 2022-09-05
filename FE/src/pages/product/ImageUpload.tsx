@@ -1,9 +1,11 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Modal, Upload } from 'antd';
+import { PlusOutlined, LoadingOutlined,EyeOutlined } from '@ant-design/icons';
+import { Delete, PreviewOutlined } from '@mui/icons-material';
+import { Button, Modal, Upload } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
+import axios, { Axios } from 'axios';
 import React, { useState } from 'react';
-
+import * as Antd from 'antd'
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -12,47 +14,67 @@ const getBase64 = (file: RcFile): Promise<string> =>
     reader.onerror = error => reject(error);
   });
 
-const ImageUpload: React.FC = () => {
-  const [previewVisible, setPreviewVisible] = useState(false);
-  const [previewImage, setPreviewImage] = useState('');
-  const [previewTitle, setPreviewTitle] = useState('');
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+interface ISelectImage {
+  imageUrl: string | undefined,
+  setUrl: Function,
+}
+const ImageUpload = (props: ISelectImage) => {
 
-  const handleCancel = () => setPreviewVisible(false);
+  const { imageUrl, setUrl } = { ...props }
+  const handleCancel = () => setUrl(null);
+  const [loading, setLoading] = useState(false)
 
-  const handlePreview = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as RcFile);
-    }
+  const [previewVisible, setPreviewVisible] = useState(false)
+  const handleChange = (files: any) => {
+    setLoading(true)
+    console.log(files[0])
+    const formData = new FormData();
+    formData.append('file', files[0])
+    formData.append('upload_preset', "dorrjlrc")
+    axios.post('http://api.cloudinary.com/v1_1/dbcjky0pz/image/upload', formData).then((res) => {
+      setUrl(res.data.secure_url)
+      setLoading(false)
+    })
 
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewVisible(true);
-    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
-  };
+  }
 
-  const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
-    setFileList(newFileList);
-
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
+  const UploadBtn = () => (
+    <div style={{ width: '100%' ,height:'100%', border: '1px dotted black', display: "flex", padding: 50, justifyContent: "center" }}>
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
     </div>
   );
   return (
     <>
-      <Upload
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-        listType="picture-card"
-        fileList={fileList}
-        onPreview={handlePreview}
-        onChange={handleChange}
-      >
-        {fileList.length >= 1 ? null : uploadButton}
-      </Upload>
-      <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handleCancel}>
-        <img alt="example" style={{ width: '100%' }} src={previewImage} />
-      </Modal>
+
+      {imageUrl ?
+        <div style={{ width: '100%', height: '100%' }}>
+          {/* <img alt="example" style={{ width: '100%', height: '100%' }} src={imageUrl} onClick={() => setPreviewVisible(true)} /> */}
+          <Antd.Image
+            width={'100%'}
+            src={imageUrl}
+            preview={
+              {
+               
+                mask:<>
+                <Button type={'text'} icon={<EyeOutlined style={{ color: "white"}} />} onClick={()=>setPreviewVisible(true)}></Button>
+                <Button type={'text'} icon={<Delete color='error' />} onClick={handleCancel}> </Button>
+                </>
+
+              }
+            }
+          />
+         
+        </div>
+
+        :
+        <div style={{ width: '100%', height: '100%' }}>
+          <label htmlFor='photo'><UploadBtn /></label>
+          <input hidden id="photo" type={'file'} onChange={(e) => { handleChange(e.target.files) }}>
+          </input>
+
+        </div>
+
+      }
     </>
   );
 };

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getAllInventory = async () => {
-    return (await axios.get(`http://localhost:8080/inventories`))
+    return (await axios.get(`http://localhost:8080/inventories`)).data
 }
 
 export const getPagination = async () => {

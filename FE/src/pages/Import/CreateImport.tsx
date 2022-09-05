@@ -34,6 +34,7 @@ import {useNavigate} from "react-router-dom";
 // ImportInvoice * as CurrencyFormat from 'react-currency-format';
 
 
+
 const CreateImport = () => {
     const {Option} = Select;
     const [supplierId, setSupplierId] = useState<number>();
@@ -99,6 +100,7 @@ const CreateImport = () => {
             totalPrice: parseInt(productVariant.importPrice)
         };
         let findData = tableData.find(t => t.code === productVariant.code)
+
         if (findData === undefined) {
             setTableData([...tableData, newData]);
         } else {
@@ -321,8 +323,8 @@ const CreateImport = () => {
                 navigate("/purchase_orders")
             })
         }
-    }
 
+    }
 
     const onSelectInventory = (value: number) => {
         setInventoryId(value)

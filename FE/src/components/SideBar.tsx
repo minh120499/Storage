@@ -15,10 +15,10 @@ import "../styles/SideBar.css";
 type MenuItem = Required<MenuProps>["items"][number];
 
 function getItem(
-    label: React.ReactNode,
-    key?: React.Key | null,
-    icon?: React.ReactNode,
-    children?: MenuItem[]
+  label: React.ReactNode,
+  key?: React.Key | null,
+  icon?: React.ReactNode,
+  children?: MenuItem[]
 ): MenuItem {
   return {
     key,
@@ -61,28 +61,28 @@ const SideBar: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-      <div className="side-bar">
-        <div className="side-bar__brand-logo">
-          <a href="/home">
-            <img
-                className="img-fill"
-                src="https://bizweb.dktcdn.net/assets/admin/images/icon-svg/sub_logosapo-02.svg"
-                alt="logo"
-            />
-          </a>
-        </div>
-        <div className="side-bar_menu">
-          <Menu
-              style={{ width: 256, height: "100%" }}
-              mode="inline"
-              theme="dark"
-              items={items}
-              onClick={(e) => {
-                navigate(e.key);
-              }}
+    <div className="side-bar">
+      <div className="side-bar__brand-logo">
+        <a href="/home">
+          <img
+            className="img-fill"
+            src="https://bizweb.dktcdn.net/assets/admin/images/icon-svg/sub_logosapo-02.svg"
+            alt="logo"
           />
-        </div>
+        </a>
       </div>
+      <div className="side-bar_menu">
+        <Menu
+          style={{ width: 256, height: "100%" }}
+          mode="inline"
+          theme="dark"
+          items={items}
+          onClick={(e) => {
+            navigate(e.key);
+          }}
+        />
+      </div>
+    </div>
   );
 };
 
