@@ -195,7 +195,7 @@ const Create: React.FC = () => {
   }
 
   return (
-    <>
+    <div className="p-5">
       <div className="site-page-header-ghost-wrapper">
         <PageHeader
           ghost={false}
@@ -304,7 +304,7 @@ const Create: React.FC = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
