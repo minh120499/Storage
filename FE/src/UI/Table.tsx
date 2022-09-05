@@ -1,22 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { Pagination, Spin, Table } from "antd";
-import axios from "axios";
 import { useState } from "react";
 import Swal from "sweetalert2";
-import { getAllInventory } from "../api/inventory";
 
 const T = (props: any) => {
   const [pageSize, setPageSize] = useState(10);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
+  const query = useQuery(
+    ["id", page, pageSize],
+    () => props.query(page, pageSize),
+    { keepPreviousData: true, retry: 0 }
+  );
 
-  const query = props.query;
-
-  // props.refetch = () => {
-  //   query.refetch()
-  // }
-
-  if (query.isError) {
-    console.log(query.error);
+  if (query?.isError) {
     Swal.fire({
       icon: "error",
       title: "Oops...",
@@ -25,27 +21,36 @@ const T = (props: any) => {
     return <div>Api not found</div>;
   }
 
+  if (query?.data?.data?.length === 0) {
+    setPage(page - 1);
+  }
+  query.refetch();
+
   return (
     <div>
       <Spin spinning={query?.isLoading || false} tip="Loading...">
-        <Table
-          {...props}
-          pagination={false}
-          dataSource={props?.dataSource || query?.data || []}
-          rowSelection={null}
-        />
-        <div className="flex flex-row-reverse mt-5">
-          {!!props.total && (
+        <div className="flex justify-between mt-5 mb-5">
+          {query?.data?.total && (
+            <div>{`${query?.data?.from}-${query?.data?.to} trên ${query.data.total} bản ghi`}</div>
+          )}
+
+          {query?.data?.total > 10 && (
             <Pagination
               onChange={(page, pageSize) => {
                 setPage(page);
                 setPageSize(pageSize);
-                query?.refetch();
               }}
-              total={props.total}
+              // defaultCurrent={1}
+              current={page}
+              total={props?.total || query?.data?.total}
             />
           )}
         </div>
+        <Table
+          {...props}
+          pagination={false}
+          dataSource={props?.dataSource || query?.data?.data || []}
+        />
       </Spin>
     </div>
   );
