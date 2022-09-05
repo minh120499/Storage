@@ -423,14 +423,14 @@ const ProductDetails = () => {
                             <Mui.Paper style={{ width: '100%', height: 150, padding: 20 }}>
                                 <div>Danh mục sản phẩm</div>
                                 <hr></hr>
-                                {
-                                    productInfo?.categories.map((category, index) => {
+                                {   productInfo?.categories?
+                                    productInfo.categories.map((category, index) => {
 
                                         return (
                                             <Antd.Tag key={category.id} color={'blue'}>{category.name}</Antd.Tag>
 
                                         )
-                                    })
+                                    }):null
                                 }
 
 

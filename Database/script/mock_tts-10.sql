@@ -598,3 +598,12 @@ BEGIN
         commit;
     end;
 END;$$
+
+alter table mock_tts_10.product_variants
+    modify is_delete bit null;
+
+ALTER TABLE products DROP CONSTRAINT products_ibfk_1;
+
+alter table mock_tts_10.products
+    modify supplier_id int null;
+

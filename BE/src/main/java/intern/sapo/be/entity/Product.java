@@ -35,11 +35,11 @@ public class Product {
     private Integer statusId;
 
 
-    @JoinColumn(name = "supplier_id", nullable = false)
+    @JoinColumn(name = "supplier_id")
     private Integer supplierId;
 
 
-    @JoinColumn(name = "account_id", nullable = false)
+    @JoinColumn(name = "account_id")
     private Integer accountId;
     @CreatedDate
     @Column(name = "create_at")

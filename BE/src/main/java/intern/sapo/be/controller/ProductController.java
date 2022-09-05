@@ -3,7 +3,6 @@ package intern.sapo.be.controller;
 import intern.sapo.be.dto.request.Product.OptionAdd;
 import intern.sapo.be.dto.request.Product.ProductAddDTO;
 import intern.sapo.be.dto.request.Product.ProductFilter;
-import intern.sapo.be.entity.Product;
 import intern.sapo.be.service.IProductService;
 import intern.sapo.be.service.ISupplierService;
 import org.springframework.http.ResponseEntity;
@@ -68,8 +67,8 @@ public class ProductController {
 //update
 
     @PutMapping
-    public Product update(@RequestBody @Valid Product entity, BindingResult bindingResult) {
-        return productService.save(entity, bindingResult);
+    public ResponseEntity update(@RequestBody @Valid ProductAddDTO entity, BindingResult bindingResult) {
+        return ResponseEntity.ok(productService.update(entity, bindingResult));
     }
 
     @DeleteMapping("/options/{id}")

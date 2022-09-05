@@ -71,7 +71,6 @@ const UpdateProduct = (props: ProductUpdateProps) => {
 
     const navigate = useNavigate()
     const onSubmit = (data: Product) => {
-
         updateProduct(productInfo).then(res =>{
             if (res.ok) {
                 ToastCustom.fire({
@@ -115,7 +114,6 @@ const UpdateProduct = (props: ProductUpdateProps) => {
             productInfo.variants[index] = variant
 
         }
-        console.log(variant)
     }
     useEffect(() => {
         setVariant(productInfo.variants?.at(index))
