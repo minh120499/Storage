@@ -1,5 +1,13 @@
 /* eslint-disable array-callback-return */
-import { Select, Form, Popconfirm, Modal, Input } from "antd";
+import {
+  Select,
+  Form,
+  Popconfirm,
+  Modal,
+  Input,
+  PageHeader,
+  message,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import { findProductById, getProducts } from "../../api/product_variant";
 import "./file.css";
@@ -10,17 +18,19 @@ import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
 import { createExport } from "../../api/export";
 import { creatDetailExport } from "../../api/detail_export";
 import { Button } from "antd";
-import { DataType } from "../type/data_type";
+import { DataType, inventory } from "../type/data_type";
 import { DeleteTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { ModalTable } from "./create/modal_table";
 import { SelectInventory } from "./create/select_inventory";
+import { createExportStatus } from "../../api/export_status";
 
 const Create: React.FC = () => {
   const [products, setProducts] = useState<any>([]);
-  const [inventorySend, setInventorySend] = useState<number>();
-  const [inventoryReceive, setInventoryReceive] = useState<number>();
+  const [inventorySend, setInventorySend] = useState<inventory>({});
+  const [inventoryReceive, setInventoryReceive] = useState<inventory>({});
   const [exportId, setExportId] = useState<number | undefined>();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const exportValue = {
     exportInventory: inventorySend,
@@ -145,7 +155,7 @@ const Create: React.FC = () => {
       },
       {
         queryKey: ["id1"],
-        queryFn: () => getAllInventory(),
+        queryFn: (): Promise<inventory[]> => getAllInventory(),
       },
     ],
   });
@@ -153,30 +163,59 @@ const Create: React.FC = () => {
   const dataProduct = allQueries[0].data;
 
   const handleSubmit = async () => {
+    setLoading(true);
     const saveExport = await createExport(exportValue);
     const exportId = saveExport.data.id;
     setExportId(exportId);
     const detailExport = products.map((e: any) => {
       return {
-        productVariant: e.getProductById.id,
+        productVariant: e.getProductById,
         quantity: e.quantity,
         export: exportId,
+        code: "TPN000" + exportId,
       };
     });
     creatDetailExportSubmit.mutate(detailExport);
+    // console.log(detailExport);
   };
 
   const creatDetailExportSubmit = useMutation((item: any) =>
     creatDetailExport(item)
   );
-  const handleStatus = (id?: number) => {
+  const handleStatus = async (id?: number) => {
+    await createExportStatus({
+      export: id,
+      status: 0,
+      code: "TPN000" + id,
+    });
     navigate(`/storage/stock_transfers/${id}`);
   };
-  creatDetailExportSubmit.isSuccess
-    ? handleStatus(exportId)
-    : console.log(false);
+  if (creatDetailExportSubmit.isSuccess) {
+    handleStatus(exportId);
+  }
+
   return (
-    <>
+    <div className="p-5">
+      <div className="site-page-header-ghost-wrapper">
+        <PageHeader
+          ghost={false}
+          onBack={() => window.history.back()}
+          title="Tạo phiếu chuyển hàng"
+          subTitle=""
+          extra={[
+            <Button key="2">Huỷ</Button>,
+
+            <Button
+              key="1"
+              type="primary"
+              onClick={handleSubmit}
+              loading={loading}
+            >
+              Lưu
+            </Button>,
+          ]}
+        />
+      </div>
       <div className="content">
         <div className="content-top">
           <SelectInventory
@@ -236,7 +275,7 @@ const Create: React.FC = () => {
           </div>
           <div>
             <Table
-              rowKey="id"
+              rowKey="uid"
               columns={columns}
               dataSource={data}
               style={{
@@ -264,13 +303,8 @@ const Create: React.FC = () => {
             </li>
           </div>
         </div>
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit" onClick={handleSubmit}>
-            Lưu
-          </Button>
-        </Form.Item>
       </div>
-    </>
+    </div>
   );
 };
 
