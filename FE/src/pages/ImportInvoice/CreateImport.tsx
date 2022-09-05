@@ -20,7 +20,7 @@ import {createImport, getCountTotalProductVariant, getProductVariant} from "../.
 import {BackwardOutlined, DeleteOutlined, FastForwardOutlined} from '@ant-design/icons';
 import {ColumnProps} from "antd/es/table";
 import {default as NumberFormat} from "react-number-format";
-import {getAllInventory} from "../../api/inventory";
+import {getAllActiveInventory} from "../../api/inventory";
 import ToastCustom from "../../features/toast/Toast";
 import {RangePickerProps} from "antd/es/date-picker";
 import moment from "moment";
@@ -50,7 +50,7 @@ const CreateImport = () => {
         getCountTotalProductVariant().then(r => {
             setTotalPage(r.data)
         })
-        getAllInventory().then(r => {
+        getAllActiveInventory().then(r => {
             setInventories(r.data.reverse())
         })
     }, [])
@@ -307,6 +307,8 @@ const CreateImport = () => {
                 detailsImports: list,
                 deliveryDate: date
             }
+           
+            
 
             createImport(anImport).then(() => {
                 ToastCustom.fire({

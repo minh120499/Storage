@@ -461,6 +461,9 @@ CREATE TABLE import_seqId
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
 );
 
+
+
+
 DELIMITER $$
 CREATE TRIGGER tg_import_insert_code
     BEFORE INSERT ON imports
@@ -485,8 +488,6 @@ alter table mock_tts_10.imports
     modify supplier_id int not null;
 
 
-alter table mock_tts_10.details_imports
-    add product_variant_code varchar(100) not null;
 
 alter table mock_tts_10.details_imports
     add constraint foreign_key_name
@@ -525,4 +526,32 @@ alter table mock_tts_10.imports
 
 alter table mock_tts_10.details_imports
     add import_price decimal(20,2) null;
+    
+alter table mock_tts_10.inventories
+	add column is_delete bit  default(0);
+    
+alter table mock_tts_10.inventories
+add column is_delete bit  default(0);
+
+alter table mock_tts_10.inventories_product_variant
+add column is_delete bit  default(0);
+
+DELIMITER $$
+CREATE  PROCEDURE select_create_at(in producVariantId int)
+BEGIN
+select create_at from products inner join product_variants on products.id = product_variants.product_id where product_variants.id = producVariantId;
+END;$$
+
+DELIMITER $$
+CREATE  PROCEDURE get_productvariant(in inventoryId int)
+BEGIN
+		start transaction;
+        begin
+			select * from product_variants inner join inventories_product_variant 
+            on product_variants.id = inventories_product_variant.product_variant_id 
+            where inventories_product_variant.inventory_id = inventoryId;
+		commit;
+		end;								
+END;$$
+
 

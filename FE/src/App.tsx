@@ -45,7 +45,7 @@ const App: React.FC = () => {
           element: <HomePage />,
         },
         {
-          path: "/stocker/manager/:id",
+          path: "/stocker/inventories/:id",
           element: <InventoryManager/>,
         },
         {

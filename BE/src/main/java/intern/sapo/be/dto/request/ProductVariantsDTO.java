@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,4 +18,5 @@ public class ProductVariantsDTO {
     private String image;
     private BigDecimal importPrice;
     private Integer quantity;
+    private Timestamp createAt;
 }

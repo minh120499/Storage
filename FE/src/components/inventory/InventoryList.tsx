@@ -153,10 +153,10 @@ const InventoryList = () => {
       >
         Add
       </Button>
-      <Table columns={columns} 
+      <Table columns={columns} dataSource = {inventories.data}
       onRow={(record:any) => {
         return {
-          onClick: () => navigate({ pathname: `/stocker/manager/${record.id}` }),
+          onClick: () => navigate({ pathname: `/stocker/inventories/${record.id}` }),
         }
       }} 
       query={inventories} 

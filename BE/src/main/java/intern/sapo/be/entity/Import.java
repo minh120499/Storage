@@ -66,8 +66,7 @@ public class Import {
     @Column(name = "note", nullable = false, length = 250)
     private String note;
 
-    @Column(name = "code", nullable = false, length = 50)
-    @Size(max = 100, message = "code can not be more then 50 character")
+    @Column(name = "code", nullable = true, length = 50)
     private String code;
 
 

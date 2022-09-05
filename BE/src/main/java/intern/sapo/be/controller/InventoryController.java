@@ -1,5 +1,6 @@
 package intern.sapo.be.controller;
 
+import intern.sapo.be.dto.request.Inventory.ListIdRequest;
 import intern.sapo.be.dto.response.Inventory.InventoryResponse;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.service.IInventoryService;
@@ -38,6 +39,12 @@ public class InventoryController {
 		return iInventoryService.findAll();
 	}
 
+
+	@GetMapping("/active")
+	public List<Inventory> getAllActiveInventory() {
+		return iInventoryService.findAllActiveInventory();
+	}
+
 	@PostMapping("")
 	public Inventory createInventory(@RequestBody @Valid Inventory inventory, BindingResult bindingResult) {
 		return iInventoryService.create(inventory, bindingResult);
@@ -62,9 +69,15 @@ public class InventoryController {
 	}
 
     @GetMapping("/productvariant/{id}")
-    public InventoryResponse getAll(@PathVariable(value = "id") Integer id)
+    public InventoryResponse getAll(@PathVariable(value = "id") Integer id, @RequestParam(value = "name") String name)
     {
-        return iInventoryService.getProductVariantByInventoryId(id);
+        return iInventoryService.getProductVariantByInventoryId(id, name);
     }
+
+	@PostMapping("/delete")
+	public void deleteProductVariant(@RequestBody ListIdRequest listIdRequest)
+	{
+		iInventoryService.deleteListProductVanriant(listIdRequest);
+	}
 
 }

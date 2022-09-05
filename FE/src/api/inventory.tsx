@@ -1,7 +1,12 @@
 import axios from "axios";
+import { IResultId } from "../interface";
 
 export const getAllInventory = async () => {
-    return (await axios.get(`http://localhost:8080/inventories`))
+    return (await axios.get(`http://localhost:8080/inventories`)).data
+}
+
+export const getAllActiveInventory = async () => {
+    return (await axios.get(`http://localhost:8080/inventories/active`))    
 }
 
 export const getPagination = async () => {
@@ -23,6 +28,12 @@ export const deleteInvetory = async (id:number) => {
     return (await axios.put(`http://localhost:8080/inventories/delete/${id}`))
 }
 
-export const getProductVariants = async (id:number) =>{
-    return (await axios.get(`http://localhost:8080/inventories/productvariant/${id}`)).data
+export const getProductVariants = async (id:number, name = "") =>{
+    return (await axios.get(`http://localhost:8080/inventories/productvariant/${id}`,{params:{
+        name: name
+    }})).data
+}
+
+export const deleteListProductVariant = async (resultId: IResultId) => {
+    return (await axios.post(`http://localhost:8080/inventories/delete`,resultId))
 }

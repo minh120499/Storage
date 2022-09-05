@@ -38,9 +38,12 @@ public class InventoriesProductVariant {
     @Column(name = "product_variant_id", insertable = false, updatable = false, nullable = false)
     private Integer product_variant_id;
 
-    @Min(0)
+    @Min(value = 0)
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+    @Column(name = "is_delete")
+    private Boolean isDelete;
 
     public InventoriesProductVariant(InventoriesProductVariantId id, Integer quantity) {
         this.id = id;

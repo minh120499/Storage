@@ -47,3 +47,8 @@ export interface IProductVariantDto{
   quantity: number,
 }
 
+export interface IResultId{
+  idInventory: any,
+  idProductVariant:any
+}
+

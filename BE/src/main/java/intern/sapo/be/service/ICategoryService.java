@@ -18,5 +18,4 @@ public interface ICategoryService {
 
     void  deleteLíst(List<Integer> id);
 
-    void delete (Integer id);
 }
