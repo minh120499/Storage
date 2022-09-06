@@ -110,30 +110,28 @@ export const ModalTable = ({
         Chọn nhanh
       </Button>
 
-      {modal2Visible && (
-        <Modal
-          title="Chọn sản phẩm"
-          centered
-          visible={modal2Visible}
-          onCancel={() => setModal2Visible(false)}
-          footer={null}
-        >
-          <div className="select-modal">
-            <Table
-              rowKey="id"
-              columns={columns_modal}
-              dataSource={dataProduct}
-              style={{ width: "100%" }}
-              scroll={{ y: 240 }}
-              rowSelection={rowSelection}
-              pagination={false}
-            />
-          </div>
-          <span style={{ color: "blue", fontWeight: 600 }}>
-            Bạn đã chọn {quantityProducts} sản phẩm
-          </span>
-        </Modal>
-      )}
+      <Modal
+        title="Chọn sản phẩm"
+        centered
+        visible={modal2Visible}
+        onCancel={() => setModal2Visible(false)}
+        footer={null}
+      >
+        <div className="select-modal">
+          <Table
+            rowKey="id"
+            columns={columns_modal}
+            dataSource={dataProduct}
+            style={{ width: "100%" }}
+            scroll={{ y: 240 }}
+            rowSelection={rowSelection}
+            pagination={false}
+          />
+        </div>
+        <span style={{ color: "blue", fontWeight: 600 }}>
+          Bạn đã chọn {quantityProducts} sản phẩm
+        </span>
+      </Modal>
     </div>
   );
 };

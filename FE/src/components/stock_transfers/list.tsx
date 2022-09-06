@@ -300,7 +300,6 @@ export const ListExport = () => {
             pagination={false}
         />
         <Pagination defaultCurrent={1} total={total} onChange={onChange} />
-        {colSettingModal && (
             <Modal
                 title="Điều chỉnh cột hiển thị"
                 visible={colSettingModal}
@@ -315,7 +314,6 @@ export const ListExport = () => {
 
               />
             </Modal>
-        )}
       </div>
   );
 };

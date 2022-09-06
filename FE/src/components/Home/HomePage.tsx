@@ -5,6 +5,7 @@ import LineChartReport from "./LineChartReport";
 import PieChartReport from "./PieChartReport";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import {useEffect} from "react";
+import { Line } from "recharts";
 
 export default function HomePage() {
   useEffect(() =>{
@@ -23,19 +24,6 @@ export default function HomePage() {
                   title="Card title"
                   description="This is the description"
                 />
-                {/* <Row gutter={16}>
-                  <Col className="h-fit w-fit">
-                    <Image
-                      height={50}
-                      width={50}
-                      src="https://joeschmoe.io/api/v1/random"
-                    />
-                  </Col>
-                  <Col span={20}>
-                    <div>Card title</div>
-                    <div>This is the description</div>
-                  </Col>
-                </Row> */}
               </Card>
             </Col>
             <Col span={6}>

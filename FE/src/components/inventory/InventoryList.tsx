@@ -2,18 +2,18 @@ import { Table, Button, EditIcon, DeletedIcon } from "../../UI";
 import type { ColumnsType } from "antd/es/table";
 import { IInventory } from "../../interface";
 import { Space, Modal, Form, Input, Tag } from "antd";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import {
   createInventory,
   updateInvetory,
   deleteInvetory,
   getPagination,
 } from "../../api/inventory";
-import {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import AddAddress from "../AddAddress";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import {PlusOutlined} from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 
 const InventoryList = () => {
   const navigate = useNavigate();
@@ -30,6 +30,7 @@ const InventoryList = () => {
       dataIndex: "code",
       key: "code",
       sorter: (a, b) => a.code.localeCompare(b.code),
+      render: (text) => <div className="bg-red">{text}</div>,
     },
     {
       title: <b>Tên</b>,
@@ -48,19 +49,19 @@ const InventoryList = () => {
       key: "isDelete",
       render: (status: boolean) => {
         return status ? (
-            <Tag
-                style={{ borderRadius: "15px" }}
-                color={"volcano" || `rgb(246 76 114)`}
-            >
-              Ngừng hoạt động
-            </Tag>
+          <Tag
+            style={{ borderRadius: "15px" }}
+            color={"volcano" || `rgb(246 76 114)`}
+          >
+            Ngừng hoạt động
+          </Tag>
         ) : (
-            <Tag
-                style={{ borderRadius: "15px" }}
-                color={"green" || `rgb(159 237 207)`}
-            >
-              Đang hoạt động
-            </Tag>
+          <Tag
+            style={{ borderRadius: "15px" }}
+            color={"green" || `rgb(159 237 207)`}
+          >
+            Đang hoạt động
+          </Tag>
         );
       },
     },
@@ -68,32 +69,36 @@ const InventoryList = () => {
       title: "Action",
       key: "action",
       render: (_, record) => (
-          <Space size="middle">
-            <EditIcon
-                onClick={() => {
-                  setMode("edit");
-                  updateInventory(record);
-                  setIsModalVisible(true);
-                }}
-            >
-              Sửa
-            </EditIcon>
-            <DeletedIcon
-                mode="cancel"
-                onClick={() => deleteInvetoryHandler(record)}
-            >
-              Xóa
-            </DeletedIcon>
-          </Space>
+        <Space size="middle">
+          <EditIcon
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              setMode("edit");
+              updateInventory(record);
+              setIsModalVisible(true);
+            }}
+          >
+            Sửa
+          </EditIcon>
+          <DeletedIcon
+            mode="cancel"
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              deleteInvetoryHandler(record);
+            }}
+          >
+            Xóa
+          </DeletedIcon>
+        </Space>
       ),
     },
   ];
 
   const inventoryMutation = useMutation((inventory: IInventory) =>
-      createInventory(inventory)
+    createInventory(inventory)
   );
   const inventoriesUpdate = useMutation((inventory: any) =>
-      updateInvetory(inventory.data, inventory.id)
+    updateInvetory(inventory.data, inventory.id)
   );
   const inventoriesDelete = useMutation((id: number) => deleteInvetory(id));
 
@@ -104,13 +109,20 @@ const InventoryList = () => {
   const [formInventory] = Form.useForm();
   const [mode, setMode] = useState("new");
 
-  useEffect(() =>{
-    document.title= "Kho hàng"
-  },[])
+  useEffect(() => {
+    document.title = "Kho hàng";
+  }, []);
 
   const handleOk = () => {
     const { code, name, detailsAddress, id } = formInventory.getFieldsValue();
-    formInventory.resetFields(["code","name","address", "detailsAddress", "province", "district"]);
+    formInventory.resetFields([
+      "code",
+      "name",
+      "address",
+      "detailsAddress",
+      "province",
+      "district",
+    ]);
     const payload = {
       data: {
         code,
@@ -132,7 +144,7 @@ const InventoryList = () => {
   const handleCancel = () => {
     setKeyChange(0);
     setIsModalVisible(false);
-    formInventory.resetFields(["code","name","address"]);
+    formInventory.resetFields(["code", "name", "address"]);
   };
 
   const updateInventory = (e: any) => {
@@ -166,75 +178,76 @@ const InventoryList = () => {
     setIsModalVisible(false);
   };
   return (
-      <div className="p-5">
-        <Button
-            onClick={() => {
-              setIsModalVisible(true);
-              setMode("new");
-            }}
-        >
-          <PlusOutlined /> Tạo mới kho
-        </Button>
-        <Table
-            columns={columns}
-            onRow={(record: any) => {
-              return {
-                onDoubleClickClick: () =>
-                    navigate({ pathname: `/stocker/inventories/${record.id}` }),
-              };
-            }}
-            query={getPagination}
-            rowKey="id"
-            // total={20}
-        />
-        {isModalVisible && (
-            <Modal
-                visible={isModalVisible}
-                onOk={handleOk}
-                onCancel={handleCancel}
-                title={mode === "new" ? "Tạo Kho mới" : "Sửa thông tin kho"}
-                footer={
-                  <div>
-                    <Space size="small">
-                      <Button onClick={handleOk} key="submit">{mode === "new" ? "Tạo" : "Cập nhập"}</Button>
-                      <Button onClick={handleCancel} key="back" mode="cancel">Hủy</Button>
-                    </Space>
-                  </div>
-                }
-            >
-              <Form form={formInventory}>
-                <Form.Item name="id" style={{ display: "none" }}>
-                  <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Mã kho"
-                    name="code"
-                    rules={[
-                      {
-                        required: true,
-                      },
-                    ]}
-                >
-                  <Input />
-                </Form.Item>
+    <div className="p-5">
+      <Button
+        onClick={() => {
+          setIsModalVisible(true);
+          setMode("new");
+        }}
+      >
+        <PlusOutlined /> Tạo mới kho
+      </Button>
+      <Table
+        columns={columns}
+        query={getPagination}
+        rowKey="id"
+        onRow={(record: IInventory) => {
+          return {
+            onClick: () => navigate(`${record.id}`, { replace: true }),
+          };
+        }}
+      />
+      <Modal
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        destroyOnClose
+        title={mode === "new" ? "Tạo Kho mới" : "Sửa thông tin kho"}
+        footer={
+          <div>
+            <Space size="small">
+              <Button onClick={handleOk} key="submit">
+                {mode === "new" ? "Tạo" : "Cập nhập"}
+              </Button>
+              <Button onClick={handleCancel} key="back" mode="cancel">
+                Hủy
+              </Button>
+            </Space>
+          </div>
+        }
+      >
+        <Form form={formInventory}>
+          <Form.Item name="id" style={{ display: "none" }}>
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Mã kho"
+            name="code"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
 
-                <Form.Item
-                    label="Tên kho"
-                    name="name"
-                    rules={[
-                      {
-                        required: true,
-                      },
-                    ]}
-                >
-                  <Input />
-                </Form.Item>
+          <Form.Item
+            label="Tên kho"
+            name="name"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
 
-                <AddAddress onChange={setFullAddress} keyChange={keyChange} />
-              </Form>
-            </Modal>
-        )}
-      </div>
+          <AddAddress onChange={setFullAddress} keyChange={keyChange} />
+        </Form>
+      </Modal>
+    </div>
   );
 };
 

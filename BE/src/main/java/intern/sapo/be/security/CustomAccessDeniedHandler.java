@@ -11,7 +11,6 @@ import java.io.IOException;
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-		System.out.println(12);
 		response.sendError(HttpServletResponse.SC_FORBIDDEN,"Access denied");
 	}
 }

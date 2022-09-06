@@ -10,12 +10,15 @@ import { Button } from "../../UI";
 type props = {
   roles: [IRole];
   empId?: any;
-  refetch?: any
+  refetch?: any;
 };
 
 export default function Role({ roles, empId, refetch }: props) {
   const updateRole = useMutation<Response, unknown, any>((data) => {
-    return axios.patch(`http://localhost:8080/api/admin/roles/emp/${empId}`, data);
+    return axios.patch(
+      `http://localhost:8080/api/admin/roles/emp/${empId}`,
+      data
+    );
   });
   const [roleForm] = Form.useForm();
   const [modal, setModal] = useState(false);
@@ -26,7 +29,7 @@ export default function Role({ roles, empId, refetch }: props) {
   if (updateRole.isSuccess) {
     setModal(false);
     updateRole.reset();
-    refetch()
+    refetch();
   }
 
   return (
@@ -53,30 +56,29 @@ export default function Role({ roles, empId, refetch }: props) {
           {/* <AddIcon /> */}
         </Tag>
       )}
-      {modal && (
-        <Modal
-          title="Role"
-          visible={modal}
-          onOk={() => updateRoles()}
-          onCancel={() => setModal(false)}
-          footer={[
-            <Button
-              loading={updateRole.isLoading}
-              key="submit"
-              onClick={() => updateRoles()}
-            >
-              Sửa
-            </Button>,
-            <Button key="cancel" onClick={() => setModal(false)} mode="cancel">
-              Hủy
-            </Button>,
-          ]}
-        >
-          <Form form={roleForm}>
-            <RoleSelect empRole={roles.map((e) => e.name)} />
-          </Form>
-        </Modal>
-      )}
+      <Modal
+        title="Role"
+        visible={modal}
+        onOk={() => updateRoles()}
+        onCancel={() => setModal(false)}
+        destroyOnClose
+        footer={[
+          <Button
+            loading={updateRole.isLoading}
+            key="submit"
+            onClick={() => updateRoles()}
+          >
+            Sửa
+          </Button>,
+          <Button key="cancel" onClick={() => setModal(false)} mode="cancel">
+            Hủy
+          </Button>,
+        ]}
+      >
+        <Form form={roleForm}>
+          <RoleSelect empRole={roles.map((e) => e.name)} />
+        </Form>
+      </Modal>
     </div>
   );
 }

@@ -138,7 +138,6 @@ const RoleManager = () => {
         rowKey="id"
       />
 
-      {addRoleModal && (
         <Modal
           title={mode === "new" ? "Thêm chức vụ" : "Sửa thông tin"}
           visible={addRoleModal}
@@ -181,7 +180,6 @@ const RoleManager = () => {
             </Form.Item>
           </Form>
         </Modal>
-      )}
     </div>
   );
 };

@@ -8,7 +8,6 @@ import intern.sapo.be.exception.AccountException;
 import intern.sapo.be.security.jwt.JwtTokenUtil;
 
 import intern.sapo.be.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,17 +25,20 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/account")
 @CrossOrigin
+@PreAuthorize("hasAuthority('admin')")
 public class AccountController {
-	@Autowired
-	AuthenticationManager authManager;
-	@Autowired
-	private AccountService accountService;
+	private final AuthenticationManager authManager;
+	private final AccountService accountService;
 
-	@Autowired
-	private JwtTokenUtil jwtUtils;
+	private final JwtTokenUtil jwtUtils;
+
+	public AccountController(AuthenticationManager authManager, AccountService accountService, JwtTokenUtil jwtUtils) {
+		this.authManager = authManager;
+		this.accountService = accountService;
+		this.jwtUtils = jwtUtils;
+	}
 
 	@GetMapping()
-//	@PreAuthorize("hasAuthority('admin')")
 	public ResponseEntity<?> getAll() {
 		return ResponseEntity.ok(accountService.getAll());
 	}
