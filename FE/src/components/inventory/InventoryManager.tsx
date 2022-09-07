@@ -1,4 +1,4 @@
-import { Col, Row, Table, Button, Dropdown, Menu, MenuProps, Image, Input, Modal, Tag } from "antd";
+import { Col, Row, Table, Button, Dropdown, Menu, MenuProps, Image, Input, Modal, Tag, Spin, Space } from "antd";
 import { DeleteOutlined, DownOutlined, LeftOutlined } from "@ant-design/icons";
 import { deleteListProductVariant, getProductVariants } from "../../api/inventory";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -24,6 +24,7 @@ const InventoryManager = () => {
   const [totalproduct, settotalProduct] = useState<number>();
   const [detailproductvariant, setDetailProductVariant] = useState<IProductVariantDto>();
   const [status, setStatus] = useState(false);
+  const [reload, setReload] = useState(false);
   const [name, setName] = useState<string>('');
   const navigate = useNavigate();
 
@@ -35,12 +36,16 @@ const InventoryManager = () => {
   }, [])
 
   useEffect(() => {
+    setReload(true);
     getProductVariants(parseInt(id as string), name)
       .then(response => {
         setProductVariant(response.productVariants);
         setInventory(response.inventory);
         settotalProduct(response.totalProductVariant);
+        setReload(false);
+
       })
+
 
   }, [status, name])
 
@@ -51,16 +56,16 @@ const InventoryManager = () => {
       render: (img: string) => {
 
         return (
-          <Image width={45} src={img} onClick={(e:React.MouseEvent)=>e.stopPropagation()} />
+          <Image width={45} src={img} onClick={(e: React.MouseEvent) => e.stopPropagation()} />
         )
       }
     },
     {
       title: "Mã sản phẩm",
-      dataIndex: ["code","obj"],
-      render: (code:string, obj:any) => {
+      dataIndex: ["code", "obj"],
+      render: (code: string, obj: any) => {
         return (
-          <a onClick={()=>navigate(`/products/${obj.productId}`)}>{obj.code}</a> 
+          <a onClick={() => navigate(`/products/${obj.productId}`)}>{obj.code}</a>
         )
       },
       sorter: (a, b) => a.code.localeCompare(b.code),
@@ -76,7 +81,7 @@ const InventoryManager = () => {
       render: (Price: string) => (
         <NumberFormat value={Price} displayType='text' thousandSeparator={true} />
       ),
-      sorter: (a, b) => a.importPrice - b.importPrice 
+      sorter: (a, b) => a.importPrice - b.importPrice
     },
     {
       title: "Tồn kho",
@@ -84,7 +89,7 @@ const InventoryManager = () => {
       render: (quantity: string) => (
         <NumberFormat value={quantity} displayType='text' thousandSeparator={true} />
       ),
-      sorter: (a, b) => a.quantity - b.quantity 
+      sorter: (a, b) => a.quantity - b.quantity
     },
     {
       title: "Ngày khởi tạo",
@@ -100,7 +105,7 @@ const InventoryManager = () => {
       render: (row: any) => (
         <DeleteIcon
           className="text-red-500"
-          onClick={(e:React.MouseEvent) => {
+          onClick={(e: React.MouseEvent) => {
             e.stopPropagation();
             onDelete(row);
           }}
@@ -218,6 +223,7 @@ const InventoryManager = () => {
 
   return (
     <div className="p-5">
+
       <h2 style={{ fontSize: '15px' }} >
         <Link to="/stocker/inventories">
           <LeftOutlined /> Danh sách kho
@@ -229,8 +235,16 @@ const InventoryManager = () => {
         alignItems: "center",
         justifyContent: "space-between",
       }}>
-        <h1 style={{ fontSize: '30px', margin: 0, marginRight: 10, marginBottom: '15px' }}>Quản lý kho</h1>
-        <Button type="primary"></Button>
+        <div>
+          <h1 style={{ fontSize: '30px', margin: 0, marginRight: 10, marginBottom: '15px' }}>Quản lý kho</h1>
+        </div>
+        <div>
+          <Space>
+            <Button type="primary" onClick={() => navigate(`/categories`)}>Xem danh mục sản phẩm</Button>
+            <Button type="primary" onClick={() => navigate(`/products`)}>Xem danh sách sản phẩm</Button>
+          </Space>
+        </div>
+
       </div>
 
       <Row gutter={24}>
@@ -255,13 +269,14 @@ const InventoryManager = () => {
               columns={columns}
               dataSource={data}
               bordered
-              // onRow={(record: any) => {
-              //   return {
-              //     onClick: () => {
-              //       navigate(`/products/${record.productId}`)
-              //     }
-              //   };
-              // }}
+              loading={{ spinning: reload }}
+            // onRow={(record: any) => {
+            //   return {
+            //     onClick: () => {
+            //       navigate(`/products/${record.productId}`)
+            //     }
+            //   };
+            // }}
             />
             <Modal
               title={<div style={{ color: "#1890FF" }}>Chi tiết sản phẩm</div>}

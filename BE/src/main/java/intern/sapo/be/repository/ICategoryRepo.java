@@ -21,8 +21,8 @@ public interface ICategoryRepo extends JpaRepository<Category,Integer>{
     void delete(Integer id);
 
     @Transactional
-    @Query("select c from Category  c order by  c.id desc ")
-    List<Category> getAll();
+    @Query(value = "call get_categoriesByIdorName(?1)", nativeQuery = true)
+    List<Category> getAllByName(String valueInput);
     @Query("select c from Category c inner join CategoriesProduct cp on c.id=cp.category.id where cp.product.id=:id")
     List<Category> findAllByProductId(@Param("id") Integer id);
 
