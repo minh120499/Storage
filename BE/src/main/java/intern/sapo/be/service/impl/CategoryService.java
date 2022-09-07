@@ -41,8 +41,8 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public List<Category> getAll() {
-        return iCategoryRepo.findAll();
+    public List<Category> getAll(String valueInput) {
+        return iCategoryRepo.getAllByName(valueInput);
     }
 
     @Override

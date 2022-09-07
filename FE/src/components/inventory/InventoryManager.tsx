@@ -9,6 +9,7 @@ import {
   Image,
   Input,
 } from "antd";
+import { Col, Row, Table, Button, Dropdown, Menu, MenuProps, Image, Input, Space } from "antd";
 import { DeleteOutlined, DownOutlined, LeftOutlined } from "@ant-design/icons";
 import {
   deleteListProductVariant,
@@ -35,6 +36,9 @@ const InventoryManager = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [totalproduct, settotalProduct] = useState<number>();
   const [status, setStatus] = useState(false);
+  const [reload, setReload] = useState(false);
+  const navigate = useNavigate();
+
   const [name, setName] = useState<string>("");
 
   useEffect(() => {
@@ -42,13 +46,15 @@ const InventoryManager = () => {
   }, []);
 
   useEffect(() => {
-    getProductVariants(parseInt(id as string), name).then((response) => {
-      setProductVariant(response.productVariants);
-      setInventory(response.inventory);
-      settotalProduct(response.totalProductVariant);
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, name]);
+    setReload(true);
+    getProductVariants(parseInt(id as string), name)
+      .then(response => {
+        setProductVariant(response.productVariants);
+        setInventory(response.inventory);
+        settotalProduct(response.totalProductVariant);
+        setReload(false);
+      })
+  }, [status, name])
 
   const columns: ColumnsType<IProductVariantDto> = [
     {
@@ -56,18 +62,14 @@ const InventoryManager = () => {
       dataIndex: "image",
       render: (img: string) => {
         return (
-          <Image
-            width={45}
-            src={img}
-            onClick={(e: React.MouseEvent) => e.stopPropagation()}
-          />
-        );
-      },
+          <Image width={45} src={img} onClick={(e: React.MouseEvent) => e.stopPropagation()} />
+        )
+      }
     },
     {
       title: "Mã sản phẩm",
       dataIndex: ["code", "obj"],
-      render: (code: any, obj: any) => {
+      render: (code: string, obj: any) => {
         return <Link to={`/products/${obj.productId}`}>{obj.code}</Link>;
       },
       sorter: (a, b) => a.code.localeCompare(b.code),
@@ -87,7 +89,7 @@ const InventoryManager = () => {
           thousandSeparator={true}
         />
       ),
-      sorter: (a, b) => a.importPrice - b.importPrice,
+      sorter: (a, b) => a.importPrice - b.importPrice
     },
     {
       title: "Tồn kho",
@@ -99,7 +101,7 @@ const InventoryManager = () => {
           thousandSeparator={true}
         />
       ),
-      sorter: (a, b) => a.quantity - b.quantity,
+      sorter: (a, b) => a.quantity - b.quantity
     },
     {
       title: "Ngày khởi tạo",
@@ -214,7 +216,7 @@ const InventoryManager = () => {
   );
   const handleSearch = (e: string) => {
     setName(e.trim());
-  };
+  }
 
   return (
     <div className="p-5">
@@ -223,25 +225,22 @@ const InventoryManager = () => {
           <LeftOutlined /> Danh sách kho
         </Link>
       </h2>
-      <div
-        style={{
-          marginBottom: 16,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <h1
-          style={{
-            fontSize: "30px",
-            margin: 0,
-            marginRight: 10,
-            marginBottom: "15px",
-          }}
-        >
-          Quản lý kho
-        </h1>
-        <Button type="primary"></Button>
+      <div style={{
+        marginBottom: 16,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}>
+        <div>
+          <h1 style={{ fontSize: '30px', margin: 0, marginRight: 10, marginBottom: '15px' }}>Quản lý kho</h1>
+        </div>
+        <div>
+          <Space>
+            <Button type="primary" onClick={() => navigate(`/categories`)}>Xem danh mục sản phẩm</Button>
+            <Button type="primary" onClick={() => navigate(`/products`)}>Xem danh sách sản phẩm</Button>
+          </Space>
+        </div>
+
       </div>
 
       <Row gutter={24}>
@@ -287,13 +286,7 @@ const InventoryManager = () => {
               columns={columns}
               dataSource={data}
               bordered
-              // onRow={(record: any) => {
-              //   return {
-              //     onClick: () => {
-              //       navigate(`/products/${record.productId}`)
-              //     }
-              //   };
-              // }}
+              loading={{ spinning: reload }}
             />
           </div>
         </Col>

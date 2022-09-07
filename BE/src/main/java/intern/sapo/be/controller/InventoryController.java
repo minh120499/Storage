@@ -4,6 +4,7 @@ import intern.sapo.be.dto.request.Inventory.ListIdRequest;
 import intern.sapo.be.dto.response.Inventory.OnlyInventoryResponse;
 import intern.sapo.be.dto.response.product.Inventory.InventoryResponse;
 import intern.sapo.be.entity.Account;
+import intern.sapo.be.entity.InventoriesProductVariant;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.service.IInventoryService;
 import lombok.AllArgsConstructor;
@@ -26,8 +27,6 @@ import java.util.Map;
 @CrossOrigin("*")
 public class InventoryController {
 	private final IInventoryService iInventoryService;
-
-	private final ModelMapper modelMapper;
 
 	@GetMapping("/pagination")
 	public ResponseEntity getPagination(@RequestParam(value = "pageNumber", required = true, defaultValue = "1") int pageNumber,
@@ -93,6 +92,15 @@ public class InventoryController {
 	@PostMapping("/delete")
 	public void deleteProductVariant(@RequestBody ListIdRequest listIdRequest) {
 		iInventoryService.deleteListProductVanriant(listIdRequest);
+	}
+
+	@PutMapping("/change/minquantity")
+	public ResponseEntity changeMinQuantity(@RequestParam(value = "inventoryId") Integer inventoryId,
+													   @RequestParam(value = "productVariantId") Integer productVariantId,
+													   @RequestParam(value = "minQuantity") Integer minQuantity)
+	{
+//		iInventoryService.changeMinQuantity(inventoryId,productVariantId,minQuantity);
+		return ResponseEntity.ok(iInventoryService.changeMinQuantity(inventoryId,productVariantId,minQuantity));
 	}
 
 }

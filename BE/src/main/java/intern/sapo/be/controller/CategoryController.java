@@ -28,8 +28,8 @@ public class CategoryController {
     }
 
     @GetMapping("/findall")
-    public List<Category> getdAll(){
-        return iCategoryService.getAll();
+    public List<Category> getdAll(@RequestParam(value = "valueInput", required = false) String valueInput){
+        return iCategoryService.getAll(valueInput);
     }
 
     @GetMapping("/category/{id}")

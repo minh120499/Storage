@@ -4,7 +4,7 @@ import ToastCustom from "../../features/toast/Toast";
 import { Category } from "../../type/allType";
 import { updateCategory } from "../../api/apiCategory";
 import Button from "../../UI/Button";
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import   {EditIcon}  from "../../UI/ActionIcons";
 
 type props = {
   status: () => void;
@@ -64,7 +64,7 @@ export default function CategoryUpdate({ status, categoryProp }: props) {
   };
   return (
       <>
-        <ModeEditIcon className="text-blue-600" onClick={showModal}></ModeEditIcon>
+        <EditIcon className="text-blue-600" onClick={showModal}></EditIcon>
 
         <Modal
             title="Sửa Danh Mục"

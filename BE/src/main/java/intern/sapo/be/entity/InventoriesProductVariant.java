@@ -20,7 +20,7 @@ public class InventoriesProductVariant {
 
 
     @MapsId("inventoryId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "inventory_id", insertable = false, updatable = false, nullable = false)
     private Inventory inventory;
 
@@ -29,7 +29,7 @@ public class InventoriesProductVariant {
 
 
     @MapsId("productVariantId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "product_variant_id", nullable = false)
     private ProductVariant productVariant;
 
@@ -40,6 +40,9 @@ public class InventoriesProductVariant {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+    @Column(name = "min_quantity", nullable = true)
+    private Integer min_quantity;
 
     public InventoriesProductVariant(InventoriesProductVariantId id, Integer quantity) {
         this.id = id;
