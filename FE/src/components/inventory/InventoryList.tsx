@@ -1,7 +1,7 @@
-import { Table, Button, EditIcon, DeletedIcon } from "../../UI";
+import { Table, Button, EditIcon, Lock, UnLock } from "../../UI";
 import type { ColumnsType } from "antd/es/table";
 import { IInventory } from "../../interface";
-import { Space, Modal, Form, Input, Tag } from "antd";
+import { Space, Modal, Form, Input, Tag, Progress, Tooltip } from "antd";
 import { useMutation } from "@tanstack/react-query";
 import {
   createInventory,
@@ -21,43 +21,89 @@ const InventoryList = () => {
   const columns: ColumnsType<IInventory> = [
     {
       title: <b>Id</b>,
-      dataIndex: "id",
+      dataIndex: "inventory",
       key: "id",
-      sorter: (a, b) => (a?.id || 1) - (b?.id || 0),
+      render: (inventory: IInventory) => {
+        return <div>{inventory?.id}</div>;
+      },
+      sorter: (a: IInventory, b: IInventory) => (a?.id || 1) - (b?.id || 0),
     },
     {
       title: <b>Mã kho</b>,
-      dataIndex: "code",
+      dataIndex: "inventory",
       key: "code",
-      sorter: (a, b) => a.code.localeCompare(b.code),
-      render: (text) => <div className="bg-red">{text}</div>,
+      sorter: (a: IInventory, b: IInventory) => a.code.localeCompare(b.code),
+      render: (inventory: IInventory) => (
+        <div className="bg-red">{inventory.code}</div>
+      ),
     },
     {
       title: <b>Tên</b>,
-      dataIndex: "name",
+      dataIndex: "inventory",
       key: "name",
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      sorter: (a: IInventory, b: IInventory) => a.name.localeCompare(b.name),
+      render: (inventory: IInventory) => (
+        <div className="bg-red">{inventory.name}</div>
+      ),
     },
     {
       title: <b>Địa chỉ</b>,
-      dataIndex: "address",
+      dataIndex: "inventory",
       key: "address",
+      render: (inventory: IInventory) => (
+        <div className="bg-red">{inventory.address}</div>
+      ),
+    },
+    {
+      title: <b>Tồn kho</b>,
+      dataIndex: ["totalProductVariant", "inventory"],
+      key: "stock",
+      render: (_: any, record: any) => {
+        const size = record?.inventory?.size || 18923951235;
+        const stock = record?.totalProductVariant || 8293509032;
+        const percent = size ? Math.round((stock / size) * 100) : 0;
+        const color = percent > 70 ? "red" : percent > 40 ? "blue" : "green";
+
+        return (
+          <Tooltip
+            title={`${stock.toLocaleString()} / ${size.toLocaleString()}`}
+          >
+            <div>
+              {Intl.NumberFormat("en", { notation: "compact" }).format(stock) +
+                " / " +
+                Intl.NumberFormat("en", { notation: "compact" }).format(size)}
+            </div>
+            <Progress
+              style={{ width: 130 }}
+              strokeColor={color}
+              percent={percent}
+              format={(percent) => {
+                console.log(percent);
+
+                if (percent && percent >= 100) {
+                  return <div style={{ color: "red" }}>Full</div>;
+                } else {
+                  return <div>{percent || 0} %</div>;
+                }
+              }}
+              // success={{ percent: 100, strokeColor: "red" }}
+            />
+          </Tooltip>
+        );
+      },
     },
     {
       title: <b>Trạng thái</b>,
-      dataIndex: "isDelete",
+      dataIndex: "inventory",
       key: "isDelete",
       render: (status: boolean) => {
         return status ? (
-          <Tag
-            style={{ borderRadius: "15px" }}
-            color={"volcano" || `rgb(246 76 114)`}
-          >
+          <Tag style={{ borderRadius: "15px" }} color={`rgb(246 76 114)`}>
             Ngừng hoạt động
           </Tag>
         ) : (
           <Tag
-            style={{ borderRadius: "15px" }}
+            style={{ borderRadius: "15px", padding: "2px" }}
             color={"green" || `rgb(159 237 207)`}
           >
             Đang hoạt động
@@ -67,30 +113,39 @@ const InventoryList = () => {
     },
     {
       title: "Action",
+      dataIndex: "inventory",
       key: "action",
-      render: (_, record) => (
-        <Space size="middle">
-          <EditIcon
-            onClick={(e: React.MouseEvent) => {
-              e.stopPropagation();
-              setMode("edit");
-              updateInventory(record);
-              setIsModalVisible(true);
-            }}
-          >
-            Sửa
-          </EditIcon>
-          <DeletedIcon
-            mode="cancel"
-            onClick={(e: React.MouseEvent) => {
-              e.stopPropagation();
-              deleteInvetoryHandler(record);
-            }}
-          >
-            Xóa
-          </DeletedIcon>
-        </Space>
-      ),
+      render: (record: any) => {
+        return (
+          <Space size="middle">
+            <EditIcon
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                setMode("edit");
+                updateInventory(record);
+                setIsModalVisible(true);
+              }}
+            >
+              Sửa
+            </EditIcon>
+            {record?.status ? (
+              <Lock
+                onClick={(e: React.MouseEvent) => {
+                  e.stopPropagation();
+                  deleteInvetoryHandler(record, "mở khóa");
+                }}
+              />
+            ) : (
+              <UnLock
+                onClick={(e: React.MouseEvent) => {
+                  e.stopPropagation();
+                  deleteInvetoryHandler(record, "ngừng hoạt động");
+                }}
+              />
+            )}
+          </Space>
+        );
+      },
     },
   ];
 
@@ -160,11 +215,11 @@ const InventoryList = () => {
     });
   };
 
-  const deleteInvetoryHandler = (record: any) => {
+  const deleteInvetoryHandler = (record: any, text: string) => {
     Swal.fire({
       icon: "question",
       title: "Thay đổi trạng thái",
-      html: `Xác nhận thay đổi trạng thái kho ${record?.code}`,
+      html: `Xác nhận ${text} kho ${record?.code}`,
       confirmButtonText: "Xác nhận",
       cancelButtonText: "Hủy",
       showCancelButton: true,
@@ -191,9 +246,10 @@ const InventoryList = () => {
         columns={columns}
         query={getPagination}
         rowKey="id"
-        onRow={(record: IInventory) => {
+        onRow={(record: any) => {
           return {
-            onClick: () => navigate(`${record.id}`, { replace: true }),
+            onClick: () =>
+              navigate(`${record?.inventory?.id}`, { replace: true }),
           };
         }}
       />
