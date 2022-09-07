@@ -82,8 +82,7 @@ public class InventoryController {
 
 	@PutMapping("/delete/{id}")
 	public void deleteInventory(@PathVariable(value = "id") Integer id) {
-		iInventoryService.delete(id)
-		;
+		iInventoryService.delete(id);
 	}
 
 	@GetMapping("/productvariant/{id}")

@@ -1,67 +1,74 @@
-import { Col, Row, Table, Button, Dropdown, Menu, MenuProps, Image, Input, Modal, Tag } from "antd";
+import {
+  Col,
+  Row,
+  Table,
+  Button,
+  Dropdown,
+  Menu,
+  MenuProps,
+  Image,
+  Input,
+} from "antd";
 import { DeleteOutlined, DownOutlined, LeftOutlined } from "@ant-design/icons";
-import { deleteListProductVariant, getProductVariants } from "../../api/inventory";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  deleteListProductVariant,
+  getProductVariants,
+} from "../../api/inventory";
+import { Link, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { IInventoryDto, IProductVariantDto, IResultId } from "../../interface";
 import NumberFormat from "react-number-format";
 import Moment from "react-moment";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { DeletedIcon } from "../../UI";
 import Swal from "sweetalert2";
 import ToastCustom from "../../features/toast/Toast";
 import PieChartReport from "../Home/PieChartReport";
 import { ColumnsType } from "antd/lib/table";
 
-
-
 const InventoryManager = () => {
   const { Search } = Input;
   const { id } = useParams();
   const [inventory, setInventory] = useState({} as IInventoryDto);
-  const [productvariant, setProductVariant] = useState<IProductVariantDto[]>([]);
+  const [productvariant, setProductVariant] = useState<IProductVariantDto[]>(
+    []
+  );
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [totalproduct, settotalProduct] = useState<number>();
-  const [detailproductvariant, setDetailProductVariant] = useState<IProductVariantDto>();
   const [status, setStatus] = useState(false);
-  const [name, setName] = useState<string>('');
-  const navigate = useNavigate();
-
-
-
+  const [name, setName] = useState<string>("");
 
   useEffect(() => {
-    document.title = "Thông tin kho"
-  }, [])
+    document.title = "Thông tin kho";
+  }, []);
 
   useEffect(() => {
-    getProductVariants(parseInt(id as string), name)
-      .then(response => {
-        setProductVariant(response.productVariants);
-        setInventory(response.inventory);
-        settotalProduct(response.totalProductVariant);
-      })
-
-  }, [status, name])
+    getProductVariants(parseInt(id as string), name).then((response) => {
+      setProductVariant(response.productVariants);
+      setInventory(response.inventory);
+      settotalProduct(response.totalProductVariant);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, name]);
 
   const columns: ColumnsType<IProductVariantDto> = [
     {
       title: "Ảnh",
       dataIndex: "image",
       render: (img: string) => {
-
         return (
-          <Image width={45} src={img} onClick={(e:React.MouseEvent)=>e.stopPropagation()} />
-        )
-      }
+          <Image
+            width={45}
+            src={img}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+          />
+        );
+      },
     },
     {
       title: "Mã sản phẩm",
-      dataIndex: ["code","obj"],
-      render: (code:string, obj:any) => {
-        return (
-          <a onClick={()=>navigate(`/products/${obj.productId}`)}>{obj.code}</a> 
-        )
+      dataIndex: ["code", "obj"],
+      render: (code: any, obj: any) => {
+        return <Link to={`/products/${obj.productId}`}>{obj.code}</Link>;
       },
       sorter: (a, b) => a.code.localeCompare(b.code),
     },
@@ -74,40 +81,45 @@ const InventoryManager = () => {
       title: "Giá nhập (đơn vị vnđ)",
       dataIndex: "importPrice",
       render: (Price: string) => (
-        <NumberFormat value={Price} displayType='text' thousandSeparator={true} />
+        <NumberFormat
+          value={Price}
+          displayType="text"
+          thousandSeparator={true}
+        />
       ),
-      sorter: (a, b) => a.importPrice - b.importPrice 
+      sorter: (a, b) => a.importPrice - b.importPrice,
     },
     {
       title: "Tồn kho",
       dataIndex: "quantity",
       render: (quantity: string) => (
-        <NumberFormat value={quantity} displayType='text' thousandSeparator={true} />
+        <NumberFormat
+          value={quantity}
+          displayType="text"
+          thousandSeparator={true}
+        />
       ),
-      sorter: (a, b) => a.quantity - b.quantity 
+      sorter: (a, b) => a.quantity - b.quantity,
     },
     {
       title: "Ngày khởi tạo",
       dataIndex: "createAt",
       render: (createAt: string) => (
-        <Moment format="DD/MM/YYYY HH:mm:ss">
-          {createAt}
-        </Moment>
+        <Moment format="DD/MM/YYYY HH:mm:ss">{createAt}</Moment>
       ),
       sorter: (a, b) => a.createAt.localeCompare(b.createAt),
     },
     {
       render: (row: any) => (
-        <DeleteIcon
+        <DeletedIcon
           className="text-red-500"
-          onClick={(e:React.MouseEvent) => {
+          onClick={(e: React.MouseEvent) => {
             e.stopPropagation();
             onDelete(row);
           }}
         />
       ),
-    }
-
+    },
   ];
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -131,23 +143,23 @@ const InventoryManager = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Xác nhận",
-      cancelButtonText: "Thoát"
+      cancelButtonText: "Thoát",
     }).then((result) => {
       if (result.isConfirmed) {
         const listId: number[] = [];
-        listId.push(row.id)
+        listId.push(row.id);
         const idResult: IResultId = {
           idInventory: inventory.id,
-          idProductVariant: listId
-        }
+          idProductVariant: listId,
+        };
         deleteListProductVariant(idResult).then(() => {
           ToastCustom.fire({
             icon: "success",
             title: "Xoá thành công!",
-          }).then((r) => { });
+          }).then((r) => {});
           setStatus(!status);
           setSelectedRowKeys([]);
-        })
+        });
       }
     });
   };
@@ -161,18 +173,18 @@ const InventoryManager = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Xác nhận",
-      cancelButtonText: "Thoát"
+      cancelButtonText: "Thoát",
     }).then((result) => {
       if (result.isConfirmed) {
         const idResult: IResultId = {
           idInventory: inventory.id,
-          idProductVariant: listId
-        }
+          idProductVariant: listId,
+        };
         deleteListProductVariant(idResult).then(() => {
           ToastCustom.fire({
             icon: "success",
             title: "Xoá thành công!",
-          }).then((r) => { });
+          }).then((r) => {});
           setStatus(!status);
           setSelectedRowKeys([]);
         });
@@ -192,44 +204,43 @@ const InventoryManager = () => {
       onClick={handleMenuClick}
       items={[
         {
-
           label: <Link to="#">Xóa các phiên bản sản phẩm</Link>,
           key: "1",
           icon: <DeleteOutlined />,
-          danger: true
+          danger: true,
         },
       ]}
     />
   );
   const handleSearch = (e: string) => {
     setName(e.trim());
-  }
-
-  const showModal = (data: any) => {
-    console.log(data);
-
-    setDetailProductVariant(data);
-    setIsModalVisible(true);
-  }
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
   };
 
   return (
     <div className="p-5">
-      <h2 style={{ fontSize: '15px' }} >
+      <h2 style={{ fontSize: "15px" }}>
         <Link to="/stocker/inventories">
           <LeftOutlined /> Danh sách kho
         </Link>
       </h2>
-      <div style={{
-        marginBottom: 16,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}>
-        <h1 style={{ fontSize: '30px', margin: 0, marginRight: 10, marginBottom: '15px' }}>Quản lý kho</h1>
+      <div
+        style={{
+          marginBottom: 16,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "30px",
+            margin: 0,
+            marginRight: 10,
+            marginBottom: "15px",
+          }}
+        >
+          Quản lý kho
+        </h1>
         <Button type="primary"></Button>
       </div>
 
@@ -237,16 +248,37 @@ const InventoryManager = () => {
         <Col span={18}>
           <div className="block">
             <h1 style={{ color: "#1890FF" }}>Tất cả phiên bản sản phẩm</h1>
-            <Search placeholder="Tìm kiếm theo tên, mã sản phẩm" size="large" onSearch={(e) => handleSearch(e)} />
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "10px", marginBottom: "10px" }}>
+            <Search
+              placeholder="Tìm kiếm theo tên, mã sản phẩm"
+              size="large"
+              onSearch={(e) => handleSearch(e)}
+            />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginTop: "10px",
+                marginBottom: "10px",
+              }}
+            >
               <Dropdown overlay={menu} disabled={!hasSelected}>
-                <Button type="primary" style={{ width: "180px", fontSize: "14px", marginLeft: "0px" }}>
+                <Button
+                  type="primary"
+                  style={{
+                    width: "180px",
+                    fontSize: "14px",
+                    marginLeft: "0px",
+                  }}
+                >
                   Thao tác
                   <DownOutlined />
                 </Button>
               </Dropdown>
               <span style={{ marginLeft: 8, marginRight: 8 }}>
-                {hasSelected ? `Đã chọn ${selectedRowKeys.length} phiên bản sản phẩm trên trang này` : ""}
+                {hasSelected
+                  ? `Đã chọn ${selectedRowKeys.length} phiên bản sản phẩm trên trang này`
+                  : ""}
               </span>
             </div>
             <Table
@@ -263,67 +295,6 @@ const InventoryManager = () => {
               //   };
               // }}
             />
-            <Modal
-              title={<div style={{ color: "#1890FF" }}>Chi tiết sản phẩm</div>}
-              visible={isModalVisible}
-              footer={null}
-              onCancel={handleCancel}
-            >
-              <Row gutter={12}>
-                <Col span={7}>
-                  <p>Mã sản phẩm:</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}>{detailproductvariant?.code}</b>
-                </Col>
-
-                <Col span={7}>
-                  <p>Tên sản phẩm:</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}>{detailproductvariant?.name}</b>
-                </Col>
-
-                <Col span={7}>
-                  <p>Giá nhập (vnđ):</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}><NumberFormat value={detailproductvariant?.importPrice} displayType='text' thousandSeparator={true} /></b>
-                </Col>
-
-                <Col span={7}>
-                  <p>Giá bán buôn (vnđ):</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}><NumberFormat value={detailproductvariant?.wholesalePrice} displayType='text' thousandSeparator={true} /></b>
-                </Col>
-
-                <Col span={7}>
-                  <p>Giá bán lẻ (vnđ):</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}><NumberFormat value={detailproductvariant?.salePrice} displayType='text' thousandSeparator={true} /></b>
-                </Col>
-
-                <Col span={7}>
-                  <p>Số lượng tồn kho:</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}><NumberFormat value={detailproductvariant?.quantity} displayType='text' thousandSeparator={true} /></b>
-                </Col>
-
-                <Col span={7}>
-                  <p>Ngày khởi tạo:</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}>
-                    <Moment format="DD/MM/YYYY HH:mm:ss">
-                      {detailproductvariant?.createAt}
-                    </Moment>
-                  </b>
-                </Col>
-              </Row>
-            </Modal>
           </div>
         </Col>
         <Col span={6}>
@@ -350,7 +321,11 @@ const InventoryManager = () => {
                 </Col>
                 <Col span={16}>
                   <b style={{ textTransform: "uppercase" }}>
-                    <NumberFormat value={totalproduct} displayType='text' thousandSeparator={true} />
+                    <NumberFormat
+                      value={totalproduct}
+                      displayType="text"
+                      thousandSeparator={true}
+                    />
                   </b>
                 </Col>
 
@@ -367,7 +342,9 @@ const InventoryManager = () => {
                   <p>Địa chỉ:</p>
                 </Col>
                 <Col span={16}>
-                  <b style={{ textTransform: "uppercase" }}>{inventory.address}</b>
+                  <b style={{ textTransform: "uppercase" }}>
+                    {inventory.address}
+                  </b>
                 </Col>
 
                 <Col span={8}>
@@ -399,7 +376,7 @@ const InventoryManager = () => {
           </div>
         </Col>
       </Row>
-    </div >
+    </div>
   );
 };
 

@@ -7,15 +7,14 @@ import {
   Tag,
   Transfer,
 } from "antd";
-import { ColumnsType, TablePaginationConfig } from "antd/lib/table";
+import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { findDetailByExport } from "../../api/detail_export";
 import { getExport } from "../../api/export";
 import { findExportStatusById } from "../../api/export_status";
 import { exportById, listExport } from "../type/data_type";
-import type { TransferDirection } from "antd/es/transfer";
 import SettingsIcon from "@mui/icons-material/Settings";
 
 interface RecordType {
@@ -41,7 +40,6 @@ export const ListExport = () => {
       dataIndex: "exportStatus",
       key: "exportStatus",
       render: (text) => {
-        // console.log(text);
         return <div>{moment(text?.createAt).format("DD/MM/YYYY HH:mm")}</div>;
       },
     },
@@ -50,7 +48,6 @@ export const ListExport = () => {
       dataIndex: "exportStatus",
       key: "exportStatus",
       render: (text) => {
-        // console.log(text);
         return <div>{text.code}</div>;
       },
     },
@@ -120,7 +117,6 @@ export const ListExport = () => {
       dataIndex: "exportStatus",
       key: "exportStatus",
       render: (text) => {
-        // console.log(text);
         return <div>{moment(text?.createAt).format("DD/MM/YYYY HH:mm")}</div>;
       },
     },
@@ -129,7 +125,6 @@ export const ListExport = () => {
       dataIndex: "exportStatus",
       key: "exportStatus",
       render: (text) => {
-        // console.log(text);
         return <div>{text.code}</div>;
       },
     },
@@ -157,7 +152,7 @@ export const ListExport = () => {
         return (
             <div>
               {text.status === 0 ? (
-                  <Tag color={"blue"} key={text.status}>
+                  <Tag color={"blue"} style={{padding: "5px"}} key={text.status}>
                     Chờ chuyển
                   </Tag>
               ) : "" || text.status === 1 ? (
@@ -182,7 +177,7 @@ export const ListExport = () => {
     "Mã phiếu",
     "Chi nhánh chuyển",
     "Chi nhánh nhận",
-    "Trạng thái ",
+    "Trạng thái",
   ]);
   const getMock = () => {
     const tempTargetKeys = [];
@@ -192,7 +187,7 @@ export const ListExport = () => {
         key: COLUMS[i].title?.toString() || "",
         title: COLUMS[i].title?.toString() || "",
         description: COLUMS[i].title?.toString() || "",
-        chosen: true,
+        chosen: targetKeys.includes(COLUMS[i].title?.toString() || ''),
         disabled: COLUMS[i].title?.toString() === "Mã phiếu",
       };
       if (data.chosen) {
@@ -207,6 +202,7 @@ export const ListExport = () => {
   useEffect(() => {
     getMock();
     document.title= "Đơn chuyển hàng"
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChange = (newTargetKeys: string[]) => {
@@ -229,7 +225,6 @@ export const ListExport = () => {
   const [total, setTotal] = useState();
   const [current, setCurrent] = useState(1);
   const onChange: PaginationProps["onChange"] = (page) => {
-    console.log(page);
     setCurrent(page);
   };
   const data = async () => {
@@ -257,8 +252,8 @@ export const ListExport = () => {
   useEffect(() => {
     setListExport([]);
     data();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [current]);
-  // console.log(listExport);
 
   const dataA: listExport[] = listExport;
   const navigate = useNavigate();
