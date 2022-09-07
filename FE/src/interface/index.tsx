@@ -50,7 +50,7 @@ export interface IProductVariantDto{
   quantity: number,
   salePrice?: number,
   wholesalePrice?: number,
-  createAt?: string
+  createAt: string
 }
 
 export interface IResultId{

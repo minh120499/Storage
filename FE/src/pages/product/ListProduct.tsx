@@ -313,7 +313,7 @@ const ListProduct = () => {
                     </Antd.Button>
                 </Mui.Grid> */}
                 <Mui.Grid item xs={2}>
-                    <Antd.Button style={{ width: "100%", fontSize: '14px', margin: 0 }} type="primary" onClick={() => { navigate('/productsAdd') }} >
+                    <Antd.Button style={{ width: "100%", fontSize: '14px', margin: 0 }} type="primary" onClick={() => { navigate('/staff/productsAdd') }} >
                         <Antd.Space>
                             <PlusOutlined />
                             Thêm mới
