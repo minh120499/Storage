@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { DeleteOutlined, DownOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import ToastCustom from "../../features/toast/Toast";
-import DeleteIcon from "@mui/icons-material/Delete";
+import   {DeletedIcon}  from "../../UI/ActionIcons";
 import Search from "antd/lib/input/Search";
 
 
@@ -82,7 +82,7 @@ export default function Categories() {
             status={() => setStatus(!status)}
             categoryProp={row}
           />
-          <DeleteIcon
+          <DeletedIcon
             className="text-red-500"
             onClick={() => onDelete(row)}
           />

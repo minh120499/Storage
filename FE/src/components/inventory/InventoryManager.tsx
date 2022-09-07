@@ -1,4 +1,4 @@
-import { Col, Row, Table, Button, Dropdown, Menu, MenuProps, Image, Input, Modal, Tag, Spin, Space } from "antd";
+import { Col, Row, Table, Button, Dropdown, Menu, MenuProps, Image, Input, Space } from "antd";
 import { DeleteOutlined, DownOutlined, LeftOutlined } from "@ant-design/icons";
 import { deleteListProductVariant, getProductVariants } from "../../api/inventory";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { IInventoryDto, IProductVariantDto, IResultId } from "../../interface";
 import NumberFormat from "react-number-format";
 import Moment from "react-moment";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { DeletedIcon } from "../../UI/ActionIcons";
 import Swal from "sweetalert2";
 import ToastCustom from "../../features/toast/Toast";
 import PieChartReport from "../Home/PieChartReport";
@@ -20,9 +20,7 @@ const InventoryManager = () => {
   const [inventory, setInventory] = useState({} as IInventoryDto);
   const [productvariant, setProductVariant] = useState<IProductVariantDto[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [totalproduct, settotalProduct] = useState<number>();
-  const [detailproductvariant, setDetailProductVariant] = useState<IProductVariantDto>();
   const [status, setStatus] = useState(false);
   const [reload, setReload] = useState(false);
   const [name, setName] = useState<string>('');
@@ -43,10 +41,7 @@ const InventoryManager = () => {
         setInventory(response.inventory);
         settotalProduct(response.totalProductVariant);
         setReload(false);
-
       })
-
-
   }, [status, name])
 
   const columns: ColumnsType<IProductVariantDto> = [
@@ -64,9 +59,7 @@ const InventoryManager = () => {
       title: "Mã sản phẩm",
       dataIndex: ["code", "obj"],
       render: (code: string, obj: any) => {
-        return (
-          <a onClick={() => navigate(`/products/${obj.productId}`)}>{obj.code}</a>
-        )
+        return <Link to={`/products/${obj.productId}`}>{obj.code}</Link>;
       },
       sorter: (a, b) => a.code.localeCompare(b.code),
     },
@@ -103,7 +96,7 @@ const InventoryManager = () => {
     },
     {
       render: (row: any) => (
-        <DeleteIcon
+        <DeletedIcon
           className="text-red-500"
           onClick={(e: React.MouseEvent) => {
             e.stopPropagation();
@@ -210,17 +203,6 @@ const InventoryManager = () => {
     setName(e.trim());
   }
 
-  const showModal = (data: any) => {
-    console.log(data);
-
-    setDetailProductVariant(data);
-    setIsModalVisible(true);
-  }
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
   return (
     <div className="p-5">
 
@@ -270,75 +252,7 @@ const InventoryManager = () => {
               dataSource={data}
               bordered
               loading={{ spinning: reload }}
-            // onRow={(record: any) => {
-            //   return {
-            //     onClick: () => {
-            //       navigate(`/products/${record.productId}`)
-            //     }
-            //   };
-            // }}
             />
-            <Modal
-              title={<div style={{ color: "#1890FF" }}>Chi tiết sản phẩm</div>}
-              visible={isModalVisible}
-              footer={null}
-              onCancel={handleCancel}
-            >
-              <Row gutter={12}>
-                <Col span={7}>
-                  <p>Mã sản phẩm:</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}>{detailproductvariant?.code}</b>
-                </Col>
-
-                <Col span={7}>
-                  <p>Tên sản phẩm:</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}>{detailproductvariant?.name}</b>
-                </Col>
-
-                <Col span={7}>
-                  <p>Giá nhập (vnđ):</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}><NumberFormat value={detailproductvariant?.importPrice} displayType='text' thousandSeparator={true} /></b>
-                </Col>
-
-                <Col span={7}>
-                  <p>Giá bán buôn (vnđ):</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}><NumberFormat value={detailproductvariant?.wholesalePrice} displayType='text' thousandSeparator={true} /></b>
-                </Col>
-
-                <Col span={7}>
-                  <p>Giá bán lẻ (vnđ):</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}><NumberFormat value={detailproductvariant?.salePrice} displayType='text' thousandSeparator={true} /></b>
-                </Col>
-
-                <Col span={7}>
-                  <p>Số lượng tồn kho:</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}><NumberFormat value={detailproductvariant?.quantity} displayType='text' thousandSeparator={true} /></b>
-                </Col>
-
-                <Col span={7}>
-                  <p>Ngày khởi tạo:</p>
-                </Col>
-                <Col span={5}>
-                  <b style={{ textTransform: "uppercase" }}>
-                    <Moment format="DD/MM/YYYY HH:mm:ss">
-                      {detailproductvariant?.createAt}
-                    </Moment>
-                  </b>
-                </Col>
-              </Row>
-            </Modal>
           </div>
         </Col>
         <Col span={6}>
