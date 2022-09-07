@@ -1,11 +1,7 @@
 import { Col, Row } from "antd";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-interface sub {
-  text: string,
-  color: string
-}
 const data = [
   { name: "Group A", value: 400 },
   { name: "Group B", value: 300 },
@@ -42,14 +38,13 @@ const renderCustomizedLabel = ({
   );
 };
 const PieChartReport = (props: any) => {
-  const colors = props?.colors || COLORS
   return (
     <Row>
       <Col span={24} style={{ height: 200 }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart {...props}>
             <Pie
-              data={props?.data || data}
+              data={data}
               labelLine={false}
               label={renderCustomizedLabel}
               outerRadius={80}
@@ -59,7 +54,7 @@ const PieChartReport = (props: any) => {
               {data.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={colors[index % colors.length]}
+                  fill={COLORS[index % COLORS.length]}
                 />
               ))}
             </Pie>
@@ -71,12 +66,16 @@ const PieChartReport = (props: any) => {
           return (
             <div className="flex items-center gap-3" key={c}>
               <FiberManualRecordIcon style={{ color: c }} fontSize="small" />{" "}
-              <span>{props?.title || 'Tiêu đề 1'}</span>
+              <span>Tiêu đề 1</span>
             </div>
           );
         })}
-        
-        {props?.des.map((d:sub, index: number) => <div key={index}>{d.color} {d.text}</div>)}
+        {/* <div>
+          
+        </div>
+        <div>Tiêu đề 1</div>
+        <div>Tiêu đề 1</div>
+        <div>Tiêu đề 1</div> */}
       </Col>
     </Row>
   );
