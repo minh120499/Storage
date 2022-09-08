@@ -1,6 +1,9 @@
 import { Button, Form, Input, Modal } from "antd";
 import Table, { ColumnsType } from "antd/lib/table";
-import { TableRowSelection } from "antd/lib/table/interface";
+import {
+  TablePaginationConfig,
+  TableRowSelection,
+} from "antd/lib/table/interface";
 import React, { useState } from "react";
 import { findProductById } from "../../../api/product_variant";
 import { DataType } from "../../type/data_type";
@@ -104,9 +107,14 @@ export const ModalTable = ({
       );
     },
   };
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 3,
+  });
+
   return (
     <div className="Modal">
-      <Button type="primary" onClick={() => setModal2Visible(true)}>
+      <Button type="default" onClick={() => setModal2Visible(true)}>
         Chọn nhanh
       </Button>
 
@@ -117,6 +125,7 @@ export const ModalTable = ({
           visible={modal2Visible}
           onCancel={() => setModal2Visible(false)}
           footer={null}
+          width={"1000px"}
         >
           <div className="select-modal">
             <Table
@@ -126,7 +135,12 @@ export const ModalTable = ({
               style={{ width: "100%" }}
               scroll={{ y: 240 }}
               rowSelection={rowSelection}
-              pagination={false}
+              pagination={pagination}
+              onChange={(page) => {
+                setPagination({
+                  current: page.current,
+                });
+              }}
             />
           </div>
           <span style={{ color: "blue", fontWeight: 600 }}>

@@ -1,4 +1,4 @@
-import { Avatar, Card, Col, List, Row } from "antd";
+import { Avatar, Card, Col, List, message, Row } from "antd";
 import Meta from "antd/lib/card/Meta";
 import BarChartReprot from "./BarChartReport";
 import LineChartReport from "./LineChartReport";
@@ -89,7 +89,7 @@ export default function HomePage() {
           <Row gutter={16}>
             <Col span={12}>
               <div className="p-5 rounded-3xl bg-white mt-2 mb-2 w-full h-full">
-              <div>Bảng 1</div>
+                <div>Bảng 1</div>
                 <BarChartReprot />
               </div>
             </Col>

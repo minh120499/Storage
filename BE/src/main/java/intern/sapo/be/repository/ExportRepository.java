@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ExportRepository extends IBaseRepo<Export, Integer> {
+
 }

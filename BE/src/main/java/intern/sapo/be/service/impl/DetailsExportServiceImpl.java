@@ -27,4 +27,12 @@ public class DetailsExportServiceImpl extends BaseService<DetailsExport> impleme
         return repository.findDetailsExportByExport(id);
     }
 
+    @Override
+    public void deleteByExportId(Integer id) {
+        List<DetailsExport> list = findByExportId(id);
+        for (DetailsExport detailsExport: list) {
+            repository.deleteById(detailsExport.getId());
+        }
+    }
+
 }

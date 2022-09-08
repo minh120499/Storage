@@ -1,4 +1,5 @@
 export interface inventory {
+  data: any;
   id?: number;
   code?: string;
   name?: string;
@@ -46,6 +47,7 @@ export interface typeDetailExport {
   quantity?: number;
   code?: string;
 }
+
 export interface productVariants {
   id?: number;
   code?: string;
@@ -64,9 +66,13 @@ export interface exportStatus {
   accountCreate?: number;
   accountSend?: number;
   accountReceive?: number;
+  accountCancel?: number;
   createAt?: string;
   dateSend?: string;
   dateReceive?: string;
+  dateCancel?: string;
+  dateUpdate?: string;
+  statusCancel?: boolean;
 }
 export interface listExport {
   exportById?: exportById;

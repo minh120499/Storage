@@ -26,6 +26,11 @@ public class ExportStatusServiceImpl extends BaseService<ExportsStatus> implemen
     }
 
     @Override
+    public List<ExportsStatus> findByParentId(Integer parentId) {
+        return repository.findByParentId(parentId);
+    }
+
+    @Override
     public ExportsStatus updateExportsStatus(ExportsStatus exportsStatus, Integer id) {
         ExportsStatus eStatus = repository.findByExport(id);
         if (eStatus.getCreateAt() != null) {

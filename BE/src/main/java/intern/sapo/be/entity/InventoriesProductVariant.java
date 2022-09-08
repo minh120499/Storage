@@ -30,7 +30,7 @@ public class InventoriesProductVariant {
 
 
     @MapsId("productVariantId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "product_variant_id", nullable = false)
     private ProductVariant productVariant;
 
@@ -48,5 +48,8 @@ public class InventoriesProductVariant {
     public InventoriesProductVariant(InventoriesProductVariantId id, Integer quantity) {
         this.id = id;
         this.quantity = quantity;
+    }
+
+    public InventoriesProductVariant(Integer inventoryId, Integer id, Integer quantity) {
     }
 }

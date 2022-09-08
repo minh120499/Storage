@@ -10,4 +10,5 @@ import intern.sapo.be.entity.ExportsStatus;
 @Repository
 public interface ExportStatusRepository extends IBaseRepo<ExportsStatus, Integer> {
     ExportsStatus findByExport(Integer export);
+    List<ExportsStatus> findByParentId(Integer parentId);
 }

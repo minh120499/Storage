@@ -28,4 +28,10 @@ public class DetailsController extends BaseController<DetailsExport> {
     public List<DetailsExport> findByExport(@PathVariable Integer id) {
         return service.findByExportId(id);
     }
+
+    @DeleteMapping("getByExport/{id}")
+    public void deleteByExport(@PathVariable Integer id) {
+         service.deleteByExportId(id);
+    }
+
 }

@@ -21,3 +21,10 @@ export const findDetailByExport = async (id?: number) => {
 export const getDetailExport = async () => {
   return (await axios.get(`http://localhost:8080/details`)).data;
 };
+export const deleteDetailExport = async (id?: number) => {
+  return (await axios.delete(`http://localhost:8080/details/${id}`)).data;
+};
+export const deleteDetailByExport = async (id?: number) => {
+  return (await axios.delete(`http://localhost:8080/details/getByExport/${id}`))
+    .data;
+};

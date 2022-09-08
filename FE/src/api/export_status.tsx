@@ -4,6 +4,8 @@ type value = {
   export?: number;
   status?: number;
   code?: string;
+  parentId?: number;
+  dateUpdate?: string;
 };
 type request = {
   id?: number;
@@ -12,9 +14,14 @@ type request = {
   accountCreate?: number;
   accountSend?: number;
   accountReceive?: number;
+  accountCancel?: number;
   createAt?: string;
   dateSend?: string;
   dateReceive?: string;
+  dateCancel?: string;
+  statusCancel?: boolean;
+  parentId?: number;
+  dateUpdate?: string;
 };
 export const getExportStatus = async () => {
   return (await axios.get(`http://localhost:8080/api/exportsStatus`)).data;
@@ -25,6 +32,13 @@ export const createExportStatus = async (item: value) => {
 export const findExportStatusById = async (id?: number) => {
   return (
     await axios.get(`http://localhost:8080/api/exportsStatus/getByExport/${id}`)
+  ).data;
+};
+export const findExportStatusBygetByParentId = async (parentId?: number) => {
+  return (
+    await axios.get(
+      `http://localhost:8080/api/exportsStatus/getByParentId/${parentId}`
+    )
   ).data;
 };
 export const updateExportStatusById = async (id?: number, item?: request) => {

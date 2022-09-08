@@ -35,7 +35,7 @@ public abstract class BaseController<T> {
     @GetMapping
     public ResponseListDto<T> listAll(@RequestParam(defaultValue = "1") Integer page,
                                       @RequestParam(defaultValue = "10") Integer perPage,
-                                      @RequestParam(required = false, defaultValue = "DESC") String sort,
+                                      @RequestParam(required = false, defaultValue = "desc") String sort,
                                       @RequestParam(required = false, defaultValue = "id") String sortBy) {
         return baseService.getList(page, perPage, sort, sortBy);
     }

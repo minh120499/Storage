@@ -21,6 +21,8 @@ import DetailImportInvoice from "./pages/ImportInvoice/DetailImportInvoice";
 import ProductDetails from "./pages/product/ProductDetails";
 import { Status } from "./components/stock_transfers/status";
 import Create from "./components/stock_transfers/create";
+import InventoryManager from "./components/inventory/InventoryManager";
+import Edit from "./components/stock_transfers/edit";
 
 const App: React.FC = () => {
   const router = useRoutes([
@@ -39,7 +41,7 @@ const App: React.FC = () => {
         },
         {
           path: "/stocker/inventories/:id",
-          element: <InventoryManager/>,
+          element: <InventoryManager />,
         },
         {
           path: "stocker/inventories",
@@ -51,6 +53,7 @@ const App: React.FC = () => {
             { path: "", element: <Storage /> },
             { path: "stock_transfers/:id", element: <Status /> },
             { path: "stock_transfers/create", element: <Create /> },
+            { path: "stock_transfers/edit/:id", element: <Edit /> },
           ],
         },
         {
@@ -65,10 +68,9 @@ const App: React.FC = () => {
           path: "/purchase_orders",
           children: [
             // {path: "add", element: <CategoryAdd/>},
-            { path: "", element: <ListImportInvoice/> },
+            { path: "", element: <ListImportInvoice /> },
             { path: "create", element: <CreateImport /> },
             { path: "details/:code", element: <DetailImportInvoice /> },
-
           ],
         },
         {
@@ -81,7 +83,6 @@ const App: React.FC = () => {
           children: [
             { index: true, element: <ListProduct /> },
             { path: "/products/:id", element: <ProductDetails /> },
-
           ],
         },
         {

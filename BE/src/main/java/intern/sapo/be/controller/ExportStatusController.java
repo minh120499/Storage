@@ -30,7 +30,10 @@ public class ExportStatusController extends BaseController<ExportsStatus> {
     public ExportsStatus findByExport(@PathVariable Integer id) {
         return service.findByExport(id);
     }
-
+    @GetMapping("getByParentId/{id}")
+    public List<ExportsStatus> findByParentId(@PathVariable Integer id) {
+        return service.findByParentId(id);
+    }
     @PutMapping("/{id}")
     public ExportsStatus updateExportsStatus(@RequestBody @Valid ExportsStatus request,
             @PathVariable(value = "id") Integer id) {

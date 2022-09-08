@@ -8,6 +8,7 @@ import intern.sapo.be.entity.ExportsStatus;
 
 public interface IExportStatusService extends IBaseService<ExportsStatus> {
     ExportsStatus findByExport(Integer export);
+    List<ExportsStatus> findByParentId(Integer parentId);
 
     ExportsStatus updateExportsStatus(ExportsStatus exportsStatus, Integer id);
 }

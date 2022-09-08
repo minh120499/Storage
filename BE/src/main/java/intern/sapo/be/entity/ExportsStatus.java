@@ -20,6 +20,8 @@ public class ExportsStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
+    @Column(name = "parent_id")
+    private Integer parentId;
     @Column(name = "code", nullable = false)
     private String code;
     // @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -36,13 +38,19 @@ public class ExportsStatus {
     private Integer accountSend;
     @Column(name = "account_receive", nullable = false)
     private Integer accountReceive;
-
+    @Column(name = "account_cancel")
+    private Integer accountCancel;
     @Column(name = "create_at", nullable = false)
     @CreatedDate
     private Timestamp createAt;
-
-    @Column(name = "date_send", nullable = false)
+    @Column(name = "date_send")
     private String dateSend;
-    @Column(name = "date_receive", nullable = false)
+    @Column(name = "date_receive")
     private String dateReceive;
+    @Column(name = "date_cancel")
+    private String dateCancel;
+    @Column(name = "date_update")
+    private String dateUpdate;
+    @Column(name = "status_cancel")
+    private Boolean statusCancel = false;
 }
