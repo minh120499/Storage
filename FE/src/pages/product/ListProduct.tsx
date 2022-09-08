@@ -284,7 +284,6 @@ const ListProduct = () => {
                         placeholder='Nhập tên hoặc mã sản phẩm'
                         onChange={(e) => {
                             keyWord = e.target.value.toString()
-
                         }}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter')

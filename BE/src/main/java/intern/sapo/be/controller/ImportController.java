@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 //@RolesAllowed({"stocker"})
 @RestController
@@ -39,8 +38,8 @@ public class ImportController {
     }
 
     @GetMapping("/findAll")
-    private List<ImportResponse> findAllDTO() {
-        return importService.findAllImportDTO();
+    private List<ImportResponse> findAllDTO(@RequestParam String searchValue) {
+        return importService.findAllImportDTO(searchValue);
     }
 
     @GetMapping("/getDetails/{code}")

@@ -58,14 +58,14 @@ public class InventoriesProductVariantService implements IInventoriesProductVari
     @Override
     public void importQuantityProductVariantToInventory(List<DetailsExport> detailsExports, Integer inventoryId) {
         ModelMapper modelMapper = new ModelMapper();
-        for(DetailsExport proId : detailsExports){
+        for(DetailsExport proId : detailsExports) {
             InventoriesProductVariant inventoriesProductVariant = inventoriesProductVariantRepo
                     .findByInventoryIdAndProductVariantId(inventoryId, proId.getProductVariant().getId());
             if (inventoriesProductVariant == null) {
-                InventoriesProductVariantDTO inDTO = new InventoriesProductVariantDTO(inventoryId, proId.getProductVariant().getId(),proId.getQuantity());
+                InventoriesProductVariantDTO inDTO = new InventoriesProductVariantDTO(inventoryId, proId.getProductVariant().getId(), proId.getQuantity());
                 InventoriesProductVariant in = modelMapper.map(inDTO, InventoriesProductVariant.class);
                 inventoriesProductVariantRepo.save(in);
-            }else {
+            } else {
                 inventoriesProductVariant.setQuantity(inventoriesProductVariant.getQuantity() + proId.getQuantity());
                 inventoriesProductVariantRepo.save(inventoriesProductVariant);
             }
