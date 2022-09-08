@@ -39,7 +39,7 @@ const ReturnInvoiceImport = ({returnInvoice, invoice}: Props) => {
                             {
                                 invoice.anImport.isImport && (
                                     <>
-                                        <Link to={`/purchase_orders/return/${invoice.anImport.code}`}>
+                                        <Link to={`coordinator/purchase_orders/return/${invoice.anImport.code}`}>
                                             <Button type={"primary"} style={{marginTop: 10, marginBottom: 10}}>
                                                 Hoàn trả
                                             </Button>

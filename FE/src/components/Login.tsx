@@ -1,28 +1,21 @@
 import { useMutation } from "@tanstack/react-query";
-import { Carousel, Form, Image, Input, message, notification } from "antd";
+import { Form, Image, Input, message, notification } from "antd";
 import axios from "axios";
-// import Swal from "sweetalert2";
 import { ILoginData } from "../interface";
 import Button from "../UI/Button";
 import PersonIcon from "@mui/icons-material/Person";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import { useDispatch } from "react-redux";
 import { setUserStore } from "../features/user/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [loginForm] = Form.useForm();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const loginSubmit = useMutation(async (loginData: ILoginData) => {
-    return (
-      await axios.post("http://localhost:8080/api/account/login", loginData)
-    ).data;
+    return (await axios.post("http://localhost:8080/api/login", loginData))
+      .data;
   });
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
 
   const onFinish = async (values: any) => {
     const { username, password } = loginForm.getFieldsValue();
@@ -44,12 +37,13 @@ const Login: React.FC = () => {
       })
     );
     openNotification();
-    navigate("/home", {replace: true});
+    return <Navigate to="/home" replace={true} />;
   }
 
   const { error }: { error: any } = loginSubmit;
   error?.response?.status &&
     message.error("Tài khoản hoặc mật khẩu không đúng", 2);
+
   return (
     <>
       <video
@@ -64,26 +58,17 @@ const Login: React.FC = () => {
         className=" flex justify-center items-center h-screen w-screen gap-5 shadow-black"
         style={{ background: "#f0f8ff" }}
       >
-        {/* <div className="shadow-md rounded-xl">
-          <Image
-            className="w-max rounded-xl"
-            style={{ height: 413, objectFit: "contain" }}
-            preview={false}
-            src="/bgi1.webp"
-          />
-        </div> */}
         <Form
           className="flex gap-5 relative h-max w-max p-10 self-center bg-white rounded-3xl  shadow-md"
           form={loginForm}
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 30 }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Image
             className="shadow-md rounded-xl"
-            style={{ height: 265,width: 452, objectFit: "revert" }}
+            style={{ height: 265, width: 452, objectFit: "revert" }}
             preview={false}
             src="/bgi1.png"
           />
@@ -94,17 +79,6 @@ const Login: React.FC = () => {
                 src="https://www.sapo.vn/Themes/Portal/Default/StylesV2/images/logo/Sapo-logo-birth.svg?v=202208310857"
                 preview={false}
               />
-              {/* <h2
-                style={{
-                  fontSize: "38px",
-                  fontWeight: "300",
-                  lineHeight: "58px",
-                  margin: 0,
-                  color: "#1890ff",
-                }}
-              >
-                Đăng nhập
-              </h2> */}
             </Form.Item>
 
             <Form.Item

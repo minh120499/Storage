@@ -1,6 +1,6 @@
 import { useRoutes } from "react-router-dom";
-
 import React from "react";
+
 import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/category/Categories";
 import Storage from "./components/Storage";
@@ -23,8 +23,7 @@ import {Status} from "./components/stock_transfers/status";
 import InventoryManager from "./components/inventory/InventoryManager";
 import CreateReturnImportInvoice from "./pages/ImportInvoice/CreateReturnImportInvoice";
 import Create from "./components/stock_transfers/create";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "./app/store";
+import {useDispatch} from "react-redux";
 import {setUserStore} from "./features/user/userSlice";
 
 const App: React.FC = () => {
@@ -57,7 +56,7 @@ const App: React.FC = () => {
           element: <InventoryList />,
         },
         {
-          path: "/storage",
+          path: "coordinator/storage",
           children: [
             { path: "", element: <Storage /> },
             { path: "stock_transfers/:id", element: <Status /> },
@@ -65,7 +64,7 @@ const App: React.FC = () => {
           ],
         },
         {
-          path: "/supplier",
+          path: "stocker/supplier",
           children: [
             // {path: "add", element: <CategoryAdd/>},
             { path: "", element: <SupplierList /> },
@@ -73,7 +72,7 @@ const App: React.FC = () => {
           ],
         },
         {
-          path: "/purchase_orders",
+          path: "coordinator/purchase_orders",
           children: [
             // {path: "add", element: <CategoryAdd/>},
             { path: "", element: <ListImportInvoice/> },
@@ -83,20 +82,20 @@ const App: React.FC = () => {
           ],
         },
         {
-          path: "staff/productsAdd",
+          path: "warehouse/productsAdd",
           element: <AddProduct />,
         },
         {
-          path: "/products",
+          path: "warehouse/products",
 
           children: [
             { index: true, element: <ListProduct /> },
-            { path: "/products/:id", element: <ProductDetails /> },
+            { path: ":id", element: <ProductDetails /> },
 
           ],
         },
         {
-          path: "/categories",
+          path: "warehouse/categories",
           element: <Categories />,
         },
         {
@@ -104,7 +103,7 @@ const App: React.FC = () => {
           element: <TransportCompanies />,
         },
         {
-          path: "/employees/:id",
+          path: "admin/employees/:id",
           element: <EmployeeDetails />,
         },
         {

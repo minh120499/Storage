@@ -1,5 +1,4 @@
 import "../styles/Header.css";
-import { Badge } from "antd";
 import { Avatar } from "antd";
 import type { RootState } from "../app/store";
 import { useSelector } from "react-redux";
@@ -15,7 +14,7 @@ export default function HeaderMenu() {
                 </Avatar>
                 <div>
                     <div>{currentUser.username}</div>
-                    {/* <div>status</div> */}
+                    <div>{currentUser.authorities[0]}</div>
                 </div>
             </div>
         </div>

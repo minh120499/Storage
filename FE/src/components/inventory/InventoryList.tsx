@@ -44,7 +44,11 @@ const InventoryList = () => {
       title: <b>Mã kho</b>,
       dataIndex: "inventory",
       key: "code",
-      sorter: (a: IInventory, b: IInventory) => a.code.localeCompare(b.code),
+      sorter: (a: IInventory, b: IInventory) => {
+        console.log(a, b);
+        
+        return a?.code?.localeCompare(b?.code)
+      },
       render: (inventory: IInventory) => (
         <div className="bg-red">{inventory.code}</div>
       ),
@@ -179,7 +183,7 @@ const InventoryList = () => {
   }, []);
 
   const handleOk = () => {
-    const { code, name, detailsAddress, id } = formInventory.getFieldsValue();
+    const { code, name, id } = formInventory.getFieldsValue();
     formInventory.resetFields([
       "code",
       "name",
@@ -192,7 +196,7 @@ const InventoryList = () => {
       data: {
         code,
         name,
-        address: detailsAddress + fullAddress,
+        address: fullAddress,
       },
       id: id,
     };

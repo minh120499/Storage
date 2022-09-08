@@ -9,8 +9,6 @@ import { addProduct } from '../../services/productServices';
 import { getSuppliers } from '../../services/api';
 import { ISupplier } from '../../services/customType';
 import ToastCustom from '../../features/toast/Toast';
-import { Delete } from '@mui/icons-material';
-import { RcFile } from 'antd/lib/upload';
 import { getCategories } from '../../api/apiCategory';
 import SelectCategory from './SelectCategory';
 import SelectOption from './SelectOption';
@@ -111,7 +109,7 @@ function AddProduct(props: any) {
             return response.json()
         }).then((data) => {
             if (data.product.id) {
-                navigate(`/products/${data.product.id}`)
+                navigate(`../warehouse/products/${data.product.id}`)
 
             }
         })
@@ -351,7 +349,7 @@ function AddProduct(props: any) {
             <Antd.Spin  spinning={open} tip={'Đang lưu...'}>
 
             <h2 style={{ fontSize:'15px' }} >
-                <Link to="/products">
+                <Link to="../warehouse/products">
                     <LeftOutlined /> Danh sách sản phẩm
                 </Link>
             </h2>

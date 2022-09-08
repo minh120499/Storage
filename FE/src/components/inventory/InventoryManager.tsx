@@ -325,10 +325,10 @@ const InventoryManager = () => {
         </div>
         <div>
           <Space>
-            <Button type="primary" onClick={() => navigate(`/categories`)}>
+            <Button type="primary" onClick={() => navigate(`../warehouse/categories`)}>
               Xem danh mục sản phẩm
             </Button>
-            <Button type="primary" onClick={() => navigate(`/products`)}>
+            <Button type="primary" onClick={() => navigate(`../warehouse/products`)}>
               Xem danh sách sản phẩm
             </Button>
           </Space>

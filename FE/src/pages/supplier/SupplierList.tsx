@@ -193,7 +193,7 @@ const SupplierList = () => {
           onRow={(record) => {
             return {
               onClick: (event) =>
-                navigate({ pathname: `/supplier/details/${record.id}` }),
+                navigate({ pathname: `stocker/supplier/details/${record.id}` }),
             };
           }}
           rowSelection={rowSelection}

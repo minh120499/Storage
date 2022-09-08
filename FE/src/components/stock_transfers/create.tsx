@@ -206,7 +206,7 @@ const Create: React.FC = () => {
             status: 0,
             code: "TPN000" + id,
         });
-        navigate(`/storage/stock_transfers/${id}`);
+        navigate(`coordinator/storage/stock_transfers/${id}`, {replace: true});
     };
     if (creatDetailExportSubmit.isSuccess) {
         handleStatus(exportId);

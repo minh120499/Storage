@@ -75,7 +75,7 @@ const ProductDetails = () => {
                                 icon: 'success',
                                 title: 'Xóa thành công'
                             })
-                            navigate('/products')
+                            navigate("../", {replace: true})
                         }
                     })
                     .catch(error => {
@@ -403,7 +403,7 @@ const ProductDetails = () => {
             <div>
                 <div>
                     <h2 style={{ fontSize:'15px' }} >
-                        <Link to="/products">
+                        <Link to="../">
                             <LeftOutlined /> Danh sách sản phẩm
                         </Link>
                     </h2>

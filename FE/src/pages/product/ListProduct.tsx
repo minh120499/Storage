@@ -77,7 +77,7 @@ const ListProduct = () => {
                 return (
                     <>
                         <Antd.Button style={{ width: '40%', margin: 5 }} danger type={'ghost'} icon={<Delete />} onClick={() => deleteProduct(id)}></Antd.Button>
-                        <Antd.Button style={{ width: '40%' }} type={'ghost'} icon={<PreviewOutlined />} onClick={() => navigate({ pathname: `/products/${id}` })}></Antd.Button>
+                        <Antd.Button style={{ width: '40%' }} type={'ghost'} icon={<PreviewOutlined />} onClick={() => navigate({ pathname: `${id}` })}></Antd.Button>
                     </>
                 )
             }
@@ -313,7 +313,7 @@ const ListProduct = () => {
                     </Antd.Button>
                 </Mui.Grid> */}
                 <Mui.Grid item xs={2}>
-                    <Antd.Button style={{ width: "100%", fontSize: '14px', margin: 0 }} type="primary" onClick={() => { navigate('/staff/productsAdd') }} >
+                    <Antd.Button style={{ width: "100%", fontSize: '14px', margin: 0 }} type="primary" onClick={() => { navigate('/warehouse/productsAdd') }} >
                         <Antd.Space>
                             <PlusOutlined />
                             Thêm mới

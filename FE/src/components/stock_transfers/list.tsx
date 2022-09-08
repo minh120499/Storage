@@ -259,10 +259,10 @@ export const ListExport = () => {
   const navigate = useNavigate();
 
   const hanldeClick = () => {
-    navigate(`/storage/stock_transfers/create`);
+    navigate(`stock_transfers/create`);
   };
   const hanldeRow = (e: any) => {
-    navigate(`/storage/stock_transfers/${e.id}`);
+    navigate(`stock_transfers/${e.id}`);
   };
   return (
       <div className="p-5">

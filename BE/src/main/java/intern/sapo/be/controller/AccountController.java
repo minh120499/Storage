@@ -8,6 +8,7 @@ import intern.sapo.be.exception.AccountException;
 import intern.sapo.be.security.jwt.JwtTokenUtil;
 
 import intern.sapo.be.service.AccountService;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,17 +27,11 @@ import java.util.Map;
 @RequestMapping("api/account")
 @CrossOrigin
 @PreAuthorize("hasAuthority('admin')")
+@AllArgsConstructor
 public class AccountController {
 	private final AuthenticationManager authManager;
 	private final AccountService accountService;
-
 	private final JwtTokenUtil jwtUtils;
-
-	public AccountController(AuthenticationManager authManager, AccountService accountService, JwtTokenUtil jwtUtils) {
-		this.authManager = authManager;
-		this.accountService = accountService;
-		this.jwtUtils = jwtUtils;
-	}
 
 	@GetMapping()
 	public ResponseEntity<?> getAll() {
@@ -75,21 +70,5 @@ public class AccountController {
 //		return ResponseEntity.ok(accountService.getAllDetails(id));
 //	}
 
-	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-		try {
-			Authentication authentication = authManager.authenticate(
-					new UsernamePasswordAuthenticationToken(
-							loginRequest.getUsername(), loginRequest.getPassword())
-			);
 
-			Account account = (Account) authentication.getPrincipal();
-			String accessToken = jwtUtils.generateAccessToken(account);
-			JwtAuthenticationResponse response = new JwtAuthenticationResponse(accessToken);
-			return ResponseEntity.ok(response);
-
-		} catch(BadCredentialsException ex) {
-			throw new AccountException("Invalid Username or Password");
-		}
-	}
 }

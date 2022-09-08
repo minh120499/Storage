@@ -88,7 +88,7 @@ export const Status = () => {
     setLoadingEdit(true);
     setTimeout(() => {
       setLoadingEdit(false);
-      navigate(`/storage/stock_transfers/edit/${id}`);
+      navigate(`coordinator/storage/stock_transfers/edit/${id}`);
     }, 500);
   };
   const data = async () => {

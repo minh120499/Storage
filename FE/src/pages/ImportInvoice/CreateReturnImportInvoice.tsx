@@ -137,14 +137,14 @@ const CreateReturnImportInvoice = () => {
                     icon: 'success',
                     title: 'Trả hàng thành công'
                 }).then()
-                navigate(`/purchase_orders/details/${detailInvoices?.anImport.code}`)
+                navigate(`coordinator/purchase_orders/details/${detailInvoices?.anImport.code}`)
             })
         })
     }
     return (
         <div className='p-5'>
             <h2 style={{ fontSize:'15px' }} >
-                <Link to={`/purchase_orders/details/${detailInvoices?.anImport.code}`}>
+                <Link to={`coordinator/purchase_orders/details/${detailInvoices?.anImport.code}`}>
                     <LeftOutlined /> Đơn nhập hàng
                 </Link>
             </h2>

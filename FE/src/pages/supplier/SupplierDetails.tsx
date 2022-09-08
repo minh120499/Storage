@@ -62,7 +62,7 @@ const SupplierDetails = () => {
                supplier && (
                    <div>
                        <h2 style={{margin:20}}>
-                           <Link to="/supplier/">
+                           <Link to="stocker/supplier/">
                                <LeftOutlined /> Danh sách nhà cung cấp
                             </Link>
                        </h2>

@@ -9,9 +9,17 @@ export const getAllActiveInventory = async () => {
   return await axios.get(`http://localhost:8080/inventories/active`);
 };
 
-export const getPagination = async () => {
-  return (await axios.get(`http://localhost:8080/inventories/pagination`)).data;
+export const getPagination = async (page: number, pageSize: number) => {
+  return (
+    await axios.get(`http://localhost:8080/inventories/pagination`, {
+      params: {
+        pageNumber: page,
+        pageSize,
+      },
+    })
+  ).data;
 };
+
 export const findInventoryById = async (id?: number) => {
   return (await axios.get(`http://localhost:8080/inventories/${id}`)).data;
 };
@@ -47,9 +55,13 @@ export const deleteListProductVariant = async (resultId: IResultId) => {
 export const updateMinQuantityStorage = async (
   request: IMinQuantityRequest
 ) => {
-    console.log(request);
-    
-  return (
-    await axios.put(`http://localhost:8080/inventories/change/minquantity?inventoryId=${request.inventoryId * 1}&productVariantId=${request.productVariantId * 1}&minQuantity=${request.minQuantity * 1}`)
+  console.log(request);
+
+  return await axios.put(
+    `http://localhost:8080/inventories/change/minquantity?inventoryId=${
+      request.inventoryId * 1
+    }&productVariantId=${request.productVariantId * 1}&minQuantity=${
+      request.minQuantity * 1
+    }`
   );
 };

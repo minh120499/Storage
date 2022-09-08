@@ -1,11 +1,10 @@
-import { Avatar, Card, Col, Row, Image } from "antd";
+import { Avatar, Card, Col, Row } from "antd";
 import Meta from "antd/lib/card/Meta";
 import BarChartReprot from "./BarChartReport";
 import LineChartReport from "./LineChartReport";
 import PieChartReport from "./PieChartReport";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import {useEffect} from "react";
-import { Line } from "recharts";
 
 export default function HomePage() {
   useEffect(() =>{
