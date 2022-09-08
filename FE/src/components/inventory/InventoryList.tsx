@@ -11,6 +11,7 @@ import {
   Tooltip,
   Col,
   Row,
+  message,
 } from "antd";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -90,7 +91,7 @@ const InventoryList = () => {
               percent={percent}
               format={(percent) => {
                 if (percent && percent >= 100) {
-                  return <div style={{ color: "red" }}>Full</div>;
+                  return <div style={{ color: "red" }}>Đầy</div>;
                 } else {
                   return <div>{percent || 0} %</div>;
                 }
@@ -139,7 +140,7 @@ const InventoryList = () => {
             >
               Sửa
             </EditIcon>
-            {record?.status ? (
+            {record?.isDelete ? (
               <Lock
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
@@ -276,10 +277,11 @@ const InventoryList = () => {
         onCancel={handleCancel}
         destroyOnClose
         title={mode === "new" ? "Tạo Kho mới" : "Sửa thông tin kho"}
+        width={750}
         footer={
           <div>
             <Space size="small">
-              <Button onClick={handleOk} key="submit">
+              <Button htmlType="submit" onClick={handleOk} key="submit">
                 {mode === "new" ? "Tạo" : "Cập nhập"}
               </Button>
               <Button onClick={handleCancel} key="back" mode="cancel">

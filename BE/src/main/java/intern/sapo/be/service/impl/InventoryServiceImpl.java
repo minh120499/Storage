@@ -136,6 +136,7 @@ public class InventoryServiceImpl implements IInventoryService {
     public InventoriesProductVariant changeMinQuantity(Integer inventoryId, Integer productVariantId, Integer minQuantity) {
         InventoriesProductVariant inventoriesProductVariant = iInventoriesProductVariantRepo.findByInventoryIdAndProductVariantId(inventoryId,productVariantId);
         inventoriesProductVariant.setMin_quantity(minQuantity);
+        iInventoriesProductVariantRepo.save(inventoriesProductVariant);
         return inventoriesProductVariant;
     }
 }

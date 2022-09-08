@@ -59,3 +59,8 @@ export interface IResultId{
   idProductVariant:any
 }
 
+export interface IMinQuantityRequest {
+  inventoryId: number,
+  productVariantId: number,
+  minQuantity: number
+}

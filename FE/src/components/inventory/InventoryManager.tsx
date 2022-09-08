@@ -8,14 +8,23 @@ import {
   MenuProps,
   Image,
   Input,
+  Space,
+  Tooltip,
+  Modal,
+  Form,
+  message,
 } from "antd";
-import { Col, Row, Table, Button, Dropdown, Menu, MenuProps, Image, Input, Space } from "antd";
-import { DeleteOutlined, DownOutlined, LeftOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  DownOutlined,
+  LeftOutlined,
+} from "@ant-design/icons";
 import {
   deleteListProductVariant,
   getProductVariants,
+  updateMinQuantityStorage,
 } from "../../api/inventory";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { IInventoryDto, IProductVariantDto, IResultId } from "../../interface";
 import NumberFormat from "react-number-format";
@@ -25,6 +34,10 @@ import Swal from "sweetalert2";
 import ToastCustom from "../../features/toast/Toast";
 import PieChartReport from "../Home/PieChartReport";
 import { ColumnsType } from "antd/lib/table";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import { useMutation } from "@tanstack/react-query";
+import Buttonn from "../../UI/Button";
+import AddIcon from '@mui/icons-material/Add';
 
 const InventoryManager = () => {
   const { Search } = Input;
@@ -37,9 +50,10 @@ const InventoryManager = () => {
   const [totalproduct, settotalProduct] = useState<number>();
   const [status, setStatus] = useState(false);
   const [reload, setReload] = useState(false);
-  const navigate = useNavigate();
-
+  const [minQuantityModal, setMinQuantityModal] = useState(false);
   const [name, setName] = useState<string>("");
+  const [minQuantityForm] = Form.useForm();
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = "Thông tin kho";
@@ -47,14 +61,34 @@ const InventoryManager = () => {
 
   useEffect(() => {
     setReload(true);
-    getProductVariants(parseInt(id as string), name)
-      .then(response => {
-        setProductVariant(response.productVariants);
-        setInventory(response.inventory);
-        settotalProduct(response.totalProductVariant);
-        setReload(false);
-      })
-  }, [status, name])
+    getProductVariants(parseInt(id as string), name).then((response) => {
+      setProductVariant(response.productVariants);
+      setInventory(response.inventory);
+      settotalProduct(response.totalProductVariant);
+      setReload(false);
+    });
+  }, [status, name]);
+
+  const minQuantityMutation = useMutation(updateMinQuantityStorage, {
+    onSuccess: () => {
+      message.success("Thêm thành công", 2);
+      setMinQuantityModal(false);
+      setStatus(!status);
+    },
+    onError: () => {
+      message.error("Có lỗi xảy ra, vui lòng thử lại", 2);
+      setMinQuantityModal(true);
+    },
+  });
+
+  const minQuantityHandler = () => {
+    const { minQuantity, product, storage } = minQuantityForm.getFieldsValue();
+    minQuantityMutation.mutate({
+      inventoryId: storage * 1,
+      minQuantity: minQuantity * 1,
+      productVariantId: product * 1,
+    });
+  };
 
   const columns: ColumnsType<IProductVariantDto> = [
     {
@@ -62,9 +96,13 @@ const InventoryManager = () => {
       dataIndex: "image",
       render: (img: string) => {
         return (
-          <Image width={45} src={img} onClick={(e: React.MouseEvent) => e.stopPropagation()} />
-        )
-      }
+          <Image
+            width={45}
+            src={img}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+          />
+        );
+      },
     },
     {
       title: "Mã sản phẩm",
@@ -89,19 +127,59 @@ const InventoryManager = () => {
           thousandSeparator={true}
         />
       ),
-      sorter: (a, b) => a.importPrice - b.importPrice
+      sorter: (a, b) => a.importPrice - b.importPrice,
     },
     {
       title: "Tồn kho",
-      dataIndex: "quantity",
-      render: (quantity: string) => (
-        <NumberFormat
-          value={quantity}
-          displayType="text"
-          thousandSeparator={true}
-        />
-      ),
-      sorter: (a, b) => a.quantity - b.quantity
+      dataIndex: ["quantity", "min"],
+      render: (_, quantity: any) => {
+        return (
+          <Row className="w-20" justify="space-between">
+            <Col span={20}>
+              <NumberFormat
+                value={quantity.quantity}
+                displayType="text"
+                thousandSeparator={true}
+              />
+            </Col>
+            <Col span={3}>
+              <Tooltip
+                title={
+                  quantity.minQuantity === 0
+                    ? "Thêm giới hạn cảnh báo"
+                    : quantity.quantity > quantity.minQuantity
+                    ? `Còn hàng ${quantity.quantity} / ${quantity.minQuantity}`
+                    : `Sắp hết hàng ${quantity.quantity} / ${quantity.minQuantity}`
+                }
+              >
+                {quantity?.minQuantity ? (
+                  <FiberManualRecordIcon
+                    onClick={() => {
+                      setMinQuantityModal(true);
+                      minQuantityForm.setFieldValue("storage", id);
+                      minQuantityForm.setFieldValue("product", quantity?.id);
+                    }}
+                    style={
+                      quantity.quantity > quantity.minQuantity
+                        ? { color: "green" }
+                        : { color: "red" }
+                    }
+                  />
+                ) : (
+                  <AddIcon
+                    onClick={() => {
+                      setMinQuantityModal(true);
+                      minQuantityForm.setFieldValue("storage", id);
+                      minQuantityForm.setFieldValue("product", quantity?.id);
+                    }}
+                  />
+                )}
+              </Tooltip>
+            </Col>
+          </Row>
+        );
+      },
+      sorter: (a, b) => a.quantity - b.quantity,
     },
     {
       title: "Ngày khởi tạo",
@@ -216,7 +294,7 @@ const InventoryManager = () => {
   );
   const handleSearch = (e: string) => {
     setName(e.trim());
-  }
+  };
 
   return (
     <div className="p-5">
@@ -225,22 +303,36 @@ const InventoryManager = () => {
           <LeftOutlined /> Danh sách kho
         </Link>
       </h2>
-      <div style={{
-        marginBottom: 16,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}>
+      <div
+        style={{
+          marginBottom: 16,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <div>
-          <h1 style={{ fontSize: '30px', margin: 0, marginRight: 10, marginBottom: '15px' }}>Quản lý kho</h1>
+          <h1
+            style={{
+              fontSize: "30px",
+              margin: 0,
+              marginRight: 10,
+              marginBottom: "15px",
+            }}
+          >
+            Quản lý kho
+          </h1>
         </div>
         <div>
           <Space>
-            <Button type="primary" onClick={() => navigate(`/categories`)}>Xem danh mục sản phẩm</Button>
-            <Button type="primary" onClick={() => navigate(`/products`)}>Xem danh sách sản phẩm</Button>
+            <Button type="primary" onClick={() => navigate(`/categories`)}>
+              Xem danh mục sản phẩm
+            </Button>
+            <Button type="primary" onClick={() => navigate(`/products`)}>
+              Xem danh sách sản phẩm
+            </Button>
           </Space>
         </div>
-
       </div>
 
       <Row gutter={24}>
@@ -369,6 +461,38 @@ const InventoryManager = () => {
           </div>
         </Col>
       </Row>
+      <Modal
+        visible={minQuantityModal}
+        destroyOnClose
+        onCancel={() => setMinQuantityModal(false)}
+        closeIcon={null}
+        footer={null}
+      >
+        <Form form={minQuantityForm}>
+          <Form.Item name="storage" style={{ display: "none" }}>
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item name="product" style={{ display: "none" }}>
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item
+            name="minQuantity"
+            label="Giới hạn cảnh báo hết hàng"
+            className="w-max"
+          >
+            <Input type="number" min={0} width={20} />
+          </Form.Item>
+          <Form.Item>
+            <Buttonn
+              loading={minQuantityMutation.isLoading}
+              onClick={minQuantityHandler}
+              type="submit"
+            >
+              Ok
+            </Buttonn>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

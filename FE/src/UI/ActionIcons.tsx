@@ -25,8 +25,8 @@ const Lock = (props: any) => {
   return (
     <LockOutlined
       {...props}
-      style={{ padding: "5px", color: "white"}}
-      className="cursor-pointer bg-[#389e0d]"
+      style={{ padding: "5px", color: "white" }}
+      className="cursor-pointer bg-pink"
     />
   );
 };
@@ -35,8 +35,8 @@ const UnLock = (props: any) => {
   return (
     <UnlockOutlined
       {...props}
-      style={{ padding: "5px", color: "white"}}
-      className="cursor-pointer bg-pink"
+      style={{ padding: "5px", color: "white" }}
+      className="cursor-pointer bg-[#389e0d]"
     />
   );
 };

@@ -95,9 +95,9 @@ public class InventoryController {
 	}
 
 	@PutMapping("/change/minquantity")
-	public ResponseEntity changeMinQuantity(@RequestParam(value = "inventoryId") Integer inventoryId,
-													   @RequestParam(value = "productVariantId") Integer productVariantId,
-													   @RequestParam(value = "minQuantity") Integer minQuantity)
+	public ResponseEntity changeMinQuantity(@RequestParam(value = "inventoryId", required = false) Integer inventoryId,
+													   @RequestParam(value = "productVariantId", required = false) Integer productVariantId,
+													   @RequestParam(value = "minQuantity", required = false) Integer minQuantity)
 	{
 //		iInventoryService.changeMinQuantity(inventoryId,productVariantId,minQuantity);
 		return ResponseEntity.ok(iInventoryService.changeMinQuantity(inventoryId,productVariantId,minQuantity));
