@@ -5,7 +5,6 @@ import {
     getDetailImportInvoice,
     getImportReturn,
     returnImportInvoice,
-    updateStatusInvoice,
     updateStatusReturnInvoice
 } from "../../services/api";
 import {IDetailImportInvoice, IImportReturnMyTableData} from "../../services/customType";

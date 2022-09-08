@@ -414,14 +414,14 @@ const InventoryManager = () => {
                   </b>
                 </Col>
 
-                {/* <Col span={8}>
+                <Col span={8}>
                     <p>Size:</p>
                   </Col>
                   <Col span={16}>
                     <b style={{ textTransform: "uppercase" }}>
                       <NumberFormat value={inventory.size} displayType='text' thousandSeparator={true} />
                     </b>
-                  </Col> */}
+                  </Col>
 
                 <Col span={8}>
                   <p>Địa chỉ:</p>

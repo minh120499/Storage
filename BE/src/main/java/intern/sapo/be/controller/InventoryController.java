@@ -6,6 +6,7 @@ import intern.sapo.be.dto.response.product.Inventory.InventoryResponse;
 import intern.sapo.be.entity.Account;
 import intern.sapo.be.entity.InventoriesProductVariant;
 import intern.sapo.be.entity.Inventory;
+import intern.sapo.be.repository.InventoryRepository;
 import intern.sapo.be.service.IInventoryService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -27,6 +28,7 @@ import java.util.Map;
 @CrossOrigin("*")
 public class InventoryController {
 	private final IInventoryService iInventoryService;
+	private final InventoryRepository inventoryRepository;
 
 	@GetMapping("/pagination")
 	public ResponseEntity getPagination(@RequestParam(value = "pageNumber", required = true, defaultValue = "1") int pageNumber,
@@ -99,7 +101,6 @@ public class InventoryController {
 													   @RequestParam(value = "productVariantId", required = false) Integer productVariantId,
 													   @RequestParam(value = "minQuantity", required = false) Integer minQuantity)
 	{
-//		iInventoryService.changeMinQuantity(inventoryId,productVariantId,minQuantity);
 		return ResponseEntity.ok(iInventoryService.changeMinQuantity(inventoryId,productVariantId,minQuantity));
 	}
 

@@ -1,15 +1,19 @@
 package intern.sapo.be.controller;
 
 import intern.sapo.be.entity.Category;
+import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.service.ICategoryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Log4j2
@@ -20,11 +24,17 @@ public class CategoryController {
     public final ICategoryService iCategoryService;
 
     @GetMapping("")
-    public Page<Category> getAllByPage(@RequestParam(value = "page", required = true, defaultValue = "1") Integer pageNumber,
-                                 @RequestParam(value = "limit", required = true, defaultValue = "10") Integer limit,
-                                 @RequestParam(value = "sortby", required = false) String sortBy,
-                                 @RequestParam(value = "sortdir", required = false) String sortDir){
-        return iCategoryService.findAll(pageNumber,limit,sortBy,sortDir);
+    public ResponseEntity getAllByPage(@RequestParam(value = "page", required = true, defaultValue = "1") Integer pageNumber,
+                                        @RequestParam(value = "limit", required = true, defaultValue = "10") Integer limit,
+                                        @RequestParam(value = "sortby", required = false) String sortBy,
+                                        @RequestParam(value = "sortdir", required = false) String sortDir){
+        Page<Category> categories = iCategoryService.findAll(pageNumber,limit,sortBy,sortDir);
+        Map<String, Object> results = new HashMap<>();
+        results.put("data", categories.getContent());
+        results.put("total", categories.getTotalElements());
+        results.put("from", categories.getSize() * categories.getNumber() + 1);
+        results.put("to", categories.getSize() * categories.getNumber() + categories.getNumberOfElements());
+        return ResponseEntity.ok(results);
     }
 
     @GetMapping("/findall")
