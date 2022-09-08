@@ -33,17 +33,17 @@ export const getWard= async (code:string) =>{
     return await axios.get(`https://provinces.open-api.vn/api/d/${code}?depth=2`)
 }
 
-export const getProductVariant = async (pageNumber:number) => {
-    return await axios.get(`http://localhost:8080/api/product-variants/findProductVariant?pageNumber=${pageNumber}&pageSize=5`)
+export const getProductVariant = async (pageNumber:number,searchValue:string) => {
+    return await axios.get(`http://localhost:8080/api/product-variants/findProductVariant?pageNumber=${pageNumber}&pageSize=7&searchValue=${searchValue}`)
 }
-export const getCountTotalProductVariant = async () => {
-    return await axios.get(`http://localhost:8080/api/product-variants/count-total`)
+export const getCountTotalProductVariant = async (searchValue:string) => {
+    return await axios.get(`http://localhost:8080/api/product-variants/count-total?searchValue=${searchValue}`)
 }
 export const createImport = async (im: object) => {
     return await axios.post(`http://localhost:8080/api/imports/`,im)
 }
-export const getImportInvoices = async () => {
-    return await axios.get(`http://localhost:8080/api/imports/findAll`)
+export const getImportInvoices = async (value:string) => {
+    return await axios.get(`http://localhost:8080/api/imports/findAll?searchValue=${value}`)
 }
 export const getDetailImportInvoice = async (code:string) =>{
     return await axios.get(`http://localhost:8080/api/imports/getDetails/${code}`)

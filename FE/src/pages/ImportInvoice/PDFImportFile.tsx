@@ -232,7 +232,7 @@ const PDFImportFile = ({invoice,createDate,importDate}:Props) =>{
         })
         return(
             <View style={stylesTableFooter.row}>
-                <Text style={stylesTableFooter.description}>TOTAL</Text>
+                <Text style={stylesTableFooter.description}>Tổng số lượng</Text>
                 <Text style={stylesTableFooter.total}>{totalQty}</Text>
             </View>
         )

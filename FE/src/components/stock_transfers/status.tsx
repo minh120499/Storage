@@ -28,12 +28,15 @@ import {
   updateExportStatusById,
 } from "../../api/export_status";
 import { exportById, exportStatus, typeDetailExport } from "../type/data_type";
+import {PDFDownloadLink} from "@react-pdf/renderer";
+import PDFStockTransfer from "./PDFStockTransfer";
+import PrintIcon from "@mui/icons-material/Print";
 
 export const Status = () => {
   const { id } = useParams();
-  const [exportById, setExportById] = useState<exportById>();
+  const [exportById, setExportById] = useState<exportById>({});
   const [detailExport, setDetailExport] = useState<typeDetailExport[]>([]);
-  const [status, setStattus] = useState<exportStatus>();
+  const [status, setStattus] = useState<exportStatus>({});
   const [loading, setLoading] = useState(false);
   const [current, setCurrent] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -99,6 +102,7 @@ export const Status = () => {
     setExportById(exportData);
     setDetailExport(detailExport);
     setStattus(exportStatus);
+
     setLoading(false);
     let b = 0;
     detailExport.map((e: any) => {
@@ -112,6 +116,14 @@ export const Status = () => {
   useEffect(() => {
     data();
   }, [current]);
+  console.log("Người tạo : " + status?.accountCreate)
+  console.log("Mã phiếu : " + status?.code)
+  console.log("Ngày tạo : " + status?.createAt)
+  console.log("Ngày chuyển hàng : " + status?.dateSend)
+  console.log("Ngày nhận hàng : " + status?.dateReceive)
+  console.log("Chi nhánh chuyển :"+exportById?.exportInventory?.name)
+  console.log("Chi nhánh nhận :"+exportById?.receiveInventory?.name)
+  console.log(detailExport)
 
   const dataProductExport = detailExport;
 
@@ -273,7 +285,21 @@ export const Status = () => {
             </div>
             <div>
               <Space size="small">
-                <Button>In phiếu</Button>
+                {
+                  (exportById !== undefined && detailExport.length > 0 && status !== undefined) ? (
+                      <PDFDownloadLink
+                          fileName={"phieuTraHang - " + moment(status.createAt).format('DD/MM/YYYY HH:mm:ss aa') + ".pdf"}
+                          document={<PDFStockTransfer statusExport={status}  anExport={exportById}
+                                                      detailExport={detailExport} />}>
+                        {({blob, url, loading, error}) =>
+                            <Button style={{padding:0,paddingLeft: 5,paddingRight: 5}} type='default'> <Space>
+                              <PrintIcon style={{position: 'relative', top: 3,fontSize:16}}/>
+                              In phiếu
+                            </Space></Button>
+                        }
+                      </PDFDownloadLink>
+                  ):<></>
+                }
                 <Button>Sao chép</Button>
 
               </Space>

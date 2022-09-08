@@ -42,6 +42,7 @@ const CreateReturnImportInvoice = () => {
         })
     }, [])
 
+
     const onInputChange = (key: string, index: number, value: number) => {
         const newData = [...importReturn];
         (newData as any)[index][key] = value
@@ -49,7 +50,7 @@ const CreateReturnImportInvoice = () => {
     };
 
     useEffect(() => {
-        if (importReturn.length > 1) {
+        if (importReturn.length > 0) {
             let totalQuantity = 0;
             let totalPrice = 0;
             for (let i = 0; i < importReturn.length; i++) {
@@ -57,11 +58,9 @@ const CreateReturnImportInvoice = () => {
                     totalQuantity += importReturn[i].inputQuantity
                     totalPrice += importReturn[i].importPrice * importReturn[i].inputQuantity
                 }
-
             }
             setTotalPrice(totalPrice)
             setTotalQuantity(totalQuantity)
-
         }
     }, [importReturn])
 
@@ -86,6 +85,7 @@ const CreateReturnImportInvoice = () => {
             width: '15%',
             render: (data: number, record, index) => (
                 <>
+
                     <InputNumber size="small" min={0} max={data} defaultValue={0} onChange={(values) => {
                         onInputChange("inputQuantity", index, values)
                     }}/>
@@ -131,6 +131,7 @@ const CreateReturnImportInvoice = () => {
             detailsReturnImports: list,
             createDate:Date.now()
         }
+
         returnImportInvoice(returnImport,detailInvoices?.anImport.inventoryId as number).then(() => {
             updateStatusReturnInvoice(importId, "returnInvoice").then(() => {
                 ToastCustom.fire({
@@ -209,7 +210,7 @@ const CreateReturnImportInvoice = () => {
                                         <p>Số lượng hoàn trả: {totalQuantity}  </p>
                                         <p>Tổng giá trị hàng trả: <NumberFormat displayType='text' value={totalPrice}
                                                                                 thousandSeparator={true}/></p>
-                                        <Button disabled={!(importReturn.length > 0)} onClick={onSubmit} style={{margin: 0}} type='primary'>Trả hàng</Button>
+                                        <Button disabled={!(importReturn.length > 0 ) || totalQuantity === 0} onClick={onSubmit} style={{margin: 0}} type='primary'>Trả hàng</Button>
                                     </>
                                 }
                             </div>

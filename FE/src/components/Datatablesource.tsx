@@ -176,11 +176,6 @@ export const columnsHistoryStatus: ColumnProps<IHistoryStatus>[] = [
 
     },
     {
-        title: 'Người thao tác',
-        key: "accountName",
-        dataIndex: 'accountName',
-    },
-    {
         title: 'Chức năng',
         key: "statusName",
         dataIndex: 'statusName',
