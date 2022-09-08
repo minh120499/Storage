@@ -9,7 +9,7 @@ import org.springframework.validation.BindingResult;
 import java.util.List;
 
 public interface IInventoryService {
-    Page<Inventory> findAllBypPage(Integer pageNumber, Integer limit, String sortBy, String sortDir);
+    Page<Inventory> findAllBypPage(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 
     List<Inventory> findAll();
 
@@ -20,8 +20,6 @@ public interface IInventoryService {
     Inventory create(Inventory inventory, BindingResult bindingResult);
 
     Inventory update(Integer id, Inventory inventory, BindingResult bindingResult);
-
-    void deleteLíst(List<Integer> id);
 
     void delete (Integer id);
 

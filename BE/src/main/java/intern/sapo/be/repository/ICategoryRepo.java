@@ -12,9 +12,9 @@ import java.util.List;
 
 @Repository
 public interface ICategoryRepo extends JpaRepository<Category,Integer>{
-    @Transactional
-    @Query("select c from Category c")
-    List<Category> getAll(Pageable pageable);
+//    @Transactional
+//    @Query("select c from Category c")
+//    List<Category> getAll(Pageable pageable);
 
     @Transactional
     @Query(value = "call delete_category(?1)", nativeQuery = true)
@@ -23,6 +23,7 @@ public interface ICategoryRepo extends JpaRepository<Category,Integer>{
     @Transactional
     @Query(value = "call get_categoriesByIdorName(?1)", nativeQuery = true)
     List<Category> getAllByName(String valueInput);
+
     @Query("select c from Category c inner join CategoriesProduct cp on c.id=cp.category.id where cp.product.id=:id")
     List<Category> findAllByProductId(@Param("id") Integer id);
 

@@ -39,12 +39,12 @@ public class InventoryServiceImpl implements IInventoryService {
     }
 
     @Override
-    public Page<Inventory> findAllBypPage(Integer pageNumber, Integer limit, String sortBy, String sortDir) {
+    public Page<Inventory> findAllBypPage(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
         if (sortDir != null) {
             Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-            return inventoryRepository.findAll(PageRequest.of(pageNumber - 1, limit, sort));
+            return inventoryRepository.findAll(PageRequest.of(pageNumber - 1, pageSize, sort));
         }
-        return inventoryRepository.findAll(PageRequest.of(pageNumber - 1, limit));
+        return inventoryRepository.findAll(PageRequest.of(pageNumber - 1, pageSize));
     }
 
 
@@ -84,11 +84,6 @@ public class InventoryServiceImpl implements IInventoryService {
             inventory.setCreateAt(inventoryOld.getCreateAt());
             return inventoryRepository.save(inventory);
         }
-    }
-
-    @Override
-    public void deleteLíst(List<Integer> id) {
-
     }
 
     @Override
@@ -136,6 +131,7 @@ public class InventoryServiceImpl implements IInventoryService {
     public InventoriesProductVariant changeMinQuantity(Integer inventoryId, Integer productVariantId, Integer minQuantity) {
         InventoriesProductVariant inventoriesProductVariant = iInventoriesProductVariantRepo.findByInventoryIdAndProductVariantId(inventoryId,productVariantId);
         inventoriesProductVariant.setMin_quantity(minQuantity);
+        iInventoriesProductVariantRepo.save(inventoriesProductVariant);
         return inventoriesProductVariant;
     }
 }

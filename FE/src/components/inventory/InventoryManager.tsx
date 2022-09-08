@@ -1,21 +1,11 @@
-import {
-  Col,
-  Row,
-  Table,
-  Button,
-  Dropdown,
-  Menu,
-  MenuProps,
-  Image,
-  Input,
-} from "antd";
+
 import { Col, Row, Table, Button, Dropdown, Menu, MenuProps, Image, Input, Space } from "antd";
 import { DeleteOutlined, DownOutlined, LeftOutlined } from "@ant-design/icons";
 import {
   deleteListProductVariant,
   getProductVariants,
 } from "../../api/inventory";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { IInventoryDto, IProductVariantDto, IResultId } from "../../interface";
 import NumberFormat from "react-number-format";
@@ -322,14 +312,14 @@ const InventoryManager = () => {
                   </b>
                 </Col>
 
-                {/* <Col span={8}>
+                <Col span={8}>
                     <p>Size:</p>
                   </Col>
                   <Col span={16}>
                     <b style={{ textTransform: "uppercase" }}>
                       <NumberFormat value={inventory.size} displayType='text' thousandSeparator={true} />
                     </b>
-                  </Col> */}
+                  </Col>
 
                 <Col span={8}>
                   <p>Địa chỉ:</p>

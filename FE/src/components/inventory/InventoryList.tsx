@@ -11,6 +11,7 @@ import {
   Tooltip,
   Col,
   Row,
+  message,
 } from "antd";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -25,9 +26,15 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import FilterBox from "../../UI/FilterBox";
+import ToastCustom from "../../features/toast/Toast";
 
 const InventoryList = () => {
   const navigate = useNavigate();
+
+  const tailLayout = {
+    wrapperCol: { offset: 18, span:18},
+    labelCol: { span: 100 },
+  };
 
   const columns: ColumnsType<IInventory> = [
     {
@@ -139,15 +146,15 @@ const InventoryList = () => {
             >
               Sửa
             </EditIcon>
-            {record?.status ? (
-              <Lock
+            {record?.isDelete ? (
+              <UnLock
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
                   deleteInvetoryHandler(record, "mở khóa");
                 }}
               />
             ) : (
-              <UnLock
+              <Lock
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
                   deleteInvetoryHandler(record, "ngừng hoạt động");
@@ -161,11 +168,32 @@ const InventoryList = () => {
   ];
 
   const inventoryMutation = useMutation((inventory: IInventory) =>
-    createInventory(inventory)
+    createInventory(inventory).then(()=>
+    ToastCustom.fire({
+      icon: "success",
+      title: "Thêm thành công!",
+    })).catch(()=>
+      ToastCustom.fire({
+        icon: "error",
+        title: "Mã kho không được trùng!",
+      })
+    )
   );
   const inventoriesUpdate = useMutation((inventory: any) =>
-    updateInvetory(inventory.data, inventory.id)
+    updateInvetory(inventory.data, inventory.id).then(()=>
+    ToastCustom.fire({
+      icon: "success",
+      title: "Sửa thành công!",
+    })).catch(()=>
+      ToastCustom.fire({
+        icon: "error",
+        title: "Mã kho không được trùng!",
+      })
+    )
   );
+
+  
+  
   const inventoriesDelete = useMutation((id: number) => deleteInvetory(id));
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fullAddress, setFullAddress] = useState("");
@@ -178,20 +206,12 @@ const InventoryList = () => {
   }, []);
 
   const handleOk = () => {
-    const { code, name, detailsAddress, id } = formInventory.getFieldsValue();
-    formInventory.resetFields([
-      "code",
-      "name",
-      "address",
-      "detailsAddress",
-      "province",
-      "district",
-    ]);
+    const { code, name, id } = formInventory.getFieldsValue();
     const payload = {
       data: {
         code,
         name,
-        address: detailsAddress + fullAddress,
+        address: fullAddress,
       },
       id: id,
     };
@@ -201,14 +221,21 @@ const InventoryList = () => {
     } else {
       inventoriesUpdate.mutate(payload);
     }
-
-    setIsModalVisible(false);
   };
 
+  if(inventoryMutation.isError) {
+    setIsModalVisible(true);
+  } 
+
+  if(inventoryMutation.isSuccess) {
+    setIsModalVisible(false);
+    formInventory.resetFields();
+    inventoryMutation.reset()
+  } 
   const handleCancel = () => {
     setKeyChange(0);
     setIsModalVisible(false);
-    formInventory.resetFields(["code", "name", "address"]);
+    formInventory.resetFields();
   };
 
   const updateInventory = (e: any) => {
@@ -248,6 +275,7 @@ const InventoryList = () => {
           <Button
             onClick={() => {
               setIsModalVisible(true);
+              formInventory.resetFields();
               setMode("new");
             }}
           >
@@ -271,25 +299,15 @@ const InventoryList = () => {
         }}
       />
       <Modal
+        width={750}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
         destroyOnClose
         title={mode === "new" ? "Tạo Kho mới" : "Sửa thông tin kho"}
-        footer={
-          <div>
-            <Space size="small">
-              <Button onClick={handleOk} key="submit">
-                {mode === "new" ? "Tạo" : "Cập nhập"}
-              </Button>
-              <Button onClick={handleCancel} key="back" mode="cancel">
-                Hủy
-              </Button>
-            </Space>
-          </div>
-        }
+        footer={null}
       >
-        <Form form={formInventory}>
+        <Form form={formInventory} onFinish={handleOk} >
           <Form.Item name="id" style={{ display: "none" }}>
             <Input />
           </Form.Item>
@@ -299,6 +317,8 @@ const InventoryList = () => {
             rules={[
               {
                 required: true,
+                message: 'Mã kho không được để trống!',
+                pattern: /[A-Za-z0-9]/
               },
             ]}
           >
@@ -311,13 +331,22 @@ const InventoryList = () => {
             rules={[
               {
                 required: true,
+                message: 'Tên kho không được để trống!',
+                pattern: /[A-Za-z0-9]/
               },
             ]}
           >
             <Input />
           </Form.Item>
-
-          <AddAddress onChange={setFullAddress} keyChange={keyChange} />
+          <AddAddress onChange={setFullAddress} keyChange={keyChange}/>
+          <Form.Item {...tailLayout}>
+            <Space>
+              <Button htmlType="submit">{mode === "new" ? "Xác nhận" : "Xác nhận"}</Button>
+              <Button mode="cancel" onClick={handleCancel}>
+                Thoát
+              </Button>
+            </Space>
+          </Form.Item>
         </Form>
       </Modal>
     </div>

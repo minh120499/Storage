@@ -30,10 +30,6 @@ export default function CategoryUpdate({ status, categoryProp }: props) {
     description: categoryProp.description,
   });
 
-  const validateMessages = {
-    required: "Không được để trống!",
-  };
-
   const layout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 16 },
@@ -75,18 +71,17 @@ export default function CategoryUpdate({ status, categoryProp }: props) {
           <Form
               {...layout}
               name="nest-messages"
-              validateMessages={validateMessages}
               onFinish={handleUpdate}
               form={formUpdate}
 
           >
-            <Form.Item name="name" label="Nhập tên" rules={[{ required: true }]}>
+            <Form.Item name="name" label="Nhập tên" rules={[{ required: true, message:"Tên không được để trống!", pattern:/[A-Za-z0-9]/ }]}>
               <Input placeholder="Tên" />
             </Form.Item>
             <Form.Item
                 name="description"
                 label="Nhập mô tả"
-                rules={[{ required: true }]}
+                rules={[{ required: true, message:"Mô tả không được để trống!", pattern:/[A-Za-z0-9]/ }]}
             >
               <Input placeholder="Mô tả" />
             </Form.Item>
