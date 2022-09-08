@@ -11,7 +11,7 @@ interface ISelectCategory {
 }
 const SelectCategory = (props: ISelectCategory) => {
     const { selectCategories, onChange } = { ...props }
-    const initValues=selectCategories?.map((item,index)=>JSON.stringify(item))
+    const initValues=selectCategories?.map((item,index)=>item.name)
 
     const [categories, setCategories] = useState<Category[]>()
     useEffect(() => {
@@ -35,14 +35,17 @@ const SelectCategory = (props: ISelectCategory) => {
                     defaultValue={initValues}
                     onChange={(value, options) => {
 
-                        let sCat:Category[] = options.map((option: DefaultOptionType, index: number) => { if (option.value && typeof (option.value) == 'string') return JSON.parse(option.value) })
+                        let sCat:Category[] = options.map((option: DefaultOptionType, index: number) => { if ( categories) return categories.at(option.key) })
+                        console.log(sCat);
+                        
                         onChange(sCat)
+                        
                     }}
 
 
                 >
                     {categories?.map((category, index) => {
-                        return (<Antd.Select.Option key={category.id} value={JSON.stringify(category)} >{category.name}</Antd.Select.Option>)
+                        return (<Antd.Select.Option key={index} value={category.name} >{category.name}</Antd.Select.Option>)
                     })}
                 </Antd.Select>
             </Mui.Paper>

@@ -21,7 +21,7 @@ import ImageUpload from './ImageUpload';
 
 function AddProduct(props: any) {
     //init values
- 
+
     var initOptions: Array<OptionAdd> = []
     var valuesForName: string[] = []
     var variantsAll: IVariant[] = []
@@ -49,36 +49,36 @@ function AddProduct(props: any) {
     const [open, setOpen] = React.useState(false);
     const [isCreated, setIsCreated] = useState(false)
 
-    
+
     const [imageUrl, setImageUrl] = useState<string>();
     const navigate = useNavigate()
     //function
     const handleOpen = () => { setOpen(true); }
     const handleClose = () => { setOpen(false); }
-    const onImageChange=(url:string)=>{
+    const onImageChange = (url: string) => {
         setImageUrl(url)
     }
     const onSubmit = (data: AddProductInput) => {
         let { salePrice, wholesalePrice, importPrice, ...other } = { ...data }
         let newProduct = { ...other, accountId: 1, statusId: 1 }
-        
-        
+
+
         let body = {
             product: newProduct,
             variants: variants,
-            categories:selectCategories
+            categories: selectCategories
         }
 
         if (options.length == 0) {
             body = {
                 ...body,
-                variants: [{ name: newProduct.name, salePrice,image:imageUrl, importPrice, wholesalePrice }]
+                variants: [{ name: newProduct.name, salePrice, image: imageUrl, importPrice, wholesalePrice }]
             }
         }
         else {
-            var variantsSt1=variants.map((variant,index)=>{
-                var x=variant
-                x.image=imageUrl
+            var variantsSt1 = variants.map((variant, index) => {
+                var x = variant
+                x.image = imageUrl
                 return x
             })
             body = {
@@ -108,10 +108,9 @@ function AddProduct(props: any) {
 
             handleClose()
 
-                return response.json()
-        }).then((data)=>{
-            if(data.product.id)
-            {
+            return response.json()
+        }).then((data) => {
+            if (data.product.id) {
                 navigate(`/products/${data.product.id}`)
 
             }
@@ -126,8 +125,8 @@ function AddProduct(props: any) {
 
     }
 
-    const setNewOptions = (options:Array<OptionAdd>) => {
-       setOptions(options)
+    const setNewOptions = (options: Array<OptionAdd>) => {
+        setOptions(options)
 
     }
 
@@ -149,7 +148,7 @@ function AddProduct(props: any) {
                         wholesalePrice: product.wholesalePrice,
                         salePrice: product.salePrice,
                         importPrice: product.importPrice,
-                        
+
                     })
 
 
@@ -171,9 +170,9 @@ function AddProduct(props: any) {
 
     }
 
-    const onCategoriesSelect = (data:Category[]) => {
+    const onCategoriesSelect = (data: Category[]) => {
         setSelectCategories(data)
-        
+
     }
 
 
@@ -197,7 +196,7 @@ function AddProduct(props: any) {
 
         })
 
-        document.title='Thêm sản phẩm'
+        document.title = 'Thêm sản phẩm'
     }, [])
 
     // Component
@@ -207,7 +206,7 @@ function AddProduct(props: any) {
             <>
                 <Mui.Paper sx={{ px: 5, py: 2, height: 565 }}>
                     <h1>Thông tin chung</h1>
-                    <hr/>
+                    <hr />
                     {/* <SelectSupplier ></SelectSupplier> */}
 
                     <Antd.Form.Item style={{ marginTop: 50 }} labelCol={{ span: 24 }} labelAlign='left' label='Tên sản phẩm' name="name"
@@ -266,8 +265,8 @@ function AddProduct(props: any) {
             <Mui.Paper sx={{ px: 5, py: 2, height: 250, mb: 2 }}>
                 <h1>Thêm hình ảnh </h1>
                 <div style={{ margin: '20px 20px' }}>
-                
-                    <ImageUpload imageUrl={imageUrl} setUrl={onImageChange}/>
+
+                    <ImageUpload imageUrl={imageUrl} setUrl={onImageChange} />
                 </div>
 
             </Mui.Paper>
@@ -348,27 +347,16 @@ function AddProduct(props: any) {
 
 
     return (
-        <div>
-            <h2 style={{ margin: 20 }} >
+        <div className ='p-5'>
+            <Antd.Spin  spinning={open} tip={'Đang lưu...'}>
+
+            <h2 style={{ fontSize:'15px' }} >
                 <Link to="/products">
                     <LeftOutlined /> Danh sách sản phẩm
                 </Link>
             </h2>
-            <Mui.Modal sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                width: '100%',
-                height: '100%',
-                p: 4,
-            }}
-                open={open}
+             <h1 style={{fontSize:'30px',margin:0,marginRight:10,marginBottom:'45px'}}>Thêm mới sản phẩm</h1>
 
-            >
-
-                <Mui.Paper sx={{ margin: '300px', p: '100px 100px 100px 100px' }}>
-                    {isCreated ? "Thêm thành công" : <Mui.CircularProgress />}
-                </Mui.Paper>
-            </Mui.Modal>
             <Antd.Form onFinish={onSubmit}
 
                 initialValues={product}
@@ -392,7 +380,7 @@ function AddProduct(props: any) {
 
                             </Mui.Grid>
                             {/* <OptionInfo></OptionInfo> */}
-                            <SelectOption options={options} onOptionChange={onOptionChange} setOptions={setNewOptions} size={4}  />
+                            <SelectOption options={options} onOptionChange={onOptionChange} setOptions={setNewOptions} size={4} />
 
                         </Mui.Grid>
 
@@ -408,8 +396,11 @@ function AddProduct(props: any) {
                 </div>
 
             </Antd.Form>
+        </Antd.Spin>
+
 
         </div >
+
 
 
 

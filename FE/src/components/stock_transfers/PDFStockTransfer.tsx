@@ -1,13 +1,15 @@
-import { Page, Text, Image, Document, StyleSheet,View,Font } from "@react-pdf/renderer";
+import {IDetailImportInvoice} from "../../services/customType";
+import {Document, Font, Page, StyleSheet, Text, View} from "@react-pdf/renderer";
+import React, {Fragment} from "react";
+import {exportById, exportStatus, typeDetailExport} from "../type/data_type";
+import moment from "moment";
 
-import React, { Fragment } from 'react';
-import {IDetailImportInvoice, IImportInvoice} from "../../services/customType";
 type Props ={
-    invoice:IDetailImportInvoice,
-    createDate:string,
-    importDate:string
+    statusExport: exportStatus,
+    anExport:exportById,
+    detailExport:typeDetailExport[]
 }
-const PDFImportFile = ({invoice,createDate,importDate}:Props) =>{
+const PDFStockTransfer = ({statusExport,anExport,detailExport}:Props) =>{
     Font.register({
         family: "Roboto",
         src:
@@ -92,7 +94,7 @@ const PDFImportFile = ({invoice,createDate,importDate}:Props) =>{
         },
     });
 
-    const SupplierInfo = ({invoice}:any) => (
+    const SupplierInfo = ({exports}:any) => (
         <View style={stylesSupplierInfo.container}>
             <View style={stylesSupplierInfo.headerContainer}>
                 <Text style={stylesSupplierInfo.billTo}>Nhân viên tạo:</Text>
@@ -100,32 +102,35 @@ const PDFImportFile = ({invoice,createDate,importDate}:Props) =>{
                 <Text>SĐT: 0987885614</Text>
             </View>
             <View style={stylesSupplierInfo.headerContainer}>
-                <Text style={stylesSupplierInfo.billTo}>Nhà cung cấp:</Text>
-                <Text>{invoice.supplier.code}</Text>
-                <Text>{invoice.supplier.name}</Text>
+                <Text style={stylesSupplierInfo.billTo}>Chi nhánh chuyển:</Text>
+                <Text>{exports?.exportInventory?.name}</Text>
             </View>
 
             <View style={stylesSupplierInfo.headerContainer}>
-                <Text style={stylesSupplierInfo.billTo}>Giao hàng đến:</Text>
-                <Text>Kho: {invoice.inventoryName}</Text>
+                <Text style={stylesSupplierInfo.billTo}>Chi nhánh nhận:</Text>
+                <Text>{exports?.receiveInventory?.name}</Text>
             </View>
         </View>
     );
 
-    const InvoiceNo = ({invoice,createDate,importDate}:Props) => (
+    const InvoiceNo = ({statusExport}:any) => (
         <Fragment>
             <View style={stylesInvoiceNo.container}>
                 <View style={stylesInvoiceNo.invoiceNoContainer}>
-                    <Text style={stylesInvoiceNo.label}>Mã đơn hàng:</Text>
-                    <Text style={stylesInvoiceNo.invoiceDate}>{invoice.anImport.code}</Text>
+                    <Text style={stylesInvoiceNo.label}>Mã đơn chuyển:</Text>
+                    <Text style={stylesInvoiceNo.invoiceDate}>{statusExport.code}</Text>
                 </View >
                 <View style={stylesInvoiceNo.invoiceDateContainer}>
                     <Text style={stylesInvoiceNo.label}>Ngày tạo: </Text>
-                    <Text  style={stylesInvoiceNo.invoiceDate}>{createDate}</Text>
+                    <Text  style={stylesInvoiceNo.invoiceDate}>{moment(statusExport.createAt).format('DD/MM/YYYY HH:mm')}</Text>
                 </View >
                 <View style={stylesInvoiceNo.invoiceDateContainer}>
-                    <Text style={stylesInvoiceNo.label}>Ngày nhập kho: </Text>
-                    <Text  style={stylesInvoiceNo.invoiceDate} >{importDate}</Text>
+                    <Text style={stylesInvoiceNo.label}>Ngày chuyển: </Text>
+                    <Text  style={stylesInvoiceNo.invoiceDate} >{statusExport.dateSend}</Text>
+                </View >
+                <View style={stylesInvoiceNo.invoiceDateContainer}>
+                    <Text style={stylesInvoiceNo.label}>Ngày nhận: </Text>
+                    <Text  style={stylesInvoiceNo.invoiceDate} >{statusExport.dateReceive}</Text>
                 </View >
             </View>
 
@@ -237,9 +242,10 @@ const PDFImportFile = ({invoice,createDate,importDate}:Props) =>{
             </View>
         )
     };
+
     const InvoiceTableRow = ({items}:any) => {
-        const rows = items.map( (item: { idDetailsImport: number ; productVariant: { code: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }; quantity: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) =>
-            <View style={stylesTableRows.row} key={item.idDetailsImport}>
+        const rows = items.map((item: { productVariant: { id: React.Key | null | undefined; code: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }; quantity: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; })  =>
+            <View style={stylesTableRows.row} key={item.productVariant.id}>
                 <Text style={stylesTableRows.code}>{item.productVariant.code}</Text>
                 <Text style={stylesTableRows.description}>{item.productVariant.name}</Text>
                 <Text style={stylesTableRows.qty}>{item.quantity}</Text>
@@ -248,23 +254,23 @@ const PDFImportFile = ({invoice,createDate,importDate}:Props) =>{
         return (<Fragment>{rows}</Fragment> )
     };
 
-    const InvoiceItemsTable = ({invoice}:any) => (
+    const InvoiceItemsTable = ({detailExport}:any) => (
         <View style={stylesTable.tableContainer}>
             <InvoiceTableHeader />
-            <InvoiceTableRow items={invoice.anImport.detailsImports} />
-            <InvoiceTableFooter items={invoice.anImport.detailsImports} />
+            <InvoiceTableRow items={detailExport} />
+            <InvoiceTableFooter items={detailExport} />
         </View>
     );
 
     return (
         <Document>
             <Page size="A4" style={styles.page}>
-                <InvoiceTitle title='Phiếu nhập kho'/>
-                <InvoiceNo invoice={invoice} createDate={createDate} importDate={importDate} />
-                <SupplierInfo invoice={invoice}/>
-                <InvoiceItemsTable invoice={invoice} />
+                <InvoiceTitle title='Phiếu chuyển hàng'/>
+                <InvoiceNo statusExport={statusExport} />
+                <SupplierInfo exports={anExport}/>
+                <InvoiceItemsTable detailExport={detailExport} />
             </Page>
         </Document>
     )
 }
-export default PDFImportFile
+export default PDFStockTransfer

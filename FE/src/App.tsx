@@ -23,8 +23,17 @@ import {Status} from "./components/stock_transfers/status";
 import InventoryManager from "./components/inventory/InventoryManager";
 import CreateReturnImportInvoice from "./pages/ImportInvoice/CreateReturnImportInvoice";
 import Create from "./components/stock_transfers/create";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "./app/store";
+import {setUserStore} from "./features/user/userSlice";
 
 const App: React.FC = () => {
+  const dispatch = useDispatch();
+  dispatch(
+      setUserStore({
+        token: localStorage.getItem('token') || ''
+      })
+  );
   const router = useRoutes([
     {
       path: "/login",
@@ -74,7 +83,7 @@ const App: React.FC = () => {
           ],
         },
         {
-          path: "/productsAdd",
+          path: "staff/productsAdd",
           element: <AddProduct />,
         },
         {
@@ -99,11 +108,11 @@ const App: React.FC = () => {
           element: <EmployeeDetails />,
         },
         {
-          path: "/api/admin/employees",
+          path: "/admin/employees",
           element: <Employee />,
         },
         {
-          path: "/api/admin/roles",
+          path: "/admin/roles",
           element: <RoleManager />,
         },
       ],

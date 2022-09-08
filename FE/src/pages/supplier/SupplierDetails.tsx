@@ -56,8 +56,9 @@ const SupplierDetails = () => {
 
 
     return (
-        <>
-            {
+        <div className='p-5'>
+
+        {
                supplier && (
                    <div>
                        <h2 style={{margin:20}}>
@@ -181,7 +182,7 @@ const SupplierDetails = () => {
                    </div>
                 )
             }
-        </>
+        </div>
     )
 }
 export default SupplierDetails

@@ -3,10 +3,10 @@ import React, { useEffect, useState, memo } from "react";
 import { ISupplier } from "../../services/customType";
 import { Button, Col, Dropdown, Menu, MenuProps, Row, Space } from "antd";
 import Moment from "react-moment";
-import { DeleteOutlined, DownOutlined, InfoCircleOutlined, LeftOutlined } from "@ant-design/icons";
+import { DeleteOutlined, DownOutlined, InfoCircleOutlined, LeftOutlined, SaveOutlined } from "@ant-design/icons";
 import * as Mui from '@mui/material'
 import * as Antd from 'antd'
-import { deleteProductById, deleteVariantsById, getProductById, updateProduct } from "../../services/productServices";
+import { deleteProductById, deleteVariantsById, getProductById, updateProduct, } from "../../services/productServices";
 import { Category, IVariant, Product } from "../../type/allType";
 import { has } from "immer/dist/internal";
 import Swal from "sweetalert2";
@@ -15,6 +15,7 @@ import AddProduct from "./AddProduct";
 import SelectCategory from "./SelectCategory";
 import ImageUpload from "./ImageUpload";
 import { stringify } from "querystring";
+import { CancelOutlined } from "@mui/icons-material";
 interface ProductUpdateProps {
     product: Product | undefined,
     variants: IVariant[] | undefined,
@@ -63,7 +64,7 @@ const UpdateProduct = (props: ProductUpdateProps) => {
     const { setIsUpdate, ...other } = { ...props }
     const { id } = useParams();
     const [productInfo, setProductInfo] = useState(other)
-
+    const [load, setLoad] = useState(false)
     const [variant, setVariant] = useState<IVariant>()
     const [index, setIndex] = useState<number>(0)
 
@@ -71,7 +72,8 @@ const UpdateProduct = (props: ProductUpdateProps) => {
 
     const navigate = useNavigate()
     const onSubmit = (data: Product) => {
-        updateProduct(productInfo).then(res =>{
+        setLoad(true)
+        updateProduct(productInfo).then(res => {
             if (res.ok) {
                 ToastCustom.fire({
                     icon: 'success',
@@ -85,6 +87,7 @@ const UpdateProduct = (props: ProductUpdateProps) => {
                     title: 'Có lỗi xảy ra'
                 }).then()
             }
+            setLoad(false)
 
         })
             .catch((erorr) => {
@@ -95,6 +98,19 @@ const UpdateProduct = (props: ProductUpdateProps) => {
             })
 
 
+    }
+    const changeVariantName = (variants: IVariant[] | undefined) => {
+        var fixVariants: IVariant[] = []
+        if (variants) {
+            fixVariants = variants.map((variant, index) => {
+                var dashIndex = variant.name.indexOf('-')
+                var newName = productInfo?.product?.name + variant.name.slice(dashIndex, variant.name.length)
+                variant.name = newName
+                return variant
+            })
+
+        }
+        setProductInfo({ ...productInfo, variants: fixVariants })
     }
     const setImageUrl = (url: string) => {
 
@@ -117,7 +133,7 @@ const UpdateProduct = (props: ProductUpdateProps) => {
     }
     useEffect(() => {
         setVariant(productInfo.variants?.at(index))
-        document.title='Cập nhật thông tin sản phẩm'
+        document.title = 'Cập nhật thông tin sản phẩm'
     }, [])
 
 
@@ -141,7 +157,13 @@ const UpdateProduct = (props: ProductUpdateProps) => {
                     <Antd.Input size={'large'} onChange={e => {
                         if (productInfo.product)
                             productInfo.product.name = e.target.value
-                    }}   ></Antd.Input>
+
+                    }}
+                        onBlur={() => {
+                            changeVariantName(productInfo.variants)
+
+                        }}
+                    ></Antd.Input>
                 </Antd.Form.Item>
 
                 <Antd.Form.Item name='description' >
@@ -290,19 +312,18 @@ const UpdateProduct = (props: ProductUpdateProps) => {
 
     const View = () => {
         return (
+
             <Antd.Form
                 onFinish={onSubmit}
                 initialValues={productInfo.product}
                 onValuesChange={(change, value) => {
-                    console.log(value)
-
                 }}>
                 <div>
-                    <h2 style={{ margin: 20 }} onClick={()=>{
+                    <h2 style={{ margin: 20 }} onClick={() => {
                         setIsUpdate(false)
                     }} >
-                        
-                            <LeftOutlined /> Quay lại
+
+                        <LeftOutlined /> Quay lại
                     </h2>
 
                 </div>
@@ -332,20 +353,30 @@ const UpdateProduct = (props: ProductUpdateProps) => {
 
 
                 </Mui.Grid>
+
+
                 <div style={{ display: 'flex', justifyContent: 'end' }}>
-                    <Antd.Button danger onClick={() => { setIsUpdate(false) }}>Hủy</Antd.Button>
-                    <Antd.Button htmlType="submit">Lưu</Antd.Button>
+
+                    <Antd.Button type="primary" style={{ width: 150, margin: '0px 20px' }} danger onClick={() => { setIsUpdate(false) }}>Hủy</Antd.Button>
+                    <Antd.Spin spinning={load} tip={'Đang lưu...'}>
+                        <Antd.Button type="primary" style={{ width: 150 }} htmlType="submit">Lưu</Antd.Button>
+                    </Antd.Spin>
+
                 </div>
 
             </Antd.Form>
 
 
+
         )
     }
     return (
-        <>
+        <div className ='p-5'>
+
+
             <View></View>
-        </>
+
+        </div>
     )
 }
 export default UpdateProduct

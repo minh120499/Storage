@@ -12,7 +12,7 @@ public interface IImportService {
 
     List<Import> findAll();
 
-    List<ImportResponse> findAllImportDTO();
+    List<ImportResponse> findAllImportDTO(String searchValue);
 
     Import save(Import importField);
 

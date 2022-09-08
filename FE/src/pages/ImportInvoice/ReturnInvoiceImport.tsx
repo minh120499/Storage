@@ -18,7 +18,7 @@ const ReturnInvoiceImport = ({returnInvoice, invoice}: Props) => {
     return (
         <>
             {
-                invoice.anImport.isDone && (
+                invoice.anImport.isImport && (
                     <div className="block" style={{
                         padding: 0,
                     }}>
@@ -65,7 +65,7 @@ const ReturnInvoiceImport = ({returnInvoice, invoice}: Props) => {
                                                         paddingLeft: 20
                                                     }}>
                                                         <PDFDownloadLink
-                                                            fileName={"phieuTraHang - " + moment(obj.createDate).format('DD/MM/YYYY HH:mm:ss aa') + ".pdf"}
+                                                            fileName={"phieuTraHang - " + moment(obj.createDate).format('DD/MM/YYYY HH:mm:ss') + ".pdf"}
                                                             document={<PDFReturnImportInvoice invoice={invoice}
                                                                                               returnInvoice={obj}/>}>
                                                             {({blob, url, loading, error}) =>

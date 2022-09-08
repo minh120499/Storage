@@ -5,42 +5,45 @@ import { Space, Modal, Form, Input, Tag } from "antd";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   createInventory,
-  getAllInventory,
   updateInvetory,
   deleteInvetory,
   getPagination,
 } from "../../api/inventory";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import AddAddress from "../AddAddress";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import {PlusOutlined} from "@ant-design/icons";
 
 const InventoryList = () => {
   const navigate = useNavigate();
 
   const columns: ColumnsType<IInventory> = [
     {
-      title: "Id",
+      title: <b>Id</b>,
       dataIndex: "id",
       key: "id",
+      sorter: (a, b) => (a?.id || 1) - (b?.id || 0),
     },
     {
-      title: "Code",
+      title: <b>Mã kho</b>,
       dataIndex: "code",
       key: "code",
+      sorter: (a, b) => a.code.localeCompare(b.code),
     },
     {
-      title: "Name",
+      title: <b>Tên</b>,
       dataIndex: "name",
       key: "name",
+      sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: "Address",
+      title: <b>Địa chỉ</b>,
       dataIndex: "address",
       key: "address",
     },
     {
-      title: "Status",
+      title: <b>Trạng thái</b>,
       dataIndex: "isDelete",
       key: "isDelete",
       render: (status: boolean) => {
@@ -101,9 +104,13 @@ const InventoryList = () => {
   const [formInventory] = Form.useForm();
   const [mode, setMode] = useState("new");
 
+  useEffect(() =>{
+    document.title= "Kho hàng"
+  },[])
+
   const handleOk = () => {
     const { code, name, detailsAddress, id } = formInventory.getFieldsValue();
-    console.log(detailsAddress + fullAddress);
+    formInventory.resetFields(["code","name","address", "detailsAddress", "province", "district"]);
     const payload = {
       data: {
         code,
@@ -125,6 +132,7 @@ const InventoryList = () => {
   const handleCancel = () => {
     setKeyChange(0);
     setIsModalVisible(false);
+    formInventory.resetFields(["code","name","address"]);
   };
 
   const updateInventory = (e: any) => {
@@ -143,35 +151,35 @@ const InventoryList = () => {
   const deleteInvetoryHandler = (record: any) => {
     Swal.fire({
       icon: "question",
-      title: "Xác nhận xóa",
-      html: `Xác nhậm xóa kho ${record?.code}`,
-      confirmButtonText: "Xóa",
+      title: "Thay đổi trạng thái",
+      html: `Xác nhận thay đổi trạng thái kho ${record?.code}`,
+      confirmButtonText: "Xác nhận",
       cancelButtonText: "Hủy",
       showCancelButton: true,
       cancelButtonColor: "#d33",
     }).then((e: any) => {
       if (e.isConfirmed) {
         inventoriesDelete.mutate(record?.id || 0);
-        Swal.fire("Đã xóa!", "Đã xóa thành công", "success");
+        Swal.fire("Thành công!", "Đã thay đổi thành công", "success");
       }
     });
     setIsModalVisible(false);
   };
   return (
-      <>
+      <div className="p-5">
         <Button
             onClick={() => {
               setIsModalVisible(true);
               setMode("new");
             }}
         >
-          Add
+          <PlusOutlined /> Tạo mới kho
         </Button>
         <Table
             columns={columns}
             onRow={(record: any) => {
               return {
-                onClick: () =>
+                onDoubleClick: () =>
                     navigate({ pathname: `/stocker/inventories/${record.id}` }),
               };
             }}
@@ -188,8 +196,8 @@ const InventoryList = () => {
                 footer={
                   <div>
                     <Space size="small">
-                      <Button key="submit">{mode === "new" ? "Tạo" : "Cập nhập"}</Button>
-                      <Button key="back" mode="cancel">Hủy</Button>
+                      <Button onClick={handleOk} key="submit">{mode === "new" ? "Tạo" : "Cập nhập"}</Button>
+                      <Button onClick={handleCancel} key="back" mode="cancel">Hủy</Button>
                     </Space>
                   </div>
                 }
@@ -199,7 +207,7 @@ const InventoryList = () => {
                   <Input />
                 </Form.Item>
                 <Form.Item
-                    label="Code"
+                    label="Mã kho"
                     name="code"
                     rules={[
                       {
@@ -211,7 +219,7 @@ const InventoryList = () => {
                 </Form.Item>
 
                 <Form.Item
-                    label="Name"
+                    label="Tên kho"
                     name="name"
                     rules={[
                       {
@@ -226,7 +234,7 @@ const InventoryList = () => {
               </Form>
             </Modal>
         )}
-      </>
+      </div>
   );
 };
 

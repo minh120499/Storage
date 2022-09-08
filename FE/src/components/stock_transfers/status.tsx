@@ -1,4 +1,4 @@
-import { useQueries, useQuery } from "@tanstack/react-query";
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import {
   Button,
   Card,
@@ -6,7 +6,6 @@ import {
   Modal,
   PageHeader,
   Space,
-  Spin,
   Steps,
   Table,
   Tabs,
@@ -16,8 +15,9 @@ import { ColumnsType } from "antd/lib/table";
 import "./file.css";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { findDetailByExport } from "../../api/detail_export";
+
 import {
   addExportByInventory,
   findExportById,
@@ -28,47 +28,72 @@ import {
   updateExportStatusById,
 } from "../../api/export_status";
 import { exportById, exportStatus, typeDetailExport } from "../type/data_type";
-import { fontWeight } from "@mui/system";
+import {PDFDownloadLink} from "@react-pdf/renderer";
+import PDFStockTransfer from "./PDFStockTransfer";
+import PrintIcon from "@mui/icons-material/Print";
 
 export const Status = () => {
   const { id } = useParams();
-  const [exportById, setExportById] = useState<exportById>();
+  const [exportById, setExportById] = useState<exportById>({});
   const [detailExport, setDetailExport] = useState<typeDetailExport[]>([]);
-  const [status, setStattus] = useState<exportStatus>();
-  const [loading, setLoading] = useState(true);
+  const [status, setStattus] = useState<exportStatus>({});
+  const [loading, setLoading] = useState(false);
   const [current, setCurrent] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [total, setTotal] = useState<number>(0);
+  const [loadingEdit, setLoadingEdit] = useState(false);
 
   const now = moment(new Date()).format("DD/MM/YYYY HH:mm").toString();
   const next = async () => {
-    setIsModalOpen(true);
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setIsModalOpen(true);
+    }, 500);
   };
-  const handleOk = async () => {
-    if (status?.status === 0) {
-      await updateExportStatusById(item, {
-        id: status?.id,
-        export: item,
-        dateSend: now,
-        status: 1,
-      });
-      await addExportByInventory(exportById?.exportInventory?.id, detailExport);
-    } else if (status?.status === 1) {
-      await updateExportStatusById(item, {
-        id: status?.id,
-        export: item,
-        dateReceive: now,
-        status: 2,
-      });
-      await importExportByInventory(
-          exportById?.receiveInventory?.id,
-          detailExport
-      );
-    }
-    setIsModalOpen(false);
-    setCurrent(current + 1);
+  const handleOk = () => {
+    setLoading(true);
+    setTimeout(async () => {
+      if (status?.status === 0) {
+        await updateExportStatusById(item, {
+          id: status?.id,
+          export: item,
+          dateSend: now,
+          status: 1,
+        });
+        await addExportByInventory(
+            exportById?.exportInventory?.id,
+            detailExport
+        );
+        message.success("Xuất phiếu chuyển hàng thành công");
+      } else if (status?.status === 1) {
+        await updateExportStatusById(item, {
+          id: status?.id,
+          export: item,
+          dateReceive: now,
+          status: 2,
+        });
+        await importExportByInventory(
+            exportById?.receiveInventory?.id,
+            detailExport
+        );
+        message.success("Nhận hàng thành công");
+      }
+      setIsModalOpen(false);
+      setLoading(false);
+      setCurrent(current + 1);
+    }, 1000);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+  const navigate = useNavigate();
+  const handleEdit = () => {
+    setLoadingEdit(true);
+    setTimeout(() => {
+      setLoadingEdit(false);
+      navigate(`/storage/stock_transfers/edit/${id}`);
+    }, 500);
   };
   const data = async () => {
     const exportData = await findExportById(item);
@@ -77,12 +102,28 @@ export const Status = () => {
     setExportById(exportData);
     setDetailExport(detailExport);
     setStattus(exportStatus);
+
     setLoading(false);
-    message.success("Thêm mới phiếu chuyển hàng thành công");
+    let b = 0;
+    detailExport.map((e: any) => {
+      b += e.quantity * 1;
+    });
+    setTotal(b);
+    if (moment(exportStatus?.createAt).format("DD/MM/YYYY HH:mm") === now) {
+      message.success("Thêm mới phiếu chuyển hàng thành công");
+    }
   };
   useEffect(() => {
     data();
   }, [current]);
+  console.log("Người tạo : " + status?.accountCreate)
+  console.log("Mã phiếu : " + status?.code)
+  console.log("Ngày tạo : " + status?.createAt)
+  console.log("Ngày chuyển hàng : " + status?.dateSend)
+  console.log("Ngày nhận hàng : " + status?.dateReceive)
+  console.log("Chi nhánh chuyển :"+exportById?.exportInventory?.name)
+  console.log("Chi nhánh nhận :"+exportById?.receiveInventory?.name)
+  console.log(detailExport)
 
   const dataProductExport = detailExport;
 
@@ -104,11 +145,16 @@ export const Status = () => {
       },
     },
     {
-      title: "Số lượng",
+      title: "Số lượng chuyển",
       dataIndex: "quantity",
     },
   ];
-
+  if (status?.status === 2) {
+    columns.push({
+      title: "Số lượng nhận",
+      dataIndex: "quantity",
+    });
+  }
   if (id === undefined) {
     return <div></div>;
   }
@@ -125,7 +171,7 @@ export const Status = () => {
   };
 
   return (
-      <>
+      <div className='p-5'>
         <div className="site-page-header-ghost-wrapper">
           <PageHeader
               ghost={false}
@@ -133,10 +179,17 @@ export const Status = () => {
               title="Quay lại tạo phiếu chuyển hàng"
               subTitle=""
               extra={[
-                <Button key="3" hidden={status?.status === 2 ? true : false}>
+                <Button key="3" danger hidden={status?.status === 2 ? true : false}>
                   Huỷ
                 </Button>,
-                <Button key="2" hidden={status?.status === 2 ? true : false}>
+                <Button
+                    key="2"
+                    type="primary"
+                    ghost
+                    hidden={status?.status === 2 ? true : false}
+                    onClick={handleEdit}
+                    loading={loadingEdit}
+                >
                   Sửa
                 </Button>,
                 <Button
@@ -144,42 +197,64 @@ export const Status = () => {
                     type="primary"
                     onClick={next}
                     hidden={status?.status === 2 ? true : false}
+                    loading={loading}
                 >
                   {status?.status === 1 ? "Nhận hàng" : "Chuyển hàng"}
                 </Button>,
               ]}
           />
           <Modal
-              title={<h4 style={{ fontWeight: 700 }}>Xuất phiếu chuyển hàng</h4>}
+              title={
+                status?.status === 0 ? (
+                    <h4 style={{ fontWeight: 700 }}>Xuất phiếu chuyển hàng</h4>
+                ) : (
+                    <h4 style={{ fontWeight: 700 }}>Nhận hàng chuyển</h4>
+                )
+              }
               // open={isModalOpen}
               visible={isModalOpen}
               onOk={handleOk}
               onCancel={handleCancel}
               okText={"Xác nhận"}
               cancelText={"Thoát"}
+              confirmLoading={loading}
           >
-            <div>
-              Thao tác này sẽ thay đổi thông số kho các sản phẩm trong phiếu
-              chuyển hàng:
-            </div>
-            <div>
-              <li>
-                {" "}
-                - Giảm tồn kho của chi nhánh{" "}
-                <span style={{ fontWeight: 700 }}>
-                {" "}
-                  {exportById?.exportInventory?.name}{" "}
-              </span>
-              </li>
-              <li>
-                {" "}
-                - Tăng số lượng hàng đang về của chi nhánh{" "}
-                <span style={{ fontWeight: 700 }}>
+            {status?.status === 0 ? (
+                <div>
+                  {" "}
+                  <div>
+                    Thao tác này sẽ thay đổi thông số kho các sản phẩm trong phiếu
+                    chuyển hàng:
+                  </div>
+                  <div>
+                    <li>
+                      {" "}
+                      - Giảm tồn kho của chi nhánh{" "}
+                      <span style={{ fontWeight: 700 }}>
+                    {" "}
+                        {exportById?.exportInventory?.name}{" "}
+                  </span>
+                    </li>
+                    <li>
+                      {" "}
+                      - Tăng số lượng hàng đang về của chi nhánh{" "}
+                      <span style={{ fontWeight: 700 }}>
+                    {exportById?.receiveInventory?.name}
+                  </span>
+                    </li>
+                  </div>
+                  Bạn muốn xuất chuyển hàng phiếu chuyển này?{" "}
+                </div>
+            ) : (
+                <div>
+                  Thao tác nhận hàng này sẽ tăng số lượng tồn kho các sản phẩm trong
+                  phiếu chuyển hàng của chi nhánh{" "}
+                  <span style={{ fontWeight: 700 }}>
                 {exportById?.receiveInventory?.name}
               </span>
-              </li>
-            </div>
-            Bạn muốn xuất chuyển hàng phiếu chuyển này?
+                  . Thao tác này không thể khôi phục.
+                </div>
+            )}
           </Modal>
         </div>
         <div id="top-head-status" className="flex justify-between">
@@ -210,8 +285,23 @@ export const Status = () => {
             </div>
             <div>
               <Space size="small">
-                <Button>In phiếu</Button>
+                {
+                  (exportById !== undefined && detailExport.length > 0 && status !== undefined) ? (
+                      <PDFDownloadLink
+                          fileName={"phieuTraHang - " + moment(status.createAt).format('DD/MM/YYYY HH:mm:ss aa') + ".pdf"}
+                          document={<PDFStockTransfer statusExport={status}  anExport={exportById}
+                                                      detailExport={detailExport} />}>
+                        {({blob, url, loading, error}) =>
+                            <Button style={{padding:0,paddingLeft: 5,paddingRight: 5}} type='default'> <Space>
+                              <PrintIcon style={{position: 'relative', top: 3,fontSize:16}}/>
+                              In phiếu
+                            </Space></Button>
+                        }
+                      </PDFDownloadLink>
+                  ):<></>
+                }
                 <Button>Sao chép</Button>
+
               </Space>
             </div>
           </div>
@@ -340,7 +430,7 @@ export const Status = () => {
           </div>
         </div>
 
-        <div>
+        <div >
           <Tabs defaultActiveKey="1">
             <Tabs.TabPane
                 tab="Thông tin sản phẩm"
@@ -352,11 +442,26 @@ export const Status = () => {
                   columns={columns}
                   dataSource={dataProductExport}
                   loading={loading}
+                  pagination={false}
               />
             </Tabs.TabPane>
           </Tabs>
         </div>
-      </>
+        <div className="export-bottom ">
+          <li className="">
+            <div className="">
+              <span>Tổng số lượng chuyển ({detailExport.length} sản phẩm) :</span>
+            </div>
+            <div className="">
+              <span>{total}</span>
+            </div>
+          </li>
+          <li>
+            <div className="">
+              <span>Tổng giá trị chuyển : {total}</span>
+            </div>
+          </li>
+        </div>
+      </div>
   );
 };
-

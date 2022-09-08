@@ -32,12 +32,14 @@ const initialUserState: IUser = {
   address: "",
 };
 
+
 export const userSlice = createSlice({
   name: "user",
   initialState: initialUserState,
   reducers: {
     setUserStore: (state, action: PayloadAction<IPayload>) => {
       const d = decodeToken<any | null>(action.payload.token);
+      localStorage.setItem('token', action.payload.token)
       return d?.userDetails || state;
     },
   },

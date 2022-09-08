@@ -1,8 +1,16 @@
-import { Button, Modal, Table, Tag, Transfer } from "antd";
-import { ColumnsType } from "antd/lib/table";
+import {
+  Button,
+  Modal,
+  Pagination,
+  PaginationProps,
+  Table,
+  Tag,
+  Transfer,
+} from "antd";
+import { ColumnsType, TablePaginationConfig } from "antd/lib/table";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { findDetailByExport } from "../../api/detail_export";
 import { getExport } from "../../api/export";
 import { findExportStatusById } from "../../api/export_status";
@@ -21,11 +29,11 @@ export const ListExport = () => {
   const COLUMS: ColumnsType<listExport> = [
     {
       title: (
-        <SettingsIcon
-          onClick={() => {
-            setColSettingModal(true);
-          }}
-        />
+          <SettingsIcon
+              onClick={() => {
+                setColSettingModal(true);
+              }}
+          />
       ),
     },
     {
@@ -68,35 +76,43 @@ export const ListExport = () => {
       key: "exportStatus",
       render: (text) => {
         return (
-          <div>
-            {text.status === 0 ? (
-              <Tag color={"blue"} key={text.status}>
-                Chờ chuyển
-              </Tag>
-            ) : "" || text.status === 1 ? (
-              <Tag color={"warning"} key={text.status}>
-                Đang chuyển
-              </Tag>
-            ) : "" || text.status === 2 ? (
-              <Tag color={"green"} key={text.status}>
-                Đã nhận
-              </Tag>
-            ) : (
-              ""
-            )}
-          </div>
+            <div>
+              {text.status === 0 ? (
+                  <Tag color={"blue"} key={text.status}>
+                    Chờ chuyển
+                  </Tag>
+              ) : "" || text.status === 1 ? (
+                  <Tag color={"warning"} key={text.status}>
+                    Đang chuyển
+                  </Tag>
+              ) : "" || text.status === 2 ? (
+                  <Tag color={"green"} key={text.status}>
+                    Đã nhận
+                  </Tag>
+              ) : (
+                  ""
+              )}
+            </div>
         );
+      },
+    },
+    {
+      title: "Ngày nhận",
+      dataIndex: "exportStatus",
+      key: "exportStatus",
+      render: (text) => {
+        return <div>{text?.dateReceive}</div>;
       },
     },
   ];
   const [columns, setColumns] = useState<ColumnsType<listExport>>([
     {
       title: (
-        <SettingsIcon
-          onClick={() => {
-            setColSettingModal(true);
-          }}
-        />
+          <SettingsIcon
+              onClick={() => {
+                setColSettingModal(true);
+              }}
+          />
       ),
     },
     {
@@ -139,23 +155,23 @@ export const ListExport = () => {
       key: "exportStatus",
       render: (text) => {
         return (
-          <div>
-            {text.status === 0 ? (
-              <Tag color={"blue"} key={text.status}>
-                Chờ chuyển
-              </Tag>
-            ) : "" || text.status === 1 ? (
-              <Tag color={"warning"} key={text.status}>
-                Đang chuyển
-              </Tag>
-            ) : "" || text.status === 2 ? (
-              <Tag color={"green"} key={text.status}>
-                Đã nhận
-              </Tag>
-            ) : (
-              ""
-            )}
-          </div>
+            <div>
+              {text.status === 0 ? (
+                  <Tag color={"blue"} key={text.status}>
+                    Chờ chuyển
+                  </Tag>
+              ) : "" || text.status === 1 ? (
+                  <Tag color={"warning"} key={text.status}>
+                    Đang chuyển
+                  </Tag>
+              ) : "" || text.status === 2 ? (
+                  <Tag color={"green"} key={text.status}>
+                    Đã nhận
+                  </Tag>
+              ) : (
+                  ""
+              )}
+            </div>
         );
       },
     },
@@ -190,6 +206,7 @@ export const ListExport = () => {
 
   useEffect(() => {
     getMock();
+    document.title= "Đơn chuyển hàng"
   }, []);
 
   const handleChange = (newTargetKeys: string[]) => {
@@ -209,9 +226,15 @@ export const ListExport = () => {
   const [listExport, setListExport] = useState<listExport[]>([]);
   const [loading, setLoading] = useState(true);
   const [colSettingModal, setColSettingModal] = useState(false);
+  const [total, setTotal] = useState();
+  const [current, setCurrent] = useState(1);
+  const onChange: PaginationProps["onChange"] = (page) => {
+    console.log(page);
+    setCurrent(page);
+  };
   const data = async () => {
     // @ts-ignore
-    const exportData = await getExport();
+    const exportData = await getExport(current);
 
     exportData.data.map(async (e: exportById) => {
       const detailExport = await findDetailByExport(e.id);
@@ -219,22 +242,22 @@ export const ListExport = () => {
       // @ts-ignore
       setListExport((pre: listExport[]) => {
         return [
-          ...pre,
           {
             exportById: e,
             typeDetailExport: detailExport,
             exportStatus: exportStatus,
           },
+          ...pre,
         ];
       });
     });
-
+    setTotal(exportData.total);
     setLoading(false);
   };
   useEffect(() => {
     setListExport([]);
     data();
-  }, []);
+  }, [current]);
   // console.log(listExport);
 
   const dataA: listExport[] = listExport;
@@ -247,41 +270,52 @@ export const ListExport = () => {
     navigate(`/storage/stock_transfers/${e.id}`);
   };
   return (
-    <div className="p-5">
-      <Button onClick={hanldeClick} type="primary">
-        + Tạo phiếu chuyển hàng
-      </Button>
-      <Table
-        rowKey={"uid"}
-        columns={columns}
-        dataSource={dataA}
-        loading={loading}
-        onRow={(record, index) => {
-          return {
-            onClick: () => hanldeRow(record?.exportById),
-          };
-        }}
-      />
-      {colSettingModal && (
-        <Modal
-          title="Điều chỉnh cột hiển thị"
-          visible={colSettingModal}
-          onCancel={() => setColSettingModal(false)}
-          footer={null}
+      <div className="p-5">
+        <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "35px",
+              alignItems: "center",
+            }}
         >
-          <Transfer
-            dataSource={mockData}
-            targetKeys={targetKeys}
-            onChange={handleChange}
-            render={(item) => item.title}
-            // selectAllLabels={(info: {
-            //   selectedCount: number;
-            //   totalCount: number;
-            // }) => [<div>a</div>]}
-            // // selectAllLabels={["a"]}
-          />
-        </Modal>
-      )}
-    </div>
+          <h1 style={{ fontSize: "30px", margin: 0, marginRight: 10 }}>
+            Đơn chuyển hàng
+          </h1>
+          <Button type="primary" onClick={hanldeClick}>
+            + Tạo phiếu chuyển hàng
+          </Button>
+        </div>
+
+        <Table
+            rowKey={"uid"}
+            columns={columns}
+            dataSource={dataA}
+            loading={loading}
+            onRow={(record, index) => {
+              return {
+                onClick: () => hanldeRow(record?.exportById),
+              };
+            }}
+            pagination={false}
+        />
+        <Pagination defaultCurrent={1} total={total} onChange={onChange} />
+        {colSettingModal && (
+            <Modal
+                title="Điều chỉnh cột hiển thị"
+                visible={colSettingModal}
+                onCancel={() => setColSettingModal(false)}
+                footer={null}
+            >
+              <Transfer
+                  dataSource={mockData}
+                  targetKeys={targetKeys}
+                  onChange={handleChange}
+                  render={(item) => item.title}
+
+              />
+            </Modal>
+        )}
+      </div>
   );
 };

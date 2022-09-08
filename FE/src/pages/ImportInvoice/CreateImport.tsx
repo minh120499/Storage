@@ -16,23 +16,16 @@ import {
 } from "antd";
 import SelectSupplier from "../../components/SelectSupplier";
 import {IInventories, IMyTableData, IProductVariant} from "../../services/customType";
-import {
-    createImport,
-    getCountTotalProductVariant,
-    getCurrentQuantityInventory,
-    getProductVariant
-} from "../../services/api";
-import {BackwardOutlined, DeleteOutlined, FastForwardOutlined} from '@ant-design/icons';
+import {createImport, getCountTotalProductVariant, getProductVariant} from "../../services/api";
+import {BackwardOutlined, DeleteOutlined, FastForwardOutlined, LeftOutlined} from '@ant-design/icons';
 import {ColumnProps} from "antd/es/table";
 import {default as NumberFormat} from "react-number-format";
-import {getAllInventory} from "../../api/inventory";
+import {getAllActiveInventory} from "../../api/inventory";
 import ToastCustom from "../../features/toast/Toast";
 import {RangePickerProps} from "antd/es/date-picker";
-import moment from "moment";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 // ImportInvoice * as CurrencyFormat from 'react-currency-format';
-
 
 
 const CreateImport = () => {
@@ -51,27 +44,52 @@ const CreateImport = () => {
     const [totalPrice, setTotalPrice] = useState(0);
     const [date, setDate] = useState("0");
     const navigate = useNavigate();
+    const [searchValue, setSearchValue] = useState<string>("");
+
+
+    let keyWord =""
+
+
 
 
     useEffect(() => {
-        getCountTotalProductVariant().then(r => {
-            setTotalPage(r.data)
-        })
-        getAllInventory().then(r => {
+        getAllActiveInventory().then(r => {
             setInventories(r.data.reverse())
         })
+        document.title = "Tạo mới đơn"
     }, [])
 
 
-
     useEffect(() => {
-        getProductVariant(pageNumber).then((productVariant) => {
+        getCountTotalProductVariant(searchValue).then(r => {
+            setTotalPage(r.data)
+        })
+        getProductVariant(pageNumber, searchValue).then((productVariant) => {
             setProductVariants(productVariant.data)
-            const listData = productVariants.concat(productVariant.data)
+            const listData = listAllProductVariant.concat(productVariant.data)
             setListAllProductVariant(listData)
         })
 
     }, [pageNumber])
+
+    useEffect(() => {
+        getCountTotalProductVariant(searchValue).then(r => {
+            if ((r.data.length % 7) == 0 ){
+                setTotalPage((r.data.length / 7))
+            }else if (r.data.length == 1){
+                setTotalPage(1)
+            }else {
+                setTotalPage((r.data.length / 7) + 1)
+            }
+            setTotalPage(r.data)
+        })
+        getProductVariant(pageNumber, searchValue).then((productVariant) => {
+            setProductVariants(productVariant.data)
+            const listData = productVariants.concat(productVariant.data)
+            setListAllProductVariant(listData)
+        })
+        // searchValue === "" && setPageNumber(1)
+    }, [searchValue])
 
 
     useEffect(() => {
@@ -168,7 +186,8 @@ const CreateImport = () => {
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        setSelectedRowKeys(newSelectedRowKeys);
+        const newList = selectedRowKeys.concat(newSelectedRowKeys)
+        setSelectedRowKeys(newList);
     };
 
     const rowSelection = {
@@ -194,10 +213,18 @@ const CreateImport = () => {
             title: 'Số lượng',
             dataIndex: 'quantity',
             render: (text, record, index) => (
-                <NumberFormat className='input-price' value={text} thousandSeparator={true} onValueChange={(values) => {
-                    const {value} = values;
-                    onInputChange("quantity", index, Number(value))
-                }}/>
+                <NumberFormat
+                    isAllowed={(values) => {
+                        const {value} = values;
+                        return Number(value) > 0 && Number(value) < 1000;
+                    }}
+                    className='input-price' value={text} thousandSeparator={true}
+                    onValueChange={(values) => {
+                        const {value} = values;
+
+                        onInputChange("quantity", index, Number(value))
+                    }}
+                />
             ),
             width: '15%',
             align: 'right'
@@ -206,10 +233,17 @@ const CreateImport = () => {
             title: 'Giá',
             dataIndex: 'importPrice',
             render: (text, record, index) => (
-                <NumberFormat className='input-price' value={text} thousandSeparator={true} onValueChange={(values) => {
-                    const {value} = values;
-                    onInputChange("importPrice", index, Number(value))
-                }}/>
+                <NumberFormat
+                    isAllowed={(values) => {
+                        const {formattedValue, floatValue} = values;
+                        return formattedValue === "" || Number(floatValue) > 0;
+                    }}
+                    className='input-price' value={text} thousandSeparator={true}
+                    onValueChange={(values) => {
+                        const {value} = values;
+                        onInputChange("importPrice", index, Number(value))
+                    }}
+                />
             ),
             width: '15%',
             align: 'right'
@@ -272,6 +306,7 @@ const CreateImport = () => {
     const onCancel = () => {
         setVisible(false)
         setPageNumber(1)
+        setSearchValue("")
         setSelectedRowKeys([])
     }
 
@@ -322,7 +357,7 @@ const CreateImport = () => {
                     icon: 'success',
                     title: 'Thêm phiếu nhập thành công'
                 }).then()
-                navigate("/purchase_orders")
+                navigate("/purchase_orders", {replace: true})
             })
         }
 
@@ -341,8 +376,13 @@ const CreateImport = () => {
 
 
     return (
-        <div>
-            <h1 style={{fontSize:'30px',margin:0,marginRight:10,marginBottom:'45px'}}>Tạo đơn nhập hàng</h1>
+        <div className='p-5'>
+            <h2 style={{fontSize: '15px'}}>
+                <Link to="/purchase_orders">
+                    <LeftOutlined/> Danh sách đơn hàng
+                </Link>
+            </h2>
+            <h1 style={{fontSize: '30px', margin: 0, marginRight: 10, marginBottom: '30px'}}>Tạo đơn nhập hàng</h1>
             <Form layout="vertical">
                 <Row gutter={24}>
                     <Col span={16}>
@@ -357,17 +397,12 @@ const CreateImport = () => {
                                     <Select style={{width: '100%', marginBottom: 10, borderRadius: 5}}
                                             size={'large'}
                                             value={null}
-                                            showSearch
-                                            optionFilterProp="children"
-                                            filterOption={(input, option) => {
-                                                return (
-                                                    option?.key.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-                                                    option?.title.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                );
-
-                                            }}
+                                            // showSearch
+                                            // onSearch={(e) => {
+                                            //     setSearchValue(e)
+                                            // }}
                                             onChange={handleAddToTable}
-                                            placeholder="Tìm kiếm sản phẩm theo tên"
+                                            placeholder="Nhấn để chọn sản phẩm"
                                             dropdownRender={menu => (
                                                 <>
                                                     {menu}
@@ -393,7 +428,8 @@ const CreateImport = () => {
                                         {
                                             productVariants && productVariants.map((productVariant, index) => {
                                                 return (
-                                                    <Option id={index} title={productVariant.name} value={productVariant.id} key={productVariant.name}>
+                                                    <Option id={index} title={productVariant.name} value={productVariant.id}
+                                                            key={productVariant.name}>
                                                         <div style={{
                                                             display: "flex",
                                                             justifyContent: "space-between",
@@ -403,7 +439,7 @@ const CreateImport = () => {
                                                             <div>
                                                                 {productVariant.code} <br/> {productVariant.name}
                                                             </div>
-                                                            <div  style={{width:'70px'}}>
+                                                            <div style={{width: '70px'}}>
                                                                 <NumberFormat value={productVariant.importPrice}
                                                                               displayType={'text'}
                                                                               thousandSeparator={true}
@@ -418,16 +454,17 @@ const CreateImport = () => {
                                     </Select>
 
                                 </Col>
-                                <Col span={4} style={{display:'flex',alignItems:'center'}}>
-                                    <Button style={{marginBottom:'10px'}} onClick={() => setVisible(true)} type='text'>Chọn nhiều</Button>
+                                <Col span={4} style={{display: 'flex', alignItems: 'center'}}>
+                                    <Button style={{marginBottom: '10px'}} onClick={() => setVisible(true)} type='text'>Chọn
+                                        nhiều</Button>
                                 </Col>
                                 {
                                     visible && (
                                         <Modal
                                             title="Chọn nhiều sản phẩm"
                                             centered
+                                            bodyStyle={{overflowY: 'scroll'}}
                                             visible={visible}
-                                            onOk={() => setVisible(false)}
                                             onCancel={onCancel} width={1000}
                                             footer={[
                                                 <div key={999}>
@@ -440,7 +477,17 @@ const CreateImport = () => {
                                                 </div>
                                             ]}
                                         >
-                                            <Input placeholder="Tìm kiếm sản phẩm theo tên" />
+                                            <Input onKeyDown={(e) => {
+                                                if (e.key == "Enter"){
+                                                    setPageNumber(1)
+                                                    setSearchValue(keyWord)
+                                                }
+                                            }}
+                                                   onChange={(e) =>{
+                                                      keyWord = e.target.value.toString()
+                                                   }}
+                                                   placeholder="Tìm kiếm sản phẩm theo tên"
+                                            />
                                             <br/>
                                             <Table
                                                 rowKey="code"
@@ -484,7 +531,7 @@ const CreateImport = () => {
                                         padding: '5px',
                                         justifyContent: 'center',
                                         'display': 'flex',
-                                        textAlign: 'center'
+                                        textAlign: 'center',
                                     }}>
                                         <div>
                                             <img style={{width: '150px', marginBottom: '10px'}}
@@ -530,10 +577,11 @@ const CreateImport = () => {
                         <div className='block'>
                             <p>Số lượng: {totalQuantity}</p>
                             <p>Tổng tiền:
-                                <span style={{marginLeft:5}}><NumberFormat value={totalPrice} displayType={'text'} thousandSeparator={true}
-                                                    suffix={' đ'}/></span>
+                                <span style={{marginLeft: 5}}><NumberFormat value={totalPrice} displayType={'text'}
+                                                                            thousandSeparator={true}
+                                                                            suffix={' đ'}/></span>
                             </p>
-                            <Button  htmlType="submit" onClick={onCreateOrder}>Đặt hàng</Button>
+                            <Button htmlType="submit" onClick={onCreateOrder}>Đặt hàng</Button>
                         </div>
                     </Col>
                 </Row>

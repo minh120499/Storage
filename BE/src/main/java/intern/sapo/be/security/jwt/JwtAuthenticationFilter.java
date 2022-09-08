@@ -1,15 +1,16 @@
 package intern.sapo.be.security.jwt;
 
 import intern.sapo.be.entity.Account;
+import intern.sapo.be.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -17,11 +18,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JwtTokenUtil jwtUtils;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response, FilterChain filterChain)
@@ -44,24 +51,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean hasAuthorizationBearer(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
-        if (ObjectUtils.isEmpty(header) || !header.startsWith("Bearer")) {
-            return false;
-        }
+        return !ObjectUtils.isEmpty(header) && header.startsWith("Bearer");
 
-        return true;
     }
 
     private String getAccessToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
-        String token = header.split(" ")[1].trim();
-        return token;
+        return header.split(" ")[1].trim();
     }
 
     private void setAuthenticationContext(String token, HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(token);
-
+        Set<GrantedAuthority> autorities = new HashSet<>();
+        for (String role : jwtUtils.getClaims(token).getAuthorities()) {
+            autorities.add(new SimpleGrantedAuthority(role));
+        }
         UsernamePasswordAuthenticationToken
-                authentication = new UsernamePasswordAuthenticationToken(userDetails, null, null);
+                authentication = new UsernamePasswordAuthenticationToken(userDetails, null, autorities);
 
         authentication.setDetails(
                 new WebAuthenticationDetailsSource().buildDetails(request));
@@ -72,10 +78,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private UserDetails getUserDetails(String token) {
         Account userDetails = new Account();
         String[] jwtSubject = jwtUtils.getSubject(token).split(",");
-
         userDetails.setId((int) Long.parseLong(jwtSubject[0]));
         userDetails.setUsername(jwtSubject[1]);
 
-        return (UserDetails) userDetails;
+        return userDetails;
     }
 }

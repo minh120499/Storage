@@ -44,7 +44,7 @@ const Login: React.FC = () => {
       })
     );
     openNotification();
-    navigate("/home");
+    navigate("/home", {replace: true});
   }
 
   const { error }: { error: any } = loginSubmit;
@@ -110,7 +110,7 @@ const Login: React.FC = () => {
             <Form.Item
               name="username"
               rules={[{ required: true, message: "Hãy nhập tài khoản!" }]}
-              initialValue="minh1"
+              initialValue="minh"
             >
               <Input
                 className="pl-3"

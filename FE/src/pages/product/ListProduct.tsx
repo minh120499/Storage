@@ -16,7 +16,7 @@ import "../../styles/Table.css";
 import { IProductCount, IProductFilter } from '../../type/allType';
 import { countProductByFilter, deleteProductById, deleteProductsById, getProducts } from '../../services/productServices';
 // import ProductPagination from './ProductPagination';
-import { DeleteOutlined, DownOutlined, PlusOutlined, SortDescendingOutlined, StopOutlined,DownloadOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownOutlined, PlusOutlined, SortDescendingOutlined, StopOutlined, DownloadOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import Swal from 'sweetalert2';
 import ToastCustom from '../../features/toast/Toast';
 import { Delete, PreviewOutlined } from '@mui/icons-material';
@@ -29,9 +29,9 @@ import { margin } from '@mui/system';
 
 const ListProduct = () => {
     var keyWord = ''
-    const {searchKey}=useParams()
+    const { searchKey } = useParams()
     const initFilter: IProductFilter = {
-        key:searchKey?searchKey:'',
+        key: searchKey ? searchKey : '',
         isDelete: false,
         sortBy: 'name',
         isDesc: true,
@@ -67,46 +67,49 @@ const ListProduct = () => {
             dataIndex: "total",
             key: "total",
             render: (total: number) => {
-                return total > 0 ? <p style={{ color: 'blue' }}>Có thể bán</p> : <p style={{ color: 'red' }}>Hết hàng</p>
+                return total > 0 ? <Antd.Tag icon={<CheckCircleOutlined />} color="success">Có thể bán</Antd.Tag> : <Antd.Tag icon={<CloseCircleOutlined />} color="error">Hết hàng</Antd.Tag >
             }
-        },  {
+        }, {
             title: "Thao tác",
-            key:'id',
+            key: 'id',
             dataIndex: "id",
-            render: (id:number) => {
+            render: (id: number) => {
                 return (
-                        <>
-                        <Antd.Button style={{width:'40%' ,margin:5}} danger type={'ghost'}  icon={<Delete />} onClick={()=>deleteProduct(id)}></Antd.Button>
-                        <Antd.Button style={{width:'40%'}}  type={'ghost'}  icon={<PreviewOutlined />} onClick={()=> navigate({ pathname: `/products/${   id}` })}></Antd.Button>
-                        </>
+                    <>
+                        <Antd.Button style={{ width: '40%', margin: 5 }} danger type={'ghost'} icon={<Delete />} onClick={() => deleteProduct(id)}></Antd.Button>
+                        <Antd.Button style={{ width: '40%' }} type={'ghost'} icon={<PreviewOutlined />} onClick={() => navigate({ pathname: `/products/${id}` })}></Antd.Button>
+                    </>
                 )
             }
         }
     ]
-    
+
     const [productFilter, setProductFilter] = useState<IProductFilter>(initFilter)
     const [products, setProducts] = useState<Array<IProductCount>>([])
-    const [reload, setReload] = useState(false)
+    const [reload, setReload] = useState(true)
     const navigate = useNavigate()
     const [totalPage, setTotalPage] = useState<number>(1);
     const [selectProduct, setSelectProduct] = useState<React.Key[]>([]);
     const [isOpenFilter, setIsOpenFilter] = useState(false)
-    const loadData= ()=>{
+    const loadData = () => {
+        setReload(true)
+
         getProducts(productFilter).then((response) => response.json())
-        .then((res) => {
-            setProducts(res)
+            .then((res) => {
+                setProducts(res)
+                setReload(false)
 
-        }).catch(error => { })
-    countProductByFilter(productFilter).then((response) => response.json())
-        .then((res) => {
-            setTotalPage(res)
-        }).catch(error => {
+            }).catch(error => { })
+        countProductByFilter(productFilter).then((response) => response.json())
+            .then((res) => {
+                setTotalPage(res)
+            }).catch(error => {
 
 
-        })
+            })
     }
 
-    const deleteProduct = (id:number) => {
+    const deleteProduct = (id: number) => {
         Swal.fire({
             title: 'Bạn có chắc?',
             text: "Bạn không thể hồi phục lại dữ liệu!",
@@ -116,31 +119,30 @@ const ListProduct = () => {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Delete!'
         }).then((result) => {
-            if (result.isConfirmed ) {
+            if (result.isConfirmed) {
                 deleteProductById(id)
-                .then(res => {
-                    if(res.ok)
-                    {
-                        ToastCustom.fire({
-                            icon:'success',
-                            title:'Xóa thành công'
-                        })
-                        loadData()
-                    }
-                 })
-                .catch(error => {
-                    ToastCustom.fire(
-                        {
-                            icon: 'error',
-                            title: 'Xóa Thất bại'
+                    .then(res => {
+                        if (res.ok) {
+                            ToastCustom.fire({
+                                icon: 'success',
+                                title: 'Xóa thành công'
+                            })
+                            loadData()
                         }
-                    )
-    
-                })
+                    })
+                    .catch(error => {
+                        ToastCustom.fire(
+                            {
+                                icon: 'error',
+                                title: 'Xóa Thất bại'
+                            }
+                        )
+
+                    })
             }
-    
+
         })
-    
+
     }
     const handleDeleteProduct = () => {
         Swal.fire({
@@ -152,41 +154,40 @@ const ListProduct = () => {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Delete!'
         }).then((result) => {
-            if (result.isConfirmed ) {
+            if (result.isConfirmed) {
                 deleteProductsById(selectProduct)
-                .then(res => {
-                    if(res.ok)
-                    {
-                        ToastCustom.fire({
-                            icon:'success',
-                            title:'Xóa thành công'
-                        })
-                        loadData()
-                    }
-                 })
-                .catch(error => {
-                    ToastCustom.fire(
-                        {
-                            icon: 'error',
-                            title: 'Xóa Thất bại'
+                    .then(res => {
+                        if (res.ok) {
+                            ToastCustom.fire({
+                                icon: 'success',
+                                title: 'Xóa thành công'
+                            })
+                            loadData()
                         }
-                    )
-    
-                })
+                    })
+                    .catch(error => {
+                        ToastCustom.fire(
+                            {
+                                icon: 'error',
+                                title: 'Xóa Thất bại'
+                            }
+                        )
+
+                    })
             }
-    
+
         })
-    
+
     }
     const handleMenuClick: Antd.MenuProps['onClick'] = (e: any) => {
         switch (e.key) {
             case '1':
-                handleDeleteProduct() 
+                handleDeleteProduct()
                 break
             case '2':
-                           
+
                 break
-    
+
         }
     };
     const menu = (
@@ -196,28 +197,28 @@ const ListProduct = () => {
                 {
                     key: '1',
                     label: <Antd.Button style={{ width: '100%' }} type="text" danger>Xóa Sản phẩm<DeleteOutlined /></Antd.Button>,
-    
+
                 },
                 // {
                 //     label: <Antd.Button style={{ width: '100%' }} type="text" >Sửa sản phẩm<InfoCircleOutlined /></Antd.Button>,
                 //     key: '2',
-    
-    
+
+
                 // },
             ]}
         />
     );
-    
+
 
     useLayoutEffect(() => {
+            loadData()
 
-       loadData()
-       document.title='Danh sách sản phẩm'
+        document.title = 'Danh sách sản phẩm'
 
     }, [productFilter])
-   
+
     const onPageChange = (page: number, size: number) => {
-        setProductFilter({ ...productFilter, page: page,size:size })
+        setProductFilter({ ...productFilter, page: page, size: size })
 
     }
 
@@ -230,43 +231,46 @@ const ListProduct = () => {
     const Products = () => {
         return (
             <>
+                <Antd.Spin tip="Loading..." spinning={reload} >
 
-                <Antd.Table dataSource={products}
-                    sticky
-                    columns={ProductCol}
-                    rowKey="id"
-                    bordered
-                    pagination={false}
-                    style={{ height: 600, maxHeight: 600, overflow: 'scroll' }}
-                    // onRow={(record) => {
-                    //     return {
-                            
-                    //     }
-                    // }}
-                    
-                    rowSelection={{selectedRowKeys:selectProduct,
-                                    onChange(selectedRowKeys, selectedRows, info) {
-                                        setSelectProduct(selectedRowKeys)
-                                        // selectProduct=selectedRowKeys
-                                    },}}
+                    <Antd.Table dataSource={products}
+                        sticky
+                        columns={ProductCol}
+                        rowKey="id"
+                        bordered
+                        pagination={false}
+                        style={{ height: 600, maxHeight: 600, overflow: 'scroll' }}
+                        // onRow={(record) => {
+                        //     return {
 
+                        //     }
+                        // }}
 
-                />
+                        rowSelection={{
+                            selectedRowKeys: selectProduct,
+                            onChange(selectedRowKeys, selectedRows, info) {
+                                setSelectProduct(selectedRowKeys)
+                                // selectProduct=selectedRowKeys
+                            },
+                        }}
+
+                    />
+                </Antd.Spin>
 
             </>
         )
     }
 
     return (
-        <>
+        <div className ='p-5'>
             <Antd.Typography.Title>Danh sách sản phẩm</Antd.Typography.Title>
             <Antd.Drawer title="Tìm kiếm nâng cao" placement="right" onClose={closeFilter} visible={isOpenFilter}>
 
             </Antd.Drawer>
             <Mui.Grid container spacing={2} sx={{ mb: 2 }}>
                 <Mui.Grid item xs={1.5}>
-                    <Antd.Dropdown overlay={menu} disabled={selectProduct.length<1}>
-                        <Antd.Button style={{ width: "100%", fontSize: '14px' ,margin:0}} type="primary">
+                    <Antd.Dropdown overlay={menu} disabled={selectProduct.length < 1}>
+                        <Antd.Button style={{ width: "100%", fontSize: '14px', margin: 0 }} type="primary">
                             <Antd.Space>
                                 Thao tác
                                 <DownOutlined />
@@ -275,12 +279,11 @@ const ListProduct = () => {
                     </Antd.Dropdown>
 
                 </Mui.Grid>
-                <Mui.Grid item xs={5.5} sx={{m:0}}>
+                <Mui.Grid item xs={6.5} sx={{ m: 0 }}>
                     <Antd.Input
                         placeholder='Nhập tên hoặc mã sản phẩm'
                         onChange={(e) => {
                             keyWord = e.target.value.toString()
-
                         }}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter')
@@ -300,14 +303,14 @@ const ListProduct = () => {
                         </Antd.Space>
                     </Antd.Button>
                 </Mui.Grid>
-                <Mui.Grid item xs={1}>
+                {/* <Mui.Grid item xs={1}>
                     <Antd.Button style={{ width: "100%", fontSize: '14px', margin: 0 }} type="primary" >
                         <Antd.Space>
                             <DownloadOutlined />
                             Xuất file
                         </Antd.Space>
                     </Antd.Button>
-                </Mui.Grid>
+                </Mui.Grid> */}
                 <Mui.Grid item xs={2}>
                     <Antd.Button style={{ width: "100%", fontSize: '14px', margin: 0 }} type="primary" onClick={() => { navigate('/productsAdd') }} >
                         <Antd.Space>
@@ -321,7 +324,7 @@ const ListProduct = () => {
                     <Mui.Paper sx={{ pb: 2 }} >
                         <Products />
                         <div style={{ display: 'flex', justifyContent: 'end' }}>
-                            <Antd.Pagination responsive  style={{ marginTop: 10, marginRight: 10 }} pageSize={ productFilter.size} showSizeChanger showQuickJumper defaultCurrent={1} total={totalPage} onChange={onPageChange} pageSizeOptions={[7,10,20,50]}   />
+                            <Antd.Pagination responsive style={{ marginTop: 10, marginRight: 10 }} pageSize={productFilter.size} showSizeChanger showQuickJumper defaultCurrent={1} total={totalPage} onChange={onPageChange} pageSizeOptions={[7, 10, 20, 50]} />
 
                         </div>
 
@@ -331,7 +334,7 @@ const ListProduct = () => {
             </Mui.Grid>
 
 
-        </>
+        </div>
     )
 }
 

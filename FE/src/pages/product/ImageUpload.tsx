@@ -40,7 +40,7 @@ const ImageUpload = (props: ISelectImage) => {
 
   const UploadBtn = () => (
     <div style={{ width: '100%' ,height:'100%', border: '1px dotted black', display: "flex", padding: 50, justifyContent: "center" }}>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      {loading ? <Antd.Spin spinning={true}></Antd.Spin>: <PlusOutlined />}
     </div>
   );
   return (

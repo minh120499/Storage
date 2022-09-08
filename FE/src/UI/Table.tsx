@@ -9,8 +9,9 @@ const T = (props: any) => {
   const query = useQuery(
     ["id", page, pageSize],
     () => props.query(page, pageSize),
-    { keepPreviousData: true, retry: 0 }
+    { keepPreviousData: true }
   );
+
   if (query?.isError) {
     Swal.fire({
       icon: "error",

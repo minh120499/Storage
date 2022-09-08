@@ -14,6 +14,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import "../styles/SideBar.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
+import Swal from "sweetalert2";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -32,10 +33,10 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
+  // getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
 
   getItem("Quản lý sản phẩm", "sub1", <AppstoreOutlined />, [
-    getItem("Thêm sản phẩm", "/productsAdd"),
+    getItem("Thêm sản phẩm", "staff/productsAdd"),
     getItem("Danh sách sản phẩm", "/products"),
     getItem("Danh mục sản phẩm", "/categories"),
   ]),
@@ -52,17 +53,18 @@ const items: MenuItem[] = [
   getItem("Nhà cung cấp", "/supplier", <ShopOutlined />),
   getItem("Kho hàng", "", <WarehouseIcon />, [
     getItem("Danh sách", "/stocker/inventories"),
-    getItem("Quản lý", "/stocker/manager"),
+    // getItem("Quản lý", "/stocker/manager"),
   ]),
 
   getItem("Nhân viên", null, <TeamOutlined />, [
-    getItem("Danh sách", "/api/admin/employees"),
-    getItem("Roles", "/api/admin/roles/"),
+    getItem("Danh sách", "/admin/employees"),
+    getItem("Roles", "/admin/roles/"),
   ]),
   getItem("Đăng xuất", "/login", <LogoutIcon />),
 ];
 
 const SideBar: React.FC = () => {
+  const user = useSelector((state: RootState) => state?.user)
   // @ts-ignore
   const roles = useSelector((state: RootState) => state?.user?.authorities);
   // console.log(roles);
@@ -89,7 +91,7 @@ const SideBar: React.FC = () => {
           theme="dark"
           items={items}
           onClick={(e) => {
-            navigate(e.key);
+            navigate(e.key, {replace: true})
           }}
         />
       </div>

@@ -13,6 +13,8 @@ import intern.sapo.be.service.IInventoriesProductVariantService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -41,6 +43,8 @@ public class ImportService implements IImportService {
 
     private final IReturnImportRepo returnImportRepo;
 
+    private final JdbcTemplate jdbcTemplate;
+
     private final ModelMapper modelMapper;
     private final IInventoriesProductVariantService inventoriesProductVariantService;
 
@@ -50,9 +54,9 @@ public class ImportService implements IImportService {
     }
 
     @Override
-    public List<ImportResponse> findAllImportDTO() {
-        Query query = entityManager.createNamedQuery("getFeaturedInventoryDTO");
-        return (List<ImportResponse>) query.getResultList();
+    public List<ImportResponse> findAllImportDTO(String searchValue) {
+        String query = "call filter_import_invoice(?)";
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper(ImportResponse.class), searchValue);
     }
 
     @Override
@@ -161,7 +165,6 @@ public class ImportService implements IImportService {
             query.setParameter(1, response.getId());
             List<DetailsReturnImportResponse> list = (List<DetailsReturnImportResponse>) query.getResultList();
             BigDecimal total = BigDecimal.ZERO;
-            ;
             for (DetailsReturnImportResponse detailsImportsInvoiceResponse : list) {
                 total = total.add(detailsImportsInvoiceResponse.getTotalPrice());
             }

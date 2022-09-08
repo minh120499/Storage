@@ -1,4 +1,5 @@
 import {Link, useParams} from "react-router-dom";
+import "../../styles/Tab.css"
 import React, {useEffect, useState} from "react";
 import {
     getDetailImportInvoice,
@@ -8,7 +9,7 @@ import {
 } from "../../services/api";
 import {IDetailImportInvoice, IHistoryStatus, IImportReturn} from "../../services/customType";
 import {Button, Col, Row, Steps, Table, Tag} from "antd";
-import {ShopFilled,} from '@ant-design/icons';
+import {LeftOutlined, ShopFilled,} from '@ant-design/icons';
 import {columnsDetailImportInvoice} from "../../components/Datatablesource";
 import ToastCustom from "../../features/toast/Toast";
 import PaymentImport from "./PaymentImport";
@@ -26,7 +27,7 @@ const DetailImportInvoice = () => {
     const [currentStatus, setCurrentStatus] = useState(0);
     const [invoiceStatusHistory, setInvoiceStatusHistory] = useState<IHistoryStatus[]>([])
 
-    const [createDate, setCreatDate] = useState("----")
+    const [createDate, setCreatDate] = useState("")
     const [importDate, setImportDate] = useState("----")
     const [returnInvoice, setReturnInvoice] = useState<IImportReturn[]>([])
     const [totalPriceReturnInvoice, setTotalPriceReturnInvoice] = useState(0)
@@ -50,6 +51,10 @@ const DetailImportInvoice = () => {
 
     useEffect(() => {
         const invoiceStatusHistoryList = invoiceStatusHistory.filter((obj: IHistoryStatus) => obj.statusName !== "Tạo phiếu trả hàng")
+        if (invoiceStatusHistoryList.length === 2){
+            setCreatDate(invoiceStatusHistoryList[1].createdAt)
+            setImportDate(invoiceStatusHistoryList[0].createdAt)
+        }
         if (invoiceStatusHistoryList.length === 3) {
             setCreatDate(invoiceStatusHistoryList[2].createdAt)
             setImportDate(invoiceStatusHistoryList[1].createdAt)
@@ -81,8 +86,13 @@ const DetailImportInvoice = () => {
     }
 
     return (
-        <div>
-            {
+        <div className='p-5'>
+            <h2 style={{ fontSize:'15px' }} >
+                <Link to="/purchase_orders">
+                    <LeftOutlined /> Danh sách đơn hàng
+                </Link>
+            </h2>
+        {
                 detailInvoices && (<div>
                     <div style={{display: 'flex', justifyContent: 'space-between',alignItems:"center"}}>
                         <div style={{display: 'flex',alignItems:"center"}}>
@@ -153,7 +163,7 @@ const DetailImportInvoice = () => {
                                                         <p>Mã: </p>
                                                     </Col>
                                                     <Col span={21}>
-                                                        <b>{detailInvoices.supplier.code}</b>
+                                                        <p style={{color:'#605c5c',fontWeight:500}}>{detailInvoices.supplier.code}</p>
                                                     </Col>
                                                 </Row>
                                                 <Row>
@@ -161,7 +171,7 @@ const DetailImportInvoice = () => {
                                                         <p>Email: </p>
                                                     </Col>
                                                     <Col span={21}>
-                                                        <b>{detailInvoices.supplier.email}</b>
+                                                        <p style={{color:'#605c5c',fontWeight:500}}>{detailInvoices.supplier.email}</p>
                                                     </Col>
                                                 </Row>
                                             </Col>
@@ -171,11 +181,11 @@ const DetailImportInvoice = () => {
                                                         <p>Trạng thái: </p>
                                                     </Col>
                                                     <Col span={19}>
-                                                        <b>
+                                                        <p>
                                                             {detailInvoices.supplier.statusTransaction ?
                                                                 <Tag color="success">Đang giao dịch</Tag> :
                                                                 <Tag color="error">Ngừng giao dịch</Tag>}
-                                                        </b>
+                                                        </p>
                                                     </Col>
                                                 </Row>
                                                 <Row>
@@ -183,7 +193,7 @@ const DetailImportInvoice = () => {
                                                         <p>Địa chỉ: </p>
                                                     </Col>
                                                     <Col span={19}>
-                                                        <b>{detailInvoices.supplier.address}</b>
+                                                        <p style={{color:'#605c5c',fontWeight:500}}>{detailInvoices.supplier.address}</p>
                                                     </Col>
                                                 </Row>
                                             </Col>

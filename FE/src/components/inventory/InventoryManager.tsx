@@ -1,14 +1,15 @@
-import { Col, Row, Table, Button, Dropdown, Menu, MenuProps, Image, Input, Modal } from "antd";
-import { DeleteOutlined, DownOutlined } from "@ant-design/icons";
+import { Col, Row, Table, Button, Dropdown, Menu, MenuProps, Image, Input, Modal, Tag } from "antd";
+import {DeleteOutlined, DownOutlined, LeftOutlined} from "@ant-design/icons";
 import { deleteListProductVariant, getProductVariants } from "../../api/inventory";
 import { Link, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IInventoryDto, IProductVariantDto, IResultId } from "../../interface";
 import NumberFormat from "react-number-format";
 import Moment from "react-moment";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Swal from "sweetalert2";
 import ToastCustom from "../../features/toast/Toast";
+import PieChartReport from "../Home/PieChartReport";
 
 
 
@@ -51,6 +52,11 @@ const InventoryManager = () => {
     {
       title: "Mã sản phẩm",
       dataIndex: "code",
+      render: (code: string) => {
+        return (
+            <Tag color="orange">{code}</Tag>
+        )
+      }
     },
     {
       title: "Tên",
@@ -197,13 +203,27 @@ const InventoryManager = () => {
   };
 
   return (
-      <div className="m-5">
-        <h2>Quản lý kho</h2>
+      <div className="p-5">
+        <h2 style={{ fontSize:'15px' }} >
+          <Link to="/stocker/inventories">
+            <LeftOutlined /> Danh sách kho
+          </Link>
+        </h2>
+        <div style={{
+          marginBottom: 16,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
+          <h1 style={{fontSize:'30px',margin:0,marginRight:10,marginBottom:'15px'}}>Quản lý kho</h1>
+          <Button type="primary"></Button>
+        </div>
+
         <Row gutter={24}>
           <Col span={18}>
             <div className="block">
               <h1 style={{ color: "#1890FF" }}>Tất cả phiên bản sản phẩm</h1>
-              <Search placeholder="Tìm kiếm theo tên sản phẩm" size="large" onSearch={(e) => handleSearch(e)} />
+              <Search placeholder="Tìm kiếm theo tên, mã sản phẩm" size="large" onSearch={(e) => handleSearch(e)} />
               <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "10px", marginBottom: "10px" }}>
                 <Dropdown overlay={menu} disabled={!hasSelected}>
                   <Button type="primary" style={{ width: "180px", fontSize: "14px", marginLeft: "0px" }}>
@@ -220,6 +240,7 @@ const InventoryManager = () => {
                   rowSelection={rowSelection}
                   columns={columns}
                   dataSource={data}
+                  bordered
                   onRow={(record: any) => {
                     return {
                       onDoubleClick: () => {
@@ -229,7 +250,7 @@ const InventoryManager = () => {
                   }}
               />
               <Modal
-                  title= {<div style={{color: "#1890FF"}}>Chi tiết sản phẩm</div>}
+                  title={<div style={{ color: "#1890FF" }}>Chi tiết sản phẩm</div>}
                   visible={isModalVisible}
                   footer={null}
                   onCancel={handleCancel}
@@ -356,7 +377,9 @@ const InventoryManager = () => {
                       </Moment>
                     </b>
                   </Col>
-
+                  <Col span={24}>
+                    <PieChartReport className="mt-5" />
+                  </Col>
                 </Row>
               </form>
             </div>

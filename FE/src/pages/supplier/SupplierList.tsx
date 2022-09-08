@@ -20,16 +20,16 @@ const SupplierList = () => {
 
     const [reload, setReload] = useState(false);
 
-    const [isLoading,setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        setTimeout(() =>{
+        // setTimeout(() => {
             getSuppliers().then((r) => {
                 setData(r.data.reverse())
                 setIsLoading(false)
             })
-        },1000)
-
+        // }, 1000)
+    document.title = "Nhà cung cấp"
     }, [reload])
 
     const navigate = useNavigate()
@@ -137,12 +137,12 @@ const SupplierList = () => {
     );
 
 
-
     return (
-        <div>
+        <div className='p-5'>
+
             <Title>Nhà cung cấp</Title>
             <div style={{marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between"}}>
-                <div style={{display: "flex", alignItems: "center",gap:"10px"}}>
+                <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
                     <Dropdown overlay={menu} disabled={!hasSelected}>
                         <Button style={{width: "180px", fontSize: '14px'}} type="primary">
                             <Space>
@@ -151,7 +151,10 @@ const SupplierList = () => {
                             </Space>
                         </Button>
                     </Dropdown>
-                    <span style={{marginLeft: 8, marginRight: 8}}>{hasSelected ? `Selected ${selectedRowKeys.length} istems` : ''}</span>
+                    <span style={{
+                        marginLeft: 8,
+                        marginRight: 8
+                    }}>{hasSelected ? `Selected ${selectedRowKeys.length} istems` : ''}</span>
                     <ImportExcel reload={() => setReload(!reload)}/>
 
                     <ExportExcel/>
@@ -168,19 +171,17 @@ const SupplierList = () => {
 
             </div>
             {
-                isLoading ? <p>Loading....</p> : (
-                    <Table dataSource={data}
-                           columns={SupplierColumn}
-                           rowKey="id" bordered
-                           pagination={{defaultPageSize: 5}}
-                           onRow={(record) => {
-                               return {
-                                   onClick: event => navigate({pathname: `/supplier/details/${record.id}`}),
-                               }
-                           }}
-                           rowSelection={rowSelection}
-                    />
-                )
+                <Table dataSource={data}
+                       columns={SupplierColumn}
+                       rowKey="id" bordered
+                       pagination={{defaultPageSize: 5}}
+                       onRow={(record) => {
+                           return {
+                               onClick: event => navigate({pathname: `/supplier/details/${record.id}`}),
+                           }
+                       }}
+                       rowSelection={rowSelection}
+                />
             }
         </div>
     )

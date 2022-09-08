@@ -65,7 +65,7 @@ const SupplierUpdate = ({supplier, isVisible, setIsVisible}: SupplierProps) => {
     return (
         <>
             <Modal
-                title="Thêm mới nhà cung cấp"
+                title="Sửa nhà cung cấp"
                 visible={visible}
                 // confirmLoading={confirmLoading}
                 onCancel={handleCancel}

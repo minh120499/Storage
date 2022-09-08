@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Form, Input, Modal } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
-import { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { rolesApi } from "../../api";
 import { IRole } from "../../interface";
 import { EditIcon } from "../../UI";
@@ -105,29 +105,32 @@ const RoleManager = () => {
 
   return (
     <div className="p-5">
-      <h2>Chức vụ</h2>
-      <div style={{ marginBottom: 16 }}>
-        <Button
-          type="primary"
-          onClick={deleteRoles}
-          disabled={!hasSelected}
-          loading={deleteRoleMutation.isLoading}
-        >
-          Xóa
-        </Button>
-        <Button
-          type="primary"
-          onClick={() => {
-            setAddRoleModal(true);
-            setMode("new");
-          }}
-        >
-          Thêm
-        </Button>
-        <span style={{ marginLeft: 8 }}>
+      <div style={{display:'flex',justifyContent:'space-between'}}>
+        <h1 style={{fontSize:'30px',margin:0,marginRight:10,marginBottom:'35px'}}>Chức vụ</h1>
+        <div>
+          <Button
+              type="primary"
+              onClick={deleteRoles}
+              disabled={!hasSelected}
+              loading={deleteRoleMutation.isLoading}
+          >
+            Xóa
+          </Button>
+          <Button
+              type="primary"
+              onClick={() => {
+                setAddRoleModal(true);
+                setMode("new");
+              }}
+          >
+            Thêm
+          </Button>
+          <span style={{ marginLeft: 8 }}>
           {hasSelected ? `Đã chọn ${selectedRowKeys.length} mục` : ""}
         </span>
+        </div>
       </div>
+
       <Table
         rowSelection={rowSelection}
         query={rolesApi}

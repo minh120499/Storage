@@ -44,7 +44,6 @@ const ProductDetails = () => {
         getProductById(Number(id)).then(response => {
             return response.json()
         }).then(data => {
-            console.log(data)
             // setProduct(data.product)
             // setVariants(data.variants)
             // setFocusVariant(data.variants[0])
@@ -295,10 +294,8 @@ const ProductDetails = () => {
 
         }
 
-
-
         return (
-            <>
+            <div >
                 <div style={{ background: "white", padding: 20 }}>
                     <div >
                         <Antd.Row style={{}}>
@@ -348,7 +345,7 @@ const ProductDetails = () => {
                     </Antd.Table>
                 </div>
 
-            </>
+            </div>
 
         )
     })
@@ -403,13 +400,14 @@ const ProductDetails = () => {
     const View = () => {
         return (
 
-            <>
+            <div>
                 <div>
-                    <h2 style={{ margin: 20 }}>
+                    <h2 style={{ fontSize:'15px' }} >
                         <Link to="/products">
                             <LeftOutlined /> Danh sách sản phẩm
                         </Link>
                     </h2>
+                    <h1 style={{fontSize:'30px',margin:0,marginRight:10,marginBottom:'45px'}}>Chi tiết sản phẩm</h1>
 
                 </div>
 
@@ -460,12 +458,13 @@ const ProductDetails = () => {
 
 
                 </Mui.Grid>
-            </>
+            </div>
 
         )
     }
     return (
-        <>
+
+            <div className ='p-5'>
             <Antd.Modal width={1000}  title="Mô tả sản phẩm" visible={openDes} footer={null} onCancel={()=>{setOpenDes(false)}}>
                 <textarea style={{width:'100%',height:'500px',padding:10}} disabled={true}>{productInfo?.product.description}</textarea>
             </Antd.Modal>
@@ -473,7 +472,7 @@ const ProductDetails = () => {
             {isUpdate ? <UpdateProduct
                 product={productInfo?.product} variants={productInfo?.variants} categories={productInfo?.categories} setIsUpdate={setActionUpdate}></UpdateProduct>
                 : <View></View>}
-        </>
+        </div>
     )
 }
 export default ProductDetails

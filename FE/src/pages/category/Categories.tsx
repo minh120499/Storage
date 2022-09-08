@@ -33,6 +33,9 @@ export default function Categories() {
       },
       [status]
   );
+  useEffect(() =>{
+    document.title= "Danh mục"
+  },[])
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);

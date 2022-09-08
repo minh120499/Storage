@@ -31,7 +31,7 @@ export default function Role({ roles, empId, refetch }: props) {
 
   return (
     <div className="w-max">
-      {roles.length > 0 ? (
+      {roles?.length > 0 ? (
         roles.map((role: IRole) => {
           // @ts-ignore
           // @ts-ignore

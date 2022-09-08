@@ -1,6 +1,5 @@
 package intern.sapo.be.entity;
 
-import intern.sapo.be.base.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -41,8 +40,6 @@ public class Inventory   {
     private String address;
 
 
-    @NotNull
-    @NotBlank
     @Column(name = "size", nullable = false)
     private Integer size;
 
