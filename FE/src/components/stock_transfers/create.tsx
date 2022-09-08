@@ -179,7 +179,7 @@ const Create: React.FC = () => {
   const allQueries = async () => {
     const productVariant = await getProductVariants(inventoryId);
     const getListInventory = await getAllInventory();
-    console.log(productVariant);
+    // console.log(productVariant);
     setProductVariant(productVariant.productVariants);
     setListInventory(getListInventory);
   };

@@ -6,6 +6,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "exports")
@@ -46,4 +48,9 @@ public class Export implements Serializable {
     @JoinColumn(name = "export_inventory_id", nullable = false)
     private Inventory exportInventory;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "export")
+    private Set<DetailsExport> detailsExports;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "export")
+    private Set<ExportsStatus> exportsStatuses ;
 }

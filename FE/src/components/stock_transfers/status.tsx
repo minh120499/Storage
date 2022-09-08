@@ -47,6 +47,7 @@ export const Status = () => {
   const [productVariant, setProductVariant] = useState<any>([]);
   const [statusUpdate, setStatusUpdate] = useState<exportStatus[]>([]);
   const [statusSend, setStatusSend] = useState<exportStatus[]>([]);
+  const [check, setCheck] = useState<any>([]);
 
   const now = moment(new Date()).format("DD/MM/YYYY HH:mm").toString();
   const next = async () => {
@@ -198,10 +199,13 @@ export const Status = () => {
   };
   // console.log(statusUpdate);
   const [spin, setSpin] = useState(true);
+
   useEffect(() => {
     setTimeout(() => {
       setSpin(false);
     }, 1000);
+    const productExpri = productVariant.map((e: any) => e.quantity === 0);
+    setCheck(productExpri);
   }, []);
   return (
     <Spin spinning={spin}>
