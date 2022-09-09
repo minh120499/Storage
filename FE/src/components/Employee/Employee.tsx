@@ -5,7 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Role from "./Role";
 import RoleSelect from "./RoleSelect";
-import { Button, EditIcon, DeletedIcon, Table } from "../../UI";
+import { Button, DeletedIcon, Table, PenIcon } from "../../UI";
 import { accountApi } from "../../api/EmployeesApi";
 
 interface DataType {
@@ -75,7 +75,7 @@ function Employee() {
       dataIndex: "id",
       render: () => (
         <Space>
-          <EditIcon />
+          <PenIcon />
           <DeletedIcon />
         </Space>
       ),

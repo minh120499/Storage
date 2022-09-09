@@ -1,9 +1,19 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-// import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { LockOutlined, UnlockOutlined, EditOutlined } from "@ant-design/icons";
 const EditIcon = (props: any) => {
   return (
     <EditOutlined
+      {...props}
+      className="cursor-pointer"
+      style={{ padding: "5px", background: "#E8A87C", color: "#fff" }}
+    />
+  );
+};
+
+const PenIcon = (props: any) => {
+  return (
+    <ModeEditIcon
       {...props}
       className="cursor-pointer"
       style={{ padding: "5px", background: "#E8A87C", color: "#fff" }}
@@ -41,4 +51,4 @@ const UnLock = (props: any) => {
   );
 };
 
-export { EditIcon, DeletedIcon, Lock, UnLock };
+export { EditIcon, DeletedIcon, Lock, UnLock, PenIcon };

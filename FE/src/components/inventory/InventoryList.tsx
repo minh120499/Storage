@@ -11,7 +11,6 @@ import {
   Tooltip,
   Col,
   Row,
-  message,
 } from "antd";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -51,21 +50,19 @@ const InventoryList = () => {
       dataIndex: "inventory",
       key: "code",
       sorter: (a: IInventory, b: IInventory) => {
-        console.log(a, b);
-
         return a?.code?.localeCompare(b?.code)
       },
       render: (inventory: IInventory) => (
-        <div className="bg-red">{inventory.code}</div>
+        <div className="bg-red">{inventory?.code}</div>
       ),
     },
     {
       title: <b>Tên</b>,
       dataIndex: "inventory",
       key: "name",
-      sorter: (a: IInventory, b: IInventory) => a.name.localeCompare(b.name),
+      sorter: (a: IInventory, b: IInventory) => a?.name?.localeCompare(b?.name),
       render: (inventory: IInventory) => (
-        <div className="bg-red">{inventory.name}</div>
+        <div className="bg-red">{inventory?.name}</div>
       ),
     },
     {
@@ -73,7 +70,7 @@ const InventoryList = () => {
       dataIndex: "inventory",
       key: "address",
       render: (inventory: IInventory) => (
-        <div className="bg-red">{inventory.address}</div>
+        <div className="bg-red">{inventory?.address}</div>
       ),
     },
     {
@@ -158,7 +155,7 @@ const InventoryList = () => {
                 }}
               />
             ) : (
-              <Lock
+              <UnLock
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
                   deleteInvetoryHandler(record, "ngừng hoạt động");

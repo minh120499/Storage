@@ -1,7 +1,7 @@
-import { Page, Text, Image, Document, StyleSheet,View,Font } from "@react-pdf/renderer";
-
+import { Page, Text, Document, StyleSheet,View,Font } from "@react-pdf/renderer";
 import React, { Fragment } from 'react';
-import {IDetailImportInvoice, IImportInvoice} from "../../services/customType";
+import {IDetailImportInvoice} from "../../services/customType";
+
 type Props ={
     invoice:IDetailImportInvoice,
     createDate:string,

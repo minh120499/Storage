@@ -9,6 +9,7 @@ type Props = {
 const SelectSupplier = ({changeSupplierId} : Props) => {
 
     const [suppliers, setSuppliers] = useState<ISupplier[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [supplierId, setSupplierId] = useState<number>();
     useEffect(()=>{
         getSuppliers().then((r) => {
