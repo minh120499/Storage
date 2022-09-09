@@ -11,7 +11,7 @@ import {
   Tooltip,
   Col,
   Row,
-  message,
+  message
 } from "antd";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -51,8 +51,6 @@ const InventoryList = () => {
       dataIndex: "inventory",
       key: "code",
       sorter: (a: IInventory, b: IInventory) => {
-        console.log(a, b);
-
         return a?.code?.localeCompare(b?.code)
       },
       render: (inventory: IInventory) => (
@@ -77,12 +75,12 @@ const InventoryList = () => {
       ),
     },
     {
-      title: <b>Tồn kho</b>,
+      title: <b>Tổng số lượng tồn kho</b>,
       dataIndex: ["totalProductVariant", "inventory"],
       key: "stock",
       render: (_: any, record: any) => {
         const size = record?.inventory?.size || 1000;
-        const stock = record?.totalProductVariant || 8293509032;
+        const stock = record?.totalProductVariant;
         const percent = size ? Math.round((stock / size) * 100) : 0;
         const color = percent > 70 ? "red" : percent > 40 ? "blue" : "green";
 
@@ -158,7 +156,7 @@ const InventoryList = () => {
                 }}
               />
             ) : (
-              <Lock
+              <UnLock
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
                   deleteInvetoryHandler(record, "ngừng hoạt động");
@@ -172,35 +170,40 @@ const InventoryList = () => {
   ];
 
   const inventoryMutation = useMutation((inventory: IInventory) =>
-    createInventory(inventory).then(()=>
+  createInventory(inventory)
+  .then(()=>{
     ToastCustom.fire({
-      icon: "success",
-      title: "Thêm thành công!",
-    })).catch(()=>
-      ToastCustom.fire({
-        icon: "error",
-        title: "Mã kho không được trùng!",
-      })
-    )
-  );
-  const inventoriesUpdate = useMutation((inventory: any) =>
-    updateInvetory(inventory.data, inventory.id).then(()=>
+      icon:"success",
+      title:"Thêm thành công"
+    });
+    setIsModalVisible(false);
+    formInventory.resetFields();
+  }).catch(()=>{
     ToastCustom.fire({
-      icon: "success",
-      title: "Sửa thành công!",
-    })).catch(()=>
-      ToastCustom.fire({
-        icon: "error",
-        title: "Mã kho không được trùng!",
-      })
-    )
-  );
+      icon:"error",
+      title:"Có lỗi xảy ra"
+    })
+  }));
+
+  const inventoriesUpdate = useMutation((inventory: any) => updateInvetory(inventory.data, inventory.id).then(()=>{
+    ToastCustom.fire({
+      icon:"success",
+      title:"Sửa thành công"
+    });
+    setIsModalVisible(false);
+    formInventory.resetFields();
+  }).catch(()=>{
+    ToastCustom.fire({
+      icon:"error",
+      title:"Có lỗi xảy ra"
+    });
+  }));
 
 
 
   const inventoriesDelete = useMutation((id: number) => deleteInvetory(id));
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [fullAddress, setFullAddress] = useState("");
+  const [fullAddress, setFullAddress] = useState<string>("");
   const [keyChange, setKeyChange] = useState(0);
   const [formInventory] = Form.useForm();
   const [mode, setMode] = useState("new");
@@ -210,21 +213,12 @@ const InventoryList = () => {
   }, []);
 
   const handleOk = () => {
-    const { code, name, id } = formInventory.getFieldsValue();
-    // const { code, name, id } = formInventory.getFieldsValue();
-    // formInventory.resetFields([
-    //   "code",
-    //   "name",
-    //   "address",
-    //   "detailsAddress",
-    //   "province",
-    //   "district",
-    // ]);
+    const { code, name, id, detailsAddress,province,district,ward } = formInventory.getFieldsValue();
     const payload = {
       data: {
         code,
         name,
-        address: fullAddress,
+        address: fullAddress || (detailsAddress+','+ward+','+district+','+province),
       },
       id: id,
     };
@@ -236,15 +230,7 @@ const InventoryList = () => {
     }
   };
 
-  if(inventoryMutation.isError) {
-    setIsModalVisible(true);
-  }
 
-  if(inventoryMutation.isSuccess) {
-    setIsModalVisible(false);
-    formInventory.resetFields();
-    inventoryMutation.reset()
-  }
   const handleCancel = () => {
     setKeyChange(0);
     setIsModalVisible(false);
@@ -252,16 +238,17 @@ const InventoryList = () => {
   };
 
   const updateInventory = (e: any) => {
-    const fullAddress = e.address.split(",");
+    const fullAddressInput = e.address.split(",");
     formInventory.setFieldsValue({
       code: e.code,
       name: e.name,
-      detailsAddress: fullAddress[0],
+      detailsAddress: fullAddressInput[0],
       id: e.id,
-      province: fullAddress[1],
-      district: fullAddress[2],
-      ward: fullAddress[3],
+      province: fullAddressInput[1],
+      district: fullAddressInput[2],
+      ward: fullAddressInput[3],
     });
+    setFullAddress(fullAddressInput.join(","));
   };
 
   const deleteInvetoryHandler = (record: any, text: string) => {
@@ -288,7 +275,6 @@ const InventoryList = () => {
           <Button
             onClick={() => {
               setIsModalVisible(true);
-              formInventory.resetFields();
               setMode("new");
             }}
           >
@@ -330,7 +316,7 @@ const InventoryList = () => {
             rules={[
               {
                 required: true,
-                message: 'Mã kho không được để trống!',
+                message: 'Mã kho không được để trống',
                 pattern: /[A-Za-z0-9]/
               },
             ]}
@@ -344,7 +330,7 @@ const InventoryList = () => {
             rules={[
               {
                 required: true,
-                message: 'Tên kho không được để trống!',
+                message: 'Tên kho không được để trống',
                 pattern: /[A-Za-z0-9]/
               },
             ]}
