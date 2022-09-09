@@ -1,15 +1,24 @@
 import axios from "axios";
 
-export const getCategoriesByPage = async () => { 
-    return await axios.get(`http://localhost:8080/api/categories`)
+export const getCategoriesByPage = async (page:number,limit:number) => { 
+    return (
+        await axios.get(`http://localhost:8080/inventories/pagination`, {
+          params: {
+            page,
+            limit,
+            sortBy: "id",
+            sortDir:"desc"
+          },
+        })
+      ).data;
 }
 
 export const getCategories = async (valueInput = "") => { 
     return await axios.get(`http://localhost:8080/api/categories/findall`,{
         params:{
-            valueInput: valueInput,
+            valueInput,
         },
-    })
+    });
 }
 
 export const createCategory = async (category:object)=>{
