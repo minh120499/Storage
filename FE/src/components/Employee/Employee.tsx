@@ -134,7 +134,6 @@ function Employee() {
         query={accountApi}
         rowKey="id"
         rowClassName="cursor-default"
-        // className="cursor-default"
         style={{cursor: "default"}}
       />
       <Modal
@@ -157,7 +156,7 @@ function Employee() {
           form={employeeForm}
         >
           <Form.Item
-            rules={[{ required: true, message: "Please input your username!" }]}
+            rules={[{ required: true, message: "Tên tài khoản không được để trống", pattern:/^[A-Za-z0-9_-]/ }]}
             label="Tài khoản"
             name="username"
           >
@@ -166,12 +165,12 @@ function Employee() {
           <Form.Item
             label="Mật khẩu"
             name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
+            rules={[{ required: true, message: "Mật khẩu tối thiểu 6 ký tự, ít nhất 1 chữ cái và 1 số", pattern:/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/ }]}
           >
             <Input.Password />
           </Form.Item>
           <Form.Item
-            rules={[{ required: true, message: "Please input your name!" }]}
+            rules={[{ required: true, message: "Họ tên không được để trống", pattern:/[A-Za-z0-9]/ }]}
             label="Họ tên"
             name="fullName"
           >
@@ -183,7 +182,7 @@ function Employee() {
             rules={[
               {
                 required: true,
-                message: "Please input your email!",
+                message: "Không đúng định dạng email",
                 pattern: new RegExp(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/),
               },
             ]}
@@ -193,14 +192,14 @@ function Employee() {
           <Form.Item
             label="SĐT"
             name="phone"
-            rules={[{ required: true, message: "Please input your phone!" }]}
+            rules={[{ required: true, message: "Không đúng định dạng số điện thoại", pattern:/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/ }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             label="Địa chỉ"
             name="address"
-            rules={[{ required: true, message: "Please input your address!" }]}
+            rules={[{ required: true, message: "Địa chỉ không được để trống",pattern:/[A-Za-z0-9]/ }]}
           >
             <Input />
           </Form.Item>

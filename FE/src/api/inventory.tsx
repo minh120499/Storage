@@ -14,7 +14,12 @@ export const getAllActiveInventory = async () => {
   });
 };
 
-export const getPagination = async (page: number, pageSize: number) => {
+export const getPagination = async (
+  page: number,
+  pageSize: number,
+  name: any,
+  value: any
+) => {
   return (
     await axios.get(`http://localhost:8080/inventories/pagination`, {
       params: {
@@ -22,8 +27,8 @@ export const getPagination = async (page: number, pageSize: number) => {
         pageSize,
         sortBy: "id",
         sortDir: "desc",
-        name: null,
-        code: null,
+        name: name === "name" ? value : null,
+        code: name === "code" ? value : null,
       },
       headers,
     })
@@ -37,21 +42,17 @@ export const findInventoryById = async (id?: number) => {
 
 export const createInventory = async (inventory: object) => {
   return (
-    await axios.post(
-      `http://localhost:8080/inventories`,
-      { headers },
-      inventory
-    )
+    await axios.post(`http://localhost:8080/inventories`, inventory, {
+      headers,
+    })
   ).data;
 };
 
 export const updateInvetory = async (inventory: object, id: number) => {
   return (
-    await axios.put(
-      `http://localhost:8080/inventories/${id}`,
-      { headers },
-      inventory
-    )
+    await axios.put(`http://localhost:8080/inventories/${id}`, inventory, {
+      headers,
+    })
   ).data;
 };
 

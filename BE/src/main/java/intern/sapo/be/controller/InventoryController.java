@@ -28,9 +28,11 @@ public class InventoryController {
 	@GetMapping("/pagination")
 	public ResponseEntity<Object> getPagination(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber,
 	                                            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-	                                            @RequestParam(value = "sortBy", required = false) String sortBy,
-	                                            @RequestParam(value = "sortDir", required = false) String sortDir) {
-		Page<Inventory> inventory = iInventoryService.findAllBypPage(pageNumber, pageSize, sortBy, sortDir);
+	                                            @RequestParam(value = "sortBy", required = false, defaultValue = "id") String sortBy,
+	                                            @RequestParam(value = "sortDir", required = false, defaultValue = "desc") String sortDir,
+	                                            @RequestParam(value = "name", required = false) String name,
+	                                            @RequestParam(value = "code", required = false) String code) {
+		Page<Inventory> inventory = iInventoryService.findAllBypPage(pageNumber, pageSize, sortBy, sortDir, name, code);
 		List<InventoryResponse> inventories = new ArrayList<>();
 		inventory.getContent().forEach((i -> {
 			InventoryResponse e = new InventoryResponse();
@@ -93,8 +95,8 @@ public class InventoryController {
 
 	@PutMapping("/change/minquantity")
 	public ResponseEntity<Object> changeMinQuantity(@RequestParam(value = "inventoryId", required = false) Integer inventoryId,
-	                                        @RequestParam(value = "productVariantId", required = false) Integer productVariantId,
-	                                        @RequestParam(value = "minQuantity", required = false) Integer minQuantity) {
+	                                                @RequestParam(value = "productVariantId", required = false) Integer productVariantId,
+	                                                @RequestParam(value = "minQuantity", required = false) Integer minQuantity) {
 		return ResponseEntity.ok(iInventoryService.changeMinQuantity(inventoryId, productVariantId, minQuantity));
 	}
 

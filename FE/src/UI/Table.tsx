@@ -6,9 +6,17 @@ import Swal from "sweetalert2";
 const T = (props: any) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
+  const name = props?.search?.filterName;
+  const value = props?.search?.filterValue;
   const query = useQuery(
     ["id", page, pageSize],
-    () => props.query(page, pageSize),
+    () => {
+      console.log(value, !!value);
+
+      return !!value
+        ? props.query(page, pageSize, name, value)
+        : props.query(page, pageSize);
+    },
     { keepPreviousData: true }
   );
 
@@ -22,7 +30,10 @@ const T = (props: any) => {
   }
 
   if (query?.data?.data?.length === 0) {
-    setPage(page - 1);
+    if (page > 2) {
+      setPage(page - 1);
+    }
+    // setPage(1);
   }
   query.refetch();
 

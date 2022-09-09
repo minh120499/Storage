@@ -28,13 +28,13 @@ export default function RoleSelect(props: any) {
     <Form.Item
       name="roles"
       label="Role"
-      rules={[{ required: true }]}
+      rules={[{ required: true, message:"quyền không được để trống" }]}
       initialValue={props?.empRole || []}
     >
       <Select
         mode="multiple"
         allowClear
-        placeholder="Please select"
+        placeholder="Chọn quyền muốn thêm"
         tagRender={tagRender}
         dropdownMatchSelectWidth={false}
         getPopupContainer={(trigger) => trigger}

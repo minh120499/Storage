@@ -6,7 +6,14 @@ import Search from "antd/lib/input/Search";
 
 const FilterBox = (props: any) => {
   const onSearch = (value: string) => {
+    const { filterName, filterValue } = filterForm.getFieldsValue();
     console.log(filterForm.getFieldsValue());
+    console.log(filterName, filterValue);
+
+    props?.search({
+      filterName,
+      filterValue,
+    });
   };
   const [filterForm] = Form.useForm();
 

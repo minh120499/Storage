@@ -39,12 +39,16 @@ public class InventoryServiceImpl implements IInventoryService {
     }
 
     @Override
-    public Page<Inventory> findAllBypPage(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
-        if (sortDir != null) {
-            Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+    public Page<Inventory> findAllBypPage(Integer pageNumber, Integer pageSize, String sortBy, String sortDir,String name, String code) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        if (name != null) {
+            return inventoryRepository.findByNameContaining(name,PageRequest.of(pageNumber - 1, pageSize,sort));
+        }else if(code != null){
+            return inventoryRepository.findByCodeContaining(code,PageRequest.of(pageNumber - 1, pageSize,sort));
+        }
+        else{
             return inventoryRepository.findAll(PageRequest.of(pageNumber - 1, pageSize, sort));
         }
-        return inventoryRepository.findAll(PageRequest.of(pageNumber - 1, pageSize));
     }
 
 

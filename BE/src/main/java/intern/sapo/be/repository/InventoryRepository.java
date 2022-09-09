@@ -12,10 +12,10 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
-public interface InventoryRepository extends JpaRepository<Inventory, Integer>, JpaSpecificationExecutor<Inventory> {
+public interface InventoryRepository extends JpaRepository<Inventory, Integer> {
 
-//    @Query(value = "select * from  inventories order by inventories.id desc", nativeQuery = true)
-//    Page<Inventory> findAll(Pageable pageable);
+    Page<Inventory> findByNameContaining(String name,Pageable pageable);
+    Page<Inventory> findByCodeContaining(String code,Pageable pageable);
 
 
     @Query(value = "select quantity from inventories_product_variant where inventory_id = ?1 and product_variant_id = ?2",nativeQuery = true)

@@ -47,7 +47,6 @@ const AddAddress = ({ onChange, keyChange }: AddressProps) => {
 
   useEffect(() => {
     onChange(address);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   useEffect(() => {
@@ -57,7 +56,6 @@ const AddAddress = ({ onChange, keyChange }: AddressProps) => {
     setWardName("");
     setDistrictName("");
     setProvinceName("");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     address = "";
   }, [keyChange]);
 
