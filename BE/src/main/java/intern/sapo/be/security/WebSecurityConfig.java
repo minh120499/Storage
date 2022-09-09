@@ -52,20 +52,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-//		http.authorizeRequests().antMatchers("/api/categories").hasAnyAuthority("admin");
-		http.authorizeRequests().antMatchers("/login").permitAll();
+//		http.authorizeRequests().antMatchers("/").hasAnyAuthority("");
 
-				// .antMatchers(HttpMethod.POST, "/api/account/login").permitAll()
-		// .authenticated().and().exceptionHandling().accessDeniedHandler(accessDeniedHandler());
-		http.cors().and().csrf().disable();
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.exceptionHandling()
-				.authenticationEntryPoint(
-						(request, response, ex) -> {
-							response.sendError(
-									HttpServletResponse.SC_UNAUTHORIZED,
-									ex.getMessage());
-						});
+
+        http.authorizeRequests().antMatchers("/login").permitAll();
+
+        // .antMatchers(HttpMethod.POST, "/api/account/login").permitAll()
+        // .authenticated().and().exceptionHandling().accessDeniedHandler(accessDeniedHandler());
+        http.cors().and().csrf().disable();
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.exceptionHandling()
+                .authenticationEntryPoint(
+                        (request, response, ex) -> {
+                            response.sendError(
+                                    HttpServletResponse.SC_UNAUTHORIZED,
+                                    ex.getMessage());
+                        });
 		http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 

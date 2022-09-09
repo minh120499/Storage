@@ -12,9 +12,9 @@ public interface IProductVariantService extends IBaseService<ProductVariant> {
 
     Optional<ProductVariant> findProductById(Integer id);
 
-    List<ProductVariantDTO> findAllProductVariantDTO(Integer pageNumber, Integer pageSize);
+    List<ProductVariantDTO> findAllProductVariantDTO(Integer pageNumber, Integer pageSize, String searchValue);
 
     List<ProductVariantDTO> findAllProductVariantDTO();
 
-    Integer countTotalPage();
+    Integer countTotalPage(String searchValue);
 }

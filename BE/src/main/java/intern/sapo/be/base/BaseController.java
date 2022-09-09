@@ -1,14 +1,9 @@
 package intern.sapo.be.base;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -34,9 +29,9 @@ public abstract class BaseController<T> {
 
     @GetMapping
     public ResponseListDto<T> listAll(@RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "5") Integer perPage,
-            @RequestParam(required = false,defaultValue = "asc") String sort,
-            @RequestParam(required = false,defaultValue = "id") String sortBy) {
+                                      @RequestParam(defaultValue = "5") Integer perPage,
+                                      @RequestParam(required = false, defaultValue = "asc") String sort,
+                                      @RequestParam(required = false, defaultValue = "id") String sortBy) {
         return baseService.getList(page, perPage, sort, sortBy);
     }
 

@@ -82,12 +82,12 @@ const AddAddress = ({onChange,keyChange} : AddressProps) =>{
         <>
             <Row gutter={24}>
                 <Col span={12}>
-                    <Form.Item label="Địa chỉ chi tiết" name="detailsAddress" rules={[{required: true}]}>
+                    <Form.Item label="Địa chỉ chi tiết" name="detailsAddress" rules={[{required: true,message:"Địa chỉ không được để trống",pattern: /[A-Za-z0-9]/}]}>
                         <Input onChange={(e) => setDetailAddress(e.target.value)} placeholder="nhập địa chỉ nhà cung cấp"/>
                     </Form.Item>
                 </Col>
                 <Col span={12}>
-                    <Form.Item label="Thành phố/Tỉnh" name="province" rules={[{required: true}]}>
+                    <Form.Item label="Thành phố/Tỉnh" name="province" rules={[{required: true,message:"Thành phố/tỉnh không được để trống"}]}>
                         <Select
                             showSearch
                             placeholder="Chọn tỉnh thành phố"
@@ -110,7 +110,7 @@ const AddAddress = ({onChange,keyChange} : AddressProps) =>{
                     </Form.Item>
                 </Col>
                 <Col span={12}>
-                    <Form.Item label="Quận/Huyện" name="district" rules={[{required: true}]}>
+                    <Form.Item label="Quận/Huyện" name="district" rules={[{required: true,message:"Quận/huyện không được để trống"}]}>
                         <Select
                             showSearch
                             placeholder="Chọn quận huyện"
@@ -136,7 +136,7 @@ const AddAddress = ({onChange,keyChange} : AddressProps) =>{
                     </Form.Item>
                 </Col>
                 <Col span={12}>
-                    <Form.Item label="Phường/Xã" name="ward" rules={[{required: true}]}>
+                    <Form.Item label="Phường/Xã" name="ward" rules={[{required: true,message:"Phường/Xã không được để trống"}]}>
                         <Select
                             showSearch
                             placeholder="Chọn xã phường"

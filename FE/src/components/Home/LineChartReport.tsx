@@ -53,13 +53,12 @@ const data = [
   },
 ];
 
-
 const LineChartReport = (props: any) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <LineChart
         {...props}
-        data={props?.data || data}
+        data={data}
         style={{ width: "100%" }}
         margin={{
           top: 5,
@@ -73,7 +72,6 @@ const LineChartReport = (props: any) => {
         <YAxis />
         <Tooltip />
         <Legend />
-        {props?.line?.map((line: Line) => line)}
         <Line
           type="monotone"
           dataKey="pv"
