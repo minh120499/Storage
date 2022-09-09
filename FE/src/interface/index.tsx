@@ -6,9 +6,10 @@ export interface IRole {
 }
 
 export interface IRoleLable {
-  staff?: string;
+  coordinator?: string;
   stocker?: string;
-  admin?: string
+  admin?: string;
+  warehouse?: string;
 }
 
 export interface ILoginData {
@@ -17,7 +18,7 @@ export interface ILoginData {
 }
 
 export interface IInventory {
-  STT?: any,
+  STT?: any;
   key?: number | string;
   id?: number;
   code: string;
@@ -26,7 +27,7 @@ export interface IInventory {
   createAt?: any;
   updateAt?: any;
   isDelete?: boolean;
-  status?: boolean
+  status?: boolean;
 }
 
 export interface IInventoryDto {
@@ -35,32 +36,32 @@ export interface IInventoryDto {
   code: string;
   name: string;
   address: string;
-  size:number;
+  size: number;
   createAt?: any;
   updateAt?: any;
   isDelete?: boolean;
 }
 
-export interface IProductVariantDto{
-  id: number,
-  code: string,
-  productId?: number,
-  name: string,
-  image:string,
-  importPrice: number,
-  quantity: number,
-  salePrice?: number,
-  wholesalePrice?: number,
-  createAt: string
+export interface IProductVariantDto {
+  id: number;
+  code: string;
+  productId?: number;
+  name: string;
+  image: string;
+  importPrice: number;
+  quantity: number;
+  salePrice?: number;
+  wholesalePrice?: number;
+  createAt: string;
 }
 
-export interface IResultId{
-  idInventory: any,
-  idProductVariant:any
+export interface IResultId {
+  idInventory: any;
+  idProductVariant: any;
 }
 
 export interface IMinQuantityRequest {
-  inventoryId: number,
-  productVariantId: number,
-  minQuantity: number
+  inventoryId: number;
+  productVariantId: number;
+  minQuantity: number;
 }

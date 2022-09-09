@@ -2,7 +2,6 @@ package intern.sapo.be.controller;
 
 import intern.sapo.be.dto.request.AccountDTO;
 import intern.sapo.be.entity.Account;
-import intern.sapo.be.security.jwt.JwtTokenUtil;
 
 import intern.sapo.be.service.AccountService;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,9 +21,7 @@ import java.util.Map;
 @PreAuthorize("hasAuthority('admin')")
 @AllArgsConstructor
 public class AccountController {
-	private final AuthenticationManager authManager;
 	private final AccountService accountService;
-	private final JwtTokenUtil jwtUtils;
 
 	@GetMapping()
 	public ResponseEntity<Object> getAll() {

@@ -2,9 +2,11 @@ package intern.sapo.be.security;
 
 import intern.sapo.be.repository.AccountRepository;
 import intern.sapo.be.security.jwt.JwtAuthenticationFilter;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -23,12 +25,11 @@ import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
 	AccountRepository accountRepository;
-	@Autowired
 	JwtAuthenticationFilter jwtTokenFilter;
 
 	@Override
@@ -52,22 +53,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-//		http.authorizeRequests().antMatchers("/").hasAnyAuthority("");
-
-
-        http.authorizeRequests().antMatchers("/login").permitAll();
-
-        // .antMatchers(HttpMethod.POST, "/api/account/login").permitAll()
-        // .authenticated().and().exceptionHandling().accessDeniedHandler(accessDeniedHandler());
-        http.cors().and().csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.exceptionHandling()
-                .authenticationEntryPoint(
-                        (request, response, ex) -> {
-                            response.sendError(
-                                    HttpServletResponse.SC_UNAUTHORIZED,
-                                    ex.getMessage());
-                        });
+		http.authorizeRequests().antMatchers("/login").permitAll();
+		http.authorizeRequests().antMatchers(HttpMethod.GET).permitAll();
+		http.cors().and().csrf().disable();
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.exceptionHandling()
+				.authenticationEntryPoint(
+						(request, response, ex) -> response.sendError(
+								HttpServletResponse.SC_UNAUTHORIZED,
+								ex.getMessage()));
 		http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 

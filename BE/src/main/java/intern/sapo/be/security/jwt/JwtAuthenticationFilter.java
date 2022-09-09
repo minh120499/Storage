@@ -62,12 +62,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private void setAuthenticationContext(String token, HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(token);
-        Set<GrantedAuthority> autorities = new HashSet<>();
+        Set<GrantedAuthority> authorities = new HashSet<>();
         for (String role : jwtUtils.getClaims(token).getAuthorities()) {
-            autorities.add(new SimpleGrantedAuthority(role));
+            authorities.add(new SimpleGrantedAuthority(role));
         }
         UsernamePasswordAuthenticationToken
-                authentication = new UsernamePasswordAuthenticationToken(userDetails, null, autorities);
+                authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
 
         authentication.setDetails(
                 new WebAuthenticationDetailsSource().buildDetails(request));

@@ -6,6 +6,7 @@ import RoleSelect from "./RoleSelect";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Button } from "../../UI";
+import { PlusCircleOutlined } from "@ant-design/icons";
 
 type props = {
   roles: [IRole];
@@ -35,15 +36,13 @@ export default function Role({ roles, empId, refetch }: props) {
   return (
     <div className="w-max">
       {roles?.length > 0 ? (
-        roles.map((role: IRole) => {
-          // @ts-ignore
-          // @ts-ignore
+        roles?.map((role: IRole) => {
           return (
             <Tooltip title={role?.description} key={role?.id}>
               <Tag
                 className="cursor-pointer"
                 onClick={() => setModal(true)}
-                // color={roleColor[role.name as keyof IRoleLable]}
+                color={roleColor[role?.name as keyof IRoleLable]}
               >
                 {role?.name}
               </Tag>
@@ -51,10 +50,10 @@ export default function Role({ roles, empId, refetch }: props) {
           );
         })
       ) : (
-        <Tag className="cursor-pointer" onClick={() => setModal(true)}>
-          Gán chức vụ
-          {/* <AddIcon /> */}
-        </Tag>
+        <Tooltip title="Gán chức vụ" >
+          {/* Gán chức vụ */}
+          <PlusCircleOutlined className="cursor-pointer" onClick={() => setModal(true)}/>
+        </Tooltip>
       )}
       <Modal
         title="Role"
@@ -76,7 +75,7 @@ export default function Role({ roles, empId, refetch }: props) {
         ]}
       >
         <Form form={roleForm}>
-          <RoleSelect empRole={roles.map((e) => e.name)} />
+          <RoleSelect empRole={roles?.map((e) => e.name)} />
         </Form>
       </Modal>
     </div>
