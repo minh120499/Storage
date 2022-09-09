@@ -2,15 +2,19 @@ import {
   AppstoreOutlined,
   TeamOutlined,
   ShopOutlined,
+  BarChartOutlined,
+  ImportOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
 import WarehouseIcon from "@mui/icons-material/Warehouse";
 import { Menu } from "antd";
 import type { MenuProps } from "antd/es/menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import "../styles/SideBar.css";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../app/store";
 import { Navigate, useNavigate } from "react-router-dom";
+import { logout } from "../features/user/userSlice";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -30,28 +34,27 @@ function getItem(
 
 const MENUS: MenuItem[] = [
   getItem("Quản lý sản phẩm", "warehouse", <AppstoreOutlined />, [
-    getItem("Thêm sản phẩm", "warehouse/productsAdd"),
+    getItem("Thêm sản phẩm", "warehouse/products/add"),
     getItem("Danh sách sản phẩm", "warehouse/products"),
     getItem("Danh mục sản phẩm", "warehouse/categories"),
   ]),
   getItem("Hàng hoá", "coordinator", <AppstoreOutlined />, [
-    getItem("Nhập hàng", "coordinator/purchase_orders"),
-    getItem("Chuyển hàng", "coordinator/storage"),
+    getItem("Nhập hàng", "coordinator/purchase_orders", <ImportOutlined />),
+    getItem("Chuyển hàng", "coordinator/storage", <ExportOutlined />),
   ]),
   getItem("Nhà cung cấp", "stocker/supplier", <ShopOutlined />),
-  getItem("Kho hàng", "stocker", <WarehouseIcon />, [
-    getItem("Danh sách", "/stocker/inventories"),
-  ]),
+  getItem("Kho hàng", "/stocker/inventories", <WarehouseIcon />),
   getItem("Nhân viên", "admin", <TeamOutlined />, [
     getItem("Danh sách", "/admin/employees"),
     getItem("Roles", "/admin/roles/"),
   ]),
+  getItem("Thống kê", "/statistics", <BarChartOutlined />),
   getItem("Đăng xuất", "/login", <LogoutIcon />),
 ];
 
 const SideBar: React.FC = () => {
   const userRoles = useSelector((state: RootState) => state?.user?.authorities);
-
+  const dispatch = useDispatch();
   const items = MENUS.filter((m: MenuItem) => {
     return userRoles.includes(m?.key?.toString() || "") && m;
   });
@@ -77,6 +80,9 @@ const SideBar: React.FC = () => {
           items={userRoles.includes("admin") ? MENUS : items}
           onClick={(e) => {
             navigate(`${e.key}`, { replace: true });
+            if (e.key.includes("login")) {
+              dispatch(logout)
+            }
             return <Navigate to={`/${e.key}`} />;
           }}
         />

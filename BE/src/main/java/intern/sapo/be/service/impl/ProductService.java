@@ -67,11 +67,17 @@ public class ProductService implements IProductService {
 
     @Override
     @Transactional
-    public void deleteById(Integer integer) {
+    public void deleteById(Integer id) {
 
-        Product product = productRepo.findById(integer).orElseThrow(() -> new RuntimeException("Id is not exist"));
+        Product product = productRepo.findById(id).orElseThrow(() -> new RuntimeException("Id is not exist"));
         product.setIsDelete(true);
         productRepo.save(product);
+        deleteVariantsByProductId(id);
+    }
+    public  void deleteVariantsByProductId(Integer productId)
+    {
+        String query="update product_variants set is_delete=true where product_id=?";
+        jdbcTemplate.update(query,productId);
     }
 
     @Override
@@ -148,6 +154,7 @@ public class ProductService implements IProductService {
         }
         variantRepo.saveAll(variants);
 
+
     }
 
     @Override
@@ -156,6 +163,7 @@ public class ProductService implements IProductService {
         var products = productRepo.findAllById(Arrays.asList(listId));
         for (Product product : products) {
             product.setIsDelete(true);
+            deleteVariantsByProductId(product.getId());
         }
         productRepo.saveAll(products);
     }

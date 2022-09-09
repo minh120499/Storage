@@ -32,8 +32,6 @@ e
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
-o
-?BE/src/main/java/intern/sapo/be/security/WebSecurityConfig.java,a\1\a1fc97ececb50e7a19d6a63c50fd9f4b34af002b
 i
 9BE/src/main/java/intern/sapo/be/base/ResponseListDto.java,f\c\fc81ec6152873d083b70f85a89947c9f0f468555
 S

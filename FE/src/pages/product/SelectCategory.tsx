@@ -36,11 +36,13 @@ const SelectCategory = (props: ISelectCategory) => {
                     onChange={(value, options) => {
 
                         let sCat:Category[] = options.map((option: DefaultOptionType, index: number) => { if ( categories) return categories.at(option.key) })
-                        console.log(sCat);
                         
                         onChange(sCat)
                         
                     }}
+                    
+                   
+                    
 
 
                 >

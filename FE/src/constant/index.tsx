@@ -1,4 +1,6 @@
 export const roleColor = {
-    stocker: 'magenta',
-    staff: 'gold'
-}
+  admin: "magenta",
+  coordinator: "gold",
+  stocker: "gold",
+  warehouse: "gold",
+};
