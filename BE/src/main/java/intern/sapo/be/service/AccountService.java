@@ -8,34 +8,27 @@ import intern.sapo.be.entity.Role;
 import intern.sapo.be.exception.AccountException;
 import intern.sapo.be.repository.AccountRepository;
 import intern.sapo.be.repository.RoleRepository;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class AccountService {
-	@Autowired
 	private AccountRepository accountRepository;
 
-	@Autowired
 	private RoleRepository roleRepository;
 
-	@Autowired
 	ModelMapper modelMapper;
 
 	public Iterable<Account> getAll() {
-//		List<Account> a = accountRepository.findAllByIsDelete();
-
 		return accountRepository.findAll();
 	}
 
@@ -103,14 +96,14 @@ public class AccountService {
 				accountResponse.setAddress(account.getEmployee().get(0).getAddress());
 			}
 			if(!account.getRoles().isEmpty()) {
-				accountResponse.setRoleIds(account.getRoles().stream().map(r -> r.getId()).collect(Collectors.toList()));
-				accountResponse.setAuthorities(account.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+				accountResponse.setRoleIds(account.getRoles().stream().map(Role::getId).collect(Collectors.toList()));
+				accountResponse.setAuthorities(account.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
 			}
 
 			return accountResponse;
 		} catch(Exception e) {
 			e.printStackTrace();
-			throw new NoSuchElementException("Account don't exist");
+			throw new NoSuchElementException("Tài khoản không tồn tại");
 		}
 	}
 

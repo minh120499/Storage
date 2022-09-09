@@ -133,6 +133,9 @@ function Employee() {
         columns={columns}
         query={accountApi}
         rowKey="id"
+        rowClassName="cursor-default"
+        // className="cursor-default"
+        style={{cursor: "default"}}
       />
       <Modal
         title={"Thêm nhân viên"}
