@@ -54,16 +54,16 @@ const InventoryList = () => {
         return a?.code?.localeCompare(b?.code)
       },
       render: (inventory: IInventory) => (
-        <div className="bg-red">{inventory.code}</div>
+        <div className="bg-red">{inventory?.code}</div>
       ),
     },
     {
       title: <b>Tên</b>,
       dataIndex: "inventory",
       key: "name",
-      sorter: (a: IInventory, b: IInventory) => a.name.localeCompare(b.name),
+      sorter: (a: IInventory, b: IInventory) => a?.name?.localeCompare(b?.name),
       render: (inventory: IInventory) => (
-        <div className="bg-red">{inventory.name}</div>
+        <div className="bg-red">{inventory?.name}</div>
       ),
     },
     {
@@ -71,7 +71,7 @@ const InventoryList = () => {
       dataIndex: "inventory",
       key: "address",
       render: (inventory: IInventory) => (
-        <div className="bg-red">{inventory.address}</div>
+        <div className="bg-red">{inventory?.address}</div>
       ),
     },
     {
@@ -86,7 +86,7 @@ const InventoryList = () => {
 
         return (
           <Tooltip
-            title={`${stock.toLocaleString()} / ${size.toLocaleString()}`}
+            title={`${stock?.toLocaleString()} / ${size?.toLocaleString()}`}
           >
             <div>
               {Intl.NumberFormat("en", { notation: "compact" }).format(stock) +
@@ -132,7 +132,6 @@ const InventoryList = () => {
       },
     },
     {
-      title: "Action",
       dataIndex: "inventory",
       key: "action",
       render: (record: any) => {
@@ -317,7 +316,7 @@ const InventoryList = () => {
               {
                 required: true,
                 message: 'Mã kho không được để trống',
-                pattern: /[A-Za-z0-9]/
+                pattern: /^[A-Za-z0-9]/
               },
             ]}
           >
@@ -331,7 +330,7 @@ const InventoryList = () => {
               {
                 required: true,
                 message: 'Tên kho không được để trống',
-                pattern: /[A-Za-z0-9]/
+                pattern: /^[A-Za-z0-9]/
               },
             ]}
           >

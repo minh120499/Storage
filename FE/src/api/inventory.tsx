@@ -15,8 +15,6 @@ export const getPagination = async (page: number, pageSize: number) => {
         params: {
           pageNumber: page,
           pageSize,
-          sortBy: "id",
-          sortDir:"desc"
         },
       })
     ).data;

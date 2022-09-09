@@ -108,7 +108,7 @@ const InventoryManager = () => {
       title: "Mã sản phẩm",
       dataIndex: ["code", "obj"],
       render: (code: string, obj: any) => {
-        return <Link to={`/products/${obj.productId}`}>{obj.code}</Link>;
+        return <Link style={{textDecoration: "underline"}} to={`/products/${obj.productId}`}>{obj.code}</Link>;
       },
       sorter: (a, b) => a.code.localeCompare(b.code),
     },

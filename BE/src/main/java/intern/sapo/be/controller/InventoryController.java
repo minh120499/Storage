@@ -33,9 +33,11 @@ public class InventoryController {
 	@GetMapping("/pagination")
 	public ResponseEntity getPagination(@RequestParam(value = "pageNumber", required = true, defaultValue = "1") int pageNumber,
 	                                    @RequestParam(value = "pageSize", required = true, defaultValue = "10") int pageSize,
-	                                    @RequestParam(value = "sortBy", required = false) String sortBy,
-	                                    @RequestParam(value = "sortDir", required = false) String sortDir) {
-		Page<Inventory> Inventory = iInventoryService.findAllBypPage(pageNumber, pageSize, sortBy, sortDir);
+	                                    @RequestParam(value = "sortBy", required = false, defaultValue = "id") String sortBy,
+	                                    @RequestParam(value = "sortDir", required = false, defaultValue = "desc") String sortDir,
+										@RequestParam(value = "name", required = false) String name,
+										@RequestParam(value = "code", required = false) String code) {
+		Page<Inventory> Inventory = iInventoryService.findAllBypPage(pageNumber, pageSize, sortBy, sortDir, name, code);
 		List<InventoryResponse> inventories = new ArrayList<>();
 		Inventory.getContent().forEach((i -> {
 			InventoryResponse e = new InventoryResponse();

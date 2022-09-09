@@ -5,6 +5,7 @@ import { Category } from "../../type/allType";
 import { updateCategory } from "../../api/apiCategory";
 import Button from "../../UI/Button";
 import   {EditIcon}  from "../../UI/ActionIcons";
+import { Edit } from "@mui/icons-material";
 
 type props = {
   status: () => void;
