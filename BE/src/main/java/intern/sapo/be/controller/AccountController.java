@@ -1,10 +1,7 @@
 package intern.sapo.be.controller;
 
-import intern.sapo.be.dto.payload.LoginRequest;
 import intern.sapo.be.dto.request.AccountDTO;
-import intern.sapo.be.dto.response.JwtAuthenticationResponse;
 import intern.sapo.be.entity.Account;
-import intern.sapo.be.exception.AccountException;
 import intern.sapo.be.security.jwt.JwtTokenUtil;
 
 import intern.sapo.be.service.AccountService;
@@ -14,9 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,12 +28,12 @@ public class AccountController {
 	private final JwtTokenUtil jwtUtils;
 
 	@GetMapping()
-	public ResponseEntity<?> getAll() {
+	public ResponseEntity<Object> getAll() {
 		return ResponseEntity.ok(accountService.getAll());
 	}
 
 	@GetMapping("{page}")
-	public ResponseEntity<?> getPerPage(@PathVariable("page") Integer page, @RequestParam(defaultValue = "10") Integer size) {
+	public ResponseEntity<Object> getPerPage(@PathVariable("page") Integer page, @RequestParam(defaultValue = "10") Integer size) {
 		Map<String, Object> result = new HashMap<>();
 		Page<Account> accounts = accountService.getPerPage(size, page);
 		result.put("data", accounts.getContent());

@@ -12,3 +12,4 @@ export const creatDetailExport = async (item: value[]) => {
 export const findDetailByExport = async (id?: number) => {
   return await (await axios.get(`http://localhost:8080/details/getByExport/${id}`)).data;
 };
+  
