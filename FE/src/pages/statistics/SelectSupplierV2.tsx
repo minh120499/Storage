@@ -3,64 +3,64 @@ import React, { useEffect, useState } from "react";
 import { getSuppliers } from "../../services/api";
 import { ISupplier } from "../../services/customType";
 
-
 type Props = {
-    initValue:number,
-    changeSupplierId: (n: number) => void
-}
-const SelectSupplierV2 = ({ initValue,changeSupplierId }: Props) => {
-
-    const [suppliers, setSuppliers] = useState<ISupplier[]>([]);
-    const [supplierId, setSupplierId] = useState<number>();
-    useEffect(() => {
-        getSuppliers().then((r) => {
-            setSuppliers(r.data.reverse())
-        })
-    }, [])
-    const handleSelectSupplier = (key: number) => {
-        setSupplierId(key)
-        changeSupplierId(key)
-    }
-    return (
-        <Antd.Form.Item label='Nhà cung cấp:' name={'supplierId'} labelCol={{ span: 24 }}  >
-            <Antd.Select style={{ width: '100%', marginBottom: 10, borderRadius: 5 }} size={'large'}
-                showSearch
-                placeholder="Nhấn để chọn nhà cung cấp"
-                optionFilterProp="children"
-                defaultValue={initValue}
-                onChange={handleSelectSupplier}
-                filterOption={(input, option) => (option!.children as unknown as string).includes(input)}
-                filterSort={(optionA, optionB) =>
-                    (optionA!.children as unknown as string)
-                        .toLowerCase()
-                        .localeCompare((optionB!.children as unknown as string).toLowerCase())
-                }
-
-            >
-                {
-
-                <>
-                    <Antd.Select.Option key={-1} value={-1}>
-                        {'Tất cả'}
-                    </Antd.Select.Option>
-                    {
-
-                        suppliers.map((supplier, index) => {
-                            return (
-                                <Antd.Select.Option key={supplier.id} value={supplier.id}>
-
-                                    {supplier.code + ' | ' + supplier.name}
-
-                                </Antd.Select.Option>
-                            )
-                        })
-                    }
-                </>
-                
-                }
-
-            </Antd.Select>
-        </Antd.Form.Item>
-    )
-}
-export default SelectSupplierV2
+  initValue: number;
+  changeSupplierId: (n: number) => void;
+};
+const SelectSupplierV2 = ({ initValue, changeSupplierId }: Props) => {
+  const [suppliers, setSuppliers] = useState<ISupplier[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [supplierId, setSupplierId] = useState<number>();
+  useEffect(() => {
+    getSuppliers().then((r) => {
+      setSuppliers(r.data.reverse());
+    });
+  }, []);
+  const handleSelectSupplier = (key: number) => {
+    setSupplierId(key);
+    changeSupplierId(key);
+  };
+  return (
+    <Antd.Form.Item
+      label="Nhà cung cấp:"
+      name={"supplierId"}
+      labelCol={{ span: 24 }}
+    >
+      <Antd.Select
+        style={{ width: "100%", marginBottom: 10, borderRadius: 5 }}
+        size={"large"}
+        showSearch
+        placeholder="Nhấn để chọn nhà cung cấp"
+        optionFilterProp="children"
+        defaultValue={initValue}
+        onChange={handleSelectSupplier}
+        filterOption={(input, option) =>
+          (option!.children as unknown as string).includes(input)
+        }
+        filterSort={(optionA, optionB) =>
+          (optionA!.children as unknown as string)
+            .toLowerCase()
+            .localeCompare(
+              (optionB!.children as unknown as string).toLowerCase()
+            )
+        }
+      >
+        {
+          <>
+            <Antd.Select.Option key={-1} value={-1}>
+              {"Tất cả"}
+            </Antd.Select.Option>
+            {suppliers.map((supplier, index) => {
+              return (
+                <Antd.Select.Option key={supplier.id} value={supplier.id}>
+                  {supplier.code + " | " + supplier.name}
+                </Antd.Select.Option>
+              );
+            })}
+          </>
+        }
+      </Antd.Select>
+    </Antd.Form.Item>
+  );
+};
+export default SelectSupplierV2;

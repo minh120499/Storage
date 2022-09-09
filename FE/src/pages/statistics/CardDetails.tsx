@@ -29,6 +29,7 @@ const CardDetails = (props: Props) => {
                 console.log(r.data);
 
             })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props])
 
     const getInform = () => {

@@ -1,15 +1,10 @@
 package intern.sapo.be.controller;
 
 import intern.sapo.be.dto.request.Inventory.ListIdRequest;
-import intern.sapo.be.dto.response.Inventory.OnlyInventoryResponse;
 import intern.sapo.be.dto.response.product.Inventory.InventoryResponse;
-import intern.sapo.be.entity.Account;
-import intern.sapo.be.entity.InventoriesProductVariant;
 import intern.sapo.be.entity.Inventory;
-import intern.sapo.be.repository.InventoryRepository;
 import intern.sapo.be.service.IInventoryService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,20 +21,20 @@ import java.util.Map;
 @AllArgsConstructor
 @RequestMapping("/inventories")
 @CrossOrigin("*")
+@PreAuthorize("hasAnyAuthority('admin','stocker')")
 public class InventoryController {
 	private final IInventoryService iInventoryService;
-	private final InventoryRepository inventoryRepository;
 
 	@GetMapping("/pagination")
-	public ResponseEntity getPagination(@RequestParam(value = "pageNumber", required = true, defaultValue = "1") int pageNumber,
-	                                    @RequestParam(value = "pageSize", required = true, defaultValue = "10") int pageSize,
+	public ResponseEntity getPagination(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber,
+	                                    @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
 	                                    @RequestParam(value = "sortBy", required = false, defaultValue = "id") String sortBy,
 	                                    @RequestParam(value = "sortDir", required = false, defaultValue = "desc") String sortDir,
 										@RequestParam(value = "name", required = false) String name,
 										@RequestParam(value = "code", required = false) String code) {
-		Page<Inventory> Inventory = iInventoryService.findAllBypPage(pageNumber, pageSize, sortBy, sortDir, name, code);
+		Page<Inventory> inventory = iInventoryService.findAllBypPage(pageNumber, pageSize, sortBy, sortDir, name, code);
 		List<InventoryResponse> inventories = new ArrayList<>();
-		Inventory.getContent().forEach((i -> {
+		inventory.getContent().forEach((i -> {
 			InventoryResponse e = new InventoryResponse();
 			e.setInventory(i);
 			e.setTotalProductVariant(iInventoryService.getProductVariantByInventoryId(i.getId(), "").getTotalProductVariant());
@@ -47,9 +42,9 @@ public class InventoryController {
 		}));
 		Map<String, Object> results = new HashMap<>();
 		results.put("data", inventories);
-		results.put("total", Inventory.getTotalElements());
-		results.put("from", Inventory.getSize() * Inventory.getNumber() + 1);
-		results.put("to", Inventory.getSize() * Inventory.getNumber() + Inventory.getNumberOfElements());
+		results.put("total", inventory.getTotalElements());
+		results.put("from", inventory.getSize() * inventory.getNumber() + 1);
+		results.put("to", inventory.getSize() * inventory.getNumber() + inventory.getNumberOfElements());
 
 		return ResponseEntity.ok(results);
 	}
@@ -99,11 +94,10 @@ public class InventoryController {
 	}
 
 	@PutMapping("/change/minquantity")
-	public ResponseEntity changeMinQuantity(@RequestParam(value = "inventoryId", required = false) Integer inventoryId,
-													   @RequestParam(value = "productVariantId", required = false) Integer productVariantId,
-													   @RequestParam(value = "minQuantity", required = false) Integer minQuantity)
-	{
-		return ResponseEntity.ok(iInventoryService.changeMinQuantity(inventoryId,productVariantId,minQuantity));
+	public ResponseEntity<Object> changeMinQuantity(@RequestParam(value = "inventoryId", required = false) Integer inventoryId,
+	                                        @RequestParam(value = "productVariantId", required = false) Integer productVariantId,
+	                                        @RequestParam(value = "minQuantity", required = false) Integer minQuantity) {
+		return ResponseEntity.ok(iInventoryService.changeMinQuantity(inventoryId, productVariantId, minQuantity));
 	}
 
 }

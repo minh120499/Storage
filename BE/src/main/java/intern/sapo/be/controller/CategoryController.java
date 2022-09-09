@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ import java.util.Map;
 @CrossOrigin("*")
 @RequestMapping("/api/categories")
 @AllArgsConstructor
+@PreAuthorize("hasAnyAuthority('admin','warehouse')")
 public class CategoryController {
     public final ICategoryService iCategoryService;
 

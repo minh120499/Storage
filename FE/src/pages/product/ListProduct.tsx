@@ -215,6 +215,7 @@ const ListProduct = () => {
 
         document.title = 'Danh sách sản phẩm'
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [productFilter])
 
     const onPageChange = (page: number, size: number) => {

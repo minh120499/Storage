@@ -1,4 +1,3 @@
-import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState, memo } from "react";
 import { LeftOutlined } from "@ant-design/icons";
 import * as Mui from "@mui/material";
@@ -110,7 +109,7 @@ const UpdateProduct = (props: ProductUpdateProps) => {
   useEffect(() => {
     setVariant(productInfo.variants?.at(index));
     document.title = "Cập nhật thông tin sản phẩm";
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const ProductInfo = () => {

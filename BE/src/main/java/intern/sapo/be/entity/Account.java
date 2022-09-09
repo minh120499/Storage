@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,12 +27,11 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Account implements UserDetails {
+public class Account {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
 	private Integer id;
-
 
 	@Column(name = "username", nullable = false, length = 200)
 	private String username;
@@ -50,53 +50,12 @@ public class Account implements UserDetails {
 	@Column(name = "is_delete", nullable = false)
 	private Boolean isDelete = false;
 
-
-
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JsonBackReference
 	@JoinTable(name = "accounts_roles", joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Set<Role> roles = new HashSet<>();
 
 	//    @JsonBackReference
-	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Employee> employee;
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Set<GrantedAuthority> authorities = new HashSet<>();
-		for (Role role : roles) {
-			authorities.add(new SimpleGrantedAuthority(role.getName()));
-		}
-		return authorities;
-	}
-
-	@Override
-	public String getPassword() {
-		return password;
-	}
-
-	@Override
-	public String getUsername() {
-		return username;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
 }

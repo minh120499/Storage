@@ -2,7 +2,6 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import NumberFormat from "react-number-format";
 import {Button} from "antd";
 import React from "react";
-import {IDetailImportInvoice} from "../../services/customType";
 
 type Props = {
     total: number,

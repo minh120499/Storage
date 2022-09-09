@@ -1,9 +1,9 @@
 import * as Antd from "antd";
 import React, { useEffect, useState } from "react";
 import { getAllInventory } from "../../api/inventory";
-import { inventory } from "../../components/type/data_type";
-import { getSuppliers } from "../../services/api";
-import { ISupplier } from "../../services/customType";
+// import { inventory } from "../../components/type/data_type";
+// import { getSuppliers } from "../../services/api";
+// import { ISupplier } from "../../services/customType";
 import { Inventory } from "../../type/allType";
 
 

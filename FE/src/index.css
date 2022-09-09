@@ -80,3 +80,7 @@ main::-webkit-scrollbar-thumb {
   background: rgb(193 193 193);
   border-radius: 10px;
 }
+.ant-table-cell-row-hover {
+  cursor: default !important;
+  background-color: red;
+}
