@@ -25,6 +25,7 @@ import CreateReturnImportInvoice from "./pages/ImportInvoice/CreateReturnImportI
 import Create from "./components/stock_transfers/create";
 import {useDispatch} from "react-redux";
 import {setUserStore} from "./features/user/userSlice";
+import Statistics from "./pages/statistics/Statistics";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -81,18 +82,22 @@ const App: React.FC = () => {
             { path: "return/:code", element: <CreateReturnImportInvoice /> },
           ],
         },
-        {
-          path: "warehouse/productsAdd",
-          element: <AddProduct />,
-        },
+
         {
           path: "warehouse/products",
-
           children: [
+            {
+              path: "add",
+              element: <AddProduct />,
+            },
             { index: true, element: <ListProduct /> },
             { path: ":id", element: <ProductDetails /> },
 
           ],
+        },
+        {
+          path: "/statistics",
+          element: <Statistics />,
         },
         {
           path: "warehouse/categories",

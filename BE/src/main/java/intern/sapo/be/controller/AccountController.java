@@ -44,25 +44,18 @@ public class AccountController {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> createAccount(@Valid @RequestBody AccountDTO accountDTO) {
+	public ResponseEntity<Object> createAccount(@Valid @RequestBody AccountDTO accountDTO) {
 		return ResponseEntity.ok(accountService.save(accountDTO));
 	}
 
 	@PatchMapping
-	public ResponseEntity<?> editAccount(@Valid @RequestBody AccountDTO accountDTO) {
+	public ResponseEntity<Object> editAccount(@Valid @RequestBody AccountDTO accountDTO) {
 		return ResponseEntity.ok(accountService.edit(accountDTO));
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity<?> delete(@PathVariable Integer id) {
+	public ResponseEntity<Object> delete(@PathVariable Integer id) {
 		accountService.delete(id);
 		return ResponseEntity.ok(HttpStatus.OK);
 	}
-
-//	@GetMapping("{id}")
-//	public ResponseEntity<?> getAccountDetails(@PathVariable Integer id) {
-//		return ResponseEntity.ok(accountService.getAllDetails(id));
-//	}
-
-
 }

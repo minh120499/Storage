@@ -72,7 +72,7 @@ export default function HomePage() {
                   <ArrowDownOutlined /> 12% So với tuần trước
                 </Col>
                 <Col span={24} style={{ height: "250px" }}>
-                  <LineChartReport />
+                  <LineChartReport  />
                 </Col>
               </Row>
             </Col>

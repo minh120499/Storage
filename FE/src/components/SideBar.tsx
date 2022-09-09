@@ -46,6 +46,8 @@ const MENUS: MenuItem[] = [
     getItem("Danh sách", "/admin/employees"),
     getItem("Roles", "/admin/roles/"),
   ]),
+  getItem("Thống kê", "/statistics", <TeamOutlined />)
+  ,
   getItem("Đăng xuất", "/login", <LogoutIcon />),
 ];
 

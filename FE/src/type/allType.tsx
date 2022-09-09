@@ -116,3 +116,68 @@ export interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     name: string,
     values: Array<string>
 }
+export interface StatisticsFilter{
+        inventoryId:number,
+        supplierId:number,
+        startDate:number,
+        endDate:number,
+        sortBy:string,
+        sortDir:boolean,
+        productName?:string,
+        tag:number,
+        page:number,
+        size:number,
+        type:number,
+        statisticsType:number,
+
+}
+export interface StatisticsResult{
+        productId:number,
+        productVariantId:number,
+        name:string,
+        totalPrice:number,
+
+
+}
+export interface Inventory {
+    id: number;
+    code: string;
+    name: string;
+    address: string;
+    createAt: string;
+    updateAt: null;
+    isDelete: boolean;
+  }
+  export interface ImportStatistic
+  {
+    inventoryId: number,
+    supplierId: number,
+    accountId:number,
+    importId:number,
+    importCode:string,
+    detailsImportId:number,
+    productVariantId:number,
+    importPrice:number,
+    importNumber:number,
+    totalPrice:number,
+    deliveryDate:string,
+    createAt:string,
+    name:string,
+    returnNumber:number,
+    receiveNumber:number
+}
+
+export interface sortOption{
+    key:string,
+    value:string
+}
+
+export const ImportSortOptions:sortOption[]=[
+    {key:'name',value:'Tên sản phẩm'},
+    {key:'receive_number',value:'Số lượng nhập'},
+    {key:'return_number',value:'Số lượng trả hàng'},
+    {key:'import_number',value:'Số lượng nhập dự kiến'},
+    {key:'import_price',value:'Giá nhập'},
+    {key:'total_price',value:'Tổng tiền'},
+    {key:'create_at',value:'Thời gian nhập'}
+]
