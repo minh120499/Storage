@@ -1,18 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
 import { Pagination, Spin, Table } from "antd";
 import { useState } from "react";
-import Swal from "sweetalert2";
+import PageResult from "../components/PageResult";
 
 const T = (props: any) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const name = props?.search?.filterName;
   const value = props?.search?.filterValue;
+
+  const fn = props?.search
+    ? props?.query(page, pageSize)
+    : props?.query(page, pageSize, name, value);
+
   const query = useQuery(
     ["id", page, pageSize],
     () => {
       console.log(value, !!value);
-      return props.query(page, pageSize, name, value);
+      console.log(fn());
+
+      return fn;
       // return !!value
       //   ? props.query(page, pageSize, name, value)
       //   : props.query(page, pageSize);
@@ -20,13 +27,10 @@ const T = (props: any) => {
     { keepPreviousData: true }
   );
 
+  console.log(query?.data);
+
   if (query?.isError) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Fails",
-    });
-    return <div>Api not found</div>;
+    return <PageResult />;
   }
 
   if (query?.data?.data?.length === 0) {

@@ -29,7 +29,7 @@ public class AccountService {
 	ModelMapper modelMapper;
 
 	public Iterable<Account> getAll() {
-		return accountRepository.findAll();
+		return accountRepository.findAllByIsDelete(false);
 	}
 
 	public Account save(AccountDTO accountDTO) {
@@ -57,9 +57,7 @@ public class AccountService {
 
 			account.setEmployee(List.of(employee));
 			account.setRoles(roles);
-			Account account1 = accountRepository.save(account);
-			account1.getEmployee();
-			return account1;
+			return accountRepository.save(account);
 		} catch(Exception e) {
 			throw new AccountException(e.getMessage(), e.getCause());
 		}
@@ -108,6 +106,6 @@ public class AccountService {
 	}
 
 	public Page<Account> getPerPage(Integer size, Integer page) {
-		return accountRepository.findAll(PageRequest.of(page - 1, size, Sort.by("id")));
+		return accountRepository.findAll(PageRequest.of(page - 1, size, Sort.by("id").descending()));
 	}
 }

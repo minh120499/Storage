@@ -19,17 +19,18 @@ import {
   deleteInvetory,
   getPagination,
 } from "../../api/inventory";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AddAddress from "../AddAddress";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import FilterBox from "../../UI/FilterBox";
 import ToastCustom from "../../features/toast/Toast";
+import useTitle from "../../app/useTitle";
 
 const InventoryList = () => {
   const navigate = useNavigate();
-
+  useTitle("Danh sách kho", "Kho hàng");
   const tailLayout = {
     wrapperCol: { offset: 18, span: 18 },
     labelCol: { span: 100 },
@@ -225,9 +226,6 @@ const InventoryList = () => {
       filterValue,
     });
   };
-  useEffect(() => {
-    document.title = "Kho hàng";
-  }, []);
 
   const handleOk = () => {
     const { code, name, id } = formInventory.getFieldsValue();

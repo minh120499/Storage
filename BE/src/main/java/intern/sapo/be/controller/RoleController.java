@@ -5,7 +5,6 @@ import intern.sapo.be.dto.request.RolesDTO;
 import intern.sapo.be.entity.Role;
 import intern.sapo.be.service.RoleService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

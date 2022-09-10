@@ -42,3 +42,11 @@ export const accountApi = async (page: number, pageSize: number) => {
     })
   ).data;
 };
+
+export const deleteEmpApi = async (id: number) => {
+  return await (
+    await axios.delete(`http://localhost:8080/api/account/${id}`, {
+      headers,
+    })
+  ).data;
+};
