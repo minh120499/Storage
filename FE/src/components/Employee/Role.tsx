@@ -52,7 +52,7 @@ export default function Role({ roles, empId, refetch }: props) {
       ) : (
         <Tooltip title="Gán chức vụ" >
           {/* Gán chức vụ */}
-          <PlusCircleOutlined className="cursor-pointer" onClick={() => setModal(true)}/>
+          <PlusCircleOutlined className="cursor-pointer text-blue" onClick={() => setModal(true)}/>
         </Tooltip>
       )}
       <Modal

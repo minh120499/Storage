@@ -3,10 +3,6 @@
 BE/.gitignore,2\d\2d5173d3a311d4cf0d3de99bd007eb353b92fc68
 k
 ;BE/src/main/java/intern/sapo/be/dto/request/AccountDTO.java,b\e\be66c3d1b7e49d1ca11671a941fa130114855ce0
-n
->BE/src/main/java/intern/sapo/be/service/IInventoryService.java,d\5\d5b59414bdafc5bc2697f1523db10efb02c82393
-v
-FBE/src/main/java/intern/sapo/be/service/impl/InventoryServiceImpl.java,2\5\250caf1f4158d0f6321d23cb38d6d133bbb45bcc
 E
 FE/tailwind.config.js,4\c\4cb4f6f8267d58bb42acbeefe8ce717f3c9442dd
 {

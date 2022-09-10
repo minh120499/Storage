@@ -4,19 +4,21 @@ import type { RootState } from "../app/store";
 import { useSelector } from "react-redux";
 
 export default function HeaderMenu() {
-    const currentUser = useSelector((state: RootState) => state.user);
+  const currentUser = useSelector((state: RootState) => state.user);
+  const title = useSelector((state: RootState) => state.title);
 
-    return (
-        <div className="top-header-menu">
-            <div className="user-box">
-                <Avatar size="large" src={`${currentUser?.image}`}>
-                    {currentUser?.username}
-                </Avatar>
-                <div>
-                    <div>{currentUser.username}</div>
-                    <div>{currentUser.authorities[0]}</div>
-                </div>
-            </div>
+  return (
+    <div className="top-header-menu flex justify-between h-full">
+      {title}
+      <div className="user-box">
+        <Avatar size="large" src={`${currentUser?.image}`}>
+          {currentUser?.username}
+        </Avatar>
+        <div>
+          <div>{currentUser.username}</div>
+          <div>{currentUser.authorities[0]}</div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }

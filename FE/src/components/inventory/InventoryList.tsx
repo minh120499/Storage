@@ -31,7 +31,7 @@ const InventoryList = () => {
   const navigate = useNavigate();
 
   const tailLayout = {
-    wrapperCol: { offset: 18, span:18},
+    wrapperCol: { offset: 18, span: 18 },
     labelCol: { span: 100 },
   };
 
@@ -50,7 +50,7 @@ const InventoryList = () => {
       dataIndex: "inventory",
       key: "code",
       sorter: (a: IInventory, b: IInventory) => {
-        return a?.code?.localeCompare(b?.code)
+        return a?.code?.localeCompare(b?.code);
       },
       render: (inventory: IInventory) => (
         <div className="bg-red">{inventory?.code}</div>
@@ -168,55 +168,74 @@ const InventoryList = () => {
   ];
 
   const inventoryMutation = useMutation((inventory: IInventory) =>
-  createInventory(inventory)
-  .then(()=>{
-    ToastCustom.fire({
-      icon:"success",
-      title:"Thêm thành công"
-    });
-    setIsModalVisible(false);
-    formInventory.resetFields();
-  }).catch(()=>{
-    ToastCustom.fire({
-      icon:"error",
-      title:"Có lỗi xảy ra"
-    })
-  }));
+    createInventory(inventory)
+      .then(() => {
+        ToastCustom.fire({
+          icon: "success",
+          title: "Thêm thành công",
+        });
+        setIsModalVisible(false);
+        formInventory.resetFields();
+      })
+      .catch(() => {
+        ToastCustom.fire({
+          icon: "error",
+          title: "Có lỗi xảy ra",
+        });
+      })
+  );
 
-  const inventoriesUpdate = useMutation((inventory: any) => updateInvetory(inventory.data, inventory.id).then(()=>{
-    ToastCustom.fire({
-      icon:"success",
-      title:"Sửa thành công"
-    });
-    setIsModalVisible(false);
-    formInventory.resetFields();
-  }).catch(()=>{
-    ToastCustom.fire({
-      icon:"error",
-      title:"Có lỗi xảy ra"
-    });
-  }));
+  const inventoriesUpdate = useMutation((inventory: any) =>
+    updateInvetory(inventory.data, inventory.id)
+      .then(() => {
+        ToastCustom.fire({
+          icon: "success",
+          title: "Sửa thành công",
+        });
+        setIsModalVisible(false);
+        formInventory.resetFields();
+      })
+      .catch(() => {
+        ToastCustom.fire({
+          icon: "error",
+          title: "Có lỗi xảy ra",
+        });
+      })
+  );
 
-
-
+  const [search, setSearch] = useState({
+    filterName: "",
+    filterValue: "",
+  });
   const inventoriesDelete = useMutation((id: number) => deleteInvetory(id));
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fullAddress, setFullAddress] = useState<string>("");
   const [keyChange, setKeyChange] = useState(0);
   const [formInventory] = Form.useForm();
   const [mode, setMode] = useState("new");
-
+  const onSearch = ({
+    filterName,
+    filterValue,
+  }: {
+    filterName: string;
+    filterValue: string;
+  }) => {
+    setSearch({
+      filterName,
+      filterValue,
+    });
+  };
   useEffect(() => {
     document.title = "Kho hàng";
   }, []);
 
   const handleOk = () => {
-    const { code, name, id, detailsAddress,province,district,ward } = formInventory.getFieldsValue();
+    const { code, name, id } = formInventory.getFieldsValue();
     const payload = {
       data: {
         code,
         name,
-        address: fullAddress || (detailsAddress+','+ward+','+district+','+province),
+        address: fullAddress,
       },
       id: id,
     };
@@ -227,7 +246,6 @@ const InventoryList = () => {
       inventoriesUpdate.mutate(payload);
     }
   };
-
 
   const handleCancel = () => {
     setKeyChange(0);
@@ -280,7 +298,7 @@ const InventoryList = () => {
           </Button>
         </Col>
         <Col span={20}>
-          <FilterBox />
+          <FilterBox search={onSearch} />
         </Col>
       </Row>
 
@@ -288,6 +306,7 @@ const InventoryList = () => {
         columns={columns}
         query={getPagination}
         rowKey={Math.random().toString()}
+        search={search}
         onRow={(record: any) => {
           return {
             onClick: () =>
@@ -304,7 +323,7 @@ const InventoryList = () => {
         title={mode === "new" ? "Tạo Kho mới" : "Sửa thông tin kho"}
         footer={null}
       >
-        <Form form={formInventory} onFinish={handleOk} >
+        <Form form={formInventory} onFinish={handleOk}>
           <Form.Item name="id" style={{ display: "none" }}>
             <Input />
           </Form.Item>
@@ -314,8 +333,8 @@ const InventoryList = () => {
             rules={[
               {
                 required: true,
-                message: 'Mã kho không được để trống',
-                pattern: /^[A-Za-z0-9]/
+                message: "Mã kho không được để trống",
+                pattern: /[A-Za-z0-9]/,
               },
             ]}
           >
@@ -328,17 +347,19 @@ const InventoryList = () => {
             rules={[
               {
                 required: true,
-                message: 'Tên kho không được để trống',
-                pattern: /^[A-Za-z0-9]/
+                message: "Tên kho không được để trống",
+                pattern: /[A-Za-z0-9]/,
               },
             ]}
           >
             <Input />
           </Form.Item>
-          <AddAddress onChange={setFullAddress} keyChange={keyChange}/>
+          <AddAddress onChange={setFullAddress} keyChange={keyChange} />
           <Form.Item {...tailLayout}>
             <Space>
-              <Button htmlType="submit">{mode === "new" ? "Xác nhận" : "Xác nhận"}</Button>
+              <Button htmlType="submit">
+                {mode === "new" ? "Xác nhận" : "Xác nhận"}
+              </Button>
               <Button mode="cancel" onClick={handleCancel}>
                 Thoát
               </Button>

@@ -7,6 +7,8 @@ import Role from "./Role";
 import RoleSelect from "./RoleSelect";
 import { Button, DeletedIcon, Table, PenIcon } from "../../UI";
 import { accountApi } from "../../api/EmployeesApi";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../../features/titleSlice";
 
 interface DataType {
   key: React.Key;
@@ -16,6 +18,24 @@ interface DataType {
 }
 
 function Employee() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(
+      setTitle({
+        title: (
+          <h1
+            style={{
+              fontSize: "30px",
+              margin: 0,
+            }}
+            className="self-center"
+          >
+            Danh sách nhân viên
+          </h1>
+        ),
+      })
+    );
+  }, [dispatch]);
   const columns: ColumnsType<DataType> = [
     {
       title: <b>ID</b>,
@@ -134,7 +154,6 @@ function Employee() {
         query={accountApi}
         rowKey="id"
         rowClassName="cursor-default"
-        // className="cursor-default"
         style={{cursor: "default"}}
       />
       <Modal

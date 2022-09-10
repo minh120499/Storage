@@ -4,26 +4,23 @@ import intern.sapo.be.dto.payload.RolesRequest;
 import intern.sapo.be.dto.request.RolesDTO;
 import intern.sapo.be.entity.Account;
 import intern.sapo.be.entity.Role;
+import intern.sapo.be.exception.AccountException;
 import intern.sapo.be.repository.AccountRepository;
 import intern.sapo.be.repository.RoleRepository;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class RoleService {
-	@Autowired
 	private RoleRepository roleRepository;
-	@Autowired
 	private AccountRepository accountRepository;
-
-	@Autowired
 	ModelMapper modelMapper;
 
 	public Optional<Role> getOne(Integer id) {
@@ -40,30 +37,43 @@ public class RoleService {
 
 	public Role save(RolesDTO rolesDTO) {
 		Role role = new Role();
-		int max = roleRepository.maxId();
-//		role.setId(max + 1);
 		role.setName(rolesDTO.getName());
 		role.setDescription(rolesDTO.getDescription());
 		return roleRepository.save(role);
 	}
 
 	public Account getRoleByEmp(Integer id) {
-		return accountRepository.findById(id).get();
+		try {
+			Optional<Account> account = accountRepository.findById(id);
+			if(account.isPresent()) {
+				return account.get();
+			} else {
+				throw new NoSuchElementException("Tài khoản không tồn tại");
+			}
+		} catch(Exception e) {
+			throw new AccountException(e.getMessage(), e.getCause());
+		}
 	}
 
 	public Account updateRoleByEmp(Integer id, RolesRequest rolesId) {
-		Account account = accountRepository.findById(id).get();
-		Account old = modelMapper.map(account, Account.class);
-
-		List<Role> roles = new ArrayList<>();
-		for(String role : rolesId.getRolesString()) {
-			Role roleId = roleRepository.findRoleByName(role);
-			roles.add(roleId);
+		try {
+			Optional<Account> account = accountRepository.findById(id);
+			if(account.isEmpty()) {
+				throw new NoSuchElementException("Tài khoản không tồn tại");
+			} else {
+				Account old = modelMapper.map(account.get(), Account.class);
+				List<Role> roles = new ArrayList<>();
+				for(String role : rolesId.getRolesString()) {
+					Role roleId = roleRepository.findRoleByName(role);
+					roles.add(roleId);
+				}
+				old.setRoles(new HashSet<>(roles));
+				accountRepository.save(old);
+				return old;
+			}
+		} catch(Exception e) {
+			throw new AccountException(e.getMessage(), e.getCause());
 		}
-
-		old.setRoles(new HashSet<>(roles));
-		accountRepository.save(old);
-		return old;
 	}
 
 	public Role update(RolesDTO rolesDTO) {
@@ -74,7 +84,7 @@ public class RoleService {
 		} catch(NoSuchElementException e) {
 			throw new NoSuchElementException("Id không tồn tại");
 		} catch(Exception ex) {
-			throw new RuntimeException(ex);
+			throw new AccountException(ex.getMessage());
 		}
 	}
 
@@ -83,7 +93,7 @@ public class RoleService {
 			roleRepository.deleteAllByIdInBatch(ids);
 			return true;
 		} catch(Exception e) {
-			throw new RuntimeException(e.getMessage());
+			throw new AccountException(e.getMessage());
 		}
 	}
 }
