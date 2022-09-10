@@ -2,37 +2,30 @@ import { useMutation } from "@tanstack/react-query";
 import { Form, Input, Modal, message, Space } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { rolesApi } from "../../api/EmployeesApi";
 import { IRole } from "../../interface";
 import { DeletedIcon, PenIcon } from "../../UI";
 import { Table, Button } from "../../UI";
-import { useDispatch } from "react-redux";
-import { setTitle } from "../../features/titleSlice";
+import useTitle from "../../app/useTitle";
 
 const headers = {
   Authorization: "Bearer " + localStorage.getItem("token"),
 };
 const RoleManager = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(
-      setTitle({
-        title: (
-          <h1
-            style={{
-              fontSize: "30px",
-              margin: 0,
-            }}
-            className="self-center"
-          >
-            Chức vụ
-          </h1>
-        ),
-      })
-    );
-  }, [dispatch]);
+  useTitle(
+    <h1
+      style={{
+        fontSize: "30px",
+        margin: 0,
+      }}
+      className="self-center"
+    >
+      Chức vụ
+    </h1>,
+    "Chức vụ"
+  );
   const addRoleMutation = useMutation((roleData: IRole) => {
     return axios.post("http://localhost:8080/api/admin/roles", roleData, {
       headers,

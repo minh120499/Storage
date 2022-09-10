@@ -19,32 +19,33 @@ import {
   deleteInvetory,
   getPagination,
 } from "../../api/inventory";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AddAddress from "../AddAddress";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import FilterBox from "../../UI/FilterBox";
 import ToastCustom from "../../features/toast/Toast";
+import useTitle from "../../app/useTitle";
 
 const InventoryList = () => {
   const navigate = useNavigate();
-
+  useTitle("Danh sách kho", "Kho hàng");
   const tailLayout = {
     wrapperCol: { offset: 18, span: 18 },
     labelCol: { span: 100 },
   };
 
   const columns: ColumnsType<IInventory> = [
-    {
-      title: <b>Id</b>,
-      dataIndex: "inventory",
-      key: "id",
-      render: (inventory: IInventory) => {
-        return <div>{inventory?.id}</div>;
-      },
-      sorter: (a: IInventory, b: IInventory) => (a?.id || 1) - (b?.id || 0),
-    },
+    // {
+    //   title: <b>Id</b>,
+    //   dataIndex: "inventory",
+    //   key: "id",
+    //   render: (inventory: IInventory) => {
+    //     return <div>{inventory?.id}</div>;
+    //   },
+    //   sorter: (a: IInventory, b: IInventory) => (a?.id || 1) - (b?.id || 0),
+    // },
     {
       title: <b>Mã kho</b>,
       dataIndex: "inventory",
@@ -69,41 +70,34 @@ const InventoryList = () => {
       title: <b>Địa chỉ</b>,
       dataIndex: "inventory",
       key: "address",
-      render: (inventory: IInventory) => (
-        <div className="bg-red">{inventory?.address}</div>
-      ),
+      render: (inventory: IInventory) =>
+        inventory?.address?.length > 36 ? (
+          <Tooltip title={inventory?.address}>
+            <div className="bg-red w-36 overflow-hidden addrres-table-render">
+              {inventory?.address}
+            </div>
+          </Tooltip>
+        ) : (
+          <div className="bg-red w-36 overflow-hidden addrres-table-render">
+            {inventory?.address}
+          </div>
+        ),
     },
     {
-      title: <b>Tổng số lượng tồn kho</b>,
+      title: <b>Tồn kho</b>,
       dataIndex: ["totalProductVariant", "inventory"],
       key: "stock",
       render: (_: any, record: any) => {
-        const size = record?.inventory?.size || 1000;
+        // const size = record?.inventory?.size || 1000;
         const stock = record?.totalProductVariant;
-        const percent = size ? Math.round((stock / size) * 100) : 0;
-        const color = percent > 70 ? "red" : percent > 40 ? "blue" : "green";
+        // const percent = size ? Math.round((stock / size) * 100) : 0;
+        // const color = percent > 70 ? "red" : percent > 40 ? "blue" : "green";
 
         return (
           <Tooltip
-            title={`${stock?.toLocaleString()} / ${size?.toLocaleString()}`}
+            title={`${stock?.toLocaleString()}`}
           >
-            <div>
-              {Intl.NumberFormat("en", { notation: "compact" }).format(stock) +
-                " / " +
-                Intl.NumberFormat("en", { notation: "compact" }).format(size)}
-            </div>
-            <Progress
-              style={{ width: 130 }}
-              strokeColor={color}
-              percent={percent}
-              format={(percent) => {
-                if (percent && percent >= 100) {
-                  return <div style={{ color: "red" }}>Đầy</div>;
-                } else {
-                  return <div>{percent || 0} %</div>;
-                }
-              }}
-            />
+              {Intl.NumberFormat("en", { notation: "compact" }).format(stock) }
           </Tooltip>
         );
       },
@@ -135,7 +129,7 @@ const InventoryList = () => {
       key: "action",
       render: (record: any) => {
         return (
-          <Space size="middle">
+          <Space size="small">
             <EditIcon
               onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
@@ -225,9 +219,6 @@ const InventoryList = () => {
       filterValue,
     });
   };
-  useEffect(() => {
-    document.title = "Kho hàng";
-  }, []);
 
   const handleOk = () => {
     const { code, name, id } = formInventory.getFieldsValue();

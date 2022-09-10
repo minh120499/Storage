@@ -1,7 +1,9 @@
 import "../styles/Header.css";
-import { Avatar } from "antd";
+import { Avatar, Tag } from "antd";
 import type { RootState } from "../app/store";
 import { useSelector } from "react-redux";
+import { ROLE_COLOR } from "../constant";
+import { IRoleLable } from "../interface";
 
 export default function HeaderMenu() {
   const currentUser = useSelector((state: RootState) => state.user);
@@ -16,7 +18,17 @@ export default function HeaderMenu() {
         </Avatar>
         <div>
           <div>{currentUser.username}</div>
-          <div>{currentUser.authorities[0]}</div>
+          <div>
+            <Tag
+              style={{
+                scale: "0.75",
+                transform: "translateX(-7px)",
+              }}
+              color={ROLE_COLOR[currentUser.authorities[0] as keyof IRoleLable]}
+            >
+              {currentUser.authorities[0]}
+            </Tag>
+          </div>
         </div>
       </div>
     </div>

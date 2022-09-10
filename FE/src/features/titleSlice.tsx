@@ -11,7 +11,7 @@ export const titleSilce = createSlice({
   name: "title",
   initialState: initialTitle,
   reducers: {
-    setTitle: (state, action: PayloadAction<ITitle>) => {        
+    setTitle: (state, action: PayloadAction<ITitle>) => {
       return action?.payload?.title || initialTitle;
     },
   },

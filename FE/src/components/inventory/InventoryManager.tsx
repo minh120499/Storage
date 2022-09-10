@@ -15,11 +15,7 @@ import {
   message,
   Tag,
 } from "antd";
-import {
-  DeleteOutlined,
-  DownOutlined,
-  LeftOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, DownOutlined, LeftOutlined } from "@ant-design/icons";
 import {
   deleteListProductVariant,
   getProductVariants,
@@ -38,9 +34,11 @@ import { ColumnsType } from "antd/lib/table";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { useMutation } from "@tanstack/react-query";
 import Buttonn from "../../UI/Button";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
+import useTitle from "../../app/useTitle";
 
 const InventoryManager = () => {
+  useTitle("Quản lý kho");
   const { Search } = Input;
   const { id } = useParams();
   const [inventory, setInventory] = useState({} as IInventoryDto);
@@ -111,7 +109,14 @@ const InventoryManager = () => {
       title: "Mã sản phẩm",
       dataIndex: ["code", "obj"],
       render: (code: string, obj: any) => {
-        return <Link style={{ textDecoration: "underline" }} to={`/warehouse/products/${obj.productId}`}>{obj.code}</Link>;
+        return (
+          <Link
+            style={{ textDecoration: "underline" }}
+            to={`/products/${obj.productId}`}
+          >
+            {obj.code}
+          </Link>
+        );
       },
       sorter: (a, b) => a.code.localeCompare(b.code),
     },
@@ -141,10 +146,10 @@ const InventoryManager = () => {
             <Col span={20}>
               <Tooltip
                 title={
-                <NumberFormat 
-                  value={quantity.quantity} 
-                  displayType="text"
-                  thousandSeparator={true} 
+                  <NumberFormat
+                    value={quantity.quantity}
+                    displayType="text"
+                    thousandSeparator={true}
                   />
                 }
               >
@@ -307,11 +312,6 @@ const InventoryManager = () => {
 
   return (
     <div className="p-5">
-      <h2 style={{ fontSize: "15px" }}>
-        <Link to="/stocker/inventories">
-          <LeftOutlined /> Danh sách kho
-        </Link>
-      </h2>
       <div
         style={{
           marginBottom: 16,
@@ -320,40 +320,23 @@ const InventoryManager = () => {
           justifyContent: "space-between",
         }}
       >
-        <div style={{ display: "flex" }}>
-          <h1
-            style={{
-              fontSize: "30px",
-              margin: 0,
-              marginRight: 10,
-              marginBottom: "15px",
-            }}
-          >
-            Quản lý kho
-          </h1>
-
-          {inventory?.isDelete ?
-            (<Tag
-              style={{ borderRadius: "15px", padding: "3px 10px", height: "30px", marginTop: "10px" }}
-              color={`rgb(246 76 114)`}
-            >
-              Ngừng hoạt động
-            </Tag>)
-            :
-            (<Tag
-              style={{ borderRadius: "15px", padding: "3px 10px", height: "30px", marginTop: "10px" }}
-              color={"green" || `rgb(159 237 207)`}
-            >
-              Đang hoạt động
-            </Tag>)
-          }
-        </div>
+        <h2 style={{ fontSize: "15px" }}>
+          <Link to="/stocker/inventories">
+            <LeftOutlined /> Danh sách kho
+          </Link>
+        </h2>
         <div>
           <Space>
-            <Button type="primary" onClick={() => navigate(`../warehouse/categories`)}>
+            <Button
+              type="primary"
+              onClick={() => navigate(`../warehouse/categories`)}
+            >
               Xem danh mục sản phẩm
             </Button>
-            <Button type="primary" onClick={() => navigate(`../warehouse/products`)}>
+            <Button
+              type="primary"
+              onClick={() => navigate(`../warehouse/products`)}
+            >
               Xem danh sách sản phẩm
             </Button>
           </Space>
@@ -412,6 +395,32 @@ const InventoryManager = () => {
             <h1 style={{ color: "#1890FF" }}>Thông tin kho</h1>
             <form>
               <Row gutter={24}>
+
+                <Col span={8}>
+                  <p>Trạng thái:</p>
+                </Col>
+                <Col span={16}>
+                  
+                    {inventory?.isDelete ?
+                      (<Tag
+                        style={{ borderRadius: "15px", padding: "3px 10px"}}
+                        color={`rgb(246 76 114)`}
+                      >
+                        Ngừng hoạt động
+                      </Tag>)
+                      :
+                      (<Tag
+                        style={{ borderRadius: "15px", padding: "3px 10px"}}
+                        color={"green" || `rgb(159 237 207)`}
+                      >
+                        Đang hoạt động
+                      </Tag>)
+                    }
+               
+                </Col>
+
+
+
                 <Col span={8}>
                   <p>Mã kho:</p>
                 </Col>

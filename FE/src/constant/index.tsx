@@ -1,6 +1,6 @@
-export const roleColor = {
+export const ROLE_COLOR = {
   admin: "magenta",
   coordinator: "gold",
-  stocker: "gold",
-  warehouse: "gold",
+  stocker: "#87d068",
+  warehouse: "purple",
 };
