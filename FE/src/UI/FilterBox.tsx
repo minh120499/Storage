@@ -30,7 +30,7 @@ const FilterBox = (props: any) => {
             </Form.Item>
           </Col>
           <Col span={20}>
-            <Form.Item name="filterValue" className="m-0">
+            <Form.Item name="filterValue" className="m-0 w-1/2">
               <Search
                 placeholder="Nhập để tìm kiếm"
                 onSearch={onSearch}

@@ -84,3 +84,8 @@ main::-webkit-scrollbar-thumb {
   cursor: default !important;
   background-color: red;
 } */
+.addrres-table-render {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}

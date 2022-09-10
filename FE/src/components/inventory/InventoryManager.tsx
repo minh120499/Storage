@@ -14,11 +14,7 @@ import {
   Form,
   message,
 } from "antd";
-import {
-  DeleteOutlined,
-  DownOutlined,
-  LeftOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, DownOutlined, LeftOutlined } from "@ant-design/icons";
 import {
   deleteListProductVariant,
   getProductVariants,
@@ -37,9 +33,11 @@ import { ColumnsType } from "antd/lib/table";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { useMutation } from "@tanstack/react-query";
 import Buttonn from "../../UI/Button";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
+import useTitle from "../../app/useTitle";
 
 const InventoryManager = () => {
+  useTitle("Thông tin kho", "Quản lý kho");
   const { Search } = Input;
   const { id } = useParams();
   const [inventory, setInventory] = useState({} as IInventoryDto);
@@ -108,7 +106,14 @@ const InventoryManager = () => {
       title: "Mã sản phẩm",
       dataIndex: ["code", "obj"],
       render: (code: string, obj: any) => {
-        return <Link style={{textDecoration: "underline"}} to={`/products/${obj.productId}`}>{obj.code}</Link>;
+        return (
+          <Link
+            style={{ textDecoration: "underline" }}
+            to={`/products/${obj.productId}`}
+          >
+            {obj.code}
+          </Link>
+        );
       },
       sorter: (a, b) => a.code.localeCompare(b.code),
     },
@@ -298,11 +303,6 @@ const InventoryManager = () => {
 
   return (
     <div className="p-5">
-      <h2 style={{ fontSize: "15px" }}>
-        <Link to="/stocker/inventories">
-          <LeftOutlined /> Danh sách kho
-        </Link>
-      </h2>
       <div
         style={{
           marginBottom: 16,
@@ -311,24 +311,23 @@ const InventoryManager = () => {
           justifyContent: "space-between",
         }}
       >
-        <div>
-          <h1
-            style={{
-              fontSize: "30px",
-              margin: 0,
-              marginRight: 10,
-              marginBottom: "15px",
-            }}
-          >
-            Quản lý kho
-          </h1>
-        </div>
+        <h2 style={{ fontSize: "15px" }}>
+          <Link to="/stocker/inventories">
+            <LeftOutlined /> Danh sách kho
+          </Link>
+        </h2>
         <div>
           <Space>
-            <Button type="primary" onClick={() => navigate(`../warehouse/categories`)}>
+            <Button
+              type="primary"
+              onClick={() => navigate(`../warehouse/categories`)}
+            >
               Xem danh mục sản phẩm
             </Button>
-            <Button type="primary" onClick={() => navigate(`../warehouse/products`)}>
+            <Button
+              type="primary"
+              onClick={() => navigate(`../warehouse/products`)}
+            >
               Xem danh sách sản phẩm
             </Button>
           </Space>
@@ -415,13 +414,17 @@ const InventoryManager = () => {
                 </Col>
 
                 <Col span={8}>
-                    <p>Size:</p>
-                  </Col>
-                  <Col span={16}>
-                    <b style={{ textTransform: "uppercase" }}>
-                      <NumberFormat value={inventory.size} displayType='text' thousandSeparator={true} />
-                    </b>
-                  </Col>
+                  <p>Size:</p>
+                </Col>
+                <Col span={16}>
+                  <b style={{ textTransform: "uppercase" }}>
+                    <NumberFormat
+                      value={inventory.size}
+                      displayType="text"
+                      thousandSeparator={true}
+                    />
+                  </b>
+                </Col>
 
                 <Col span={8}>
                   <p>Địa chỉ:</p>

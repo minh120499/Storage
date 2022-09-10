@@ -9,25 +9,17 @@ const T = (props: any) => {
   const name = props?.search?.filterName;
   const value = props?.search?.filterValue;
 
-  const fn = props?.search
-    ? props?.query(page, pageSize)
-    : props?.query(page, pageSize, name, value);
-
   const query = useQuery(
     ["id", page, pageSize],
     () => {
-      console.log(value, !!value);
-      console.log(fn());
-
-      return fn;
-      // return !!value
-      //   ? props.query(page, pageSize, name, value)
-      //   : props.query(page, pageSize);
+      if (!!name && !!value) {
+        return props.query(page, pageSize, name, value);
+      } else {
+        return props.query(page, pageSize);
+      }
     },
     { keepPreviousData: true }
   );
-
-  console.log(query?.data);
 
   if (query?.isError) {
     return <PageResult />;
@@ -44,6 +36,11 @@ const T = (props: any) => {
   return (
     <div>
       <Spin spinning={query?.isLoading || false} tip="Loading...">
+        <Table
+          {...props}
+          pagination={false}
+          dataSource={props?.dataSource || query?.data?.data || []}
+        />
         <div className="flex justify-between mt-5 mb-5">
           {query?.data?.total && (
             <div>{`${query?.data?.from}-${query?.data?.to} trên ${query.data.total} bản ghi`}</div>
@@ -61,11 +58,6 @@ const T = (props: any) => {
             />
           )}
         </div>
-        <Table
-          {...props}
-          pagination={false}
-          dataSource={props?.dataSource || query?.data?.data || []}
-        />
       </Spin>
     </div>
   );
