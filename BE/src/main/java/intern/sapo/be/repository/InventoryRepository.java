@@ -17,7 +17,6 @@ public interface InventoryRepository extends JpaRepository<Inventory, Integer> {
     Page<Inventory> findByNameContaining(String name,Pageable pageable);
     Page<Inventory> findByCodeContaining(String code,Pageable pageable);
 
-
     @Query(value = "select quantity from inventories_product_variant where inventory_id = ?1 and product_variant_id = ?2",nativeQuery = true)
     Integer Quantity(Integer inventoryId, Integer productvariantId);
 

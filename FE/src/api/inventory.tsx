@@ -1,6 +1,10 @@
 import axios from "axios";
 import { IMinQuantityRequest, IResultId } from "../interface";
 
+const headers = {
+  Authorization: "Bearer " + localStorage.getItem("token"),
+};
+
 export const getAllInventory = async () => {
   return (await axios.get(`http://localhost:8080/inventories`)).data;
 };
@@ -15,7 +19,9 @@ export const getPagination = async (page: number, pageSize: number) => {
         params: {
           pageNumber: page,
           pageSize,
-        },
+          name:null,
+          code:null
+        },headers
       })
     ).data;
   };

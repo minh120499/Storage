@@ -1,6 +1,8 @@
 package intern.sapo.be.repository;
 
 import intern.sapo.be.entity.Category;
+import intern.sapo.be.entity.Inventory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,9 +14,9 @@ import java.util.List;
 
 @Repository
 public interface ICategoryRepo extends JpaRepository<Category,Integer>{
-//    @Transactional
-//    @Query("select c from Category c")
-//    List<Category> getAll(Pageable pageable);
+
+    Page<Category> findByNameContaining(String name, Pageable pageable);
+    Page<Category> findByIdContaining(String id,Pageable pageable);
 
     @Transactional
     @Query(value = "call delete_category(?1)", nativeQuery = true)
