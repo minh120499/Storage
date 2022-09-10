@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { DeleteOutlined, DownOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import ToastCustom from "../../features/toast/Toast";
-import   {DeletedIcon}  from "../../UI/ActionIcons";
+import { DeletedIcon } from "../../UI/ActionIcons";
 import Search from "antd/lib/input/Search";
 
 
@@ -36,7 +36,7 @@ export default function Categories() {
         .catch((error) => {
           console.log(error);
         });
-    },[status,inputValue]
+    }, [status, inputValue]
   );
   useEffect(() => {
     document.title = "Danh mục"
@@ -176,7 +176,7 @@ export default function Categories() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Dropdown overlay={menu} disabled={!hasSelected}>
-            <Button type="primary" style={{ width: "180px", fontSize: "14px", marginLeft: "0px" }}>
+            <Button type="primary" style={{ width: "180px", fontSize: "14px", marginLeft: "0px", height:"37px" }}>
               Thao tác
               <DownOutlined />
             </Button>
@@ -186,10 +186,10 @@ export default function Categories() {
           </span>
         </div>
         <div>
-        <Space>
-        <Search style={{width:"300px"}} placeholder="Tìm kiếm theo tên, mã danh mục" size="large" onSearch={(e) => handleSearch(e)}/>
-        <CategoryCreate status={() => setStatus(!status)} />
-        </Space>
+          <Space>
+            <Search style={{ width: "300px"}} placeholder="Tìm kiếm theo tên, mã danh mục" size="large" onSearch={(e) => handleSearch(e)} />
+            <CategoryCreate status={() => setStatus(!status)} />
+          </Space>
         </div>
       </div>
       <Table

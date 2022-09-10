@@ -11,7 +11,6 @@ const T = (props: any) => {
   const query = useQuery(
     ["id", page, pageSize],
     () => {
-      console.log(value, !!value);
       return props.query(page, pageSize, name, value);
       // return !!value
       //   ? props.query(page, pageSize, name, value)

@@ -185,7 +185,7 @@ function Employee() {
           <Form.Item
             label="Mật khẩu"
             name="password"
-            rules={[{ required: true, message: "Mật khẩu tối thiểu 6 ký tự, ít nhất 1 chữ cái và 1 số", pattern:/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/ }]}
+            rules={[{ required: true, message: "Mật khẩu tối thiểu 6 ký tự, ít nhất 1 chữ cái và 1 số, 1 ký tự đặc biệt", pattern:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/ }]}
           >
             <Input.Password />
           </Form.Item>

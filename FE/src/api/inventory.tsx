@@ -91,11 +91,9 @@ export const updateMinQuantityStorage = async (
   request: IMinQuantityRequest
 ) => {
   return await axios.put(
-    `http://localhost:8080/inventories/change/minquantity?inventoryId=${
-      request.inventoryId * 1
-    }&productVariantId=${request.productVariantId * 1}&minQuantity=${
-      request.minQuantity * 1
-    }`,
+    `http://localhost:8080/inventories/change/minquantity?inventoryId=${request.inventoryId * 1
+    }&productVariantId=${request.productVariantId * 1}&minQuantity=${request.minQuantity * 1
+    }`,{ title: "Sửa minquantity" },
     { headers }
   );
 };

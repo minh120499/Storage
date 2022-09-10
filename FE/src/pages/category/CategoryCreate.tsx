@@ -54,7 +54,7 @@ export default function CategoryCreate({ status }: props) {
   return (
     <>
       <div>
-        <Button onClick={showModal}><PlusOutlined />Thêm mới</Button>
+        <Button style={{height: "37px"}} onClick={showModal}><PlusOutlined />Thêm mới</Button>
       </div>
       <Modal
         title="Thêm mới Danh Mục"

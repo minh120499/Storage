@@ -102,6 +102,7 @@ public class InventoryServiceImpl implements IInventoryService {
         InventoryResponse inventoryResponse = new InventoryResponse();
         List<ProductVariantsDTO> results = new ArrayList<>();
         Integer totalProductVariant = 0;
+        Integer countProductVariant = 0;
         Inventory inventory = inventoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found:" + id));
         try {
             inventoryResponse.setInventory(inventory);
@@ -112,9 +113,11 @@ public class InventoryServiceImpl implements IInventoryService {
                 productVariantsDTO.setMinQuantity(inventoryRepository.minQuantity(id, item.getId()));
                 productVariantsDTO.setCreateAt(inventoryRepository.createAt(item.getId()));
                 results.add(productVariantsDTO);
+                countProductVariant = countProductVariant + 1;
                 totalProductVariant = totalProductVariant + inventoryRepository.Quantity(id, item.getId());
             }
             inventoryResponse.setProductVariants(results);
+            inventoryResponse.setCountProductVariant(countProductVariant);
             inventoryResponse.setTotalProductVariant(totalProductVariant);
         } catch (Exception e) {
             System.out.println("error" + e.getMessage());

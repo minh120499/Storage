@@ -13,6 +13,7 @@ import {
   Modal,
   Form,
   message,
+  Tag,
 } from "antd";
 import {
   DeleteOutlined,
@@ -48,6 +49,7 @@ const InventoryManager = () => {
   );
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [totalproduct, settotalProduct] = useState<number>();
+  const [countproduct, setCountProduct] = useState<number>();
   const [status, setStatus] = useState(false);
   const [reload, setReload] = useState(false);
   const [minQuantityModal, setMinQuantityModal] = useState(false);
@@ -56,7 +58,7 @@ const InventoryManager = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = "Thông tin kho";
+    document.title = "Quản lý kho";
   }, []);
 
   useEffect(() => {
@@ -65,13 +67,14 @@ const InventoryManager = () => {
       setProductVariant(response.productVariants);
       setInventory(response.inventory);
       settotalProduct(response.totalProductVariant);
+      setCountProduct(response.countProductVariant);
       setReload(false);
     });
   }, [status, name]);
 
   const minQuantityMutation = useMutation(updateMinQuantityStorage, {
     onSuccess: () => {
-      message.success("Thêm thành công", 2);
+      message.success("Thay đổi thành công", 2);
       setMinQuantityModal(false);
       setStatus(!status);
     },
@@ -108,7 +111,7 @@ const InventoryManager = () => {
       title: "Mã sản phẩm",
       dataIndex: ["code", "obj"],
       render: (code: string, obj: any) => {
-        return <Link style={{textDecoration: "underline"}} to={`/products/${obj.productId}`}>{obj.code}</Link>;
+        return <Link style={{ textDecoration: "underline" }} to={`/warehouse/products/${obj.productId}`}>{obj.code}</Link>;
       },
       sorter: (a, b) => a.code.localeCompare(b.code),
     },
@@ -136,11 +139,17 @@ const InventoryManager = () => {
         return (
           <Row className="w-20" justify="space-between">
             <Col span={20}>
-              <NumberFormat
-                value={quantity.quantity}
-                displayType="text"
-                thousandSeparator={true}
-              />
+              <Tooltip
+                title={
+                <NumberFormat 
+                  value={quantity.quantity} 
+                  displayType="text"
+                  thousandSeparator={true} 
+                  />
+                }
+              >
+                {Intl.NumberFormat("en", { notation: "compact" }).format(quantity.quantity)}
+              </Tooltip>
             </Col>
             <Col span={3}>
               <Tooltip
@@ -148,8 +157,8 @@ const InventoryManager = () => {
                   quantity.minQuantity === 0
                     ? "Thêm giới hạn cảnh báo"
                     : quantity.quantity > quantity.minQuantity
-                    ? `Còn hàng ${quantity.quantity} / ${quantity.minQuantity}`
-                    : `Sắp hết hàng ${quantity.quantity} / ${quantity.minQuantity}`
+                      ? `Còn hàng ${quantity.quantity} / ${quantity.minQuantity}`
+                      : `Sắp hết hàng ${quantity.quantity} / ${quantity.minQuantity}`
                 }
               >
                 {quantity?.minQuantity ? (
@@ -236,7 +245,7 @@ const InventoryManager = () => {
           ToastCustom.fire({
             icon: "success",
             title: "Xoá thành công!",
-          }).then((r) => {});
+          }).then((r) => { });
           setStatus(!status);
           setSelectedRowKeys([]);
         });
@@ -264,7 +273,7 @@ const InventoryManager = () => {
           ToastCustom.fire({
             icon: "success",
             title: "Xoá thành công!",
-          }).then((r) => {});
+          }).then((r) => { });
           setStatus(!status);
           setSelectedRowKeys([]);
         });
@@ -311,7 +320,7 @@ const InventoryManager = () => {
           justifyContent: "space-between",
         }}
       >
-        <div>
+        <div style={{ display: "flex" }}>
           <h1
             style={{
               fontSize: "30px",
@@ -322,6 +331,22 @@ const InventoryManager = () => {
           >
             Quản lý kho
           </h1>
+
+          {inventory?.isDelete ?
+            (<Tag
+              style={{ borderRadius: "15px", padding: "3px 10px", height: "30px", marginTop: "10px" }}
+              color={`rgb(246 76 114)`}
+            >
+              Ngừng hoạt động
+            </Tag>)
+            :
+            (<Tag
+              style={{ borderRadius: "15px", padding: "3px 10px", height: "30px", marginTop: "10px" }}
+              color={"green" || `rgb(159 237 207)`}
+            >
+              Đang hoạt động
+            </Tag>)
+          }
         </div>
         <div>
           <Space>
@@ -401,6 +426,20 @@ const InventoryManager = () => {
                   <b style={{ textTransform: "uppercase" }}>{inventory.name}</b>
                 </Col>
 
+
+                <Col span={8}>
+                  <p>Số lượng phiên bản sản phẩm:</p>
+                </Col>
+                <Col span={16}>
+                  <b style={{ textTransform: "uppercase" }}>
+                    <NumberFormat
+                      value={countproduct}
+                      displayType="text"
+                      thousandSeparator={true}
+                    />
+                  </b>
+                </Col>
+
                 <Col span={8}>
                   <p>Tổng sản phẩm:</p>
                 </Col>
@@ -414,14 +453,14 @@ const InventoryManager = () => {
                   </b>
                 </Col>
 
-                <Col span={8}>
+                {/* <Col span={8}>
                     <p>Size:</p>
                   </Col>
                   <Col span={16}>
                     <b style={{ textTransform: "uppercase" }}>
                       <NumberFormat value={inventory.size} displayType='text' thousandSeparator={true} />
                     </b>
-                  </Col>
+                  </Col> */}
 
                 <Col span={8}>
                   <p>Địa chỉ:</p>
