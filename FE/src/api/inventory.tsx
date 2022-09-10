@@ -57,9 +57,15 @@ export const updateInvetory = async (inventory: object, id: number) => {
 };
 
 export const deleteInvetory = async (id: number) => {
-  return await axios.put(`http://localhost:8080/inventories/delete/${id}`, {
-    headers,
-  });
+  console.log(localStorage.getItem("token"));
+
+  return await axios.put(
+    `http://localhost:8080/inventories/delete/${id}`,
+    { title: "Sửa" },
+    {
+      headers,
+    }
+  );
 };
 
 export const getProductVariants = async (id?: number, name = "") => {

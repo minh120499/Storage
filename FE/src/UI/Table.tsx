@@ -12,10 +12,10 @@ const T = (props: any) => {
     ["id", page, pageSize],
     () => {
       console.log(value, !!value);
-
-      return !!value
-        ? props.query(page, pageSize, name, value)
-        : props.query(page, pageSize);
+      return props.query(page, pageSize, name, value);
+      // return !!value
+      //   ? props.query(page, pageSize, name, value)
+      //   : props.query(page, pageSize);
     },
     { keepPreviousData: true }
   );

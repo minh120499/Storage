@@ -5,8 +5,8 @@ const EditIcon = (props: any) => {
   return (
     <EditOutlined
       {...props}
-      className="cursor-pointer"
-      style={{ padding: "5px", background: "#E8A87C", color: "#fff" }}
+      className="cursor-pointer rounded-md"
+      style={{ padding: "5px", background: "#1890ff", color: "#fff" }}
     />
   );
 };
@@ -15,8 +15,8 @@ const PenIcon = (props: any) => {
   return (
     <ModeEditIcon
       {...props}
-      className="cursor-pointer"
-      style={{ padding: "5px", background: "#E8A87C", color: "#fff" }}
+      className="cursor-pointer rounded-md"
+      style={{ padding: "5px", background: "#1890ff", color: "#fff" }}
     />
   );
 };
@@ -25,7 +25,7 @@ const DeletedIcon = (props: any) => {
   return (
     <DeleteIcon
       {...props}
-      className="cursor-pointer"
+      className="cursor-pointer rounded-md"
       style={{ padding: "5px", background: "#F64C72", color: "#fff" }}
     />
   );
@@ -36,7 +36,7 @@ const Lock = (props: any) => {
     <LockOutlined
       {...props}
       style={{ padding: "5px", color: "white" }}
-      className="cursor-pointer bg-pink"
+      className="cursor-pointer bg-pink rounded-md"
     />
   );
 };
@@ -46,7 +46,7 @@ const UnLock = (props: any) => {
     <UnlockOutlined
       {...props}
       style={{ padding: "5px", color: "white" }}
-      className="cursor-pointer bg-[#389e0d]"
+      className="cursor-pointer bg-[#389e0d] rounded-md"
     />
   );
 };

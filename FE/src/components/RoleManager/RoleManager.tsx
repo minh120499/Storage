@@ -1,14 +1,76 @@
 import { useMutation } from "@tanstack/react-query";
-import { Form, Input, Modal } from "antd";
+import { Form, Input, Modal, message, Space } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import { rolesApi } from "../../api/EmployeesApi";
 import { IRole } from "../../interface";
-import { EditIcon } from "../../UI";
+import { DeletedIcon, PenIcon } from "../../UI";
 import { Table, Button } from "../../UI";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../../features/titleSlice";
 
+const headers = {
+  Authorization: "Bearer " + localStorage.getItem("token"),
+};
 const RoleManager = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(
+      setTitle({
+        title: (
+          <h1
+            style={{
+              fontSize: "30px",
+              margin: 0,
+            }}
+            className="self-center"
+          >
+            Chức vụ
+          </h1>
+        ),
+      })
+    );
+  }, [dispatch]);
+  const addRoleMutation = useMutation((roleData: IRole) => {
+    return axios.post("http://localhost:8080/api/admin/roles", roleData, {
+      headers,
+    });
+  });
+  const updateRoleMutation = useMutation(
+    (roleData: IRole) => {
+      return axios.patch("http://localhost:8080/api/admin/roles", roleData, {
+        headers,
+      });
+    },
+    {
+      onError(error, variables, context) {
+        message.error("Có lỗi xảy ra. Vui lòng thử lại!");
+      },
+      onSuccess: () => {
+        setAddRoleModal(false);
+        message.success("Sửa thông tin thành công!");
+      },
+    }
+  );
+  const deleteRoleMutation = useMutation(
+    (roleData: any) => {
+      return axios.delete("http://localhost:8080/api/admin/roles", {
+        data: roleData,
+        headers,
+      });
+    },
+    {
+      onError(error, variables, context) {
+        message.error("Có lỗi xảy ra. Vui lòng thử lại!");
+      },
+      onSuccess: () => {
+        message.success("Xóa thành công!");
+        setSelectedRowKeys([]);
+      },
+    }
+  );
   const columns: ColumnsType<IRole> = [
     {
       title: <b>STT</b>,
@@ -31,8 +93,8 @@ const RoleManager = () => {
     {
       render: (_, record: IRole) => {
         return (
-          <div>
-            <EditIcon
+          <Space size="small">
+            <PenIcon
               type="primary"
               onClick={() => {
                 addRoleForm.setFieldsValue({
@@ -43,43 +105,46 @@ const RoleManager = () => {
                 setAddRoleModal(true);
                 setMode("update");
               }}
-            ></EditIcon>
-          </div>
+            />
+            <DeletedIcon
+              onClick={() => {
+                deleteRoles([record.id]);
+              }}
+            />
+          </Space>
         );
       },
     },
   ];
-
-  const addRoleMutation = useMutation((roleData: IRole) => {
-    return axios.post("http://localhost:8080/api/admin/roles", roleData);
-  });
-  const updateRoleMutation = useMutation((roleData: IRole) => {
-    return axios.patch("http://localhost:8080/api/admin/roles", roleData);
-  });
-  const deleteRoleMutation = useMutation((roleData: any) => {
-    return axios.delete("http://localhost:8080/api/admin/roles", {
-      data: roleData,
-    });
-  });
-
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [addRoleForm] = Form.useForm();
   const [addRoleModal, setAddRoleModal] = useState(false);
   const [mode, setMode] = useState("new");
   const hasSelected = selectedRowKeys.length > 0;
 
-  const deleteRoles = () => {
-    deleteRoleMutation.mutate(selectedRowKeys);
-  };
-
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
+  const deleteRoles = (id: number[]) => {
+    Swal.fire({
+      title: "Xóa vĩnh viễn!",
+      icon: "question",
+      html: `Xác nhận xóa chức vụ`,
+      // <b>${selectedRowKeys.join(", ")}</b>`
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
+      showCancelButton: true,
+      cancelButtonColor: "#d33",
+      confirmButtonColor: "#1890ff",
+    }).then((result) => {
+      result.isConfirmed && deleteRoleMutation.mutate(id || selectedRowKeys);
+    });
   };
 
   const rowSelection = {
     selectedRowKeys,
-    onChange: onSelectChange,
+    onChange: (newSelectedRowKeys: React.Key[]) => {
+      setSelectedRowKeys(newSelectedRowKeys);
+    },
   };
+
   const addNewRole = () => {
     const { name, description, id } = addRoleForm.getFieldsValue();
     const data: IRole = {
@@ -87,7 +152,7 @@ const RoleManager = () => {
       name,
       description,
     };
-    if (mode !== "new ") {
+    if (mode !== "new") {
       data.id = id;
       updateRoleMutation.mutate(data);
     } else {
@@ -98,34 +163,22 @@ const RoleManager = () => {
     setAddRoleModal(false);
   };
 
-  if (updateRoleMutation.isSuccess) {
-    updateRoleMutation.reset();
-    setAddRoleModal(false);
-  }
-
   return (
     <div className="p-5">
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h1
-          style={{
-            fontSize: "30px",
-            margin: 0,
-            marginRight: 10,
-            marginBottom: "35px",
-          }}
-        >
-          Chức vụ
-        </h1>
         <div>
           <Button
-            type="primary"
             onClick={deleteRoles}
             disabled={!hasSelected}
             loading={deleteRoleMutation.isLoading}
+            mode="delete"
           >
             Xóa
           </Button>
-          <Button
+          <span style={{ marginLeft: 8 }}>
+            {hasSelected ? `Đã chọn ${selectedRowKeys.length} mục` : ""}
+          </span>
+          {/* <Button
             type="primary"
             onClick={() => {
               setAddRoleModal(true);
@@ -133,10 +186,7 @@ const RoleManager = () => {
             }}
           >
             Thêm
-          </Button>
-          <span style={{ marginLeft: 8 }}>
-            {hasSelected ? `Đã chọn ${selectedRowKeys.length} mục` : ""}
-          </span>
+          </Button> */}
         </div>
       </div>
 
@@ -178,7 +228,7 @@ const RoleManager = () => {
             name="name"
             rules={[{ required: true }, { message: "Tên không để trống!" }]}
           >
-            <Input />
+            <Input disabled={mode === "update"} />
           </Form.Item>
           <Form.Item
             label="Mô tả"

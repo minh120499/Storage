@@ -44,9 +44,9 @@ const MENUS: MenuItem[] = [
   ]),
   getItem("Nhà cung cấp", "stocker/supplier", <ShopOutlined />),
   getItem("Kho hàng", "/stocker/inventories", <WarehouseIcon />),
-  getItem("Nhân viên", "admin", <TeamOutlined />, [
+  getItem("Admin", "admin", <TeamOutlined />, [
     getItem("Danh sách", "/admin/employees"),
-    getItem("Roles", "/admin/roles/"),
+    getItem("Chức vụ", "/admin/roles/"),
   ]),
   getItem("Thống kê", "/statistics", <BarChartOutlined />),
   getItem("Đăng xuất", "/login", <LogoutIcon />),
