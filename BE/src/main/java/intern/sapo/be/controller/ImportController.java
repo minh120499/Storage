@@ -48,13 +48,13 @@ public class ImportController {
     }
 
     @PutMapping("/updateStatus")
-    private void updateStatus(@RequestParam Integer id, @RequestParam String status) {
-        importService.updateStatusImport(id, status);
+    private void updateStatus(@RequestParam Integer id, @RequestParam String status, @RequestParam Integer accountId) {
+        importService.updateStatusImport(id, status, accountId);
     }
 
     @PutMapping("/updateStatusReturn")
-    private void updateStatusReturn(@RequestParam Integer id, @RequestParam String status) {
-        importService.updateStatusImportReturn(id, status);
+    private void updateStatusReturn(@RequestParam Integer id, @RequestParam String status, Integer accountId) {
+        importService.updateStatusImportReturn(id, status, accountId);
     }
 
     @GetMapping("/getStatusHistory/{importId}")
@@ -70,5 +70,10 @@ public class ImportController {
     @GetMapping("/getDetailsReturnImport/{code}")
     private ResponseEntity<?> getDetailsReturn(@PathVariable String code) {
         return ResponseEntity.ok(importService.getDetailsReturnImport(code));
+    }
+
+    @GetMapping("/getImportInvoiceBySuppler/{id}")
+    private ResponseEntity<?> getInvoiceBySupplier(@PathVariable Integer id) {
+        return ResponseEntity.ok(importService.getImportInvoiceBySupplier(id));
     }
 }

@@ -1,13 +1,11 @@
 package intern.sapo.be.entity;
 
-import intern.sapo.be.dto.response.ImportInvoice.ImportResponse;
 import intern.sapo.be.dto.response.ImportInvoice.ImportStatusResponse;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
@@ -16,11 +14,18 @@ import java.sql.Timestamp;
 @Setter
 @NamedNativeQuery(
         name = "getFeaturedImportStatusDTO",
-        query = "select a.username as 'accountName', s.name as 'statusName', s.description as 'statusDesc', imports_status.create_at as 'createdAt'\n" +
+        query = "\n" +
+                "select a.username               as 'accountName',\n" +
+                "       e.full_name              as 'fullName',\n" +
+                "       e.phone                  as 'phoneNumber',\n" +
+                "       s.name                   as 'statusName',\n" +
+                "       s.description            as 'statusDesc',\n" +
+                "       imports_status.create_at as 'createdAt'\n" +
                 "from imports_status\n" +
                 "         inner join imports i on imports_status.import_id = i.id\n" +
                 "         inner join status s on imports_status.status_id = s.id\n" +
-                "         inner join accounts a on i.account_id = a.id\n" +
+                "         inner join accounts a on imports_status.account_id = a.id\n" +
+                "        inner join employees e on a.id = e.account_id\n" +
                 "where import_id = ?\n" +
                 "order by createdAt desc;",
         resultSetMapping = "FeaturedImportStatus"
@@ -32,6 +37,8 @@ import java.sql.Timestamp;
                         targetClass = ImportStatusResponse.class,
                         columns = {
                                 @ColumnResult(name = "accountName", type = String.class),
+                                @ColumnResult(name = "fullName", type = String.class),
+                                @ColumnResult(name = "phoneNumber", type = String.class),
                                 @ColumnResult(name = "statusName", type = String.class),
                                 @ColumnResult(name = "statusDesc", type = String.class),
                                 @ColumnResult(name = "createdAt", type = String.class),
@@ -51,6 +58,10 @@ public class ImportsStatus {
 
     @JoinColumn(name = "status_id", nullable = false)
     private Integer statusId;
+
+
+    @JoinColumn(name = "account_id", insertable = false, nullable = false, updatable = false)
+    private Integer account_id;
 
     @CreatedDate
     @Column(name = "create_at", nullable = false)

@@ -2,7 +2,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {default as NumberFormat} from 'react-number-format';
 import React from "react";
 import {ColumnProps} from "antd/es/table";
-import {IHistoryStatus, IImportInvoice, IMyTableData} from "../services/customType";
+import {IHistoryStatus, IImportInvoice, IImportInvoiceBySupplier, IMyTableData} from "../services/customType";
 import {Popconfirm} from "antd";
 import {DeleteOutlined} from "@ant-design/icons";
 import moment from "moment/moment";
@@ -171,8 +171,8 @@ export const columnsDetailImportInvoice = [
 export const columnsHistoryStatus: ColumnProps<IHistoryStatus>[] = [
     {
         title: 'Người thao tác',
-        key: "accountName",
-        dataIndex: 'accountName',
+        key: "fullName",
+        dataIndex: 'fullName',
 
     },
     {
@@ -197,3 +197,87 @@ export const columnsHistoryStatus: ColumnProps<IHistoryStatus>[] = [
     },
 ];
 
+
+
+export const ImportInvoiceColumnBySupplier: ColumnProps<IImportInvoiceBySupplier>[] = [
+    {
+        title: 'Mã đơn',
+        dataIndex: 'code',
+        key: 'code',
+        render: (value: string) => {
+            return <Link to='#'>{value}</Link>
+        },
+    },
+    {
+        title: 'Kho',
+        dataIndex: "inventoryName",
+        key: "inventoryName"
+    },
+    {
+        title: "Trạng thái",
+        dataIndex: "isDone",
+        key: "isDone",
+        render: (status: boolean) => {
+            return status ? <p style={{color: '#20a917', margin: 0}}>Hoàn thành</p> :
+                <p style={{color: '#f19403', margin: 0}}>Đang giao dịch</p>
+        },
+    },
+    {
+        title: "Thanh toán",
+        dataIndex: "isPaid",
+        key: "isDone",
+        render: (status: boolean) => {
+            return status ? <p style={{color: '#20a917', margin: 0}}>Đã thanh toán</p> :
+                <p style={{color: '#0a77bb', margin: 0}}>Chưa thanh toán</p>
+        },
+    },
+    {
+        title: "Nhập kho",
+        dataIndex: "isImport",
+        key: "isImport",
+        render: (status: boolean, row) => {
+            if (row.isReturn) {
+                return <p style={{color: 'black', margin: 0}}>Hoàn trả hàng</p>
+            } else {
+                return status ? <p style={{color: '#20a917', margin: 0}}>Đã nhập hàng</p> :
+                    <p style={{color: '#0a77bb', margin: 0}}>Chờ nhập hàng</p>
+            }
+        },
+    },
+    {
+        title: "Nhập kho",
+        dataIndex: "isReturn",
+        key: "isReturn",
+    },
+    {
+        title: "Tổng tiền",
+        dataIndex: "totalPrice",
+        key: "totalPrice",
+        align: 'right',
+        render: (value: number) => {
+            return <NumberFormat value={value} displayType='text' thousandSeparator={true}/>
+        }
+    },
+    {
+        title: "Ngày tạo đơn",
+        dataIndex: "first",
+        key: "first",
+        align: 'right',
+        render: (data: string) => {
+            const moment = require('moment');
+            const d = new Date(data);
+            return <p>{moment(d, ["hh:mm A"]).format('DD/MM/YYYY HH:mm:ss')}</p>;
+        }
+    },
+    {
+        title: "Cập nhập cuối",
+        dataIndex: "last",
+        key: "last",
+        align: 'right',
+        render: (data: string) => {
+            const moment = require('moment');
+            const d = new Date(data);
+            return <p>{moment(d, ["hh:mm A"]).format('DD/MM/YYYY HH:mm:ss')}</p>;
+        }
+    },
+];

@@ -1,9 +1,8 @@
 package intern.sapo.be.service.impl;
 
-import intern.sapo.be.dto.response.ImportInvoice.DetailsImportsInvoiceResponse;
-import intern.sapo.be.dto.response.ImportInvoice.DetailsReturnImportResponse;
-import intern.sapo.be.dto.response.ImportInvoice.ImportResponse;
-import intern.sapo.be.dto.response.ImportInvoice.ReturnImportInvoiceResponse;
+import intern.sapo.be.dto.response.ImportInvoice.*;
+import intern.sapo.be.entity.Account;
+import intern.sapo.be.entity.Employee;
 import intern.sapo.be.entity.Import;
 import intern.sapo.be.entity.ImportsStatus;
 import intern.sapo.be.repository.*;
@@ -36,8 +35,11 @@ public class ImportService implements IImportService {
     private final IStatusRepo statusRepo;
     private final ISupplierRepo supplierRepo;
 
+    private final IAccountsRepo accountsRepo;
     private final InventoryRepository inventoryRepository;
     private final EntityManager entityManager;
+
+    private EmployeeRepository employeeRepository;
 
     private final IDetailsImportService detailsImportService;
 
@@ -62,7 +64,7 @@ public class ImportService implements IImportService {
     @Override
     public Import save(Import importField) {
         Import anImport = importRepo.save(importField);
-        updateStatus(anImport.getId(), "IMPORT01");
+        updateStatus(anImport.getId(), "IMPORT01", importField.getAccountId());
         return anImport;
     }
 
@@ -74,12 +76,13 @@ public class ImportService implements IImportService {
         return statusInImport == null;
     }
 
-    public void updateStatus(Integer importId, String code) {
+    public void updateStatus(Integer importId, String code, Integer accountId) {
         ImportsStatus importsStatus = new ImportsStatus();
         Integer statusId = statusRepo.findByCode(code).getId();
         if (checkStatusExitsInImport(importId, statusId)) {
             importsStatus.setImportId(importId);
             importsStatus.setStatusId(statusId);
+            importsStatus.setAccount_id(accountId);
             importsStatus.setCreateAt(Timestamp.from(Instant.now()));
             importStatusService.save(importsStatus);
         }
@@ -87,11 +90,11 @@ public class ImportService implements IImportService {
 
 
     @Override
-    public void updateStatusImport(Integer importId, String chooses) {
+    public void updateStatusImport(Integer importId, String chooses, Integer accountId) {
         Import anImport = importRepo.findById(importId).orElseThrow(() -> new IllegalArgumentException(("id not found: " + importId)));
         switch (chooses) {
             case "paidPayment": {
-                updateStatus(importId, "IMPORT02");
+                updateStatus(importId, "IMPORT02", accountId);
                 anImport.setIsPaid(true);
                 if (anImport.getIsImport() && anImport.getIsPaid()) {
                     anImport.setIsDone(true);
@@ -100,15 +103,15 @@ public class ImportService implements IImportService {
                 break;
             }
             case "importWarehouse": {
-                updateStatus(importId, "IMPORT03");
+                updateStatus(importId, "IMPORT03", accountId);
                 anImport.setIsImport(true);
                 break;
             }
 
             case "paidPaymentAndImportWarehouse": {
-                updateStatus(importId, "IMPORT02");
+                updateStatus(importId, "IMPORT02", accountId);
                 anImport.setIsImport(true);
-                updateStatus(importId, "IMPORT03");
+                updateStatus(importId, "IMPORT03", accountId);
                 anImport.setIsPaid(true);
                 break;
             }
@@ -128,9 +131,9 @@ public class ImportService implements IImportService {
     }
 
     @Override
-    public void updateStatusImportReturn(Integer importId, String chooses) {
+    public void updateStatusImportReturn(Integer importId, String chooses, Integer accountId) {
         Import anImport = importRepo.findById(importId).orElseThrow(() -> new IllegalArgumentException(("id not found: " + importId)));
-        updateStatus(importId, "IMPORT04");
+        updateStatus(importId, "IMPORT04", accountId);
         anImport.setIsReturn(true);
         importRepo.save(anImport);
 
@@ -168,9 +171,20 @@ public class ImportService implements IImportService {
             for (DetailsReturnImportResponse detailsImportsInvoiceResponse : list) {
                 total = total.add(detailsImportsInvoiceResponse.getTotalPrice());
             }
+            Account account = accountsRepo.findById(response.getAccountId()).orElseThrow(() -> new IllegalArgumentException("wrong id"));
+            Employee employee = employeeRepository.findById(account.getId()).orElseThrow(() -> new IllegalArgumentException("wrong id"));
+            response.setFullName(employee.getFullName());
+            response.setPhoneNumber(employee.getPhone());
             response.setTotalPrice(total);
             response.setDetailsReturnImportResponseList(list);
         }
         return invoiceResponseList;
     }
+
+    @Override
+    public List<ImportInvoiceBySupplier> getImportInvoiceBySupplier(Integer id) {
+        String query = "call filter_import_by_supplier(?)";
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper(ImportInvoiceBySupplier.class), id);
+    }
+
 }

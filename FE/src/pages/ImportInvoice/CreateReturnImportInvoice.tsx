@@ -129,11 +129,12 @@ const CreateReturnImportInvoice = () => {
         const returnImport ={
             importId: importId,
             detailsReturnImports: list,
-            createDate:Date.now()
+            createDate:Date.now(),
+            accountId:1
         }
 
         returnImportInvoice(returnImport,detailInvoices?.anImport.inventoryId as number).then(() => {
-            updateStatusReturnInvoice(importId, "returnInvoice").then(() => {
+            updateStatusReturnInvoice(importId, "returnInvoice",1).then(() => {
                 ToastCustom.fire({
                     icon: 'success',
                     title: 'Trả hàng thành công'

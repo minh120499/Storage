@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ImportStatusResponse {
     private String accountName;
+    private String fullName;
+    private String phoneNumber;
     private String statusName;
     private String statusDesc;
     private String createdAt;

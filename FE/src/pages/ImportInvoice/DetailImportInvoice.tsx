@@ -30,7 +30,8 @@ const DetailImportInvoice = () => {
     const [createDate, setCreatDate] = useState("")
     const [importDate, setImportDate] = useState("----")
     const [returnInvoice, setReturnInvoice] = useState<IImportReturn[]>([])
-    const [totalPriceReturnInvoice, setTotalPriceReturnInvoice] = useState(0)
+    const [fullName, setFullName] = useState("")
+    const [phoneNumber, setPhoneNumber] = useState("")
 
     useEffect(() => {
         getDetailImportInvoice(code as string).then(result => {
@@ -49,15 +50,20 @@ const DetailImportInvoice = () => {
     }, [])
 
 
+
     useEffect(() => {
         const invoiceStatusHistoryList = invoiceStatusHistory.filter((obj: IHistoryStatus) => obj.statusName !== "Tạo phiếu trả hàng")
         if (invoiceStatusHistoryList.length === 2){
             setCreatDate(invoiceStatusHistoryList[1].createdAt)
             setImportDate(invoiceStatusHistoryList[0].createdAt)
+            setFullName(invoiceStatusHistoryList[0].fullName)
+            setPhoneNumber(invoiceStatusHistoryList[0].phoneNumber)
         }
         if (invoiceStatusHistoryList.length === 3) {
             setCreatDate(invoiceStatusHistoryList[2].createdAt)
             setImportDate(invoiceStatusHistoryList[1].createdAt)
+            setFullName(invoiceStatusHistoryList[1].fullName)
+            setPhoneNumber(invoiceStatusHistoryList[1].phoneNumber)
         }
     }, [invoiceStatusHistory])
 
@@ -65,7 +71,7 @@ const DetailImportInvoice = () => {
 
     const updateStatusPaidPayment = () => {
         const importId = detailInvoices?.anImport.id as number
-        updateStatusInvoice(importId, "paidPayment").then(() => {
+        updateStatusInvoice(importId, "paidPayment",1).then(() => {
             ToastCustom.fire({
                 icon: 'success',
                 title: 'Xác nhận thanh toán thành công'
@@ -76,7 +82,7 @@ const DetailImportInvoice = () => {
     }
     const updateStatusImportWarehouse = () => {
         const importId = detailInvoices?.anImport.id as number
-        updateStatusInvoice(importId, "importWarehouse").then(() => {
+        updateStatusInvoice(importId, "importWarehouse",1).then(() => {
             ToastCustom.fire({
                 icon: 'success',
                 title: 'Xác nhận nhập kho thành công'
@@ -222,7 +228,10 @@ const DetailImportInvoice = () => {
                                 <PaymentImport updateStatusPaidPayment={updateStatusPaidPayment} total={detailInvoices?.anImport.totalPrice}
                                                isPaid={detailInvoices?.anImport.isPaid}/>
 
-                                <ImportWarehouse updateStatusImportWarehouse={updateStatusImportWarehouse} invoice={detailInvoices} createDate={createDate} importDate={importDate}/>
+                                <ImportWarehouse updateStatusImportWarehouse={updateStatusImportWarehouse}
+                                                 invoice={detailInvoices} createDate={createDate} importDate={importDate}
+                                                 fullName ={fullName} phoneNumber ={phoneNumber}
+                                />
 
                                 <ReturnInvoiceImport returnInvoice={returnInvoice} invoice={detailInvoices}/>
                             </Col>

@@ -75,12 +75,12 @@ const PDFReturnImportInvoice = ({invoice,returnInvoice}:Props) =>{
         },
     });
 
-    const SupplierInfo = ({invoice}:any) => (
+    const SupplierInfo = ({invoice,returnInvoice}:any) => (
         <View style={stylesSupplierInfo.container}>
             <View style={stylesSupplierInfo.headerContainer}>
                 <Text style={stylesSupplierInfo.billTo}>Nhân viên tạo:</Text>
-                <Text>Tên nhân viên: Vũ Nhật Minh </Text>
-                <Text>SĐT: 0987885614</Text>
+                <Text>Tên nhân viên: {returnInvoice.fullName} </Text>
+                <Text>SĐT: {returnInvoice.phoneNumber}</Text>
             </View>
             <View style={stylesSupplierInfo.headerContainer}>
                 <Text style={stylesSupplierInfo.billTo}>Nhà cung cấp:</Text>
@@ -97,7 +97,7 @@ const PDFReturnImportInvoice = ({invoice,returnInvoice}:Props) =>{
     const InvoiceTitle = ({title}:any) => (
         <View style={stylesInvoiceTitle.titleContainer}>
             <Text style={stylesInvoiceTitle.reportTitle}>{title}</Text>
-            <Text style={stylesInvoiceTitle.createDateTitle}>{moment(returnInvoice.createDate).format('DD/MM/YYYY hh:mm:ss')}</Text>
+            <Text style={stylesInvoiceTitle.createDateTitle}>{moment(returnInvoice.createDate).format('DD/MM/YYYY HH:mm:ss')}</Text>
         </View>
     );
     const stylesTableHeader = StyleSheet.create({
@@ -240,7 +240,7 @@ const PDFReturnImportInvoice = ({invoice,returnInvoice}:Props) =>{
         <Document>
             <Page size="A4" style={styles.page}>
                 <InvoiceTitle title='Phiếu trả hàng'/>
-                <SupplierInfo invoice={invoice}/>
+                <SupplierInfo invoice={invoice} returnInvoice={returnInvoice}/>
                 <InvoiceItemsTable returnInvoice={returnInvoice} />
             </Page>
         </Document>

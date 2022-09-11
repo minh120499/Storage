@@ -29,6 +29,9 @@ public class ReturnImport {
     @Column(name = "import_id", nullable = false)
     private int importId;
 
+    @Column(name = "account_id", nullable = false)
+    private int accountId;
+
     @OneToMany(mappedBy = "returnImport", cascade = CascadeType.ALL)
     private List<DetailsReturnImport> detailsReturnImports;
 

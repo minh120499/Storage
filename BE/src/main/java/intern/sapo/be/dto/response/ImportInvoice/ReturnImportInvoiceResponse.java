@@ -17,4 +17,7 @@ public class ReturnImportInvoiceResponse {
     private Integer importId;
     private List<DetailsReturnImportResponse> detailsReturnImportResponseList;
     private BigDecimal totalPrice;
+    private Integer accountId;
+    private String fullName;
+    private String phoneNumber;
 }

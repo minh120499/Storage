@@ -81,6 +81,9 @@ const ReturnInvoiceImport = ({returnInvoice, invoice}: Props) => {
                                                             }
                                                         </PDFDownloadLink>
                                                         <div>
+                                                            <p>Nhân viên tạo đơn: <span>{obj.fullName} | {obj.phoneNumber}</span></p>
+                                                        </div>
+                                                        <div>
                                                             <p>Tổng giá trị trả hàng: <span><NumberFormat
                                                                 value={obj.totalPrice} displayType='text'
                                                                 thousandSeparator={true}/></span></p>

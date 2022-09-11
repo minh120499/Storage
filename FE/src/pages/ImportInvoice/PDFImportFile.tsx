@@ -5,9 +5,11 @@ import {IDetailImportInvoice, IImportInvoice} from "../../services/customType";
 type Props ={
     invoice:IDetailImportInvoice,
     createDate:string,
-    importDate:string
+    importDate:string,
+    fullName:string,
+    phoneNumber:string
 }
-const PDFImportFile = ({invoice,createDate,importDate}:Props) =>{
+const PDFImportFile = ({invoice,createDate,importDate,fullName,phoneNumber}:Props) =>{
     Font.register({
         family: "Roboto",
         src:
@@ -92,12 +94,12 @@ const PDFImportFile = ({invoice,createDate,importDate}:Props) =>{
         },
     });
 
-    const SupplierInfo = ({invoice}:any) => (
+    const SupplierInfo = ({invoice,phoneNumber,fullName}:any) => (
         <View style={stylesSupplierInfo.container}>
             <View style={stylesSupplierInfo.headerContainer}>
                 <Text style={stylesSupplierInfo.billTo}>Nhân viên tạo:</Text>
-                <Text>Tên nhân viên: Vũ Nhật Minh </Text>
-                <Text>SĐT: 0987885614</Text>
+                <Text>Tên nhân viên: {fullName} </Text>
+                <Text>SĐT: {phoneNumber}</Text>
             </View>
             <View style={stylesSupplierInfo.headerContainer}>
                 <Text style={stylesSupplierInfo.billTo}>Nhà cung cấp:</Text>
@@ -260,8 +262,8 @@ const PDFImportFile = ({invoice,createDate,importDate}:Props) =>{
         <Document>
             <Page size="A4" style={styles.page}>
                 <InvoiceTitle title='Phiếu nhập kho'/>
-                <InvoiceNo invoice={invoice} createDate={createDate} importDate={importDate} />
-                <SupplierInfo invoice={invoice}/>
+                <InvoiceNo invoice={invoice} createDate={createDate} importDate={importDate}  fullName={fullName} phoneNumber={phoneNumber}/>
+                <SupplierInfo invoice={invoice} fullName={fullName} phoneNumber={phoneNumber}/>
                 <InvoiceItemsTable invoice={invoice} />
             </Page>
         </Document>

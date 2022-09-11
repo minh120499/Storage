@@ -107,10 +107,13 @@ export interface IImportReturn {
             inputQuantity:number
             quantity: number;
             importPrice: number;
-            totalPrice: number
+            totalPrice: number;
+
         }
     ],
-    totalPrice:number
+    totalPrice:number,
+    fullName:string,
+    phoneNumber:string
 }
 
 export interface IInventories {
@@ -121,7 +124,20 @@ export interface IInventories {
 }
 export interface IHistoryStatus {
     accountName: string,
+    fullName:string,
+    phoneNumber:string
     statusName: string,
     statusDesc: string,
     createdAt: string
+}
+export interface IImportInvoiceBySupplier{
+    code:string,
+    inventoryName:string,
+    totalPrice:string,
+    isDone:boolean,
+    isPaid:boolean,
+    isImport:boolean,
+    isReturn:boolean,
+    last:string,
+    first:string
 }

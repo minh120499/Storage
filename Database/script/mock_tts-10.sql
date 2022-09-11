@@ -808,3 +808,48 @@ BEGIN
 
 END;
 
+# -----NEW FILRER
+
+
+create
+    definer = root@localhost procedure filter_import_by_supplier(IN supplierId int)
+BEGIN
+
+
+    select im.code,
+           i.name        as 'inventoryName',
+           im.total_price   as 'totalPrice',
+           im.is_done       as 'isDone',
+           im.is_paid       as 'isPaid',
+           im.is_import     as 'isImport',
+           im.is_return     as 'isReturn',
+           (SELECT i2.create_at FROM imports_status i2 WHERE i2.import_id = im.id ORDER BY id LIMIT 1) as 'first',
+           (SELECT i2.create_at FROM imports_status i2 WHERE  i2.import_id = im.id ORDER BY id DESC LIMIT 1) as 'last'
+    from imports im
+             inner join imports_status is2 on im.id = is2.import_id
+             inner join inventories i on im.inventory_id = i.id
+             inner join suppliers s on im.supplier_id = s.id
+    where im.supplier_id = supplierId
+    group by im.code,im.id
+    order by im.id desc;
+END;
+
+
+call filter_import_by_supplier(9)
+
+
+alter table mock_tts_10.imports_status
+    add account_id int not null;
+
+alter table mock_tts_10.imports_status
+    add constraint fk_import_status_account_id
+        foreign key (account_id) references mock_tts_10.accounts (id);
+
+alter table mock_tts_10.return_import
+    add account_id int not null;
+
+alter table mock_tts_10.return_import
+    add constraint fk_return_import
+        foreign key (account_id) references mock_tts_10.accounts (id);
+
+

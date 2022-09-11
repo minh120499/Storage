@@ -9,11 +9,13 @@ import {DownloadOutlined} from "@ant-design/icons";
 
 type Props = {
     createDate: string,
-    importDate: string
+    importDate: string,
+    fullName:string,
+    phoneNumber:string
     invoice: IDetailImportInvoice,
     updateStatusImportWarehouse:()=>void
 }
-const ImportWarehouse = ({invoice, createDate, importDate,updateStatusImportWarehouse}: Props) => {
+const ImportWarehouse = ({invoice, createDate, importDate,fullName,phoneNumber,updateStatusImportWarehouse}: Props) => {
     return (
         <div className="block" style={{
             padding: 0,
@@ -48,7 +50,7 @@ const ImportWarehouse = ({invoice, createDate, importDate,updateStatusImportWare
                 {
                     invoice.anImport.isImport && createDate !== '' ? (
                         <>
-                            <PDFDownloadLink document={<PDFImportFile createDate={createDate} importDate={importDate}
+                            <PDFDownloadLink document={<PDFImportFile createDate={createDate} importDate={importDate} fullName={fullName} phoneNumber={phoneNumber}
                                                                       invoice={invoice}/>} fileName={ "phieuNhapKho - " +invoice.anImport.code +".pdf"}>
                                 {({blob, url, loading, error}) =>
                                     loading ?
