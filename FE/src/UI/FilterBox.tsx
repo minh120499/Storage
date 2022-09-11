@@ -34,7 +34,6 @@ const FilterBox = (props: any) => {
               <Search
                 placeholder="Nhập để tìm kiếm"
                 onSearch={onSearch}
-                enterButton
               />
             </Form.Item>
           </Col>

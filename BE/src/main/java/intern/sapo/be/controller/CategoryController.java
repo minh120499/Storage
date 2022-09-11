@@ -28,11 +28,10 @@ public class CategoryController {
     @GetMapping("")
     public ResponseEntity getAllByPage(@RequestParam(value = "page", required = true, defaultValue = "1") Integer pageNumber,
                                         @RequestParam(value = "limit", required = true, defaultValue = "10") Integer limit,
-                                        @RequestParam(value = "sortby", required = false) String sortBy,
-                                        @RequestParam(value = "sortdir", required = false) String sortDir,
-                                        @RequestParam(value = "id", required = false) String id,
-                                        @RequestParam(value = "name", required = false) String name){
-        Page<Category> categories = iCategoryService.findAll(pageNumber,limit,sortBy,sortDir,id,name);
+                                        @RequestParam(value = "sortby", required = false,defaultValue = "id") String sortBy,
+                                        @RequestParam(value = "sortdir", required = false,defaultValue = "desc") String sortDir,
+                                        @RequestParam(value = "value", required = false) String value){
+        Page<Category> categories = iCategoryService.findAll(pageNumber,limit,sortBy,sortDir, value);
         Map<String, Object> results = new HashMap<>();
         results.put("data", categories.getContent());
         results.put("total", categories.getTotalElements());

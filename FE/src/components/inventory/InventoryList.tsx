@@ -54,7 +54,7 @@ const InventoryList = () => {
         return a?.code?.localeCompare(b?.code);
       },
       render: (inventory: IInventory) => (
-        <div className="bg-red">{inventory?.code}</div>
+        <a className="bg-red">{inventory?.code}</a>
       ),
     },
     {
