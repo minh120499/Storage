@@ -5,17 +5,36 @@ import { ILoginData } from "../interface";
 import Button from "../UI/Button";
 import PersonIcon from "@mui/icons-material/Person";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUserStore } from "../features/user/userSlice";
+import useTitle from "../app/useTitle";
+import { RootState } from "../app/store";
 import { Navigate } from "react-router-dom";
 
 const Login: React.FC = () => {
+  useTitle("", "Đăng nhập");
   const [loginForm] = Form.useForm();
   const dispatch = useDispatch();
-  const loginSubmit = useMutation(async (loginData: ILoginData) => {
-    return (await axios.post("http://localhost:8080/api/login", loginData))
-      .data;
-  });
+  const user = useSelector((state: RootState) => state?.user);
+
+  const loginSubmit = useMutation(
+    async (loginData: ILoginData) => {
+      return (await axios.post("http://localhost:8080/api/login", loginData))
+        .data;
+    },
+    {
+      onError: () => {
+        message.error("Tài khoản hoặc mật khẩu không đúng", 2);
+      },
+      onSuccess(data, variables, context) {
+        dispatch(
+          setUserStore({
+            token: data.accessToken,
+          })
+        );
+      },
+    }
+  );
 
   const onFinish = async (values: any) => {
     const { username, password } = loginForm.getFieldsValue();
@@ -29,20 +48,11 @@ const Login: React.FC = () => {
       duration: 2.5,
     });
   };
-
-  if (loginSubmit?.isSuccess) {
-    dispatch(
-      setUserStore({
-        token: loginSubmit.data.accessToken,
-      })
-    );
+  
+  if (user?.username) {
     openNotification();
     return <Navigate to="/home" replace={true} />;
   }
-
-  const { error }: { error: any } = loginSubmit;
-  error?.response?.status &&
-    message.error("Tài khoản hoặc mật khẩu không đúng", 2);
 
   return (
     <>
@@ -59,19 +69,22 @@ const Login: React.FC = () => {
         style={{ background: "#f0f8ff" }}
       >
         <Form
-          className="flex gap-5 relative h-max w-max p-10 self-center bg-white rounded-3xl  shadow-md"
+          className="flex gap-5 relative h-max w-max self-center bg-white rounded-3xl  shadow-md"
           form={loginForm}
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 30 }}
           onFinish={onFinish}
           autoComplete="off"
+          style={{ padding: "15px 35px" }}
         >
-          <Image
-            className="shadow-md rounded-xl"
-            style={{ height: 265, width: 452, objectFit: "revert" }}
-            preview={false}
-            src="/bgi1.png"
-          />
+          <div className="self-center">
+            <Image
+              className="shadow-md rounded-xl"
+              style={{ height: 265, width: 452, objectFit: "revert" }}
+              preview={false}
+              src="/bgi1.png"
+            />
+          </div>
           <div className="self-center">
             <Form.Item className="text-center">
               <Image
@@ -84,12 +97,16 @@ const Login: React.FC = () => {
             <Form.Item
               name="username"
               rules={[{ required: true, message: "Hãy nhập tài khoản!" }]}
-              initialValue="minh"
+              initialValue="admin"
             >
               <Input
                 className="pl-3"
-                prefix={<PersonIcon style={{ color: "#1890ff" }} />}
-                placeholder="Nhập user name"
+                prefix={
+                  <PersonIcon
+                    style={{ color: "#1890ff", transform: "scale(0.75" }}
+                  />
+                }
+                placeholder="Tài khoản"
                 title="Nhập user name"
                 style={{ borderRadius: "20px" }}
                 size="large"
@@ -104,8 +121,12 @@ const Login: React.FC = () => {
               <Input.Password
                 className="pl-3"
                 size="large"
-                prefix={<VpnKeyIcon style={{ color: "#1890ff" }} />}
-                placeholder="Nhập password"
+                prefix={
+                  <VpnKeyIcon
+                    style={{ color: "#1890ff", transform: "scale(0.75" }}
+                  />
+                }
+                placeholder="Mật khẩu"
                 title="Nhập password"
                 style={{ borderRadius: "20px" }}
                 visibilityToggle={false}
@@ -118,7 +139,7 @@ const Login: React.FC = () => {
                 type="primary"
                 htmlType="submit"
                 className="w-full m-0"
-                style={{ borderRadius: "20px" }}
+                style={{ borderRadius: "20px", margin: 0 }}
               >
                 Đăng nhập
               </Button>

@@ -7,7 +7,7 @@ import {
   Form,
   Input,
   Tag,
-  Progress,
+  // Progress,
   Tooltip,
   Col,
   Row,
@@ -29,6 +29,8 @@ import ToastCustom from "../../features/toast/Toast";
 import useTitle from "../../app/useTitle";
 
 const InventoryList = () => {
+  console.log("inven list");
+
   const navigate = useNavigate();
   useTitle("Danh sách kho", "Kho hàng");
   const tailLayout = {
@@ -94,10 +96,24 @@ const InventoryList = () => {
         // const color = percent > 70 ? "red" : percent > 40 ? "blue" : "green";
 
         return (
-          <Tooltip
-            title={`${stock?.toLocaleString()}`}
-          >
-              {Intl.NumberFormat("en", { notation: "compact" }).format(stock) }
+          <Tooltip title={`${stock?.toLocaleString()}`}>
+            <div>
+              {Intl.NumberFormat("en", { notation: "compact" }).format(stock)}
+              {/* + " / " +
+                 Intl.NumberFormat("en", { notation: "compact" }).format(size)} */}
+            </div>
+            {/* <Progress
+              style={{ width: 130 }}
+              strokeColor={color}
+              percent={percent}
+              format={(percent) => {
+                if (percent && percent >= 100) {
+                  return <div style={{ color: "red" }}>Đầy</div>;
+                } else {
+                  return <div>{percent || 0} %</div>;
+                }
+              }}
+            /> */}
           </Tooltip>
         );
       },
@@ -207,18 +223,6 @@ const InventoryList = () => {
   const [keyChange, setKeyChange] = useState(0);
   const [formInventory] = Form.useForm();
   const [mode, setMode] = useState("new");
-  const onSearch = ({
-    filterName,
-    filterValue,
-  }: {
-    filterName: string;
-    filterValue: string;
-  }) => {
-    setSearch({
-      filterName,
-      filterValue,
-    });
-  };
 
   const handleOk = () => {
     const { code, name, id } = formInventory.getFieldsValue();
@@ -277,8 +281,11 @@ const InventoryList = () => {
   };
   return (
     <div className="p-5">
-      <Row>
-        <Col span={4}>
+      <Row justify="space-between">
+        <Col>
+          <FilterBox search={setSearch} />
+        </Col>
+        <Col>
           <Button
             onClick={() => {
               setIsModalVisible(true);
@@ -287,9 +294,6 @@ const InventoryList = () => {
           >
             <PlusOutlined /> Tạo mới kho
           </Button>
-        </Col>
-        <Col span={20}>
-          <FilterBox search={onSearch} />
         </Col>
       </Row>
 

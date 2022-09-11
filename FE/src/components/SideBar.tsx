@@ -11,10 +11,9 @@ import { Menu } from "antd";
 import type { MenuProps } from "antd/es/menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import "../styles/SideBar.css";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { Navigate, useNavigate } from "react-router-dom";
-import { logout } from "../features/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -54,9 +53,8 @@ const MENUS: MenuItem[] = [
 
 const SideBar: React.FC = () => {
   const userRoles = useSelector((state: RootState) => state?.user?.authorities);
-  const dispatch = useDispatch();
   const items = MENUS.filter((m: MenuItem) => {
-    return userRoles.includes(m?.key?.toString() || "") && m;
+    return userRoles?.includes(m?.key?.toString() || "") && m;
   });
   items.push(getItem("Đăng xuất", "/login", <LogoutIcon />));
 
@@ -77,13 +75,12 @@ const SideBar: React.FC = () => {
         <Menu
           mode="inline"
           theme="dark"
-          items={userRoles.includes("admin") ? MENUS : items}
+          items={userRoles?.includes("admin") ? MENUS : items}
           onClick={(e) => {
-            navigate(`${e.key}`, { replace: true });
             if (e.key.includes("login")) {
-              dispatch(logout)
+              localStorage.removeItem("token");
             }
-            return <Navigate to={`/${e.key}`} />;
+            navigate(`${e.key}`, { replace: true });
           }}
         />
       </div>

@@ -45,8 +45,8 @@ const UnLock = (props: any) => {
   return (
     <UnlockOutlined
       {...props}
-      style={{ padding: "5px", color: "white" }}
-      className="cursor-pointer bg-[#389e0d] rounded-md"
+      style={{ padding: "5px", color: "#389e0d", border: "#389e0d 1px solid" }}
+      className="cursor-pointer bg-[#f6ffed] rounded-md"
     />
   );
 };

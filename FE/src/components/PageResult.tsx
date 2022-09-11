@@ -4,6 +4,25 @@ import { useNavigate } from "react-router-dom";
 const PageResult = (props: any) => {
   const navigate = useNavigate();
 
+  if (props?.type === "err") {
+    return (
+      <Result
+        {...props}
+        status="404"
+        title="404"
+        subTitle="Có lỗi xảy ra"
+        extra={
+          <Button
+            onClick={() => navigate("/", { replace: true })}
+            type="primary"
+          >
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
+
   return (
     <Result
       {...props}
@@ -11,7 +30,7 @@ const PageResult = (props: any) => {
       title="403"
       subTitle="Xin lỗi, bạn không đủ quyền truy cập trang này."
       extra={
-        <Button onClick={() => navigate("/")} type="primary">
+        <Button onClick={() => navigate("/", { replace: true })} type="primary">
           Back Home
         </Button>
       }

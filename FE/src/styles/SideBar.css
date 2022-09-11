@@ -39,7 +39,9 @@
     height: calc(100vh - 98px);
 } */
 
-.ant-menu.ant-menu-root.ant-menu-inline {
+.ant-menu.ant-menu-root.ant-menu-inline,
+.ant-menu.ant-menu-root.ant-menu-vertical.ant-menu-inline-collapsed
+{
     max-height: calc(100vh - var(--headerHeight) - 48px);
     overflow: scroll;
     overflow-x: hidden;

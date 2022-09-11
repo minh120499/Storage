@@ -11,26 +11,24 @@ const T = (props: any) => {
 
   const query = useQuery(
     ["id", page, pageSize],
-    () => {
-      if (!!name && !!value) {
-        return props.query(page, pageSize, name, value);
-      } else {
-        return props.query(page, pageSize);
-      }
-    },
-    { keepPreviousData: true }
+    () =>
+      !!name && !!value
+        ? props.query(page, pageSize, name, value)
+        : props.query(page, pageSize)
+    // { keepPreviousData: true }
   );
 
   if (query?.isError) {
-    return <PageResult />;
+    return <PageResult type="err" />;
   }
 
-  if (query?.data?.data?.length === 0) {
-    if (page > 2) {
-      setPage(page - 1);
-    }
-    // setPage(1);
+  if (query?.data?.data?.length !== 0 && value && page > 1) {
+    setPage(1);
   }
+  if (query?.data?.data?.length === 0 && !value && page > 1) {
+    setPage(page - 1);
+  }
+
   query.refetch();
 
   return (

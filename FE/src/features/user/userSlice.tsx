@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { decodeToken } from "react-jwt";
+
 interface IPayload {
   token: string;
 }
@@ -31,7 +32,7 @@ const initialUserState: IUser = {
   email: "",
   phone: "",
   address: "",
-  token: ""
+  token: "",
 };
 
 export const userSlice = createSlice({
@@ -44,9 +45,10 @@ export const userSlice = createSlice({
       return d?.userDetails || state;
     },
     logout: () => {
-      localStorage.removeItem("token")
-      return initialUserState
-    }
+      console.log(12);
+      localStorage.removeItem("token");
+      return initialUserState;
+    },
   },
 });
 

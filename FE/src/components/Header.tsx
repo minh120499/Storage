@@ -17,16 +17,16 @@ export default function HeaderMenu() {
           {currentUser?.username}
         </Avatar>
         <div>
-          <div>{currentUser.username}</div>
+          <div>{currentUser?.username}</div>
           <div>
             <Tag
               style={{
                 scale: "0.75",
                 transform: "translateX(-7px)",
               }}
-              color={ROLE_COLOR[currentUser.authorities[0] as keyof IRoleLable]}
+              color={ROLE_COLOR[currentUser?.authorities[0] as keyof IRoleLable]}
             >
-              {currentUser.authorities[0]}
+              {currentUser?.authorities[0]}
             </Tag>
           </div>
         </div>

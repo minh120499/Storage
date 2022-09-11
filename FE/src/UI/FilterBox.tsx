@@ -1,11 +1,11 @@
-// import { DownOutlined } from "@ant-design/icons";
 import { Col, Form, Row, Select } from "antd";
 import Search from "antd/lib/input/Search";
-
-//datepicker
+import React from "react";
 
 const FilterBox = (props: any) => {
-  const onSearch = (value: string) => {
+  console.log("filter");
+
+  const onSearch = () => {
     const { filterName, filterValue } = filterForm.getFieldsValue();
     console.log(filterForm.getFieldsValue());
     console.log(filterName, filterValue);
@@ -21,21 +21,17 @@ const FilterBox = (props: any) => {
     <div>
       <Form form={filterForm}>
         <Row>
-          <Col span={4}>
+          <Col span={10}>
             <Form.Item name="filterName" initialValue="name" className="m-0">
-              <Select defaultValue="code" className="bg-pink">
-                <Select.Option value="name">Tìm theo tên</Select.Option>
+              <Select defaultValue="code" className="w-max">
                 <Select.Option value="code">Tìm theo code</Select.Option>
+                <Select.Option value="name">Tìm theo tên</Select.Option>
               </Select>
             </Form.Item>
           </Col>
-          <Col span={20}>
-            <Form.Item name="filterValue" className="m-0 w-1/2">
-              <Search
-                placeholder="Nhập để tìm kiếm"
-                onSearch={onSearch}
-                enterButton
-              />
+          <Col span={14}>
+            <Form.Item name="filterValue" className="m-0">
+              <Search placeholder="Nhập để tìm kiếm" onSearch={onSearch} />
             </Form.Item>
           </Col>
         </Row>
@@ -44,4 +40,4 @@ const FilterBox = (props: any) => {
   );
 };
 
-export default FilterBox;
+export default React.memo(FilterBox);
