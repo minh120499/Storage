@@ -98,6 +98,13 @@ public class InventoryServiceImpl implements IInventoryService {
     }
 
     @Override
+    public void updateStatusInventory(Integer id){
+        Inventory inventory = inventoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found: " + id));
+        inventory.setSize(!inventory.getSize());
+        inventoryRepository.save(inventory);
+    }
+
+    @Override
     public InventoryResponse getProductVariantByInventoryId(Integer id, String name) {
         InventoryResponse inventoryResponse = new InventoryResponse();
         List<ProductVariantsDTO> results = new ArrayList<>();

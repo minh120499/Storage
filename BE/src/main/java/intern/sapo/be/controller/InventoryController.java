@@ -83,6 +83,12 @@ public class InventoryController {
 		iInventoryService.delete(id);
 	}
 
+
+	@PutMapping("/status/{id}")
+	public void updateStatusInventory(@PathVariable(value = "id") Integer id) {
+		iInventoryService.updateStatusInventory(id);
+	}
+
 	@GetMapping("/productvariant/{id}")
 	public InventoryResponse getAll(@PathVariable(value = "id") Integer id, @RequestParam(required = false, value = "name") String name) {
 		return iInventoryService.getProductVariantByInventoryId(id, name);

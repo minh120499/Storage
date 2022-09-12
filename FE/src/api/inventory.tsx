@@ -57,11 +57,19 @@ export const updateInvetory = async (inventory: object, id: number) => {
 };
 
 export const deleteInvetory = async (id: number) => {
-  console.log(localStorage.getItem("token"));
-
   return await axios.put(
     `http://localhost:8080/inventories/delete/${id}`,
-    { title: "Sửa" },
+    { title: "Sửa trạng thái" },
+    {
+      headers,
+    }
+  );
+};
+
+export const updateStatusInventory = async (id: number) => {
+  return await axios.put(
+    `http://localhost:8080/inventories/status/${id}`,
+    { title: "Sửa tình trạng" },
     {
       headers,
     }

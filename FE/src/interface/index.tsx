@@ -27,7 +27,7 @@ export interface IInventory {
   createAt?: any;
   updateAt?: any;
   isDelete?: boolean;
-  status?: boolean;
+  size?: boolean;
 }
 
 export interface IInventoryDto {
