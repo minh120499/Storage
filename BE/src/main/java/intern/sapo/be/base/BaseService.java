@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Log4j2
 @RequiredArgsConstructor
-public abstract class BaseService<T> implements IBaseService<T> {
+public abstract class  BaseService<T> implements IBaseService<T> {
 
     private final IBaseRepo<T, Integer> baseRepo;
 

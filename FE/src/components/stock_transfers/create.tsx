@@ -144,7 +144,6 @@ const Create: React.FC = () => {
       (element: any) => element.getProductById.id === id
     );
     const hanldeClick = async () => {
-      // const getProductById = await findProductById(id);
       const getProductById = productVariant.find((a: any) => a.id === id);
       if (getProductById.quantity === 0) {
         message.warning("Sản phẩm đã hết hàng");
@@ -179,7 +178,6 @@ const Create: React.FC = () => {
   const allQueries = async () => {
     const productVariant = await getProductVariants(inventoryId);
     const getListInventory = await getAllInventory();
-    // console.log(productVariant);
     setProductVariant(productVariant.productVariants);
     setListInventory(getListInventory);
   };
@@ -192,11 +190,10 @@ const Create: React.FC = () => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    // console.log(exportValue.exportInventory);
-
     if (
       exportValue.receiveInventory !== undefined &&
-      exportValue.exportInventory !== undefined
+      exportValue.exportInventory !== undefined &&
+      products.length > 0
     ) {
       const saveExport = await createExport(exportValue);
       const exportId = saveExport.data.id;
@@ -211,9 +208,22 @@ const Create: React.FC = () => {
       });
       creatDetailExportSubmit.mutate(detailExport);
     } else {
-      message.error(
-        <div style={{ color: "red" }}>Chi nhánh chưa được chọn</div>
-      );
+      if (exportValue.receiveInventory === undefined) {
+        message.error(
+          <div style={{ color: "red" }}>Chi nhánh nhận chưa được chọn</div>
+        );
+      } else if (exportValue.exportInventory === undefined) {
+        message.error(
+          <div style={{ color: "red" }}>Chi nhánh chuyển chưa được chọn</div>
+        );
+      } else if (products.length === 0) {
+        message.error(
+          <div style={{ color: "red" }}>
+            Vui lòng chọn sản phẩm vào phiếu chuyển hàng
+          </div>
+        );
+      }
+
       setLoading(false);
     }
 
@@ -271,7 +281,7 @@ const Create: React.FC = () => {
                 onClick={() => window.history.back()}
                 className="rounded-md"
               >
-                Huỷ
+                Thoát
               </Button>,
 
               <Button

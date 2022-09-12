@@ -14,7 +14,9 @@ type value = {
 export const creatDetailExport = async (item: value[]) => {
   return await axios.post(`http://localhost:8080/details/createAll`, item);
 };
-export const findDetailByExport = async (id?: number) => {
+export const findDetailByExport = async (
+  id?: number
+): Promise<typeDetailExport[]> => {
   return (await axios.get(`http://localhost:8080/details/getByExport/${id}`))
     .data;
 };

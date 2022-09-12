@@ -46,6 +46,7 @@ export const ModalTable = ({
             key={text?.id}
             defaultValue={1}
             min={1}
+            max={text.quantity}
             size={"middle"}
           />
         );
@@ -90,12 +91,10 @@ export const ModalTable = ({
           console.log("san pham da chon");
         }
       } else {
-        setProducts(
-          selectedRows.map((e) => ({
-            getProductById: e,
-            quantity: 1,
-          }))
+        const newData = products.filter(
+          (item: any) => item.getProductById.id * 1 !== id
         );
+        setProducts(newData);
       }
     },
     onSelectAll(selected, selectedRows, changeRows) {
@@ -106,12 +105,21 @@ export const ModalTable = ({
         }))
       );
     },
+    getCheckboxProps: (record: DataType) => {
+      return {
+        disabled: record.quantity === 0,
+      };
+    },
   };
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 3,
   });
-
+  const handlePagination = (page: any) => {
+    setPagination({
+      current: page.current,
+    });
+  };
   return (
     <div className="Modal">
       <Button type="default" onClick={() => setModal2Visible(true)}>
@@ -136,11 +144,7 @@ export const ModalTable = ({
               scroll={{ y: 240 }}
               rowSelection={rowSelection}
               pagination={pagination}
-              onChange={(page) => {
-                setPagination({
-                  current: page.current,
-                });
-              }}
+              onChange={handlePagination}
             />
           </div>
           <span style={{ color: "blue", fontWeight: 600 }}>

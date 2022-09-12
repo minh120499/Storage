@@ -1,8 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Button,
+  Input,
   Modal,
   Pagination,
   PaginationProps,
+  Select,
+  Space,
   Spin,
   Table,
   Tag,
@@ -12,13 +16,19 @@ import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { findDetailByExport } from "../../api/detail_export";
 import { getExport } from "../../api/export";
-import { findExportStatusById } from "../../api/export_status";
-import { exportById, listExport } from "../type/data_type";
+import {
+  exportById,
+  inventory,
+  listExport,
+  paramExport,
+} from "../type/data_type";
 import type { TransferDirection } from "antd/es/transfer";
 import SettingsIcon from "@mui/icons-material/Settings";
-
+import Search from "antd/lib/input/Search";
+import { SearchOutlined } from "@mui/icons-material";
+import "./file.css";
+import { getAllInventory } from "../../api/inventory";
 interface RecordType {
   key: string;
   title: string;
@@ -39,55 +49,57 @@ export const ListExport = () => {
     },
     {
       title: "Ngày tạo",
-      dataIndex: "exportStatus",
-      key: "exportStatus",
+      dataIndex: "exportsStatuses",
+      key: "exportsStatuses",
       render: (text) => {
         // console.log(text);
-        return <div>{moment(text?.createAt).format("DD/MM/YYYY HH:mm")}</div>;
+        return (
+          <div>{moment(text[0]?.createAt).format("DD/MM/YYYY HH:mm")}</div>
+        );
       },
     },
     {
       title: "Mã phiếu",
-      dataIndex: "exportStatus",
-      key: "exportStatus",
+      dataIndex: "exportsStatuses",
+      key: "exportsStatuses",
       render: (text) => {
         // console.log(text);
-        return <div>{text.code}</div>;
+        return <div>{text[0].code}</div>;
       },
     },
     {
       title: "Chi nhánh chuyển",
-      dataIndex: "exportById",
-      key: "exportById",
+      dataIndex: "exportInventory",
+      key: "exportInventory",
       render: (text) => {
-        return <div>{text?.exportInventory?.name}</div>;
+        return <div>{text?.name}</div>;
       },
     },
     {
       title: "Chi nhánh nhận",
-      dataIndex: "exportById",
-      key: "exportById",
+      dataIndex: "receiveInventory",
+      key: "receiveInventory",
       render: (text) => {
-        return <div>{text?.receiveInventory?.name}</div>;
+        return <div>{text?.name}</div>;
       },
     },
     {
       title: "Trạng thái",
-      dataIndex: "exportStatus",
-      key: "exportStatus",
+      dataIndex: "exportsStatuses",
+      key: "exportsStatuses",
       render: (text) => {
         return (
           <div>
-            {text.status === 0 ? (
-              <Tag color={"blue"} key={text.status}>
+            {text[0].status === 0 ? (
+              <Tag color={"blue"} key={text[0].status}>
                 Chờ chuyển
               </Tag>
-            ) : "" || text.status === 1 ? (
-              <Tag color={"warning"} key={text.status}>
+            ) : "" || text[0].status === 1 ? (
+              <Tag color={"warning"} key={text[0].status}>
                 Đang chuyển
               </Tag>
-            ) : "" || text.status === 2 ? (
-              <Tag color={"green"} key={text.status}>
+            ) : "" || text[0].status === 2 ? (
+              <Tag color={"green"} key={text[0].status}>
                 Đã nhận
               </Tag>
             ) : (
@@ -99,10 +111,10 @@ export const ListExport = () => {
     },
     {
       title: "Ngày nhận",
-      dataIndex: "exportStatus",
-      key: "exportStatus",
+      dataIndex: "exportsStatuses",
+      key: "exportsStatuses",
       render: (text) => {
-        return <div>{text?.dateReceive}</div>;
+        return <div>{text[0]?.dateReceive}</div>;
       },
     },
   ];
@@ -115,62 +127,65 @@ export const ListExport = () => {
           }}
         />
       ),
+      dataIndex: "expandable",
     },
     {
       title: "Ngày tạo",
-      dataIndex: "exportStatus",
-      key: "exportStatus",
+      dataIndex: "exportsStatuses",
+      key: "exportsStatuses",
       render: (text) => {
         // console.log(text);
-        return <div>{moment(text?.createAt).format("DD/MM/YYYY HH:mm")}</div>;
+        return (
+          <div>{moment(text[0]?.createAt).format("DD/MM/YYYY HH:mm")}</div>
+        );
       },
     },
     {
       title: "Mã phiếu",
-      dataIndex: "exportStatus",
-      key: "exportStatus",
+      dataIndex: "exportsStatuses",
+      key: "exportsStatuses",
       render: (text) => {
         // console.log(text);
-        return <div>{text.code}</div>;
+        return <div>{text[0].code}</div>;
       },
     },
     {
       title: "Chi nhánh chuyển",
-      dataIndex: "exportById",
-      key: "exportById",
+      dataIndex: "exportInventory",
+      key: "exportInventory",
       render: (text) => {
-        return <div>{text?.exportInventory?.name}</div>;
+        return <div>{text?.name}</div>;
       },
     },
     {
       title: "Chi nhánh nhận",
-      dataIndex: "exportById",
-      key: "exportById",
+      dataIndex: "receiveInventory",
+      key: "receiveInventory",
       render: (text) => {
-        return <div>{text?.receiveInventory?.name}</div>;
+        return <div>{text?.name}</div>;
       },
     },
     {
       title: "Trạng thái",
-      dataIndex: "exportStatus",
-      key: "exportStatus",
+      dataIndex: "exportsStatuses",
+      key: "exportsStatuses",
       render: (text) => {
         return (
           <div>
-            {text.status === 0 && !text.statusCancel ? (
-              <Tag color={"blue"} key={text.status}>
+            {text[0].status === 0 && !text[0].statusCancel ? (
+              <Tag color={"blue"} key={text[0].status}>
                 Chờ chuyển
               </Tag>
-            ) : "" || (text.status === 1 && !text.statusCancel) ? (
-              <Tag color={"warning"} key={text.status}>
+            ) : "" || (text[0].status === 1 && !text[0].statusCancel) ? (
+              <Tag color={"warning"} key={text[0].status}>
                 Đang chuyển
               </Tag>
-            ) : "" || (text.status === 2 && !text.statusCancel) ? (
-              <Tag color={"green"} key={text.status}>
+            ) : "" || (text[0].status === 2 && !text[0].statusCancel) ? (
+              <Tag color={"green"} key={text[0].status}>
                 Đã nhận
               </Tag>
-            ) : "" || text.statusCancel ? (
-              <Tag color={"red"} key={text.statusCancel}>
+            ) : "" || text[0].statusCancel ? (
+              <Tag color={"red"} key={text[0].statusCancel}>
                 Đã huỷ
               </Tag>
             ) : (
@@ -227,39 +242,54 @@ export const ListExport = () => {
   const [loading, setLoading] = useState(true);
   const [colSettingModal, setColSettingModal] = useState(false);
   const [total, setTotal] = useState();
-  const [current, setCurrent] = useState(1);
+  const [param, setParam] = useState<paramExport>();
+  const [listInventory, setListInventory] = useState<any>();
+  const [inSend, setInSend] = useState(listInventory);
+  const [inReceive, setInReceive] = useState(listInventory);
+  const [a, setA] = useState(1);
+  useEffect(() => {
+    if (listInventory === undefined) {
+      setA(a + 1);
+    }
+    setInSend(listInventory);
+    setInReceive(listInventory);
+  }, [a]);
+  const handleClickOptionSend = async (e: any) => {
+    setParam((prev) => ({
+      ...prev,
+      exportInventory: e,
+    }));
+    setInReceive(listInventory.filter((i: any) => i.id !== e));
+  };
+  const handleClickOptionReceive = async (e?: number) => {
+    setParam((prev) => ({
+      ...prev,
+      receiveInventory: e,
+    }));
+    setInSend(listInventory.filter((i: any) => i.id !== e));
+  };
   const onChange: PaginationProps["onChange"] = (page) => {
     // console.log(page);
     setLoading(true);
-    setCurrent(page);
+    setParam((prev) => ({
+      ...prev,
+      page: page,
+    }));
   };
   const data = async () => {
     // @ts-ignore
-    const exportData = await getExport(current);
-
-    exportData.data.map(async (e: exportById) => {
-      const detailExport = await findDetailByExport(e.id);
-      const exportStatus = await findExportStatusById(e.id);
-      // @ts-ignore
-      setListExport((pre: listExport[]) => {
-        return [
-          {
-            exportById: e,
-            typeDetailExport: detailExport,
-            exportStatus: exportStatus,
-          },
-          ...pre,
-        ];
-      });
-    });
+    const exportData = await getExport(param);
+    const getListInventory = await getAllInventory();
+    setListExport(exportData.data);
     setTotal(exportData.total);
+    setListInventory(getListInventory);
     setLoading(false);
   };
   useEffect(() => {
     setListExport([]);
     data();
-  }, [current]);
-  // console.log(listExport);
+    document.title = "Chuyển hàng";
+  }, [param]);
 
   const dataA: listExport[] = listExport;
   const navigate = useNavigate();
@@ -268,7 +298,7 @@ export const ListExport = () => {
     navigate(`/storage/stock_transfers/create`);
   };
   const hanldeRow = (e: any) => {
-    navigate(`/storage/stock_transfers/${e.id}`);
+    navigate(`/storage/stock_transfers/${e}`);
   };
   const [spin, setSpin] = useState(true);
   useEffect(() => {
@@ -277,6 +307,27 @@ export const ListExport = () => {
       setSpin(false);
     }, 1000);
   }, []);
+  const onSearch = (e: any) => {
+    setParam((prev) => ({
+      ...prev,
+      code: e,
+    }));
+  };
+  const handleChangeSelect = (value: number) => {
+    if (value * 1 === 3) {
+      console.log("a");
+      setParam((prev) => ({
+        cancel: true,
+      }));
+    } else {
+      setParam((prev) => ({
+        ...prev,
+        status: value,
+        cancel: false,
+      }));
+    }
+  };
+
   return (
     <Spin spinning={spin}>
       <div className="p-5">
@@ -286,6 +337,7 @@ export const ListExport = () => {
             justifyContent: "space-between",
             marginBottom: "35px",
             alignItems: "center",
+            textAlign: "center",
           }}
         >
           <h1 style={{ fontSize: "30px", margin: 0, marginRight: 10 }}>
@@ -295,36 +347,139 @@ export const ListExport = () => {
             + Tạo phiếu chuyển hàng
           </Button>
         </div>
-
-        <Table
-          rowKey={"uid"}
-          columns={columns}
-          dataSource={dataA}
-          loading={loading}
-          bordered
-          onRow={(record, index) => {
-            return {
-              onClick: () => hanldeRow(record?.exportById),
-            };
-          }}
-          pagination={false}
-        />
-        <Pagination defaultCurrent={1} total={total} onChange={onChange} />
-        {colSettingModal && (
-          <Modal
-            title="Điều chỉnh cột hiển thị"
-            visible={colSettingModal}
-            onCancel={() => setColSettingModal(false)}
-            footer={null}
-          >
-            <Transfer
-              dataSource={mockData}
-              targetKeys={targetKeys}
-              onChange={handleChange}
-              render={(item) => item.title}
+        <div style={{ backgroundColor: "white" }}>
+          <div style={{ display: "flex", textAlign: "center" }}>
+            <div style={{ display: "flex", width: "50%" }}>
+              <Space direction="vertical">
+                <Search
+                  placeholder="Tìm kiếm theo mã phiếu"
+                  onSearch={onSearch}
+                  enterButton
+                  size="large"
+                  allowClear
+                  width={"50%"}
+                />
+              </Space>
+            </div>
+            <div
+              style={{
+                paddingTop: "20px",
+                paddingRight: "10px",
+              }}
+            >
+              <Select
+                style={{ width: 120 }}
+                onChange={handleChangeSelect}
+                placeholder={"Ngày tạo"}
+              >
+                <Select.Option value="jack">Jack</Select.Option>
+              </Select>
+            </div>
+            <div
+              style={{
+                paddingTop: "20px",
+                paddingRight: "10px",
+              }}
+            >
+              <Select
+                style={{ width: 120 }}
+                onChange={handleChangeSelect}
+                placeholder={"Trạng thái"}
+              >
+                <Select.Option key={0}>Chờ chuyển</Select.Option>
+                <Select.Option key={1}>Đang chuyển</Select.Option>
+                <Select.Option key={2}>Đã nhận</Select.Option>
+                <Select.Option key={3}>Đã huỷ</Select.Option>
+              </Select>
+            </div>
+            <div
+              style={{
+                paddingTop: "20px",
+                paddingRight: "10px",
+              }}
+            >
+              <Select
+                showSearch
+                style={{ width: "120px" }}
+                dropdownStyle={{ height: 150, width: 1000000 }}
+                onSelect={handleClickOptionSend}
+                placeholder="Tìm kiếm chi nhánh"
+              >
+                {inSend &&
+                  inSend.map((item: inventory) => (
+                    <Select.Option
+                      style={{ width: "100%" }}
+                      key={item.id}
+                      value={item.id}
+                    >
+                      {item.name}
+                    </Select.Option>
+                  ))}
+              </Select>
+            </div>
+            <div
+              style={{
+                paddingTop: "20px",
+                paddingRight: "10px",
+              }}
+            >
+              <Select
+                showSearch
+                style={{ width: "120px" }}
+                dropdownStyle={{ height: 150, width: 3000000 }}
+                placeholder="Tìm kiếm chi nhánh"
+                onSelect={handleClickOptionReceive}
+              >
+                {inReceive &&
+                  inReceive.map((item: inventory) => (
+                    <Select.Option
+                      style={{ width: "100%" }}
+                      key={item.id}
+                      value={item.id}
+                    >
+                      {item.name}
+                    </Select.Option>
+                  ))}
+              </Select>
+            </div>
+          </div>
+          <div>
+            <Table
+              rowKey={"uid"}
+              columns={columns}
+              dataSource={dataA}
+              loading={loading}
+              bordered
+              onRow={(record, index) => {
+                return {
+                  onClick: () => hanldeRow(record?.id),
+                };
+              }}
+              pagination={false}
             />
-          </Modal>
-        )}
+            <Pagination
+              defaultCurrent={1}
+              total={total}
+              onChange={onChange}
+              style={{ display: "flex", padding: 20, marginLeft: "60%" }}
+            />
+            {colSettingModal && (
+              <Modal
+                title="Điều chỉnh cột hiển thị"
+                visible={colSettingModal}
+                onCancel={() => setColSettingModal(false)}
+                footer={null}
+              >
+                <Transfer
+                  dataSource={mockData}
+                  targetKeys={targetKeys}
+                  onChange={handleChange}
+                  render={(item) => item.title}
+                />
+              </Modal>
+            )}
+          </div>
+        </div>
       </div>
     </Spin>
   );

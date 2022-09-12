@@ -24,4 +24,5 @@ public interface InventoryRepository extends JpaRepository<Inventory, Integer> {
     @Query(value = "call select_create_at(?1)",nativeQuery = true)
     Timestamp createAt(Integer id);
 
+
 }

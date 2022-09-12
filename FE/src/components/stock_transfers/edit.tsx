@@ -10,6 +10,7 @@ import {
   Spin,
   Empty,
   TablePaginationConfig,
+  Modal,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { findProductById } from "../../api/product_variant";
@@ -45,16 +46,15 @@ import {
   findExportStatusById,
 } from "../../api/export_status";
 import moment from "moment";
+import { TableRowSelection } from "antd/lib/table/interface";
 
 const Create: React.FC = () => {
   const { id } = useParams();
-  const [products, setProducts] = useState<any>([]);
 
   const [exportId, setExportId] = useState<number | undefined>();
   const [loading, setLoading] = useState(false);
   const [inventoryId, setInventoryId] = useState(1);
   const [productVariant, setProductVariant] = useState<any>();
-  const [code, setCode] = useState<any>();
   const navigate = useNavigate();
   const [exportById, setExportById] = useState<exportById>();
   const [detailExport, setDetailExport] = useState<typeDetailExport[]>([]);
@@ -69,17 +69,18 @@ const Create: React.FC = () => {
     setDetailExport(detailExport);
     setStattus(exportStatus);
     setInventoryId(exportData.exportInventory.id);
-    let b = 0;
-    detailExport.map((e: any) => {
-      b += e.quantity * 1;
-    });
-    setTotal(b);
   };
   useEffect(() => {
     dataEdit();
     document.title = "Cập nhật phiếu chuyển hàng";
   }, []);
-
+  useEffect(() => {
+    let b = 0;
+    detailExport.map((e: any) => {
+      b += e.quantity * 1;
+    });
+    setTotal(b);
+  }, [detailExport]);
   const handleDelete = async (e: any) => {
     const newData = detailExport.find(
       (item: any) => item.productVariant.id * 1 === e * 1
@@ -132,16 +133,26 @@ const Create: React.FC = () => {
     },
     {
       title: "Số lượng chuyển",
-      dataIndex: ["quantity", "getProductById"],
+      dataIndex: ["quantity", "productVariant"],
       render: (a, text) => {
+        const check = productVariant.find(
+          (a: any) => a.id === text?.productVariant?.id
+        );
+        // console.log(check);
         return (
           <>
+            {/* {text?.productVariant?.quantity === 0 ? } */}
+
             {status?.status === 1 ? (
               <div>{text?.quantity}</div>
             ) : (
               <Input
                 type={"number"}
-                style={{ width: "50%" }}
+                style={
+                  check?.quantity === 0
+                    ? { backgroundColor: "red", width: "50%" }
+                    : { backgroundColor: "none", width: "50%" }
+                }
                 onChange={handleQuantity}
                 id={text?.productVariant?.id + ""}
                 key={text?.productVariant?.id}
@@ -229,24 +240,33 @@ const Create: React.FC = () => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    const saveExport = await updateExport(item, exportById);
-    const exportId = saveExport.data.id;
-    setExportId(exportId);
-    await deleteDetailByExport(exportId);
-    const detailExports = await detailExport.map((e: any) => {
-      return {
-        productVariant: e.productVariant,
-        quantity: e.quantity,
-        export: item,
-        code: status?.code,
-      };
-    });
-    creatDetailExportSubmit.mutate(detailExports);
-    await createExportStatus({
-      parentId: status?.id,
-      status: status?.status,
-      dateUpdate: moment(new Date()).format("DD/MM/YYYY HH:mm").toString(),
-    });
+    if (detailExport.length > 0) {
+      const saveExport = await updateExport(item, exportById);
+      const exportId = saveExport.data.id;
+      setExportId(exportId);
+      await deleteDetailByExport(exportId);
+      const detailExports = await detailExport.map((e: any) => {
+        return {
+          productVariant: e.productVariant,
+          quantity: e.quantity,
+          export: item,
+          code: status?.code,
+        };
+      });
+      creatDetailExportSubmit.mutate(detailExports);
+      await createExportStatus({
+        parentId: status?.id,
+        status: status?.status,
+        dateUpdate: moment(new Date()).format("DD/MM/YYYY HH:mm").toString(),
+      });
+    } else {
+      message.error(
+        <div style={{ color: "red" }}>
+          Vui lòng chọn sản phẩm vào phiếu chuyển hàng
+        </div>
+      );
+    }
+
     setLoading(false);
   };
 
@@ -262,6 +282,10 @@ const Create: React.FC = () => {
     handleStatus(exportId);
   }
   const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 3,
+  });
+  const [pagination1, setPagination1] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 3,
   });
@@ -307,6 +331,105 @@ const Create: React.FC = () => {
     }));
   };
   // console.log(code);
+
+  const [modal2Visible, setModal2Visible] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+  const columns_modal: ColumnsType<DataType> = [
+    {
+      title: "Mã hàng",
+      dataIndex: "code",
+    },
+    {
+      title: "Tên sản phẩm",
+      dataIndex: "name",
+    },
+    {
+      title: "Số lượng",
+      dataIndex: ["quantity", "id"],
+      render: (a, text) => {
+        return (
+          <Input
+            type={"number"}
+            style={{ width: "50%" }}
+            onChange={handleQuantity}
+            id={text?.id + ""}
+            key={text?.id}
+            defaultValue={1}
+            min={1}
+            size={"middle"}
+          />
+        );
+      },
+    },
+  ];
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection: TableRowSelection<DataType> = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+    onSelect: (record, selected, selectedRows) => {
+      const id = record.id;
+
+      if (selected) {
+        const isFound = detailExport.findIndex(
+          (element: any) => element.productVariant.id === id
+        );
+        const hanldeClick = async () => {
+          const getProductById = productVariant.find((a: any) => a.id === id);
+          if (getProductById.quantity === 0) {
+            message.warning("Sản phẩm đã hết hàng");
+          } else {
+            setDetailExport([
+              {
+                export: item,
+                productVariant: getProductById,
+                quantity: 1,
+              },
+              ...detailExport,
+            ]);
+          }
+        };
+        if (isFound < 0) {
+          hanldeClick();
+        } else {
+          message.warning(
+            <div style={{ color: "red" }}>Sản phẩm đã được chọn</div>
+          );
+          setDetailExport((prev: any) => {
+            prev.map((prod: any) => {
+              if (prod.productVariant.id === id) {
+                prod.quantity = prod.quantity * 1 + 1;
+              }
+            });
+            return [...prev];
+          });
+        }
+      } else {
+        const newData = detailExport.filter(
+          (item: any) => item.productVariant.id * 1 !== id
+        );
+        setDetailExport(newData);
+      }
+    },
+    onSelectAll(selected, selectedRows, changeRows) {
+      setDetailExport(
+        selectedRows.map((e) => ({
+          export: item,
+          productVariant: e,
+          quantity: 1,
+        }))
+      );
+    },
+    getCheckboxProps: (record: DataType) => {
+      return {
+        disabled: record.quantity === 0,
+      };
+    },
+  };
 
   return (
     <div className="p-5">
@@ -468,13 +591,42 @@ const Create: React.FC = () => {
                   )}
                 </Select>
               </div>
-              <ModalTable
-                products={products}
-                setProducts={(e) => setProducts(e)}
-                dataProduct={dataProduct}
-                quantityProducts={detailExport.length}
-                handleQuantity={(e) => handleQuantity(e)}
-              />
+              <div className="Modal">
+                <Button type="default" onClick={() => setModal2Visible(true)}>
+                  Chọn nhanh
+                </Button>
+
+                {modal2Visible && (
+                  <Modal
+                    title="Chọn sản phẩm"
+                    centered
+                    visible={modal2Visible}
+                    onCancel={() => setModal2Visible(false)}
+                    footer={null}
+                    width={"1000px"}
+                  >
+                    <div className="select-modal">
+                      <Table
+                        rowKey="id"
+                        columns={columns_modal}
+                        dataSource={dataProduct}
+                        style={{ width: "100%" }}
+                        scroll={{ y: 240 }}
+                        rowSelection={rowSelection}
+                        pagination={pagination1}
+                        onChange={(page) => {
+                          setPagination1({
+                            current: page.current,
+                          });
+                        }}
+                      />
+                    </div>
+                    <span style={{ color: "blue", fontWeight: 600 }}>
+                      Bạn đã chọn {detailExport.length} sản phẩm
+                    </span>
+                  </Modal>
+                )}
+              </div>
             </div>
           )}
           <div>

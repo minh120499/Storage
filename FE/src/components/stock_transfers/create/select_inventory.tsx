@@ -19,7 +19,6 @@ export const SelectInventory = ({
   listInventory,
   setCode,
 }: prop) => {
-  const [valid, setValid] = useState<any>();
   const [inSend, setInSend] = useState(listInventory);
   const [inReceive, setInReceive] = useState(listInventory);
   const [a, setA] = useState(1);
@@ -30,30 +29,15 @@ export const SelectInventory = ({
     setInSend(listInventory);
     setInReceive(listInventory);
   }, [a]);
-  // console.log(listInventory);
   const handleClickOptionSend = async (e: any) => {
     setInventoryId(e);
-    setValid(e);
     const exportByInventory = await findInventoryById(e);
     setInventorySend(exportByInventory);
     setInReceive(listInventory.filter((i: any) => i.id !== e));
   };
   const handleClickOptionReceive = async (e?: number) => {
-    if (e === undefined) {
-      message.error(
-        <div style={{ color: "red" }}>Chi nhánh chưa được chọn</div>
-      );
-    }
-    if (e === valid) {
-      message.error(
-        <div style={{ color: "red" }}>
-          Chi nhánh nhận không được trùng với chi nhánh chuyển
-        </div>
-      );
-    } else {
-      const exportReceive = await findInventoryById(e);
-      setInventoryReceive(exportReceive);
-    }
+    const exportReceive = await findInventoryById(e);
+    setInventoryReceive(exportReceive);
     setInSend(listInventory.filter((i: any) => i.id !== e));
   };
   const handleCode = (e: any) => {
@@ -75,7 +59,7 @@ export const SelectInventory = ({
             style={{ width: "100%" }}
             dropdownStyle={{ height: 150, width: 1000000 }}
             onSelect={handleClickOptionSend}
-            // defaultValue={1}
+            placeholder="Tìm kiếm chi nhánh"
           >
             {inSend &&
               inSend.map((item: inventory) => (

@@ -52,5 +52,5 @@ public class ExportsStatus {
     @Column(name = "date_update")
     private String dateUpdate;
     @Column(name = "status_cancel")
-    private Boolean statusCancel = false;
+    private Boolean statusCancel = null;
 }

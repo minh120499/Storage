@@ -42,6 +42,8 @@ export const Status = () => {
   const [loading, setLoading] = useState(false);
   const [current, setCurrent] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalCancel, setIsModalCancel] = useState(false);
+
   const [total, setTotal] = useState<number>(0);
   const [loadingEdit, setLoadingEdit] = useState(false);
   const [productVariant, setProductVariant] = useState<any>([]);
@@ -61,17 +63,29 @@ export const Status = () => {
     setLoading(true);
     setTimeout(async () => {
       if (status?.status === 0) {
-        await updateExportStatusById(item, {
-          id: status?.id,
-          export: item,
-          dateSend: now,
-          status: 1,
-        });
-        await addExportByInventory(
-          exportById?.exportInventory?.id,
-          detailExport
+        const productExpri = productVariant.filter(
+          (e: any) => e.quantity === 0
         );
-        message.success("Xuất phiếu chuyển hàng thành công");
+        console.log(productExpri.length);
+
+        // setCheck(productExpri);
+        if (productExpri.length === 0) {
+          await updateExportStatusById(item, {
+            id: status?.id,
+            export: item,
+            dateSend: now,
+            status: 1,
+          });
+          await addExportByInventory(
+            exportById?.exportInventory?.id,
+            detailExport
+          );
+          message.success("Xuất phiếu chuyển hàng thành công");
+        } else {
+          message.error(
+            "Sản phẩm trong kho không đủ xin vui lòng huỷ hoặc sửa phiếu"
+          );
+        }
       } else if (status?.status === 1) {
         await updateExportStatusById(item, {
           id: status?.id,
@@ -90,17 +104,37 @@ export const Status = () => {
       setCurrent(current + 1);
     }, 1000);
   };
-  const handleError = async () => {
-    await updateExportStatusById(item, {
-      id: status?.id,
-      export: item,
-      dateCancel: now,
-      status: status?.status,
-      statusCancel: true,
-    });
+  const handleOkCancel = async () => {
+    if (status?.status === 0) {
+      await updateExportStatusById(item, {
+        id: status?.id,
+        export: item,
+        dateCancel: now,
+        status: status?.status,
+        statusCancel: true,
+      });
+    } else if (status?.status === 1) {
+      await updateExportStatusById(item, {
+        id: status?.id,
+        export: item,
+        dateCancel: now,
+        status: status?.status,
+        statusCancel: true,
+      });
+      await importExportByInventory(
+        exportById?.exportInventory?.id,
+        detailExport
+      );
+    }
+
     setCurrent(current + 1);
+    setIsModalCancel(false);
+  };
+  const handleError = async () => {
+    setIsModalCancel(true);
   };
   const handleCancel = () => {
+    setIsModalCancel(false);
     setIsModalOpen(false);
   };
   const navigate = useNavigate();
@@ -129,6 +163,7 @@ export const Status = () => {
         )
       );
     });
+
     setExportById(exportData);
     setDetailExport(detailExport);
     setStatus(exportStatus);
@@ -148,7 +183,6 @@ export const Status = () => {
   useEffect(() => {
     data();
   }, [current]);
-  console.log(productVariant);
   const dataProductExport = detailExport;
 
   const columns: ColumnsType<typeDetailExport> = [
@@ -204,9 +238,8 @@ export const Status = () => {
     setTimeout(() => {
       setSpin(false);
     }, 1000);
-    const productExpri = productVariant.map((e: any) => e.quantity === 0);
-    setCheck(productExpri);
   }, []);
+
   return (
     <Spin spinning={spin}>
       <div className="p-5">
@@ -228,6 +261,7 @@ export const Status = () => {
               >
                 Huỷ
               </Button>,
+
               <Button
                 key="2"
                 type="primary"
@@ -307,6 +341,21 @@ export const Status = () => {
                 . Thao tác này không thể khôi phục.
               </div>
             )}
+          </Modal>
+          <Modal
+            title={"Bạn chắc chắn muốn hủy phiếu chuyển hàng này?"}
+            // open={isModalOpen}
+            visible={isModalCancel}
+            onOk={handleOkCancel}
+            onCancel={handleCancel}
+            okText={"Xác nhận"}
+            cancelText={"Thoát"}
+            confirmLoading={loading}
+          >
+            <div>
+              Thao tác này sẽ hủy phiếu chuyển hàng {detailExport[0]?.code}.
+              Thao tác này không thể khôi phục.
+            </div>
           </Modal>
         </div>
         <div id="top-head-status" className="flex justify-between">
@@ -440,16 +489,19 @@ export const Status = () => {
                 visible={visible}
                 onCancel={hideModal}
                 footer={null}
-                style={{ width: "50%" }}
+                // style={{ width: "100%" }}
+                width={"50%"}
               >
-                <table>
-                  <tbody>
+                <table id="miyazaki">
+                  <thead>
                     <tr>
                       <th>Người thao tác</th>
                       <th>Chức năng</th>
                       <th>Thao tác</th>
                       <th>Thời gian</th>
                     </tr>
+                  </thead>
+                  <tbody>
                     {status?.status === 0 ? (
                       <>
                         <tr>
@@ -699,7 +751,13 @@ export const Status = () => {
           </div>
         </div>
 
-        <div>
+        <div
+          style={{
+            backgroundColor: "white",
+            padding: "20px",
+            marginTop: "20px",
+          }}
+        >
           <Tabs defaultActiveKey="1">
             <Tabs.TabPane
               tab="Thông tin sản phẩm"

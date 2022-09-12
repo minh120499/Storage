@@ -2,16 +2,14 @@ import axios from "axios";
 import {
   exportById,
   exportValue,
+  paramExport,
   typeDetailExport,
 } from "../components/type/data_type";
 
-export const getExport = async (current: number, pageSize: number) => {
+export const getExport = async (params : paramExport) => {
   return (
-    await axios.get(`http://localhost:8080/exports`, {
-      params: {
-        page: current,
-        perPage: pageSize,
-      },
+    await axios.get(`http://localhost:8080/exports/getExportByAll`, {
+      params: params
     })
   ).data;
 };

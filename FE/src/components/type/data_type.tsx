@@ -57,6 +57,7 @@ export interface productVariants {
   wholesalePrice?: number;
   salePrice?: number;
   importPric?: number;
+  quantity?: number;
 }
 export interface exportStatus {
   id?: number;
@@ -75,7 +76,25 @@ export interface exportStatus {
   statusCancel?: boolean;
 }
 export interface listExport {
-  exportById?: exportById;
-  typeDetailExport?: typeDetailExport;
-  exportStatus?: exportStatus;
+  id?: number;
+  receiveInventory?: inventory;
+  status?: number;
+  transportCompany?: number;
+  account?: number;
+  createAt?: string;
+  updateAt?: string;
+  exportInventory?: inventory;
+  detailsExports?: typeDetailExport[];
+  exportsStatuses?: exportStatus[];
+}
+export interface paramExport {
+  page?: number;
+  perPage?: number;
+  sort?: string;
+  sortBy?: string;
+  exportInventory?: number;
+  receiveInventory?: number;
+  code?: string;
+  status?: number;
+  cancel?: boolean;
 }
