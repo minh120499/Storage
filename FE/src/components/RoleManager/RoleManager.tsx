@@ -14,18 +14,7 @@ const headers = {
   Authorization: "Bearer " + localStorage.getItem("token"),
 };
 const RoleManager = () => {
-  useTitle(
-    <h1
-      style={{
-        fontSize: "30px",
-        margin: 0,
-      }}
-      className="self-center"
-    >
-      Chức vụ
-    </h1>,
-    "Chức vụ"
-  );
+  useTitle("Chức vụ","Chức vụ");
   const addRoleMutation = useMutation((roleData: IRole) => {
     return axios.post("http://localhost:8080/api/admin/roles", roleData, {
       headers,

@@ -10,8 +10,11 @@ import { Input } from 'antd';
 import '../../styles/Tab.css'
 import {debounce} from "@mui/material";
 import {PlusOutlined} from "@ant-design/icons";
+import {useSelector} from "react-redux";
+import {RootState} from "../../app/store";
 const ListImportInvoice = () =>{
-
+    const user = useSelector((state: RootState) => state.user)
+    console.log(user)
     const navigate = useNavigate();
     const [importInvoices,setImportInvoices] = useState<IImportInvoice[]>([])
     const [importInvoicesIsDone,setImportInvoicesIsDone] = useState<IImportInvoice[]>([])
@@ -52,7 +55,7 @@ const ListImportInvoice = () =>{
         <div className='p-5'>
         <div style={{display:'flex',justifyContent:'space-between',marginBottom:'25px',alignItems:"center"}}>
                 <h1 style={{fontSize:'30px',margin:0,marginRight:10}}>Đơn nhập hàng</h1>
-                <Link to="/purchase_orders/create">
+                <Link to="/coordinator/purchase_orders/create">
                     <Button type="primary"><PlusOutlined /> Tạo mới đơn hàng</Button>
                 </Link>
             </div>
@@ -66,7 +69,7 @@ const ListImportInvoice = () =>{
                                    pagination={{defaultPageSize: 10}}
                                    onRow={(record) => {
                                        return {
-                                           onClick: event => navigate({pathname: `/purchase_orders/details/${record.code}`}),
+                                           onClick: event => navigate({pathname: `details/${record.code}`}),
                                        }
                                    }}
                                    loading={!isLoading}

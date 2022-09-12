@@ -389,7 +389,7 @@ const CreateImport = () => {
           icon: "success",
           title: "Thêm phiếu nhập thành công",
         }).then();
-        navigate("/purchase_orders", { replace: true });
+        navigate("/coordinator/purchase_orders", { replace: true });
       });
     }
   };
@@ -408,7 +408,7 @@ const CreateImport = () => {
   return (
     <div className="p-5">
       <h2 style={{ fontSize: "15px" }}>
-        <Link to="/purchase_orders">
+        <Link to="/coordinator/purchase_orders">
           <LeftOutlined /> Danh sách đơn hàng
         </Link>
       </h2>

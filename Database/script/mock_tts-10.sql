@@ -852,4 +852,15 @@ alter table mock_tts_10.return_import
     add constraint fk_return_import
         foreign key (account_id) references mock_tts_10.accounts (id);
 
+use mock_tts_10;
+
+alter table inventories_product_variant
+    add min_quantity int(11) default 0;
+
+
+DELIMITER $$
+CREATE PROCEDURE `get_categoriesByIdorName`( in valueText text )
+BEGIN
+    select * from categories where (categories.id  like concat('%', valueText, '%') or categories.name like concat('%', valueText, '%')) order by categories.id desc;
+END; $$
 

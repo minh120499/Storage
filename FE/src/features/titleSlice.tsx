@@ -2,10 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { ReactElement } from "react";
 interface ITitle {
-  title: ReactElement;
+  title: string;
 }
 
-const initialTitle: ReactElement = <></>;
+const initialTitle: string = "";
 
 export const titleSilce = createSlice({
   name: "title",
