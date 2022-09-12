@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/exportsStatus")
+@PreAuthorize("hasAnyAuthority('admin','coordinator')")
 public class ExportStatusController extends BaseController<ExportsStatus> {
     public ExportStatusController(IBaseService<ExportsStatus> baseService, IExportStatusService service) {
         super(baseService);

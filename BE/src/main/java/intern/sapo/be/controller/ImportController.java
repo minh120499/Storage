@@ -9,15 +9,16 @@ import intern.sapo.be.service.IImportService;
 import intern.sapo.be.service.IImportsStatusService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//@RolesAllowed({"stocker"})
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/imports")
 @CrossOrigin("*")
-
+@PreAuthorize("hasAnyAuthority('admin','coordinator')")
 public class ImportController {
 
     private final IImportService importService;

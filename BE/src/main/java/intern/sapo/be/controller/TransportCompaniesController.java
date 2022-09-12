@@ -5,6 +5,7 @@ import intern.sapo.be.dto.request.TransportCompaniesDTO;
 import intern.sapo.be.service.ITransportCompaniesService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.List;
 @RequestMapping("/api/transport_companies")
 @AllArgsConstructor
 @RestController
+@PreAuthorize("hasAnyAuthority('admin','stocker')")
 public class TransportCompaniesController {
     private final ITransportCompaniesService iTransportCompaniesService;
 

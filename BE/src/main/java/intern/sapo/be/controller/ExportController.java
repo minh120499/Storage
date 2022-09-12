@@ -7,6 +7,7 @@ import intern.sapo.be.entity.DetailsExport;
 import intern.sapo.be.entity.Export;
 import intern.sapo.be.service.IExportService;
 import intern.sapo.be.service.IInventoriesProductVariantService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("exports")
+@PreAuthorize("hasAnyAuthority('admin','coordinator')")
 public class ExportController extends BaseController<Export> {
     private final IInventoriesProductVariantService inventoriesProductVariantService;
     private final IExportService service;
