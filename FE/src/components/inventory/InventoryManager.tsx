@@ -374,7 +374,7 @@ const InventoryManager = () => {
               </Dropdown>
               <span style={{ marginLeft: 8, marginRight: 8 }}>
                 {hasSelected
-                  ? `Đã chọn ${selectedRowKeys.length} phiên bản sản phẩm trên trang này`
+                  ? `Đã chọn ${selectedRowKeys.length} phiên bản sản phẩm`
                   : ""}
               </span>
             </div>

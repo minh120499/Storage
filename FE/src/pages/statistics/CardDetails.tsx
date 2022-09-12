@@ -82,7 +82,7 @@ const CardDetails = (props: Props) => {
 </h1>
 
             {
-                filter.keySearch.toLowerCase().match(/spv\d+/g) ?
+                filter.keySearch?.toLowerCase().match(/spv\d+/g) ?
                     <Tag style={{ margin: '10px 0px', fontSize: 14 }} color={"orange"} ><Link to={`/products/${filter.type == 1 ? imports?.at(0)?.productId : filter.type == 2 ? stokes?.at(0)?.productId : null}?backcode=statistic`}>{filter.keySearch.toUpperCase()}</Link></Tag>
                     : <div>
                         {

@@ -1,4 +1,4 @@
-import {} from 'react-export-table-to-excel'
+// import {} from 'react-export-table-to-excel'
 import React, {useRef} from 'react';
 import { DownloadTableExcel } from 'react-export-table-to-excel';
 import ImportStatisticNomal from './ImportStatisticNomal';

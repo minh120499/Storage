@@ -58,12 +58,12 @@ const RoleManager = () => {
       title: <b>STT</b>,
       dataIndex: "id",
       render: (index, t) => <div>{index}</div>,
-      sorter: (a, b) => a.id - b.id,
+      // sorter: (a, b) => a.id - b.id,
     },
     {
       title: <b>Chức vụ</b>,
       dataIndex: "name",
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      // sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: <b>Mô tả</b>,

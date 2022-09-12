@@ -9,10 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUserStore } from "../features/user/userSlice";
 import useTitle from "../app/useTitle";
 import { RootState } from "../app/store";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   useTitle("", "Đăng nhập");
+  const navigate = useNavigate();
   const [loginForm] = Form.useForm();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state?.user);
@@ -32,6 +33,8 @@ const Login: React.FC = () => {
             token: data.accessToken,
           })
         );
+        openNotification();
+        navigate("/home", { replace: true });
       },
     }
   );
@@ -49,11 +52,6 @@ const Login: React.FC = () => {
     });
   };
   
-  if (user?.username) {
-    openNotification();
-    return <Navigate to="/home" replace={true} />;
-  }
-
   return (
     <>
       <video
