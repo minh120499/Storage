@@ -18,5 +18,6 @@ public class ProductVariantsDTO {
     private String image;
     private BigDecimal importPrice;
     private Integer quantity;
+    private Integer minQuantity;
     private Timestamp createAt;
 }

@@ -15,76 +15,69 @@ import javax.validation.Valid;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("api/products")
+@PreAuthorize("hasAnyAuthority('admin','warehouse')")
 public class ProductController {
+	private final IProductService productService;
 
-    private ISupplierService supplierService;
-    private final IProductService productService;
+	public ProductController(IProductService productService) {
+		this.productService = productService;
+	}
 
-    public ProductController(IProductService productService) {
-        this.productService = productService;
-    }
+	@PostMapping("/count")
+	public ResponseEntity<Object> countProductByFilter(@RequestBody @Valid ProductFilter filter, BindingResult bindingResult) {
 
+		return ResponseEntity.ok(productService.countProductByFilter(filter, bindingResult));
 
-    //    @GetMapping()
-//    public ResponseEntity getPagination(@RequestParam(value = "pageNumber",required = false) Integer pageNumber,
-//                                       @RequestParam(value = "pageSize",required = false) Integer pageSize
-//                                    ){
-//        return ResponseEntity.ok(productService.findAll(pageNumber,pageSize).toList());
-//    }
-    @PostMapping("/count")
-    public ResponseEntity countProductByFilter(@RequestBody @Valid ProductFilter filter, BindingResult bindingResult) {
+	}
 
-        return ResponseEntity.ok(productService.countProductByFilter(filter, bindingResult));
+	@PostMapping("/filter")
+	public ResponseEntity<Object> filterProducts(@RequestBody @Valid ProductFilter filter, BindingResult bindingResult) {
+		return ResponseEntity.ok(productService.productFilter(filter, bindingResult));
 
-    }
+	}
 
-    @PostMapping("/filter")
-    public ResponseEntity filterProducts(@RequestBody @Valid ProductFilter filter, BindingResult bindingResult) {
-        return ResponseEntity.ok(productService.productFilter(filter, bindingResult));
+	@PostMapping()
+	public ResponseEntity<Object> create(@RequestBody @Valid ProductAddDTO request, BindingResult bindingResult) {
+		return ResponseEntity.ok(productService.save(request, bindingResult));
+	}
 
-    }
-
-    @PostMapping()
-    public ResponseEntity create(@RequestBody @Valid ProductAddDTO request, BindingResult bindingResult) {
-        return ResponseEntity.ok(productService.save(request, bindingResult));
-    }
-
-    @GetMapping("{id}")
-    public ResponseEntity findById(@PathVariable(value = "id") Integer id) {
-        return ResponseEntity.ok(productService.findById(id));
-    }
+	@GetMapping("{id}")
+	public ResponseEntity<Object> findById(@PathVariable(value = "id") Integer id) {
+		return ResponseEntity.ok(productService.findById(id));
+	}
 
 
-    @DeleteMapping("{id}")
-    public void delete(@PathVariable(value = "id") Integer id) {
-        productService.deleteById(id);
-    }
-    @DeleteMapping()
-    public void deleteProducts(@RequestBody Integer[] listId) {
-        productService.deleteProductsById(listId);
-    }
+	@DeleteMapping("{id}")
+	public void delete(@PathVariable(value = "id") Integer id) {
+		productService.deleteById(id);
+	}
+
+	@DeleteMapping()
+	public void deleteProducts(@RequestBody Integer[] listId) {
+		productService.deleteProductsById(listId);
+	}
 
 
 //update
 
-    @PutMapping
-    public ResponseEntity update(@RequestBody @Valid ProductAddDTO entity, BindingResult bindingResult) {
-        return ResponseEntity.ok(productService.update(entity, bindingResult));
-    }
+	@PutMapping
+	public ResponseEntity<Object> update(@RequestBody @Valid ProductAddDTO entity, BindingResult bindingResult) {
+		return ResponseEntity.ok(productService.update(entity, bindingResult));
+	}
 
-    @DeleteMapping("/options/{id}")
-    public ResponseEntity update(@PathVariable Integer id, @RequestBody OptionAdd[] options) {
-        return ResponseEntity.ok(options);
-    }
+	@DeleteMapping("/options/{id}")
+	public ResponseEntity<Object> update(@PathVariable Integer id, @RequestBody OptionAdd[] options) {
+		return ResponseEntity.ok(options);
+	}
 
-    @DeleteMapping("/variants/{id}")
-    public void deleteVariant(@PathVariable Integer id) {
-        productService.deleteVariantById(id);
-    }
+	@DeleteMapping("/variants/{id}")
+	public void deleteVariant(@PathVariable Integer id) {
+		productService.deleteVariantById(id);
+	}
 
-    @DeleteMapping("/variants")
-    public void deleteVariant(@RequestBody Integer[] listId) {
-        productService.deleteVariantsById(listId);
-    }
+	@DeleteMapping("/variants")
+	public void deleteVariant(@RequestBody Integer[] listId) {
+		productService.deleteVariantsById(listId);
+	}
 
 }

@@ -5,12 +5,15 @@ let blue = "#1890ff";
 red = "#e74c3c";
 type Mode = {
   cancel: string;
+  delete: string;
 };
 const color = {
   cancel: red,
+  delete: "rgb(246,76,114)",
 };
 const hover = {
   cancel: "#ff7875",
+  delete: "rgb(246,76,114)",
 };
 const B = (props: any) => <Button {...props} />;
 

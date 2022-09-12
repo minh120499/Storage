@@ -1,4 +1,4 @@
-import { Avatar, Card, Col, Row, Image } from "antd";
+import { Avatar, Card, Col, Row } from "antd";
 import Meta from "antd/lib/card/Meta";
 import BarChartReprot from "./BarChartReport";
 import LineChartReport from "./LineChartReport";
@@ -23,19 +23,6 @@ export default function HomePage() {
                   title="Card title"
                   description="This is the description"
                 />
-                {/* <Row gutter={16}>
-                  <Col className="h-fit w-fit">
-                    <Image
-                      height={50}
-                      width={50}
-                      src="https://joeschmoe.io/api/v1/random"
-                    />
-                  </Col>
-                  <Col span={20}>
-                    <div>Card title</div>
-                    <div>This is the description</div>
-                  </Col>
-                </Row> */}
               </Card>
             </Col>
             <Col span={6}>
@@ -85,7 +72,7 @@ export default function HomePage() {
                   <ArrowDownOutlined /> 12% So với tuần trước
                 </Col>
                 <Col span={24} style={{ height: "250px" }}>
-                  <LineChartReport />
+                  <LineChartReport  />
                 </Col>
               </Row>
             </Col>

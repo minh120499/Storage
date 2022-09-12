@@ -2,9 +2,11 @@ package intern.sapo.be.security;
 
 import intern.sapo.be.repository.AccountRepository;
 import intern.sapo.be.security.jwt.JwtAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
+import intern.sapo.be.security.service.UserDetailServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -23,20 +25,22 @@ import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
 	AccountRepository accountRepository;
-	@Autowired
 	JwtAuthenticationFilter jwtTokenFilter;
+
+	UserDetailServiceImpl userDetailService;
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(
-				username -> (UserDetails) accountRepository.findAccountByUsername(username)
-						.orElseThrow(
-								() -> new UsernameNotFoundException("User" + username + " not found.")));
+		auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
+//		auth.userDetailsService(
+//				username -> userDetailService.loadUserByUsername(username))
+//						.orElseThrow(
+//								() -> new UsernameNotFoundException("User" + username + " not found.")));
 	}
 
 	@Bean
@@ -52,22 +56,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-//		http.authorizeRequests().antMatchers("/").hasAnyAuthority("");
-
-
-        http.authorizeRequests().antMatchers("/login").permitAll();
-
-        // .antMatchers(HttpMethod.POST, "/api/account/login").permitAll()
-        // .authenticated().and().exceptionHandling().accessDeniedHandler(accessDeniedHandler());
-        http.cors().and().csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.exceptionHandling()
-                .authenticationEntryPoint(
-                        (request, response, ex) -> {
-                            response.sendError(
-                                    HttpServletResponse.SC_UNAUTHORIZED,
-                                    ex.getMessage());
-                        });
+		http.authorizeRequests().antMatchers("/api/login").permitAll();
+		http.authorizeRequests().antMatchers(HttpMethod.GET).permitAll();
+		http.cors().and().csrf().disable();
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.exceptionHandling()
+				.authenticationEntryPoint(
+						(request, response, ex) -> response.sendError(
+								HttpServletResponse.SC_UNAUTHORIZED,
+								ex.getMessage()));
 		http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 

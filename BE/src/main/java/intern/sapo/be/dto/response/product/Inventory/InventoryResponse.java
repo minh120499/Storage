@@ -14,4 +14,5 @@ public class InventoryResponse {
     private Inventory inventory;
     private List<ProductVariantsDTO> productVariants;
     private Integer totalProductVariant;
+    private Integer countProductVariant;
 }

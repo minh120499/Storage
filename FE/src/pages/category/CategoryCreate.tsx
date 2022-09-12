@@ -4,6 +4,7 @@ import ToastCustom from "../../features/toast/Toast";
 import { Category } from "../../type/allType";
 import { createCategory } from "../../api/apiCategory";
 import Button from "../../UI/Button";
+import { PlusOutlined } from "@ant-design/icons";
 
 type props = {
   status: () => void;
@@ -21,9 +22,6 @@ export default function CategoryCreate({ status }: props) {
     setIsModalVisible(false);
   };
 
-  const validateMessages = {
-    required: "Không được để trống!",
-  };
   /*Layout form*/
   const layout = {
     labelCol: { span: 5 },
@@ -37,60 +35,59 @@ export default function CategoryCreate({ status }: props) {
 
   const handleCreate = async (category: Category) => {
     await createCategory(category)
-        .then(() => {
-          ToastCustom.fire({
-            icon: "success",
-            title: "Thêm thành công!",
-          });
-          formAdd.resetFields();
-          status();
-          setIsModalVisible(false);
-        })
-        .catch(() => {
-          ToastCustom.fire({
-            icon: "error",
-            title: "Thêm không thành công!",
-          });
+      .then(() => {
+        ToastCustom.fire({
+          icon: "success",
+          title: "Thêm thành công!",
         });
+        formAdd.resetFields();
+        status();
+        setIsModalVisible(false);
+      })
+      .catch(() => {
+        ToastCustom.fire({
+          icon: "error",
+          title: "Thêm không thành công!",
+        });
+      });
   };
   return (
-      <>
-        <div>
-          <Button onClick={showModal}>Thêm mới</Button>
-        </div>
-        <Modal
-            title="Thêm mới Danh Mục"
-            visible={isModalVisible}
-            footer={null}
-            onCancel={handleCancel}
+    <>
+      <div>
+        <Button style={{height: "37px"}} onClick={showModal}><PlusOutlined />Thêm mới</Button>
+      </div>
+      <Modal
+        title="Thêm mới Danh Mục"
+        visible={isModalVisible}
+        footer={null}
+        onCancel={handleCancel}
+      >
+        <Form
+          {...layout}
+          name="nest-messages"
+          onFinish={handleCreate}
+          form={formAdd}
         >
-          <Form
-              {...layout}
-              name="nest-messages"
-              validateMessages={validateMessages}
-              onFinish={handleCreate}
-              form={formAdd}
+          <Form.Item name="name" label="Tên" rules={[{ required: true, message:"Tên không được để trống!", pattern:/[A-Za-z0-9]/  }]}>
+            <Input placeholder="Nhập Tên" />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Mô tả"
+            rules={[{ required: true, message:"Mô tả không được để trống!", pattern:/[A-Za-z0-9]/ }]}
           >
-            <Form.Item name="name" label="Tên" rules={[{ required: true }]}>
-              <Input placeholder="Nhập Tên" />
-            </Form.Item>
-            <Form.Item
-                name="description"
-                label="Mô tả"
-                rules={[{ required: true }]}
-            >
-              <Input placeholder="Nhập mô tả" />
-            </Form.Item>
-            <Form.Item {...tailLayout}>
-              <Space>
-                <Button htmlType="submit">Xác nhận</Button>
-                <Button mode="cancel" onClick={handleCancel}>
-                  Thoát
-                </Button>
-              </Space>
-            </Form.Item>
-          </Form>
-        </Modal>
-      </>
+            <Input placeholder="Nhập mô tả" />
+          </Form.Item>
+          <Form.Item {...tailLayout}>
+            <Space>
+              <Button htmlType="submit">Xác nhận</Button>
+              <Button mode="cancel" onClick={handleCancel}>
+                Thoát
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
   );
 }

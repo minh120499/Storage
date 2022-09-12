@@ -2,19 +2,18 @@ import {
   AppstoreOutlined,
   TeamOutlined,
   ShopOutlined,
+  BarChartOutlined,
+  ImportOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
 import WarehouseIcon from "@mui/icons-material/Warehouse";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { Menu } from "antd";
 import type { MenuProps } from "antd/es/menu";
-import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
-// import AddProduct from "../pages/product/AddProduct";
-
 import "../styles/SideBar.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -32,47 +31,35 @@ function getItem(
   } as MenuItem;
 }
 
-const items: MenuItem[] = [
-  // getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
-
-  getItem("Quản lý sản phẩm", "sub1", <AppstoreOutlined />, [
-    getItem("Thêm sản phẩm", "staff/productsAdd"),
-    getItem("Danh sách sản phẩm", "/products"),
-    getItem("Danh mục sản phẩm", "/categories"),
+const MENUS: MenuItem[] = [
+  getItem("Quản lý sản phẩm", "warehouse", <AppstoreOutlined />, [
+    getItem("Thêm sản phẩm", "warehouse/products/add"),
+    getItem("Danh sách sản phẩm", "warehouse/products"),
+    getItem("Danh mục sản phẩm", "warehouse/categories"),
   ]),
-  getItem("Hàng hoá", "sub2", <AppstoreOutlined />, [
-    // getItem("Quản lý kho", ""),
-    getItem("Nhập hàng", "/purchase_orders"),
-    getItem("Chuyển hàng", "/storage"),
-
-    // getItem("Chuyển hàng", "/321"),
+  getItem("Hàng hoá", "coordinator", <AppstoreOutlined />, [
+    getItem("Nhập hàng", "coordinator/purchase_orders", <ImportOutlined />),
+    getItem("Chuyển hàng", "coordinator/storage", <ExportOutlined />),
   ]),
-  // getItem("Đơn vị vận chuyển", "/transport-companies", <AppstoreOutlined />),
-  // getItem("Đơn vị vận chuyển", "/transport-companies", <LocalShippingIcon />),
-
-  getItem("Nhà cung cấp", "/supplier", <ShopOutlined />),
-  getItem("Kho hàng", "", <WarehouseIcon />, [
-    getItem("Danh sách", "/stocker/inventories"),
-    // getItem("Quản lý", "/stocker/manager"),
-  ]),
-
-  getItem("Nhân viên", null, <TeamOutlined />, [
+  getItem("Nhà cung cấp", "stocker/supplier", <ShopOutlined />),
+  getItem("Kho hàng", "/stocker/inventories", <WarehouseIcon />),
+  getItem("Admin", "admin", <TeamOutlined />, [
     getItem("Danh sách", "/admin/employees"),
-    getItem("Roles", "/admin/roles/"),
+    getItem("Chức vụ", "/admin/roles/"),
   ]),
+  getItem("Thống kê", "/statistics", <BarChartOutlined />),
   getItem("Đăng xuất", "/login", <LogoutIcon />),
 ];
 
 const SideBar: React.FC = () => {
-  const user = useSelector((state: RootState) => state?.user)
-  // @ts-ignore
-  const roles = useSelector((state: RootState) => state?.user?.authorities);
-  // console.log(roles);
+  const userRoles = useSelector((state: RootState) => state?.user?.authorities);
+  const items = MENUS.filter((m: MenuItem) => {
+    return userRoles?.includes(m?.key?.toString() || "") && m;
+  });
+  items.push(getItem("Đăng xuất", "/login", <LogoutIcon />));
 
   const navigate = useNavigate();
-
   return (
-    // <div className="side-bar">
     <>
       <div className="side-bar__brand-logo">
         <a href="/home">
@@ -86,16 +73,17 @@ const SideBar: React.FC = () => {
 
       <div className="side-bar_menu">
         <Menu
-          // style={{ width: 256 }}
           mode="inline"
           theme="dark"
-          items={items}
+          items={userRoles?.includes("admin") ? MENUS : items}
           onClick={(e) => {
-            navigate(e.key, {replace: true})
+            if (e.key.includes("login")) {
+              localStorage.removeItem("token");
+            }
+            navigate(`${e.key}`, { replace: true });
           }}
         />
       </div>
-      {/* </div> */}
     </>
   );
 };

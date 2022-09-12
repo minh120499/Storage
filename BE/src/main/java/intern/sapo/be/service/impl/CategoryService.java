@@ -26,12 +26,14 @@ public class CategoryService implements ICategoryService {
 
 
     @Override
-    public Page<Category> findAll(Integer pageNumber, Integer limit, String sortBy, String sortDir) {
-        if (sortDir != null) {
-            Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-            return iCategoryRepo.findAll(PageRequest.of(pageNumber - 1, limit, sort));
-        }else
-        return iCategoryRepo.findAll(PageRequest.of(pageNumber - 1, limit));
+    public Page<Category> findAll(Integer pageNumber, Integer pageSize, String sortBy, String sortDir, String value) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        if (value != null) {
+            return  iCategoryRepo.findAllByPage(value,PageRequest.of(pageNumber - 1 , pageSize, sort));
+        }
+        else{
+            return iCategoryRepo.findAll(PageRequest.of(pageNumber - 1, pageSize, sort));
+        }
     }
 
     @Override
@@ -41,8 +43,8 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public List<Category> getAll() {
-        return iCategoryRepo.findAll();
+    public List<Category> getAll(String valueInput) {
+        return iCategoryRepo.getAllByName(valueInput);
     }
 
     @Override
