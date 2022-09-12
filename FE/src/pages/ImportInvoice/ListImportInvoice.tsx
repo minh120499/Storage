@@ -12,9 +12,9 @@ import {debounce} from "@mui/material";
 import {PlusOutlined} from "@ant-design/icons";
 import {useSelector} from "react-redux";
 import {RootState} from "../../app/store";
+import useTitle from "../../app/useTitle";
 const ListImportInvoice = () =>{
-    const user = useSelector((state: RootState) => state.user)
-    console.log(user)
+    useTitle("")
     const navigate = useNavigate();
     const [importInvoices,setImportInvoices] = useState<IImportInvoice[]>([])
     const [importInvoicesIsDone,setImportInvoicesIsDone] = useState<IImportInvoice[]>([])

@@ -14,6 +14,9 @@ import "../../styles/inputNumber.css"
 import {ColumnProps} from "antd/es/table";
 import ToastCustom from "../../features/toast/Toast";
 import {LeftOutlined} from "@ant-design/icons";
+import {useSelector} from "react-redux";
+import {RootState} from "../../app/store";
+import useTitle from "../../app/useTitle";
 
 interface ReturnImport {
     detailsImportId: number,
@@ -23,12 +26,13 @@ interface ReturnImport {
 const CreateReturnImportInvoice = () => {
 
     const {code} = useParams();
-
+    useTitle("Tạo hoá đơn trả")
     const [importReturn, setImportReturn] = useState<IImportReturnMyTableData[]>([]);
     const [detailInvoices, setDetailInvoices] = useState<IDetailImportInvoice>();
 
     const [totalQuantity, setTotalQuantity] = useState(0)
     const [totalPrice, setTotalPrice] = useState(0)
+    const user = useSelector((state: RootState) => state.user)
 
     const navigate = useNavigate();
 
@@ -130,28 +134,28 @@ const CreateReturnImportInvoice = () => {
             importId: importId,
             detailsReturnImports: list,
             createDate:Date.now(),
-            accountId:1
+            accountId:user.id
         }
 
         returnImportInvoice(returnImport,detailInvoices?.anImport.inventoryId as number).then(() => {
-            updateStatusReturnInvoice(importId, "returnInvoice",1).then(() => {
+            updateStatusReturnInvoice(importId, "returnInvoice",user.id).then(() => {
                 ToastCustom.fire({
                     icon: 'success',
                     title: 'Trả hàng thành công'
                 }).then()
-                navigate(`/purchase_orders/details/${detailInvoices?.anImport.code}`)
+                navigate(`/coordinator/purchase_orders/details/${detailInvoices?.anImport.code}`)
             })
         })
     }
     return (
         <div className='p-5'>
             <h2 style={{ fontSize:'15px' }} >
-                <Link to={`/purchase_orders/details/${detailInvoices?.anImport.code}`}>
+                <Link to={`/coordinator/purchase_orders/details/${detailInvoices?.anImport.code}`}>
                     <LeftOutlined /> Đơn nhập hàng
                 </Link>
             </h2>
         <div>
-            <h1 style={{fontSize:'30px',margin:0,marginRight:10}}>Tạo hoá đơn trả</h1>
+
             </div>
             <div style={{marginTop: '45px'}}>
                 <Row gutter={24}>

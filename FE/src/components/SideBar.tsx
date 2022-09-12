@@ -14,7 +14,7 @@ import "../styles/SideBar.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import { useNavigate } from "react-router-dom";
-
+import DashboardIcon from '@mui/icons-material/Dashboard';
 type MenuItem = Required<MenuProps>["items"][number];
 
 function getItem(
@@ -37,7 +37,7 @@ const MENUS: MenuItem[] = [
     getItem("Danh sách sản phẩm", "warehouse/products"),
     getItem("Danh mục sản phẩm", "warehouse/categories"),
   ]),
-  getItem("Hàng hoá", "coordinator", <AppstoreOutlined />, [
+  getItem("Hàng hoá", "coordinator", <DashboardIcon />, [
     getItem("Nhập hàng", "coordinator/purchase_orders", <ImportOutlined />),
     getItem("Chuyển hàng", "coordinator/storage", <ExportOutlined />),
   ]),

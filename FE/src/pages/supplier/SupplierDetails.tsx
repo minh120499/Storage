@@ -7,9 +7,10 @@ import Moment from "react-moment";
 import {DeleteOutlined, DownOutlined, InfoCircleOutlined, LeftOutlined} from "@ant-design/icons";
 import SupplierUpdate from "./SupplierUpdate";
 import {ImportInvoiceColumn, ImportInvoiceColumnBySupplier} from "../../components/Datatablesource";
+import useTitle from "../../app/useTitle";
 
 const SupplierDetails = () => {
-
+    useTitle("Chi tiết nhà cung cấp")
     const {id} = useParams();
     const [supplier, setSupplier] = useState({} as ISupplier);
     const [importInvoiceBySupplier, setImportInvoiceBySupplier] = useState<IImportInvoiceBySupplier[]>([]);
@@ -65,7 +66,7 @@ const SupplierDetails = () => {
                 supplier && (
                     <div>
                         <h2 style={{margin: 20}}>
-                            <Link to="/supplier/">
+                            <Link to="/stocker/supplier/">
                                 <LeftOutlined/> Danh sách nhà cung cấp
                             </Link>
                         </h2>

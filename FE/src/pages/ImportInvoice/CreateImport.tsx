@@ -37,10 +37,14 @@ import { getAllActiveInventory } from "../../api/inventory";
 import ToastCustom from "../../features/toast/Toast";
 import { RangePickerProps } from "antd/es/date-picker";
 import { Link, useNavigate } from "react-router-dom";
+import {useSelector} from "react-redux";
+import {RootState} from "../../app/store";
+import useTitle from "../../app/useTitle";
 
 // ImportInvoice * as CurrencyFormat from 'react-currency-format';
 
 const CreateImport = () => {
+  useTitle("Tạo đơn nhập hàng")
   const { Option } = Select;
   const [supplierId, setSupplierId] = useState<number>();
   const [inventoryId, setInventoryId] = useState<number>(0);
@@ -61,6 +65,8 @@ const CreateImport = () => {
   const [searchValue, setSearchValue] = useState<string>("");
 
   let keyWord = "";
+  const user = useSelector((state: RootState) => state.user)
+
 
   useEffect(() => {
     getAllActiveInventory().then((r) => {
@@ -375,7 +381,7 @@ const CreateImport = () => {
         });
       }
       const anImport = {
-        accountId: 1,
+        accountId: user.id,
         supplierId: supplierId,
         totalPrice: totalPrice,
         note: "",
@@ -407,21 +413,11 @@ const CreateImport = () => {
 
   return (
     <div className="p-5">
-      <h2 style={{ fontSize: "15px" }}>
+      <h2 style={{ fontSize: "15px" ,marginBottom:30}}>
         <Link to="/coordinator/purchase_orders">
           <LeftOutlined /> Danh sách đơn hàng
         </Link>
       </h2>
-      <h1
-        style={{
-          fontSize: "30px",
-          margin: 0,
-          marginRight: 10,
-          marginBottom: "30px",
-        }}
-      >
-        Tạo đơn nhập hàng
-      </h1>
       <Form layout="vertical">
         <Row gutter={24}>
           <Col span={16}>

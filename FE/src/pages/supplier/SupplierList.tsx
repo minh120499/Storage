@@ -22,6 +22,7 @@ import Swal from "sweetalert2";
 import SupplierCreate from "./SupplierCreate";
 import ImportExcel from "../../components/ImportExcel";
 import ExportExcel from "../../components/ExportExcel";
+import useTitle from "../../app/useTitle";
 
 const SupplierList = () => {
   const { Title } = Typography;
@@ -31,6 +32,7 @@ const SupplierList = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(true)
+  useTitle("")
 
   useEffect(() => {
     // setTimeout(() => {
@@ -193,7 +195,7 @@ const SupplierList = () => {
           onRow={(record) => {
             return {
               onClick: (event) =>
-                navigate({ pathname: `stocker/supplier/details/${record.id}` }),
+                navigate({ pathname: `/stocker/supplier/details/${record.id}` }),
             };
           }}
           rowSelection={rowSelection}

@@ -17,9 +17,12 @@ import ImportWarehouse from "./ImportWarehouse";
 import ReturnInvoiceImport from "./ReturnInvoiceImport";
 
 import ImportInvoiceHistory from "./ImportInvoiceHistory";
+import {useSelector} from "react-redux";
+import {RootState} from "../../app/store";
+import useTitle from "../../app/useTitle";
 
 const DetailImportInvoice = () => {
-
+    useTitle("")
     const {code} = useParams();
 
     const [detailInvoices, setDetailInvoices] = useState<IDetailImportInvoice>();
@@ -32,6 +35,7 @@ const DetailImportInvoice = () => {
     const [returnInvoice, setReturnInvoice] = useState<IImportReturn[]>([])
     const [fullName, setFullName] = useState("")
     const [phoneNumber, setPhoneNumber] = useState("")
+    const user = useSelector((state: RootState) => state.user)
 
     useEffect(() => {
         getDetailImportInvoice(code as string).then(result => {
@@ -71,7 +75,7 @@ const DetailImportInvoice = () => {
 
     const updateStatusPaidPayment = () => {
         const importId = detailInvoices?.anImport.id as number
-        updateStatusInvoice(importId, "paidPayment",1).then(() => {
+        updateStatusInvoice(importId, "paidPayment",user.id).then(() => {
             ToastCustom.fire({
                 icon: 'success',
                 title: 'Xác nhận thanh toán thành công'
@@ -82,7 +86,7 @@ const DetailImportInvoice = () => {
     }
     const updateStatusImportWarehouse = () => {
         const importId = detailInvoices?.anImport.id as number
-        updateStatusInvoice(importId, "importWarehouse",1).then(() => {
+        updateStatusInvoice(importId, "importWarehouse",user.id).then(() => {
             ToastCustom.fire({
                 icon: 'success',
                 title: 'Xác nhận nhập kho thành công'
@@ -94,7 +98,7 @@ const DetailImportInvoice = () => {
     return (
         <div className='p-5'>
             <h2 style={{ fontSize:'15px' }} >
-                <Link to="/purchase_orders">
+                <Link to="/coordinator/purchase_orders">
                     <LeftOutlined /> Danh sách đơn hàng
                 </Link>
             </h2>
