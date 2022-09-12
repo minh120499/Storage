@@ -1,7 +1,5 @@
 package intern.sapo.be.repository;
 
-import intern.sapo.be.dto.request.Product.ProductVariantDTO;
-import intern.sapo.be.entity.Product;
 import intern.sapo.be.entity.ProductVariant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,6 +21,6 @@ public interface IProductVariantRepo extends JpaRepository<ProductVariant,Intege
     @Modifying
     void deleteAllByProductId(@Param("id") Integer id);
 
-
-
+    @Query(value = "call count_product_variant(?)", nativeQuery = true)
+    Integer countProductVariantByFilter(String searchValue);
 }

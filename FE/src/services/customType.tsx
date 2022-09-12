@@ -39,6 +39,7 @@ export interface IImportInvoice{
     isDone:boolean,
     isPaid:boolean,
     isImport:boolean,
+    isReturn:boolean,
     userName:string
 }
 export interface IDetailImportInvoice{
@@ -50,6 +51,8 @@ export interface IDetailImportInvoice{
         isDone:boolean,
         isPaid:boolean,
         isImport:boolean,
+        isReturn:boolean,
+        inventoryId:number
         deliveryDate:string,
         detailsImports:[{
             idDetailsImport:number,
@@ -82,9 +85,59 @@ export interface IMyTableData {
     totalPrice: number
 }
 
+export interface IImportReturnMyTableData {
+    detailsImportId: number
+    code: string
+    name: string;
+    inputQuantity:number
+    quantity: number;
+    importPrice: number;
+    totalPrice: number
+}
+
+export interface IImportReturn {
+    id:number,
+    createDate:string,
+    importId:number,
+    detailsReturnImportResponseList:[
+        {
+            detailsImportId: number
+            code: string
+            name: string;
+            inputQuantity:number
+            quantity: number;
+            importPrice: number;
+            totalPrice: number;
+
+        }
+    ],
+    totalPrice:number,
+    fullName:string,
+    phoneNumber:string
+}
+
 export interface IInventories {
     id: number,
     code: string,
     name: string,
     address: string
+}
+export interface IHistoryStatus {
+    accountName: string,
+    fullName:string,
+    phoneNumber:string
+    statusName: string,
+    statusDesc: string,
+    createdAt: string
+}
+export interface IImportInvoiceBySupplier{
+    code:string,
+    inventoryName:string,
+    totalPrice:string,
+    isDone:boolean,
+    isPaid:boolean,
+    isImport:boolean,
+    isReturn:boolean,
+    last:string,
+    first:string
 }

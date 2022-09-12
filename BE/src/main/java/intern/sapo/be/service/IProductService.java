@@ -8,12 +8,13 @@ import intern.sapo.be.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 
+import javax.transaction.Transactional;
+import java.sql.SQLException;
 import java.util.List;
 
 public interface IProductService {
     List<Product> findAll();
 
-    <S extends Product> S save(S entity, BindingResult bindingResult);
 
     ProductReponse findById(Integer integer);
 
@@ -23,7 +24,7 @@ public interface IProductService {
     Page<Product> findAll(Integer pageNumber, Integer pageSize);
 
 //    Product save(ProductAdd request, BindingResult bindingResult);
-    ProductAddDTO save(ProductAddDTO request, BindingResult bindingResult);
+ProductAddDTO save(ProductAddDTO request, BindingResult bindingResult);
 
 
     List<Product> findAllVariant(Integer pageNumber, Integer pageSize, String name);
@@ -37,4 +38,7 @@ public interface IProductService {
     void deleteVariantsById(Integer[] listId);
 
     void deleteProductsById(Integer[] listId);
+
+    @Transactional(rollbackOn = SQLException.class)
+    ProductReponse update(ProductAddDTO request, BindingResult bindingResult);
 }

@@ -7,6 +7,7 @@ import intern.sapo.be.entity.ProductVariant;
 import intern.sapo.be.repository.IProductVariantRepo;
 import intern.sapo.be.repository.ProductVariantsRepository;
 import intern.sapo.be.service.IProductVariantService;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -18,17 +19,21 @@ import java.util.Optional;
 @Service
 
 public class ProductVariantServiceImpl extends BaseService<ProductVariant> implements IProductVariantService {
-    public ProductVariantServiceImpl(IBaseRepo<ProductVariant, Integer> baseRepo, ProductVariantsRepository variantsRepository, JdbcTemplate jdbcTemplate, EntityManager entityManager, IProductVariantRepo productVariantRepo, ProductVariantsRepository repository) {
+    public ProductVariantServiceImpl(IBaseRepo<ProductVariant, Integer> baseRepo, ProductVariantsRepository variantsRepository, JdbcTemplate jdbcTemplate, EntityManager entityManager, IProductVariantRepo productVariantRepo, JdbcTemplate jdbcTemplate1, ProductVariantsRepository repository) {
         super(baseRepo);
         this.entityManager = entityManager;
 
         this.productVariantRepo = productVariantRepo;
+        this.jdbcTemplate = jdbcTemplate1;
         this.repository = repository;
     }
 
     private final EntityManager entityManager;
 
     private final IProductVariantRepo productVariantRepo;
+
+    private final JdbcTemplate jdbcTemplate;
+
 
     private final ProductVariantsRepository repository;
 
@@ -43,11 +48,9 @@ public class ProductVariantServiceImpl extends BaseService<ProductVariant> imple
     }
 
     @Override
-    public List<ProductVariantDTO> findAllProductVariantDTO(Integer pageNumber, Integer pageSize) {
-        Query query = entityManager.createNamedQuery("getFeaturedProductDTO")
-                .setFirstResult((pageNumber - 1) * pageSize).setMaxResults(pageSize);
-
-        return (List<ProductVariantDTO>) query.getResultList();
+    public List<ProductVariantDTO> findAllProductVariantDTO(Integer pageNumber, Integer pageSize, String searchValue) {
+        String query = "call filter_product_variant(?,?,?)";
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper(ProductVariantDTO.class), pageNumber, pageSize, searchValue);
     }
 
     @Override
@@ -57,14 +60,16 @@ public class ProductVariantServiceImpl extends BaseService<ProductVariant> imple
     }
 
     @Override
-    public Integer countTotalPage() {
+    public Integer countTotalPage(String searchValue) {
         Query queryTotal = entityManager.createNativeQuery
-                ("select count(*) as total from product_variants\n" +
-                        "    inner join products p on product_variants.product_id = p.id\n" +
-                        "where product_variants.is_delete = false;");
+                ("select count(*) as total\n" +
+                        "from product_variants\n" +
+                        "         inner join products p on product_variants.product_id = p.id\n" +
+                        "where p.is_delete = false and product_variants.name like concat('%',?1,'%');").setParameter(1, searchValue);
         Long countResult = queryTotal.getSingleResult() != null ? Long.parseLong(queryTotal.getSingleResult().toString()) : 0;
-        return (int) ((countResult / 5) + 1);
+        if (countResult % 7 == 0) {
+            return (int) ((countResult / 7));
+        }
+        return (int) ((countResult / 7) + 1);
     }
-
-
 }

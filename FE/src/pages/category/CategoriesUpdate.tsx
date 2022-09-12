@@ -4,7 +4,7 @@ import ToastCustom from "../../features/toast/Toast";
 import { Category } from "../../type/allType";
 import { updateCategory } from "../../api/apiCategory";
 import Button from "../../UI/Button";
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import { PenIcon } from "../../UI";
 
 type props = {
   status: () => void;
@@ -29,10 +29,6 @@ export default function CategoryUpdate({ status, categoryProp }: props) {
     name: categoryProp.name,
     description: categoryProp.description,
   });
-
-  const validateMessages = {
-    required: "Không được để trống!",
-  };
 
   const layout = {
     labelCol: { span: 5 },
@@ -64,7 +60,7 @@ export default function CategoryUpdate({ status, categoryProp }: props) {
   };
   return (
     <>
-      <ModeEditIcon className="text-blue-600" onClick={showModal}></ModeEditIcon>
+      <PenIcon className="text-blue-600" onClick={showModal} />
 
       <Modal
         title="Sửa Danh Mục"
@@ -75,26 +71,40 @@ export default function CategoryUpdate({ status, categoryProp }: props) {
         <Form
           {...layout}
           name="nest-messages"
-          validateMessages={validateMessages}
           onFinish={handleUpdate}
           form={formUpdate}
-          
         >
-          <Form.Item name="name" label="Nhập tên" rules={[{ required: true }]}>
+          <Form.Item
+            name="name"
+            label="Nhập tên"
+            rules={[
+              {
+                required: true,
+                message: "Tên không được để trống!",
+                pattern: /[A-Za-z0-9]/,
+              },
+            ]}
+          >
             <Input placeholder="Tên" />
           </Form.Item>
           <Form.Item
             name="description"
             label="Nhập mô tả"
-            rules={[{ required: true }]}
+            rules={[
+              {
+                required: true,
+                message: "Mô tả không được để trống!",
+                pattern: /[A-Za-z0-9]/,
+              },
+            ]}
           >
             <Input placeholder="Mô tả" />
           </Form.Item>
           <Form.Item {...tailLayout}>
             <Space>
-              <Button htmlType="submit">Submit</Button>
+              <Button htmlType="submit">Xác nhận</Button>
               <Button htmlType="button" mode="cancel" onClick={handleCancel}>
-                Cancle
+                Thoát
               </Button>
             </Space>
           </Form.Item>

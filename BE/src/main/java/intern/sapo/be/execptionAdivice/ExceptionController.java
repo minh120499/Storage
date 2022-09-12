@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.NoSuchElementException;
 
 @ControllerAdvice
-public class ExceptionController extends ResponseEntityExceptionHandler {
+public class ExceptionController {
 	private MessageSource messageSource;
 
 	public ExceptionController(MessageSource messageSource) {

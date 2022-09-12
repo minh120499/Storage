@@ -1,34 +1,44 @@
 import { useQuery } from "@tanstack/react-query";
 import { Pagination, Spin, Table } from "antd";
 import { useState } from "react";
-import Swal from "sweetalert2";
+import PageResult from "../components/PageResult";
 
 const T = (props: any) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
+  const name = props?.search?.filterName;
+  const value = props?.search?.filterValue;
+
   const query = useQuery(
     ["id", page, pageSize],
-    () => props.query(page, pageSize),
-    { keepPreviousData: true }
+    () =>
+      !!name && !!value
+        ? props.query(page, pageSize, name, value)
+        : props.query(page, pageSize)
+    // { keepPreviousData: true }
   );
 
   if (query?.isError) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Fails",
-    });
-    return <div>Api not found</div>;
+    return <PageResult type="err" />;
   }
 
-  if (query?.data?.data?.length === 0) {
+  if (query?.data?.data?.length !== 0 && value && page > 1) {
+    setPage(1);
+  }
+  if (query?.data?.data?.length === 0 && !value && page > 1) {
     setPage(page - 1);
   }
+
   query.refetch();
 
   return (
     <div>
       <Spin spinning={query?.isLoading || false} tip="Loading...">
+        <Table
+          {...props}
+          pagination={false}
+          dataSource={props?.dataSource || query?.data?.data || []}
+        />
         <div className="flex justify-between mt-5 mb-5">
           {query?.data?.total && (
             <div>{`${query?.data?.from}-${query?.data?.to} trên ${query.data.total} bản ghi`}</div>
@@ -46,11 +56,6 @@ const T = (props: any) => {
             />
           )}
         </div>
-        <Table
-          {...props}
-          pagination={false}
-          dataSource={props?.dataSource || query?.data?.data || []}
-        />
       </Spin>
     </div>
   );

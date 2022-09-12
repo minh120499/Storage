@@ -1,28 +1,44 @@
 import "../styles/Header.css";
-import { Badge } from "antd";
-import { Avatar } from "antd";
+import { Avatar, Tag } from "antd";
 import type { RootState } from "../app/store";
 import { useSelector } from "react-redux";
+import { ROLE_COLOR } from "../constant";
+import { IRoleLable } from "../interface";
 
 export default function HeaderMenu() {
   const currentUser = useSelector((state: RootState) => state.user);
+  const title = useSelector((state: RootState) => state.title);
 
   return (
-    <div className="top-header-menu">
+    <div className="top-header-menu flex justify-between h-full">
+        <h1
+            style={{
+                fontSize: "30px",
+                margin: 0,
+            }}
+            className="self-center"
+        >
+            {title}
+        </h1>
+
       <div className="user-box">
         <Avatar size="large" src={`${currentUser?.image}`}>
           {currentUser?.username}
         </Avatar>
         <div>
-          <div>{currentUser.username}</div>
-          {/* <div>status</div> */}
+          <div>{currentUser?.username}</div>
+          <div>
+            <Tag
+              style={{
+                scale: "0.75",
+                transform: "translateX(-7px)",
+              }}
+              color={ROLE_COLOR[currentUser?.authorities[0] as keyof IRoleLable]}
+            >
+              {currentUser?.authorities[0]}
+            </Tag>
+          </div>
         </div>
-        <Badge count={1}>
-          <Avatar
-            style={{ background: "white" }}
-            src="https://img.icons8.com/material-outlined/24/000000/appointment-reminders--v1.png"
-          />
-        </Badge>
       </div>
     </div>
   );

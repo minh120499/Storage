@@ -1,4 +1,4 @@
-import {Button, Col, Form, Input, Modal, Row, Select, Space} from "antd";
+import {Button, Col, Form, Input, Modal, Row, Select} from "antd";
 import {ISupplier, TypeSupplier} from "../../services/customType";
 import {updateSupplier} from "../../services/api";
 import ToastCustom from "../../features/toast/Toast";
@@ -52,9 +52,9 @@ const SupplierUpdate = ({supplier, isVisible, setIsVisible}: SupplierProps) => {
     // const [confirmLoading, setConfirmLoading] = useState(false);
 
 
-    const showModal = () => {
-        setVisible(true);
-    };
+    // const showModal = () => {
+    //     setVisible(true);
+    // };
 
     const handleCancel = () => {
         setVisible(false);
@@ -65,7 +65,7 @@ const SupplierUpdate = ({supplier, isVisible, setIsVisible}: SupplierProps) => {
     return (
         <>
             <Modal
-                title="Thêm mới nhà cung cấp"
+                title="Sửa nhà cung cấp"
                 visible={visible}
                 // confirmLoading={confirmLoading}
                 onCancel={handleCancel}

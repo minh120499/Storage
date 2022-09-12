@@ -1,18 +1,32 @@
-import { Avatar, Card, Col, List, message, Row } from "antd";
+import { Avatar, Card, Col, Row } from "antd";
 import Meta from "antd/lib/card/Meta";
 import BarChartReprot from "./BarChartReport";
 import LineChartReport from "./LineChartReport";
 import PieChartReport from "./PieChartReport";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
+import {useEffect} from "react";
 
 export default function HomePage() {
+  useEffect(() =>{
+    document.title= "Trang chủ"
+  },[])
   return (
-    <div className="p-5 bg-gray-600">
+    <div className="bg-[#DFF6FF] p-5">
       <Row gutter={[16, 16]}>
         <Col span={24}>
           <Row gutter={16}>
             <Col span={6}>
-              <Card className="rounded-3xl">
+              <Card className="rounded-3xl border-none shadow-md">
+                <Meta
+                  avatar={<Avatar className="bg-red" src="https://joeschmoe.io/api/v1/random" />}
+                  style={{ alignSelf: "center" }}
+                  title="Card title"
+                  description="This is the description"
+                />
+              </Card>
+            </Col>
+            <Col span={6}>
+              <Card className="rounded-3xl border-none shadow-md">
                 <Meta
                   avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
                   style={{ alignSelf: "center" }}
@@ -22,7 +36,7 @@ export default function HomePage() {
               </Card>
             </Col>
             <Col span={6}>
-              <Card className="rounded-3xl">
+              <Card className="rounded-3xl border-none shadow-md">
                 <Meta
                   avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
                   style={{ alignSelf: "center" }}
@@ -32,17 +46,7 @@ export default function HomePage() {
               </Card>
             </Col>
             <Col span={6}>
-              <Card className="rounded-3xl">
-                <Meta
-                  avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                  style={{ alignSelf: "center" }}
-                  title="Card title"
-                  description="This is the description"
-                />
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card className="rounded-3xl">
+              <Card className="rounded-3xl border-none shadow-md">
                 <Meta
                   avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
                   style={{ alignSelf: "center" }}
@@ -68,7 +72,7 @@ export default function HomePage() {
                   <ArrowDownOutlined /> 12% So với tuần trước
                 </Col>
                 <Col span={24} style={{ height: "250px" }}>
-                  <LineChartReport />
+                  <LineChartReport  />
                 </Col>
               </Row>
             </Col>

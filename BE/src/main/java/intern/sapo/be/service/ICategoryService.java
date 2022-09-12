@@ -6,9 +6,9 @@ import java.util.List;
 
 
 public interface ICategoryService {
-    Page<Category> findAll(Integer pageNumber, Integer limit, String sortBy,String sortDir);
+    Page<Category> findAll(Integer pageNumber, Integer limit, String sortBy,String sortDir, String value);
 
-    List<Category> getAll();
+    List<Category> getAll(String valueInput);
 
     Category findById(Integer id);
 

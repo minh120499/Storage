@@ -1,6 +1,5 @@
 package intern.sapo.be.entity;
 
-import intern.sapo.be.base.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -40,9 +39,10 @@ public class Inventory   {
     @Column(name = "address", nullable = false)
     private String address;
 
+
     @Column(name = "size", nullable = false)
-    
     private Integer size;
+
     @Column(name = "create_at", nullable = false)
     @CreatedDate
     private Timestamp createAt;

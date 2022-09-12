@@ -36,7 +36,7 @@ public class ExportStatusController extends BaseController<ExportsStatus> {
     }
     @PutMapping("/{id}")
     public ExportsStatus updateExportsStatus(@RequestBody @Valid ExportsStatus request,
-            @PathVariable(value = "id") Integer id) {
+                                             @PathVariable(value = "id") Integer id) {
         return service.updateExportsStatus(request, id);
     }
 

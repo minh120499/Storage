@@ -1,41 +1,116 @@
-import React, {useEffect, useState} from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useCallback, useEffect, useState} from "react";
 import {IImportInvoice} from "../../services/customType";
 import {getImportInvoices} from "../../services/api";
-import {Table} from "antd";
+import {Button, Table} from "antd";
 import {ImportInvoiceColumn} from "../../components/Datatablesource";
-import {useNavigate} from "react-router-dom";
-
+import {Link, useNavigate} from "react-router-dom";
+import { Tabs } from 'antd';
+import { Input } from 'antd';
+import '../../styles/Tab.css'
+import {debounce} from "@mui/material";
+import {PlusOutlined} from "@ant-design/icons";
+import {useSelector} from "react-redux";
+import {RootState} from "../../app/store";
+import useTitle from "../../app/useTitle";
 const ListImportInvoice = () =>{
-
+    useTitle("")
     const navigate = useNavigate();
     const [importInvoices,setImportInvoices] = useState<IImportInvoice[]>([])
+    const [importInvoicesIsDone,setImportInvoicesIsDone] = useState<IImportInvoice[]>([])
+    const [importInvoicesIsReturn,setImportInvoicesIsReturn] = useState<IImportInvoice[]>([])
+    const [isLoading,setIsLoading] = useState(false)
+    const [keyword, setKeyword] = useState('');
+
+    const debounceDropDown = useCallback(debounce((nextValue:string) => loadData(nextValue), 700), [])
+
+    function handleInputOnchange(e:any) {
+        setIsLoading(false)
+        const { value } = e.target;
+        setKeyword(value);
+        debounceDropDown(value);
+    }
+
+    const loadData = (value:string) =>{
+        getImportInvoices(value).then((r) =>{
+            setImportInvoicesIsDone(r.data.filter((result: IImportInvoice) => !result.isDone))
+            setImportInvoicesIsReturn(r.data.filter((result: IImportInvoice) => result.isReturn))
+            setImportInvoices(r.data)
+            setIsLoading(true)
+        })
+    }
 
     useEffect(() =>{
-        getImportInvoices().then((r) =>{
-            setImportInvoices(r.data.reverse())
-        })
+        loadData(keyword)
+        document.title = "Đơn nhập hàng"
+
     },[])
+    type PositionType = 'right';
+
+    const OperationsSlot: Record<PositionType, React.ReactNode> = {
+        right: <Input onChange={(e) => handleInputOnchange(e)} style={{padding:'8px',marginTop:10}} className="tabs-extra-demo-button" placeholder="Tìm kiếm theo mã đơn hàng, mã nhà cung cấp, tên kho"/>
+    };
+
     return(
-        <div>
-            <div>Nhà cung cấp</div>
-            <div style={{marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between"}}>
-
-
+        <div className='p-5'>
+        <div style={{display:'flex',justifyContent:'space-between',marginBottom:'25px',alignItems:"center"}}>
+                <h1 style={{fontSize:'30px',margin:0,marginRight:10}}>Đơn nhập hàng</h1>
+                <Link to="/coordinator/purchase_orders/create">
+                    <Button type="primary"><PlusOutlined /> Tạo mới đơn hàng</Button>
+                </Link>
             </div>
-            {
-                    <Table dataSource={importInvoices}
-                           columns={ImportInvoiceColumn}
-                           rowKey="code"
-                           pagination={{defaultPageSize: 5}}
-                           onRow={(record) => {
-                               return {
-                                   onClick: event => navigate({pathname: `/purchase_orders/details/${record.code}`}),
-                               }
-                           }}
-                           // rowSelection={rowSelection}
-                    />
-            }
 
+            <Tabs style={{display:'block'}}  tabBarExtraContent={OperationsSlot} defaultActiveKey="1">
+                    <Tabs.TabPane tab="Tất cả cả đơn hàng" key="1">
+                        {
+                            <Table dataSource={importInvoices}
+                                   columns={ImportInvoiceColumn.filter(col => col.dataIndex !== 'isReturn')}
+                                   rowKey="code"
+                                   pagination={{defaultPageSize: 10}}
+                                   onRow={(record) => {
+                                       return {
+                                           onClick: event => navigate({pathname: `details/${record.code}`}),
+                                       }
+                                   }}
+                                   loading={!isLoading}
+                                // rowSelection={rowSelection}
+                            />
+                        }
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab="Đang giao dịch" key="2">
+                        {
+                            <Table dataSource={importInvoicesIsDone}
+                                   columns={ImportInvoiceColumn.filter(col => col.dataIndex !== 'isReturn')}
+                                   rowKey="code"
+                                   pagination={{defaultPageSize: 10}}
+                                   onRow={(record) => {
+                                       return {
+                                           onClick: event => navigate({pathname: `/purchase_orders/details/${record.code}`}),
+                                       }
+                                   }}
+                                   loading={!isLoading}
+                                // rowSelection={rowSelection}
+                            />
+                        }
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab="Trả hàng" key="3">
+                        {
+                            <Table dataSource={importInvoicesIsReturn}
+                                   columns={ImportInvoiceColumn.filter(col => col.dataIndex !== 'isReturn')}
+                                   rowKey="code"
+                                   pagination={{defaultPageSize: 10}}
+                                   onRow={(record) => {
+                                       return {
+                                           onClick: event => navigate({pathname: `/purchase_orders/details/${record.code}`}),
+                                       }
+                                   }}
+                                   loading={!isLoading}
+                                // rowSelection={rowSelection}
+                            />
+                        }
+                    </Tabs.TabPane>
+
+            </Tabs>
         </div>
     )
 }

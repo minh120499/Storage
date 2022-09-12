@@ -4,6 +4,7 @@ import ToastCustom from "../../features/toast/Toast";
 import { Category } from "../../type/allType";
 import { createCategory } from "../../api/apiCategory";
 import Button from "../../UI/Button";
+import { PlusOutlined } from "@ant-design/icons";
 
 type props = {
   status: () => void;
@@ -21,9 +22,6 @@ export default function CategoryCreate({ status }: props) {
     setIsModalVisible(false);
   };
 
-  const validateMessages = {
-    required: "Không được để trống!",
-  };
   /*Layout form*/
   const layout = {
     labelCol: { span: 5 },
@@ -56,7 +54,7 @@ export default function CategoryCreate({ status }: props) {
   return (
     <>
       <div>
-        <Button onClick={showModal}>Thêm mới</Button>
+        <Button style={{height: "37px"}} onClick={showModal}><PlusOutlined />Thêm mới</Button>
       </div>
       <Modal
         title="Thêm mới Danh Mục"
@@ -67,25 +65,24 @@ export default function CategoryCreate({ status }: props) {
         <Form
           {...layout}
           name="nest-messages"
-          validateMessages={validateMessages}
           onFinish={handleCreate}
           form={formAdd}
         >
-          <Form.Item name="name" label="Tên" rules={[{ required: true }]}>
+          <Form.Item name="name" label="Tên" rules={[{ required: true, message:"Tên không được để trống!", pattern:/[A-Za-z0-9]/  }]}>
             <Input placeholder="Nhập Tên" />
           </Form.Item>
           <Form.Item
             name="description"
             label="Mô tả"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message:"Mô tả không được để trống!", pattern:/[A-Za-z0-9]/ }]}
           >
             <Input placeholder="Nhập mô tả" />
           </Form.Item>
           <Form.Item {...tailLayout}>
             <Space>
-              <Button htmlType="submit">Submit</Button>
+              <Button htmlType="submit">Xác nhận</Button>
               <Button mode="cancel" onClick={handleCancel}>
-                Cancle
+                Thoát
               </Button>
             </Space>
           </Form.Item>

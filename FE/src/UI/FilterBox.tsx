@@ -1,33 +1,43 @@
-import { DownOutlined } from "@ant-design/icons";
-import { Dropdown, Menu, Space } from "antd";
-import Button from "./Button";
-
-//datepicker
+import { Col, Form, Row, Select } from "antd";
+import Search from "antd/lib/input/Search";
+import React from "react";
 
 const FilterBox = (props: any) => {
-  const menu = (
-    <Menu
-      items={[
-        {
-          label: <div>Tìm theo tên</div>,
-          key: "name",
-          onClick: (e) => props.click(e.key),
-        },
-      ]}    
-    />
-  );
+  console.log("filter");
+
+  const onSearch = () => {
+    const { filterName, filterValue } = filterForm.getFieldsValue();
+    console.log(filterForm.getFieldsValue());
+    console.log(filterName, filterValue);
+
+    props?.search({
+      filterName,
+      filterValue,
+    });
+  };
+  const [filterForm] = Form.useForm();
+
   return (
     <div>
-      <Dropdown overlay={props?.menu || menu} trigger={["click"]} {...props}>
-        <Button>
-          <Space>
-            <span>Click me</span>
-            <DownOutlined />
-          </Space>
-        </Button>
-      </Dropdown>
+      <Form form={filterForm}>
+        <Row>
+          <Col span={10}>
+            <Form.Item name="filterName" initialValue="name" className="m-0">
+              <Select defaultValue="code" className="w-max">
+                <Select.Option value="code">Tìm theo code</Select.Option>
+                <Select.Option value="name">Tìm theo tên</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={14}>
+            <Form.Item name="filterValue" className="m-0">
+              <Search placeholder="Nhập để tìm kiếm" onSearch={onSearch} />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
     </div>
   );
 };
 
-export default FilterBox;
+export default React.memo(FilterBox);

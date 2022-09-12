@@ -1,7 +1,8 @@
 package intern.sapo.be.service.impl;
 import intern.sapo.be.dto.request.Inventory.ListIdRequest;
 import intern.sapo.be.dto.request.ProductVariantsDTO;
-import intern.sapo.be.dto.response.Inventory.InventoryResponse;
+import intern.sapo.be.dto.response.product.Inventory.InventoryResponse;
+import intern.sapo.be.entity.InventoriesProductVariant;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.entity.ProductVariant;
 import intern.sapo.be.repository.IInventoriesProductVariantRepo;
@@ -19,6 +20,9 @@ import org.springframework.validation.BindingResult;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+
 @RequiredArgsConstructor
 @Service
 public class InventoryServiceImpl implements IInventoryService {
@@ -35,12 +39,16 @@ public class InventoryServiceImpl implements IInventoryService {
     }
 
     @Override
-    public Page<Inventory> findAllBypPage(Integer pageNumber, Integer limit, String sortBy, String sortDir) {
-        if (sortDir != null) {
-            Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-            return inventoryRepository.findAll(PageRequest.of(pageNumber - 1, limit, sort));
+    public Page<Inventory> findAllBypPage(Integer pageNumber, Integer pageSize, String sortBy, String sortDir,String name, String code) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        if (name != null) {
+            return inventoryRepository.findByNameContaining(name,PageRequest.of(pageNumber - 1, pageSize,sort));
+        }else if(code != null){
+            return inventoryRepository.findByCodeContaining(code,PageRequest.of(pageNumber - 1, pageSize,sort));
         }
-        return inventoryRepository.findAll(PageRequest.of(pageNumber - 1, limit));
+        else{
+            return inventoryRepository.findAll(PageRequest.of(pageNumber - 1, pageSize, sort));
+        }
     }
 
 
@@ -75,15 +83,11 @@ public class InventoryServiceImpl implements IInventoryService {
         if (bindingResult.hasErrors()) {
             throw utils.invalidInputException(bindingResult);
         } else {
-            inventory.setId(id);
+            inventory.setId(id)
+            ;
             inventory.setCreateAt(inventoryOld.getCreateAt());
             return inventoryRepository.save(inventory);
         }
-    }
-
-    @Override
-    public void deleteLíst(List<Integer> id) {
-
     }
 
     @Override
@@ -98,6 +102,7 @@ public class InventoryServiceImpl implements IInventoryService {
         InventoryResponse inventoryResponse = new InventoryResponse();
         List<ProductVariantsDTO> results = new ArrayList<>();
         Integer totalProductVariant = 0;
+        Integer countProductVariant = 0;
         Inventory inventory = inventoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("id not found:" + id));
         try {
             inventoryResponse.setInventory(inventory);
@@ -105,11 +110,14 @@ public class InventoryServiceImpl implements IInventoryService {
             for (ProductVariant item : productVariants) {
                 ProductVariantsDTO productVariantsDTO = toDto(item);
                 productVariantsDTO.setQuantity(inventoryRepository.Quantity(id, item.getId()));
+                productVariantsDTO.setMinQuantity(inventoryRepository.minQuantity(id, item.getId()));
                 productVariantsDTO.setCreateAt(inventoryRepository.createAt(item.getId()));
                 results.add(productVariantsDTO);
+                countProductVariant = countProductVariant + 1;
                 totalProductVariant = totalProductVariant + inventoryRepository.Quantity(id, item.getId());
             }
             inventoryResponse.setProductVariants(results);
+            inventoryResponse.setCountProductVariant(countProductVariant);
             inventoryResponse.setTotalProductVariant(totalProductVariant);
         } catch (Exception e) {
             System.out.println("error" + e.getMessage());
@@ -124,5 +132,13 @@ public class InventoryServiceImpl implements IInventoryService {
         for (Integer item: productVariantId) {
             iInventoriesProductVariantRepo.deleteProductVariant(inventoryId,item.intValue());
         }
+    }
+
+    @Override
+    public InventoriesProductVariant changeMinQuantity(Integer inventoryId, Integer productVariantId, Integer minQuantity) {
+        InventoriesProductVariant inventoriesProductVariant = iInventoriesProductVariantRepo.findByInventoryIdAndProductVariantId(inventoryId,productVariantId);
+        inventoriesProductVariant.setMin_quantity(minQuantity);
+        iInventoriesProductVariantRepo.save(inventoriesProductVariant);
+        return inventoriesProductVariant;
     }
 }

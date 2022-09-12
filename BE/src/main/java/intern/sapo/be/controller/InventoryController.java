@@ -1,15 +1,18 @@
 package intern.sapo.be.controller;
 
 import intern.sapo.be.dto.request.Inventory.ListIdRequest;
-import intern.sapo.be.dto.response.Inventory.InventoryResponse;
+import intern.sapo.be.dto.response.product.Inventory.InventoryResponse;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.service.IInventoryService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,19 +21,31 @@ import java.util.Map;
 @AllArgsConstructor
 @RequestMapping("/inventories")
 @CrossOrigin("*")
+@PreAuthorize("hasAnyAuthority('admin','stocker')")
 public class InventoryController {
 	private final IInventoryService iInventoryService;
 
-
 	@GetMapping("/pagination")
-	public ResponseEntity getPagination(@RequestParam(value = "pageNumber", required = true, defaultValue = "1") int pageNumber,
-										@RequestParam(value = "pageSize", required = true, defaultValue = "10") int pageSize,
-										@RequestParam(value = "sortBy", required = false) String sortBy,
-										@RequestParam(value = "sortDir", required = false) String sortDir)
-	{
-		Map<String,Object> results = new HashMap<>();
-		results.put("data", iInventoryService.findAllBypPage(pageNumber,pageSize,sortBy,sortDir).getContent());
-		results.put("total",iInventoryService.findAllBypPage(pageNumber,pageSize,sortBy,sortDir).getTotalElements());
+	public ResponseEntity<Object> getPagination(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber,
+	                                            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+	                                            @RequestParam(value = "sortBy", required = false, defaultValue = "id") String sortBy,
+	                                            @RequestParam(value = "sortDir", required = false, defaultValue = "desc") String sortDir,
+	                                            @RequestParam(value = "name", required = false) String name,
+	                                            @RequestParam(value = "code", required = false) String code) {
+		Page<Inventory> inventory = iInventoryService.findAllBypPage(pageNumber, pageSize, sortBy, sortDir, name, code);
+		List<InventoryResponse> inventories = new ArrayList<>();
+		inventory.getContent().forEach((i -> {
+			InventoryResponse e = new InventoryResponse();
+			e.setInventory(i);
+			e.setTotalProductVariant(iInventoryService.getProductVariantByInventoryId(i.getId(), "").getTotalProductVariant());
+			inventories.add(e);
+		}));
+		Map<String, Object> results = new HashMap<>();
+		results.put("data", inventories);
+		results.put("total", inventory.getTotalElements());
+		results.put("from", inventory.getSize() * inventory.getNumber() + 1);
+		results.put("to", inventory.getSize() * inventory.getNumber() + inventory.getNumberOfElements());
+
 		return ResponseEntity.ok(results);
 	}
 
@@ -63,21 +78,26 @@ public class InventoryController {
 		return iInventoryService.update(id, inventory, bindingResult);
 	}
 
-	@DeleteMapping("/delete/{id}")
+	@PutMapping("/delete/{id}")
 	public void deleteInventory(@PathVariable(value = "id") Integer id) {
 		iInventoryService.delete(id);
 	}
 
-    @GetMapping("/productvariant/{id}")
-    public InventoryResponse getAll(@PathVariable(value = "id") Integer id, @RequestParam(value = "name") String name)
-    {
-        return iInventoryService.getProductVariantByInventoryId(id, name);
-    }
+	@GetMapping("/productvariant/{id}")
+	public InventoryResponse getAll(@PathVariable(value = "id") Integer id, @RequestParam(required = false, value = "name") String name) {
+		return iInventoryService.getProductVariantByInventoryId(id, name);
+	}
 
 	@PostMapping("/delete")
-	public void deleteProductVariant(@RequestBody ListIdRequest listIdRequest)
-	{
+	public void deleteProductVariant(@RequestBody ListIdRequest listIdRequest) {
 		iInventoryService.deleteListProductVanriant(listIdRequest);
+	}
+
+	@PutMapping("/change/minquantity")
+	public ResponseEntity<Object> changeMinQuantity(@RequestParam(value = "inventoryId", required = false) Integer inventoryId,
+	                                                @RequestParam(value = "productVariantId", required = false) Integer productVariantId,
+	                                                @RequestParam(value = "minQuantity", required = false) Integer minQuantity) {
+		return ResponseEntity.ok(iInventoryService.changeMinQuantity(inventoryId, productVariantId, minQuantity));
 	}
 
 }

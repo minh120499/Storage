@@ -1,12 +1,12 @@
-import {Space} from "antd";
-import {DownloadOutlined} from "@ant-design/icons";
+import { Space } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
 import React from "react";
 import axios from "axios";
 import Button from "../UI/Button";
 
-const ExportExcel = () =>{
+const ExportExcel = () => {
 
-    const handleUpload = ()=>{
+    const handleUpload = () => {
         const link = document.createElement("a");
         link.target = "_blank";
         link.download = "supplier"
@@ -21,9 +21,9 @@ const ExportExcel = () =>{
                 link.click();
             });
     }
-    return(
+    return (
         <div>
-            <Button onClick={handleUpload}  style={{width: "120px", fontSize: '14px'}} type="primary">
+            <Button onClick={handleUpload} style={{ width: "120px", fontSize: '14px' }} type="primary">
                 <Space>
                     <DownloadOutlined />
                     Xuất excel

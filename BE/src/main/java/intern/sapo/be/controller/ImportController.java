@@ -6,29 +6,29 @@ import intern.sapo.be.entity.DetailsImport;
 import intern.sapo.be.entity.Import;
 import intern.sapo.be.service.IDetailsImportService;
 import intern.sapo.be.service.IImportService;
-import intern.sapo.be.service.IInventoriesProductVariantService;
+import intern.sapo.be.service.IImportsStatusService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//@RolesAllowed({"stocker"})
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/imports")
 @CrossOrigin("*")
+
 public class ImportController {
 
     private final IImportService importService;
+    private final IImportsStatusService importsStatusService;
 
     private final IDetailsImportService detailsImportService;
-
-    private final IInventoriesProductVariantService inventoriesProductVariantService;
 
     @PostMapping()
     public Import save(@RequestBody Import im) {
         Import anImport = importService.save(im);
         List<DetailsImport> list = detailsImportService.save(im.getDetailsImports(), anImport.getId());
-        inventoriesProductVariantService.importProductVariantToInventory(list, im.getInventoryId());
         return anImport;
     }
 
@@ -38,8 +38,8 @@ public class ImportController {
     }
 
     @GetMapping("/findAll")
-    private List<ImportResponse> findAllDTO() {
-        return importService.findAllImportDTO();
+    private List<ImportResponse> findAllDTO(@RequestParam String searchValue) {
+        return importService.findAllImportDTO(searchValue);
     }
 
     @GetMapping("/getDetails/{code}")
@@ -48,7 +48,32 @@ public class ImportController {
     }
 
     @PutMapping("/updateStatus")
-    private void updateStatus(@RequestParam Integer id, @RequestParam String status) {
-        importService.updateStatusImport(id, status);
+    private void updateStatus(@RequestParam Integer id, @RequestParam String status, @RequestParam Integer accountId) {
+        importService.updateStatusImport(id, status, accountId);
+    }
+
+    @PutMapping("/updateStatusReturn")
+    private void updateStatusReturn(@RequestParam Integer id, @RequestParam String status, Integer accountId) {
+        importService.updateStatusImportReturn(id, status, accountId);
+    }
+
+    @GetMapping("/getStatusHistory/{importId}")
+    private ResponseEntity<?> updateStatus(@PathVariable Integer importId) {
+        return ResponseEntity.ok(importsStatusService.findDetailsImportStatus(importId));
+    }
+
+    @GetMapping("/getReturnImport/{code}")
+    private ResponseEntity<?> getAllReturnImport(@PathVariable String code) {
+        return ResponseEntity.ok(importService.getAllReturnImport(code));
+    }
+
+    @GetMapping("/getDetailsReturnImport/{code}")
+    private ResponseEntity<?> getDetailsReturn(@PathVariable String code) {
+        return ResponseEntity.ok(importService.getDetailsReturnImport(code));
+    }
+
+    @GetMapping("/getImportInvoiceBySuppler/{id}")
+    private ResponseEntity<?> getInvoiceBySupplier(@PathVariable Integer id) {
+        return ResponseEntity.ok(importService.getImportInvoiceBySupplier(id));
     }
 }

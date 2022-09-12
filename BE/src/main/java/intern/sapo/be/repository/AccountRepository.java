@@ -1,7 +1,6 @@
 package intern.sapo.be.repository;
 
 import intern.sapo.be.entity.Account;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
@@ -13,5 +12,5 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer>, CrudRepository<Account, Integer> {
 	Optional<Account> findAccountByUsername(String username);
-
+	List<Account> findAllByIsDelete(boolean delete);
 }

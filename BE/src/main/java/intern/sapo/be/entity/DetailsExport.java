@@ -15,13 +15,11 @@ public class DetailsExport {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "code", nullable = false)
-    private String code;
     // @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @Column(name = "export_id", nullable = false)
     private Integer export;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "product_variant_id", nullable = false)
     private ProductVariant productVariant;
 

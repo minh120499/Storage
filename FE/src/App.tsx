@@ -1,6 +1,6 @@
 import { useRoutes } from "react-router-dom";
-
 import React from "react";
+
 import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/category/Categories";
 import Storage from "./components/Storage";
@@ -19,12 +19,22 @@ import InventoryList from "./components/inventory/InventoryList";
 import ListImportInvoice from "./pages/ImportInvoice/ListImportInvoice";
 import DetailImportInvoice from "./pages/ImportInvoice/DetailImportInvoice";
 import ProductDetails from "./pages/product/ProductDetails";
+import CreateReturnImportInvoice from "./pages/ImportInvoice/CreateReturnImportInvoice";
+import {useDispatch} from "react-redux";
+import {setUserStore} from "./features/user/userSlice";
+import Statistics from "./pages/statistics/Statistics";
 import { Status } from "./components/StockTransfers/status";
 import Create from "./components/StockTransfers/create";
 import InventoryManager from "./components/inventory/InventoryManager";
 import Edit from "./components/StockTransfers/edit";
 
 const App: React.FC = () => {
+  const dispatch = useDispatch();
+  dispatch(
+      setUserStore({
+        token: localStorage.getItem('token') || ''
+      })
+  );
   const router = useRoutes([
     {
       path: "/login",
@@ -48,7 +58,7 @@ const App: React.FC = () => {
           element: <InventoryList />,
         },
         {
-          path: "/storage",
+          path: "coordinator/storage",
           children: [
             { path: "", element: <Storage /> },
             { path: "stock_transfers/:id", element: <Status /> },
@@ -57,7 +67,7 @@ const App: React.FC = () => {
           ],
         },
         {
-          path: "/supplier",
+          path: "stocker/supplier",
           children: [
             // {path: "add", element: <CategoryAdd/>},
             { path: "", element: <SupplierList /> },
@@ -65,28 +75,34 @@ const App: React.FC = () => {
           ],
         },
         {
-          path: "/purchase_orders",
+          path: "coordinator/purchase_orders",
           children: [
             // {path: "add", element: <CategoryAdd/>},
             { path: "", element: <ListImportInvoice /> },
             { path: "create", element: <CreateImport /> },
             { path: "details/:code", element: <DetailImportInvoice /> },
+            { path: "return/:code", element: <CreateReturnImportInvoice /> },
           ],
         },
-        {
-          path: "/productsAdd",
-          element: <AddProduct />,
-        },
-        {
-          path: "/products",
 
+        {
+          path: "warehouse/products",
           children: [
+            {
+              path: "add",
+              element: <AddProduct />,
+            },
             { index: true, element: <ListProduct /> },
-            { path: "/products/:id", element: <ProductDetails /> },
+            { path: ":id", element: <ProductDetails /> },
+
           ],
         },
         {
-          path: "/categories",
+          path: "/statistics",
+          element: <Statistics />,
+        },
+        {
+          path: "warehouse/categories",
           element: <Categories />,
         },
         {
@@ -94,15 +110,15 @@ const App: React.FC = () => {
           element: <TransportCompanies />,
         },
         {
-          path: "/employees/:id",
+          path: "admin/employees/:id",
           element: <EmployeeDetails />,
         },
         {
-          path: "/api/admin/employees",
+          path: "/admin/employees",
           element: <Employee />,
         },
         {
-          path: "/api/admin/roles",
+          path: "/admin/roles",
           element: <RoleManager />,
         },
       ],

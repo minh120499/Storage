@@ -1,34 +1,81 @@
 import {Link, useParams} from "react-router-dom";
+import "../../styles/Tab.css"
 import React, {useEffect, useState} from "react";
-import {getDetailImportInvoice, updateStatusInvoice} from "../../services/api";
-import {IDetailImportInvoice} from "../../services/customType";
+import {
+    getDetailImportInvoice,
+    getDetailsImportReturn,
+    getHistoryStatusImportInvoice,
+    updateStatusInvoice
+} from "../../services/api";
+import {IDetailImportInvoice, IHistoryStatus, IImportReturn} from "../../services/customType";
 import {Button, Col, Row, Steps, Table, Tag} from "antd";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import {ShopFilled,} from '@ant-design/icons';
+import {LeftOutlined, ShopFilled,} from '@ant-design/icons';
 import {columnsDetailImportInvoice} from "../../components/Datatablesource";
-import NumberFormat from "react-number-format";
-import PaymentIcon from '@mui/icons-material/Payment';
 import ToastCustom from "../../features/toast/Toast";
+import PaymentImport from "./PaymentImport";
+import ImportWarehouse from "./ImportWarehouse";
+import ReturnInvoiceImport from "./ReturnInvoiceImport";
+
+import ImportInvoiceHistory from "./ImportInvoiceHistory";
+import {useSelector} from "react-redux";
+import {RootState} from "../../app/store";
+import useTitle from "../../app/useTitle";
 
 const DetailImportInvoice = () => {
-
+    useTitle("")
     const {code} = useParams();
 
     const [detailInvoices, setDetailInvoices] = useState<IDetailImportInvoice>();
     const [reload, setReload] = useState(false)
-    const [currentStauts, setCurrentStatus] = useState(0);
+    const [currentStatus, setCurrentStatus] = useState(0);
+    const [invoiceStatusHistory, setInvoiceStatusHistory] = useState<IHistoryStatus[]>([])
+
+    const [createDate, setCreatDate] = useState("")
+    const [importDate, setImportDate] = useState("----")
+    const [returnInvoice, setReturnInvoice] = useState<IImportReturn[]>([])
+    const [fullName, setFullName] = useState("")
+    const [phoneNumber, setPhoneNumber] = useState("")
+    const user = useSelector((state: RootState) => state.user)
+
     useEffect(() => {
         getDetailImportInvoice(code as string).then(result => {
             setDetailInvoices(result.data)
             result.data.anImport.isDone && setCurrentStatus(2)
+            getHistoryStatusImportInvoice(result.data?.anImport.id as number).then((result) => {
+                setInvoiceStatusHistory(result.data)
+            })
         })
     }, [reload])
+
+    useEffect(() => {
+        getDetailsImportReturn(code as string).then((res) => {
+            setReturnInvoice(res.data)
+        })
+    }, [])
+
+
+
+    useEffect(() => {
+        const invoiceStatusHistoryList = invoiceStatusHistory.filter((obj: IHistoryStatus) => obj.statusName !== "Tạo phiếu trả hàng")
+        if (invoiceStatusHistoryList.length === 2){
+            setCreatDate(invoiceStatusHistoryList[1].createdAt)
+            setImportDate(invoiceStatusHistoryList[0].createdAt)
+            setFullName(invoiceStatusHistoryList[0].fullName)
+            setPhoneNumber(invoiceStatusHistoryList[0].phoneNumber)
+        }
+        if (invoiceStatusHistoryList.length === 3) {
+            setCreatDate(invoiceStatusHistoryList[2].createdAt)
+            setImportDate(invoiceStatusHistoryList[1].createdAt)
+            setFullName(invoiceStatusHistoryList[1].fullName)
+            setPhoneNumber(invoiceStatusHistoryList[1].phoneNumber)
+        }
+    }, [invoiceStatusHistory])
 
     const {Step} = Steps;
 
     const updateStatusPaidPayment = () => {
         const importId = detailInvoices?.anImport.id as number
-        updateStatusInvoice(importId, "paidPayment").then(() => {
+        updateStatusInvoice(importId, "paidPayment",user.id).then(() => {
             ToastCustom.fire({
                 icon: 'success',
                 title: 'Xác nhận thanh toán thành công'
@@ -39,31 +86,68 @@ const DetailImportInvoice = () => {
     }
     const updateStatusImportWarehouse = () => {
         const importId = detailInvoices?.anImport.id as number
-        updateStatusInvoice(importId, "importWarehouse").then(() => {
+        updateStatusInvoice(importId, "importWarehouse",user.id).then(() => {
             ToastCustom.fire({
                 icon: 'success',
                 title: 'Xác nhận nhập kho thành công'
             }).then()
             setReload(!reload)
         })
-
     }
 
-
     return (
-        <div>
-            {
+        <div className='p-5'>
+            <h2 style={{ fontSize:'15px' }} >
+                <Link to="/coordinator/purchase_orders">
+                    <LeftOutlined /> Danh sách đơn hàng
+                </Link>
+            </h2>
+        {
                 detailInvoices && (<div>
-                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                        <div>
-                            <h1>{detailInvoices?.anImport.code}</h1>
+                    <div style={{display: 'flex', justifyContent: 'space-between',alignItems:"center"}}>
+                        <div style={{display: 'flex',alignItems:"center"}}>
+                            <h1 style={{fontSize:'30px',margin:0,marginRight:10}}>{detailInvoices?.anImport.code}</h1>
+                            <span style={{marginTop:10}} >{createDate}</span>
                         </div>
-                        <div>
-                            <Steps current={currentStauts}>
-                                <Step title="Đặt hàng" description="This is a description."/>
-                                <Step title="Nhập kho" description="This is a description."/>
-                                <Step title="Hoàn thành" description="This is a description."/>
-                            </Steps>
+                        <div style={{width: '45%'}}>
+                            {(() => {
+                                const invoiceStatusHistoryList = invoiceStatusHistory.filter((obj: IHistoryStatus) => obj.statusName !== "Tạo phiếu trả hàng")
+                                if (invoiceStatusHistoryList.length === 3) {
+                                    return (
+                                        <Steps current={currentStatus}>
+                                            <Step title="Đặt hàng" description={invoiceStatusHistoryList[2].createdAt}/>
+                                            <Step title="Nhập kho" description={invoiceStatusHistoryList[1].createdAt}/>
+                                            <Step title="Hoàn thành" description={invoiceStatusHistoryList[0].createdAt}/>
+                                        </Steps>
+                                    )
+                                } else if (invoiceStatusHistoryList.length === 2 && invoiceStatusHistoryList[0].statusName === 'Tạo phiếu nhập kho') {
+
+                                    return (
+                                        <Steps current={currentStatus + 1}>
+                                            <Step title="Đặt hàng" description={invoiceStatusHistoryList[1].createdAt}/>
+                                            <Step title="Nhập kho" description={invoiceStatusHistoryList[0].createdAt}/>
+                                            <Step title="Hoàn thành"/>
+                                        </Steps>
+                                    )
+                                } else if (invoiceStatusHistoryList.length === 2 && invoiceStatusHistoryList[0].statusName === 'Thanh toán hóa đơn nhập hàng') {
+                                    return (
+                                        <Steps current={currentStatus}>
+                                            <Step title="Đặt hàng" description={invoiceStatusHistoryList[1].createdAt}/>
+                                            <Step title="Nhập kho"/>
+                                            <Step title="Hoàn thành"/>
+                                        </Steps>
+                                    )
+                                } else if (invoiceStatusHistoryList.length === 1) {
+
+                                    return (
+                                        <Steps current={currentStatus}>
+                                            <Step title="Đặt hàng" description={invoiceStatusHistoryList[0].createdAt}/>
+                                            <Step title="Nhập kho"/>
+                                            <Step title="Hoàn thành"/>
+                                        </Steps>
+                                    )
+                                }
+                            })()}
                         </div>
                     </div>
                     <div style={{marginTop: '45px'}}>
@@ -89,7 +173,7 @@ const DetailImportInvoice = () => {
                                                         <p>Mã: </p>
                                                     </Col>
                                                     <Col span={21}>
-                                                        <b>{detailInvoices.supplier.code}</b>
+                                                        <p style={{color:'#605c5c',fontWeight:500}}>{detailInvoices.supplier.code}</p>
                                                     </Col>
                                                 </Row>
                                                 <Row>
@@ -97,7 +181,7 @@ const DetailImportInvoice = () => {
                                                         <p>Email: </p>
                                                     </Col>
                                                     <Col span={21}>
-                                                        <b>{detailInvoices.supplier.email}</b>
+                                                        <p style={{color:'#605c5c',fontWeight:500}}>{detailInvoices.supplier.email}</p>
                                                     </Col>
                                                 </Row>
                                             </Col>
@@ -107,11 +191,11 @@ const DetailImportInvoice = () => {
                                                         <p>Trạng thái: </p>
                                                     </Col>
                                                     <Col span={19}>
-                                                        <b>
+                                                        <p>
                                                             {detailInvoices.supplier.statusTransaction ?
                                                                 <Tag color="success">Đang giao dịch</Tag> :
                                                                 <Tag color="error">Ngừng giao dịch</Tag>}
-                                                        </b>
+                                                        </p>
                                                     </Col>
                                                 </Row>
                                                 <Row>
@@ -119,7 +203,7 @@ const DetailImportInvoice = () => {
                                                         <p>Địa chỉ: </p>
                                                     </Col>
                                                     <Col span={19}>
-                                                        <b>{detailInvoices.supplier.address}</b>
+                                                        <p style={{color:'#605c5c',fontWeight:500}}>{detailInvoices.supplier.address}</p>
                                                     </Col>
                                                 </Row>
                                             </Col>
@@ -129,7 +213,7 @@ const DetailImportInvoice = () => {
 
                                 <div className="block" style={{padding: 0}}>
                                     <div style={{padding: 20, paddingBottom: 5, marginBottom: '5px'}}>
-                                        <p style={{marginBottom: 0, fontSize: "16px"}}><b>Thông tin nhà sản phẩm</b></p>
+                                        <p style={{marginBottom: 0, fontSize: "16px"}}><b>Thông tin sản phẩm</b></p>
                                     </div>
                                     <hr/>
                                     <div style={{padding: 20}}>
@@ -145,53 +229,15 @@ const DetailImportInvoice = () => {
                                     </div>
                                 </div>
 
-                                <div className="block" style={{
-                                    padding: 0,
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center'
-                                }}>
-                                    <div style={{padding: 20, paddingBottom: 5}}>
-                                        <p style={{marginBottom: 0, fontSize: "16px"}}>
-                                            <b style={{display: 'flex', alignItems: 'center'}}>
-                                                <span style={{
-                                                    marginRight: 3,
-                                                    display: 'flex',
-                                                    alignItems: 'center'
-                                                }}><PaymentIcon/></span>
-                                                Thanh toán
-                                            </b></p>
-                                        <p style={{marginTop: 10}}>Số tiền phải trả: <NumberFormat
-                                            value={detailInvoices.anImport.totalPrice} thousandSeparator={true}
-                                            displayType='text'/></p>
-                                    </div>
-                                    <div style={{padding: 20}}>
-                                        <Button type='default'>Thanh toán</Button>
-                                    </div>
-                                </div>
+                                <PaymentImport updateStatusPaidPayment={updateStatusPaidPayment} total={detailInvoices?.anImport.totalPrice}
+                                               isPaid={detailInvoices?.anImport.isPaid}/>
 
-                                <div className="block" style={{
-                                    padding: 0,
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center'
-                                }}>
-                                    <div style={{padding: 20, paddingBottom: 5, paddingTop: 0}}>
-                                        <p style={{marginBottom: 0, fontSize: "16px"}}>
-                                            <b style={{display: 'flex', alignItems: 'center'}}>
-                                                <span style={{
-                                                    marginRight: 3,
-                                                    display: 'flex',
-                                                    alignItems: 'center'
-                                                }}><LocalShippingIcon/></span>
-                                                Nhập kho
-                                            </b>
-                                        </p>
-                                    </div>
-                                    <div style={{padding: 20}}>
-                                        <Button type='primary'>Nhập kho</Button>
-                                    </div>
-                                </div>
+                                <ImportWarehouse updateStatusImportWarehouse={updateStatusImportWarehouse}
+                                                 invoice={detailInvoices} createDate={createDate} importDate={importDate}
+                                                 fullName ={fullName} phoneNumber ={phoneNumber}
+                                />
+
+                                <ReturnInvoiceImport returnInvoice={returnInvoice} invoice={detailInvoices}/>
                             </Col>
                             <Col span={8}>
                                 <div className="block" style={{padding: 0}}>
@@ -233,14 +279,20 @@ const DetailImportInvoice = () => {
                                 </div>
                                 <div className="block" style={{padding: 0}}>
                                     <div style={{padding: 20}}>
-                                        <Button type='default'>Xem lịch sử thao tác đơn hàng</Button>
+                                        <ImportInvoiceHistory reload={reload} data={invoiceStatusHistory}/>
                                     </div>
                                 </div>
                             </Col>
                         </Row>
                         {
                             !detailInvoices.anImport.isDone && (
-                                <div style={{display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid #dfe4e8', paddingTop: '15px', marginTop: ' 50px'}}>
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'flex-end',
+                                    borderTop: '1px solid #dfe4e8',
+                                    paddingTop: '15px',
+                                    marginTop: ' 50px'
+                                }}>
                                     {
                                         !detailInvoices.anImport.isPaid &&
                                         <Button onClick={updateStatusPaidPayment} type='default'>Xác nhận thanh toán</Button>

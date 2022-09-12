@@ -14,14 +14,20 @@ import java.math.BigDecimal;
 @Setter
 @EntityListeners(AuditingEntityListener.class)
 @NamedNativeQuery(
-		name = "getFeaturedProductDTO",
-		query = "select pv.id,pv.code,pv.name,IF(quantity >0, sum(quantity),0) as quantity,IF(import_price > 0,import_price,0) as importPrice\n" +
-				"from product_variants pv\n" +
-				"         left join inventories_product_variant ipv on pv.id = ipv.product_variant_id\n" +
-				"         inner join products p on pv.product_id = p.id\n" +
-				"where p.is_delete = false\n" +
-				"group by pv.id, pv.code, pv.name,IF(import_price > 0,import_price,0) order by pv.id desc",
-		resultSetMapping = "FeaturedProductVariant"
+        name = "getFeaturedProductDTO",
+        query = "set @searchValue = lower(?);\n" +
+                "select pv.id,\n" +
+                "       pv.code,\n" +
+                "       pv.name,\n" +
+                "       IF(quantity > 0, sum(quantity), 0)    as quantity,\n" +
+                "       IF(import_price > 0, import_price, 0) as importPrice\n" +
+                "from product_variants pv\n" +
+                "         left join inventories_product_variant ipv on pv.id = ipv.product_variant_id\n" +
+                "         inner join products p on pv.product_id = p.id\n" +
+                "where (p.is_delete = false and pv.is_delete = false) and   ( lower(pv.name) like concat('%',@searchValue,'%') or pv.code like concat('%',@searchValue,'%'))\n" +
+                "group by pv.id, pv.code, pv.name, IF(import_price > 0, import_price, 0)\n" +
+                "order by pv.id desc;",
+        resultSetMapping = "FeaturedProductVariant"
 )
 @SqlResultSetMapping(
 		name = "FeaturedProductVariant",
@@ -68,7 +74,7 @@ public class ProductVariant {
 	@Column(name = "import_price", nullable = false, precision = 20, scale = 2, columnDefinition = " default (0)")
 	private BigDecimal importPrice;
 
-    @Column(name = "is_delete")
-    private Boolean isDelete;
+	@Column(name = "is_delete")
+	private Boolean isDelete = false;
 
 }
