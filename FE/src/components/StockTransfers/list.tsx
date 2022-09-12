@@ -361,20 +361,7 @@ export const ListExport = () => {
                 />
               </Space>
             </div>
-            <div
-              style={{
-                paddingTop: "20px",
-                paddingRight: "10px",
-              }}
-            >
-              <Select
-                style={{ width: 120 }}
-                onChange={handleChangeSelect}
-                placeholder={"Ngày tạo"}
-              >
-                <Select.Option value="jack">Jack</Select.Option>
-              </Select>
-            </div>
+
             <div
               style={{
                 paddingTop: "20px",
@@ -403,7 +390,7 @@ export const ListExport = () => {
                 style={{ width: "120px" }}
                 dropdownStyle={{ height: 150, width: 1000000 }}
                 onSelect={handleClickOptionSend}
-                placeholder="Tìm kiếm chi nhánh"
+                placeholder="Chi nhánh chuuyển"
               >
                 {inSend &&
                   inSend.map((item: inventory) => (
@@ -427,7 +414,7 @@ export const ListExport = () => {
                 showSearch
                 style={{ width: "120px" }}
                 dropdownStyle={{ height: 150, width: 3000000 }}
-                placeholder="Tìm kiếm chi nhánh"
+                placeholder="Chi nhánh nhận"
                 onSelect={handleClickOptionReceive}
               >
                 {inReceive &&

@@ -9,11 +9,16 @@ import {
   Spin,
   Empty,
   TablePaginationConfig,
+  Modal,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { findProductById } from "../../api/product_variant";
 import "./file.css";
-import { getAllInventory, getProductVariants } from "../../api/inventory";
+import {
+  findInventoryById,
+  getAllInventory,
+  getProductVariants,
+} from "../../api/inventory";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useMutation } from "@tanstack/react-query";
@@ -23,9 +28,8 @@ import { Button } from "antd";
 import { DataType, inventory } from "../type/data_type";
 import { DeleteTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { ModalTable } from "./create/modal_table";
-import { SelectInventory } from "./create/select_inventory";
 import { createExportStatus } from "../../api/export_status";
+import { TableRowSelection } from "antd/lib/table/interface";
 
 const Create: React.FC = () => {
   const [products, setProducts] = useState<any>([]);
@@ -38,7 +42,7 @@ const Create: React.FC = () => {
   const [inventoryId, setInventoryId] = useState(1);
   const [productVariant, setProductVariant] = useState<any>();
   const [code, setCode] = useState<any>();
-
+  const [note, setNote] = useState<any>();
   const navigate = useNavigate();
   const exportValue = {
     exportInventory: inventorySend,
@@ -47,6 +51,7 @@ const Create: React.FC = () => {
 
   const [total, setTotal] = useState<number>(0);
   useEffect(() => {
+    document.title = "Tạo phiếu chuyển hàng";
     let b = 0;
     products.map((e: any) => {
       b += e.quantity * 1;
@@ -226,27 +231,28 @@ const Create: React.FC = () => {
 
       setLoading(false);
     }
-
-    // console.log(detailExport);
   };
 
   const creatDetailExportSubmit = useMutation((item: any) =>
     creatDetailExport(item)
   );
-  // console.log(code);
-
+  const handleNote = (e: any) => {
+    setNote(e.target.value);
+  };
   const handleStatus = async (id?: number) => {
     if (code !== undefined) {
       await createExportStatus({
         export: id,
         status: 0,
         code: code,
+        note: note,
       });
     } else {
       await createExportStatus({
         export: id,
         status: 0,
         code: "TPN000" + id,
+        note: note,
       });
     }
     message.success(<div>Thêm mới thành công</div>, 2);
@@ -255,7 +261,7 @@ const Create: React.FC = () => {
   if (creatDetailExportSubmit.isSuccess) {
     handleStatus(exportId);
   }
-  // console.log(products);
+
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 3,
@@ -266,6 +272,131 @@ const Create: React.FC = () => {
       setSpin(false);
     }, 1000);
   }, []);
+
+  const [inSend, setInSend] = useState(listInventory);
+  const [inReceive, setInReceive] = useState(listInventory);
+  const [a, setA] = useState(1);
+  useEffect(() => {
+    if (listInventory === undefined) {
+      setA(a + 1);
+    }
+    setInSend(listInventory);
+    setInReceive(listInventory);
+  }, [a]);
+  const handleClickOptionSend = async (e: any) => {
+    setInventoryId(e);
+    const exportByInventory = await findInventoryById(e);
+    setInventorySend(exportByInventory);
+    setInReceive(listInventory.filter((i: any) => i.id !== e));
+  };
+  const handleClickOptionReceive = async (e?: number) => {
+    const exportReceive = await findInventoryById(e);
+    setInventoryReceive(exportReceive);
+    setInSend(listInventory.filter((i: any) => i.id !== e));
+  };
+  const handleCode = (e: any) => {
+    setCode(e.target.value);
+  };
+
+  const [modal2Visible, setModal2Visible] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+  const columns_modal: ColumnsType<DataType> = [
+    {
+      title: "Mã hàng",
+      dataIndex: "code",
+    },
+    {
+      title: "Tên sản phẩm",
+      dataIndex: "name",
+    },
+    {
+      title: "Số lượng",
+      dataIndex: ["quantity", "id"],
+      render: (a, text) => {
+        return (
+          <Input
+            type={"number"}
+            style={{ width: "50%" }}
+            onChange={handleQuantity}
+            id={text?.id + ""}
+            key={text?.id}
+            defaultValue={1}
+            min={1}
+            max={text.quantity}
+            size={"middle"}
+          />
+        );
+      },
+    },
+  ];
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection: TableRowSelection<DataType> = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+    onSelect: (record, selected, selectedRows) => {
+      const id = record.id;
+      if (selected) {
+        const isFound = products.findIndex(
+          (element: any) => element.getProductById.id * 1 === id
+        );
+        const hanldeClick = async () => {
+          const getProductById = await findProductById(id as any);
+          setProducts([
+            {
+              getProductById: getProductById,
+              quantity: 1,
+            },
+            ...products,
+          ]);
+        };
+        if (isFound < 0) {
+          hanldeClick();
+        } else {
+          setProducts((prev: any) => {
+            prev.map((prod: any) => {
+              if (prod.getProductById.id === id) {
+                prod.quantity = prod.quantity * 1 + 1;
+              }
+            });
+            return [...prev];
+          });
+          console.log("san pham da chon");
+        }
+      } else {
+        const newData = products.filter(
+          (item: any) => item.getProductById.id * 1 !== id
+        );
+        setProducts(newData);
+      }
+    },
+    onSelectAll(selected, selectedRows, changeRows) {
+      setProducts(
+        selectedRows.map((e) => ({
+          getProductById: e,
+          quantity: 1,
+        }))
+      );
+    },
+    getCheckboxProps: (record: DataType) => {
+      return {
+        disabled: record.quantity === 0,
+      };
+    },
+  };
+  const [pagination1, setPagination1] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 3,
+  });
+  const handlePagination = (page: any) => {
+    setPagination1({
+      current: page.current,
+    });
+  };
   return (
     <Spin spinning={spin}>
       <div className="p-5">
@@ -298,13 +429,70 @@ const Create: React.FC = () => {
         </div>
         <div className="content">
           <div className="content-top">
-            <SelectInventory
-              setInventorySend={(e: any) => setInventorySend(e)}
-              setInventoryReceive={(e: any) => setInventoryReceive(e)}
-              listInventory={listInventory}
-              setInventoryId={(e: any) => setInventoryId(e)}
-              setCode={(e: any) => setCode(e)}
-            />
+            <div className="select-inventory">
+              <div className="title">
+                <h3>Thông tin phiếu</h3>
+              </div>
+              <div className="select-inventory-left">
+                <div className="select-inventory-top">
+                  <div className="title-p">
+                    <p>Chi nhánh chuyển </p>
+                    <span style={{ color: "red" }}>*</span>
+                  </div>
+                  <Select
+                    showSearch
+                    style={{ width: "100%" }}
+                    dropdownStyle={{ height: 150, width: 1000000 }}
+                    onSelect={handleClickOptionSend}
+                    placeholder="Tìm kiếm chi nhánh"
+                  >
+                    {inSend &&
+                      inSend.map((item: inventory) => (
+                        <Select.Option
+                          style={{ width: "100%" }}
+                          key={item.id}
+                          value={item.id}
+                        >
+                          {item.name}
+                        </Select.Option>
+                      ))}
+                  </Select>
+                </div>
+                <div className="select-inventory-top">
+                  <div className="title-p">
+                    <p>Chi nhánh nhận </p>
+                    <span style={{ color: "red" }}>*</span>
+                  </div>
+                  <Select
+                    showSearch
+                    style={{ width: "100%" }}
+                    dropdownStyle={{ height: 150, width: 3000000 }}
+                    placeholder="Tìm kiếm chi nhánh"
+                    onSelect={handleClickOptionReceive}
+                  >
+                    {inReceive &&
+                      inReceive.map((item: inventory) => (
+                        <Select.Option
+                          style={{ width: "100%" }}
+                          key={item.id}
+                          value={item.id}
+                        >
+                          {item.name}
+                        </Select.Option>
+                      ))}
+                  </Select>
+                </div>
+              </div>
+              <div className="select-inventory-left">
+                <div className="select-inventory-top">
+                  <div className="title-p">
+                    <p>Mã phiếu chuyển</p>
+                  </div>
+                  <Input placeholder="Nhập mã phiếu" onChange={handleCode} />
+                </div>
+                <div className="select-inventory-top"></div>
+              </div>
+            </div>
             <div className="additional-information">
               <div className="title">
                 <h3>Thông tin bổ sung</h3>
@@ -317,6 +505,7 @@ const Create: React.FC = () => {
                   rows={3}
                   style={{ width: "100%" }}
                   placeholder={"VD : Giao hàng nhanh"}
+                  onChange={handleNote}
                 ></textarea>
               </div>
             </div>
@@ -354,13 +543,45 @@ const Create: React.FC = () => {
                   )}
                 </Select>
               </div>
-              <ModalTable
+              <div className="Modal">
+                <Button type="default" onClick={() => setModal2Visible(true)}>
+                  Chọn nhanh
+                </Button>
+
+                {modal2Visible && (
+                  <Modal
+                    title="Chọn sản phẩm"
+                    centered
+                    visible={modal2Visible}
+                    onCancel={() => setModal2Visible(false)}
+                    footer={null}
+                    width={"1000px"}
+                  >
+                    <div className="select-modal">
+                      <Table
+                        rowKey="id"
+                        columns={columns_modal}
+                        dataSource={dataProduct}
+                        style={{ width: "100%" }}
+                        scroll={{ y: 240 }}
+                        rowSelection={rowSelection}
+                        pagination={pagination1}
+                        onChange={handlePagination}
+                      />
+                    </div>
+                    <span style={{ color: "blue", fontWeight: 600 }}>
+                      Bạn đã chọn {quantityProducts} sản phẩm
+                    </span>
+                  </Modal>
+                )}
+              </div>
+              {/* <ModalTable
                 products={products}
                 setProducts={(e) => setProducts(e)}
                 dataProduct={dataProduct}
                 quantityProducts={quantityProducts}
                 handleQuantity={(e) => handleQuantity(e)}
-              />
+              /> */}
             </div>
             <div>
               {products.length > 0 ? (
@@ -386,9 +607,7 @@ const Create: React.FC = () => {
                     height: 60,
                   }}
                   description={<span>Chưa chọn sản phẩm</span>}
-                >
-                  {/* <Button type="primary">Thêm sản phẩm</Button> */}
-                </Empty>
+                ></Empty>
               )}
             </div>
             <div className="export-bottom">
@@ -402,11 +621,6 @@ const Create: React.FC = () => {
                   <span>{total}</span>
                 </div>
               </li>
-              {/* <li>
-              <div className="">
-                <span>Tổng giá trị chuyển : {total}</span>
-              </div>
-            </li> */}
             </div>
           </div>
         </div>

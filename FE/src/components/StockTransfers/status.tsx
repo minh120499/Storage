@@ -66,15 +66,16 @@ export const Status = () => {
         const productExpri = productVariant.filter(
           (e: any) => e.quantity === 0
         );
-        console.log(productExpri.length);
-
-        // setCheck(productExpri);
         if (productExpri.length === 0) {
           await updateExportStatusById(item, {
             id: status?.id,
             export: item,
             dateSend: now,
             status: 1,
+            note:
+              statusUpdate.length > 0
+                ? statusUpdate[statusUpdate.length - 1].note
+                : status.note,
           });
           await addExportByInventory(
             exportById?.exportInventory?.id,
@@ -92,6 +93,12 @@ export const Status = () => {
           export: item,
           dateReceive: now,
           status: 2,
+          note:
+            statusSend.length > 0
+              ? statusSend[statusSend.length - 1].note
+              : statusUpdate.length > 0
+              ? statusUpdate[statusUpdate.length - 1].note
+              : status.note,
         });
         await importExportByInventory(
           exportById?.receiveInventory?.id,
@@ -394,8 +401,6 @@ export const Status = () => {
             <div>
               <Space size="small">
                 <Button>In phiếu</Button>
-                <Button>Sao chép</Button>
-                {/* <Button>In phiếu</Button> */}
               </Space>
             </div>
           </div>
@@ -489,7 +494,6 @@ export const Status = () => {
                 visible={visible}
                 onCancel={hideModal}
                 footer={null}
-                // style={{ width: "100%" }}
                 width={"50%"}
               >
                 <table id="miyazaki">
@@ -744,9 +748,23 @@ export const Status = () => {
             </Card>
             <Card title="Thông tin bổ sung" className="col-span-2">
               <h4>Ghi chú</h4>
-              <p>Chưa có ghi chú</p>
-              {/* <p>Card content</p>
-            <p>Card content</p> */}
+              {status?.note === undefined ? (
+                <p>Chưa có ghi chú</p>
+              ) : (
+                <>
+                  {statusSend.length > 0 ? (
+                    <p>{statusSend[statusSend.length - 1]?.note}</p>
+                  ) : (
+                    <>
+                      {statusUpdate.length > 0 ? (
+                        <p>{statusUpdate[statusUpdate.length - 1]?.note}</p>
+                      ) : (
+                        <p>{status?.note}</p>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
             </Card>
           </div>
         </div>
@@ -786,15 +804,6 @@ export const Status = () => {
                 <span>{total}</span>
               </div>
             </li>
-            {/* <li>
-            <div className="">
-              <span>Tổng giá trị chuyển : </span>
-            </div>
-
-            <div className="">
-              <span>{total}</span>
-            </div>
-          </li> */}
           </div>
         </div>
         <div />

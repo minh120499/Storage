@@ -40,7 +40,6 @@ import {
 } from "../type/data_type";
 import { DeleteTwoTone } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
-import { ModalTable } from "./create/modal_table";
 import {
   createExportStatus,
   findExportStatusById,
@@ -257,6 +256,7 @@ const Create: React.FC = () => {
       await createExportStatus({
         parentId: status?.id,
         status: status?.status,
+        note: status?.note,
         dateUpdate: moment(new Date()).format("DD/MM/YYYY HH:mm").toString(),
       });
     } else {
@@ -330,7 +330,12 @@ const Create: React.FC = () => {
       code: e.target.value,
     }));
   };
-  // console.log(code);
+  const handleNote = (e: any) => {
+    setStattus((prev) => ({
+      ...prev,
+      note: e.target.value,
+    }));
+  };
 
   const [modal2Visible, setModal2Visible] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -551,6 +556,8 @@ const Create: React.FC = () => {
                 rows={3}
                 style={{ width: "100%" }}
                 placeholder={"VD : Giao hàng nhanh"}
+                value={status?.note}
+                onChange={handleNote}
               ></textarea>
             </div>
           </div>

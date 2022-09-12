@@ -53,4 +53,6 @@ public class ExportsStatus {
     private String dateUpdate;
     @Column(name = "status_cancel")
     private Boolean statusCancel = null;
+    @Column(name = "note")
+    private String note;
 }

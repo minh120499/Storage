@@ -1,12 +1,10 @@
-import "./stock_transfers/file.css";
-import { ListExport } from "./stock_transfers/list";
+import "./StockTransfers/file.css";
+import { ListExport } from "./StockTransfers/list";
 
 export default function Storage() {
   return (
     <div className="background-storage">
       <ListExport />
-
-      {/* <SelectInventory /> */}
     </div>
   );
 }

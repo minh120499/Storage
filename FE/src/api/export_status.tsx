@@ -6,6 +6,7 @@ type value = {
   code?: string;
   parentId?: number;
   dateUpdate?: string;
+  note?: string;
 };
 type request = {
   id?: number;
@@ -22,6 +23,7 @@ type request = {
   statusCancel?: boolean;
   parentId?: number;
   dateUpdate?: string;
+  note?: string;
 };
 export const getExportStatus = async () => {
   return (await axios.get(`http://localhost:8080/api/exportsStatus`)).data;

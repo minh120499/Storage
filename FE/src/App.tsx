@@ -19,10 +19,10 @@ import InventoryList from "./components/inventory/InventoryList";
 import ListImportInvoice from "./pages/ImportInvoice/ListImportInvoice";
 import DetailImportInvoice from "./pages/ImportInvoice/DetailImportInvoice";
 import ProductDetails from "./pages/product/ProductDetails";
-import { Status } from "./components/stock_transfers/status";
-import Create from "./components/stock_transfers/create";
+import { Status } from "./components/StockTransfers/status";
+import Create from "./components/StockTransfers/create";
 import InventoryManager from "./components/inventory/InventoryManager";
-import Edit from "./components/stock_transfers/edit";
+import Edit from "./components/StockTransfers/edit";
 
 const App: React.FC = () => {
   const router = useRoutes([

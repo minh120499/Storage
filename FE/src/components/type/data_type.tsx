@@ -74,15 +74,11 @@ export interface exportStatus {
   dateCancel?: string;
   dateUpdate?: string;
   statusCancel?: boolean;
+  note?: string;
 }
 export interface listExport {
   id?: number;
   receiveInventory?: inventory;
-  status?: number;
-  transportCompany?: number;
-  account?: number;
-  createAt?: string;
-  updateAt?: string;
   exportInventory?: inventory;
   detailsExports?: typeDetailExport[];
   exportsStatuses?: exportStatus[];
