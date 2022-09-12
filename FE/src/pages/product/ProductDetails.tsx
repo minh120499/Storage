@@ -14,6 +14,7 @@ import ToastCustom from "../../features/toast/Toast";
 import AddProduct from "./AddProduct";
 import UpdateProduct from './UpdateProduct'
 import { fontWeight } from "@mui/system";
+import useTitle from "../../app/useTitle";
 export interface ProductInfo {
     product: Product,
     variants: IVariant[],
@@ -22,7 +23,7 @@ export interface ProductInfo {
 }
 
 const ProductDetails = () => {
-
+    useTitle("Chi tiết sản phẩm","Chi tiết sản phẩm")
     const { id ,backcode} = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
     const [focusVariant, setFocusVariant] = useState<IVariant>()
@@ -99,7 +100,6 @@ const ProductDetails = () => {
     useEffect(() => {
 
         loadData()
-        document.title = 'Chi tiết sản phẩm'
     }, [])
     useEffect(() => {
         if (!isUpdate) loadData()
@@ -434,7 +434,7 @@ const ProductDetails = () => {
             <div>
                 <div>
                     <h2 style={{ fontSize:'15px' }} >
-                        <Link to="/products">
+                        <Link to="/warehouse/products">
                             <LeftOutlined /> Danh sách sản phẩm
                         </Link>
                         {
@@ -443,8 +443,6 @@ const ProductDetails = () => {
                             </Link>:null
                         }
                     </h2>
-                    <h1 style={{fontSize:'30px',margin:0,marginRight:10,marginBottom:'45px'}}>Chi tiết sản phẩm</h1>
-
                 </div>
 
 

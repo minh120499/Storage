@@ -41,7 +41,7 @@ public class Inventory   {
 
 
     @Column(name = "size", nullable = false)
-    private Boolean size;
+    private Boolean size = false;
 
     @Column(name = "create_at", nullable = false)
     @CreatedDate
@@ -52,7 +52,7 @@ public class Inventory   {
     private Timestamp updateAt;
 
     @Column(name = "is_delete", nullable = false)
-    private Boolean isDelete;
+    private Boolean isDelete= false;
 
 
 

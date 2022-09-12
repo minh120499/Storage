@@ -7,9 +7,10 @@ import moment from "moment";
 type Props ={
     statusExport: exportStatus,
     anExport:exportById,
-    detailExport:typeDetailExport[]
+    detailExport:typeDetailExport[],
+    accountCreate:any;
 }
-const PDFStockTransfer = ({statusExport,anExport,detailExport}:Props) =>{
+const PDFStockTransfer = ({statusExport,anExport,detailExport,accountCreate}:Props) =>{
     Font.register({
         family: "Roboto",
         src:
@@ -94,12 +95,12 @@ const PDFStockTransfer = ({statusExport,anExport,detailExport}:Props) =>{
         },
     });
 
-    const SupplierInfo = ({exports}:any) => (
+    const SupplierInfo = ({exports,accountCreate}:any) => (
         <View style={stylesSupplierInfo.container}>
             <View style={stylesSupplierInfo.headerContainer}>
                 <Text style={stylesSupplierInfo.billTo}>Nhân viên tạo:</Text>
-                <Text>Tên nhân viên: Vũ Nhật Minh </Text>
-                <Text>SĐT: 0987885614</Text>
+                <Text>Tên nhân viên: {accountCreate.fullName} </Text>
+                <Text>SĐT: {accountCreate.phone}</Text>
             </View>
             <View style={stylesSupplierInfo.headerContainer}>
                 <Text style={stylesSupplierInfo.billTo}>Chi nhánh chuyển:</Text>
@@ -267,7 +268,7 @@ const PDFStockTransfer = ({statusExport,anExport,detailExport}:Props) =>{
             <Page size="A4" style={styles.page}>
                 <InvoiceTitle title='Phiếu chuyển hàng'/>
                 <InvoiceNo statusExport={statusExport} />
-                <SupplierInfo exports={anExport}/>
+                <SupplierInfo exports={anExport} accountCreate={accountCreate}/>
                 <InvoiceItemsTable detailExport={detailExport} />
             </Page>
         </Document>

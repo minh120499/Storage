@@ -12,7 +12,7 @@ import {
   Row,
   Select,
   Space,
-  Table,
+  Table, Tag,
 } from "antd";
 import SelectSupplier from "../../components/SelectSupplier";
 import {
@@ -44,7 +44,8 @@ import useTitle from "../../app/useTitle";
 // ImportInvoice * as CurrencyFormat from 'react-currency-format';
 
 const CreateImport = () => {
-  useTitle("Tạo đơn nhập hàng")
+  useTitle("Tạo đơn nhập hàng","Tạo đơn nhập hàng")
+
   const { Option } = Select;
   const [supplierId, setSupplierId] = useState<number>();
   const [inventoryId, setInventoryId] = useState<number>(0);
@@ -74,6 +75,8 @@ const CreateImport = () => {
     });
     document.title = "Tạo mới đơn";
   }, []);
+
+
 
   useEffect(() => {
     getCountTotalProductVariant(searchValue).then((r) => {
@@ -621,7 +624,7 @@ const CreateImport = () => {
               <Form.Item
                 label="Chi nhánh"
                 name="inventory"
-                rules={[{ required: true }]}
+                rules={[{ required: true ,message:"Chi nhánh không được để trống"}]}
               >
                 <Select
                   showSearch
@@ -638,7 +641,19 @@ const CreateImport = () => {
                           value={inventor.id}
                         >
                           {" "}
-                          {inventor.name}
+                          {
+                            inventor.size ? (
+                                <div>
+                                  {inventor.name }
+                                  <Tag style={{marginLeft:10}} color="red">Đã đầy </Tag>
+                                </div>
+                            ) : (
+                                <div>
+                                  {inventor.name }
+                                  <Tag style={{marginLeft:10}} color="green">Còn trống</Tag>
+                                </div>
+                            )
+                          }
                         </Option>
                       );
                     })}
@@ -650,6 +665,7 @@ const CreateImport = () => {
                   showTime={{ format: "HH:mm" }}
                   style={{ width: "100%" }}
                   onChange={onChangeDate}
+                  placeholder={"Chọn ngày giao"}
                 />
               </Form.Item>
             </div>

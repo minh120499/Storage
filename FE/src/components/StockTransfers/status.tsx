@@ -36,7 +36,11 @@ import { getProductVariants } from "../../api/inventory";
 import {employeeDetailsApi, employeesApi} from "../../api/EmployeesApi";
 import {useSelector} from "react-redux";
 import {RootState} from "../../app/store";
+import PDFStockTransfer from "../stock_transfers/PDFStockTransfer";
+import {PDFViewer, PDFDownloadLink} from "@react-pdf/renderer";
 
+import PrintIcon from "@mui/icons-material/Print";
+import useTitle from "../../app/useTitle";
 export const Status = () => {
   const { id } = useParams();
   const [exportById, setExportById] = useState<exportById>();
@@ -54,6 +58,7 @@ export const Status = () => {
   const [statusSend, setStatusSend] = useState<exportStatus[]>([]);
   const [check, setCheck] = useState<any>([]);
 
+  useTitle("","Tạo phiếu chuyển hàng")
   const now = moment(new Date()).format("DD/MM/YYYY HH:mm").toString();
   const next = async () => {
     setLoading(true);
@@ -402,7 +407,7 @@ export const Status = () => {
         <div id="top-head-status" className="flex justify-between">
           <div className="flex flex-col gap-2">
             <div>
-              <b>{detailExport[0]?.code || "--"}</b>{" "}
+              <b style={{fontSize:25}}>{detailExport[0]?.code || "--"}</b>{" "}
               {status?.status === 0 && !status?.statusCancel ? (
                 <Tag className="rounded-3xl ml-3" color="blue">
                   Chờ chuyển
@@ -432,11 +437,27 @@ export const Status = () => {
                 " "
               )}
             </div>
+            {status?.status === 2 ?
             <div>
               <Space size="small">
-                <Button>In phiếu</Button>
+                {
+                  (exportById !== undefined && detailExport.length > 0 && status !== undefined) ? (
+                      <PDFDownloadLink
+                          fileName={"phieuChuyenHang - " + moment(status.createAt).format('DD/MM/YYYY HH:mm:ss aa') + ".pdf"}
+                          document={<PDFStockTransfer statusExport={status} accountCreate ={accountCreate}  anExport={exportById}
+                                                      detailExport={detailExport} />}>
+                        {({blob, url, loading, error}) =>
+                            <Button style={{padding:0,paddingLeft: 5,paddingRight: 5}} type='default'> <Space>
+                              <PrintIcon style={{position: 'relative', top: 3,fontSize:16}}/>
+                              In phiếu
+                            </Space></Button>
+                        }
+                      </PDFDownloadLink>
+                  ):<></>
+                }
               </Space>
             </div>
+                : ""}
           </div>
 
           <div>
@@ -603,7 +624,7 @@ export const Status = () => {
                             ))
                           : ""}
                         <tr>
-                          <td className="">{status?.accountSend}</td>
+                          <td className="">{accountSend?.fullName}</td>
                           <td className="">Chuyển hàng</td>
                           <td className="">Chuyển hàng</td>
                           <td className="">{status?.dateSend}</td>

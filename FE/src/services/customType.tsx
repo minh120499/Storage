@@ -120,7 +120,8 @@ export interface IInventories {
     id: number,
     code: string,
     name: string,
-    address: string
+    address: string,
+    size:boolean
 }
 export interface IHistoryStatus {
     accountName: string,

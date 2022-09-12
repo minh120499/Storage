@@ -160,8 +160,8 @@ const InventoryManager = () => {
                   quantity.minQuantity === 0
                     ? "Thêm giới hạn cảnh báo"
                     : quantity.quantity > quantity.minQuantity
-                      ? `Còn hàng ${quantity?.quantity?.toLocaleString()} / ${quantity?.minQuantity?.toLocaleString()}`
-                      : `Sắp hết hàng ${quantity?.quantity?.toLocaleString()} / ${quantity?.minQuantity?.toLocaleString()}`
+                      ? `Còn hàng ${quantity?.quantity?.toLocaleString() || 'Chưa xét SL'} / ${quantity?.minQuantity?.toLocaleString() || 'Chưa xét SL'}`
+                      : `Sắp hết hàng ${quantity?.quantity?.toLocaleString() || 'Chưa xét SL'} / ${quantity?.minQuantity?.toLocaleString() || 'Chưa xét SL'}`
                 }
               >
                 {quantity?.minQuantity ? (
@@ -498,9 +498,6 @@ const InventoryManager = () => {
                       {inventory.updateAt}
                     </Moment>
                   </b>
-                </Col>
-                <Col span={24}>
-                  <PieChartReport className="mt-5" />
                 </Col>
               </Row>
             </form>

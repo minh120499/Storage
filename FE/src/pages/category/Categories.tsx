@@ -19,7 +19,7 @@ import useTitle from "../../app/useTitle";
 
 
 export default function Categories() {
-  useTitle("Danh mục","Danh mục")
+  useTitle("","Danh mục")
   const [response, setResponse] = useState<Category[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [status, setStatus] = useState(false);
@@ -168,6 +168,7 @@ export default function Categories() {
 
   return (
     <div className="m-5">
+      <h1 style={{ fontSize: '30px', marginRight: 10}}  >Danh sách danh mục </h1>
       <div
         style={{
           marginBottom: 16,

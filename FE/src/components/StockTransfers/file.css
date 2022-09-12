@@ -194,6 +194,6 @@ table#miyazaki tbody tr:not(:last-child) {
   }
 }
 .ant-table-thead > tr > th {
-  background-color: #d8e0e7 !important;
-  font-weight: 600 !important;
+  /*background-color: #d8e0e7 !important;*/
+  /*font-weight: 600 !important;*/
 }

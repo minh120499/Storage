@@ -25,11 +25,12 @@ import {DeleteOutlined, DownOutlined, InfoCircleOutlined, StopOutlined,SortDesce
 import BarChartStatisticInventory from "./BarChartStatisticInventory";
 import ExportExcelImportStatistic from "./ExportExcelImportStatistic";
 import { downloadExcel } from "react-export-table-to-excel";
+import useTitle from "../../app/useTitle";
 
 
 const Statistics: FC = () => {
     const navigate = useNavigate()
-
+    useTitle("","Thống kê báo cáo")
     var fstring = localStorage.getItem('importFilter')
     var filter: StatisticsFilter = fstring ? JSON.parse(fstring) : {
         inventoryId: -1,
@@ -56,7 +57,6 @@ const Statistics: FC = () => {
 
     useEffect(() => {
         setLoadding(true)
-        document.title='Thống kê báo cáo'
         loadData()
     }, [])
 
@@ -474,8 +474,7 @@ const Statistics: FC = () => {
     return (
         <>
             <div className="p-5"  >
-                <h1 style={{ fontSize: '30px', marginRight: 10 }}  >Thống kê báo cáo </h1>
-
+                <h1 style={{ fontSize: '30px', marginRight: 10,paddingLeft:17 }}  >Thống kê báo cáo </h1>
 
                 <Antd.Spin spinning={loadding} tip={'Đang thống kê'} >
 

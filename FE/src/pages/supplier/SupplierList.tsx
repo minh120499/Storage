@@ -32,7 +32,7 @@ const SupplierList = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(true)
-  useTitle("")
+  useTitle("","nhà cung cấp")
 
   useEffect(() => {
     // setTimeout(() => {
@@ -41,7 +41,7 @@ const SupplierList = () => {
       setIsLoading(false);
     });
     // }, 1000)
-    document.title = "Nhà cung cấp";
+
   }, [reload]);
 
   const navigate = useNavigate();
@@ -145,7 +145,7 @@ const SupplierList = () => {
 
   return (
     <div className="p-5">
-      <Title>Nhà cung cấp</Title>
+      <h1 style={{ fontSize: '30px', marginRight: 10}}  >Nhà cung cấp </h1>
       <div
         style={{
           marginBottom: 16,

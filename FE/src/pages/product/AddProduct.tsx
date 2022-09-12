@@ -15,13 +15,14 @@ import { getCategories } from '../../api/apiCategory';
 import SelectCategory from './SelectCategory';
 import SelectOption from './SelectOption';
 import ImageUpload from './ImageUpload';
+import useTitle from "../../app/useTitle";
 
 
 
 
 function AddProduct(props: any) {
     //init values
-
+    useTitle("Thêm mới sản phẩm")
     var initOptions: Array<OptionAdd> = []
     var valuesForName: string[] = []
     var variantsAll: IVariant[] = []
@@ -111,7 +112,7 @@ function AddProduct(props: any) {
             return response.json()
         }).then((data) => {
             if (data.product.id) {
-                navigate(`/products/${data.product.id}`)
+                navigate(`/warehouse/products/${data.product.id}`)
 
             }
         })
@@ -350,13 +351,11 @@ function AddProduct(props: any) {
         <div className ='p-5'>
             <Antd.Spin  spinning={open} tip={'Đang lưu...'}>
 
-            <h2 style={{ fontSize:'15px' }} >
-                <Link to="/products">
+            <h2 style={{ fontSize:'15px',marginBottom:20 }} >
+                <Link to="/warehouse/products">
                     <LeftOutlined /> Danh sách sản phẩm
                 </Link>
             </h2>
-             <h1 style={{fontSize:'30px',margin:0,marginRight:10,marginBottom:'45px'}}>Thêm mới sản phẩm</h1>
-
             <Antd.Form onFinish={onSubmit}
 
                 initialValues={product}

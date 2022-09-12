@@ -77,3 +77,6 @@ main::-webkit-scrollbar-thumb {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
+.ant-layout-header {
+  padding: 0 25px!important;
+}

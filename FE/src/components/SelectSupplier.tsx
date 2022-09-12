@@ -16,12 +16,14 @@ const SelectSupplier = ({changeSupplierId} : Props) => {
             setSuppliers(r.data.reverse())
         })
     },[])
+
+
     const handleSelectSupplier = (key: number) => {
         setSupplierId(key)
         changeSupplierId(key)
     }
     return (
-        <Antd.Form.Item label='Nhà cung cấp' name={'supplierId'} labelCol={{ span: 24 }} rules={[{required: true}]} >
+        <Antd.Form.Item label='Nhà cung cấp' name={'supplierId'} labelCol={{ span: 24 }} rules={[{required: true,message:"Nhà cung cấp không được để trống"}]} >
         <Antd.Select style={{ width: '100%', marginBottom: 10, borderRadius: 5 }} size={'large'}
                          showSearch
                          placeholder="Nhấn để chọn nhà cung cấp"

@@ -3,6 +3,7 @@ import { IMinQuantityRequest, IResultId } from "../interface";
 const headers = {
   Authorization: "Bearer " + localStorage.getItem("token"),
 };
+
 export const getAllInventory = async () => {
   return (await axios.get(`http://localhost:8080/inventories`, { headers }))
     .data;

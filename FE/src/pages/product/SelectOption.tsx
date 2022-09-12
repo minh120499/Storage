@@ -64,7 +64,7 @@ const SelectOption = (props:ISelectOption) => {
                                     <Antd.Select key={index}
                                         size={'large'}
                                         mode="tags"
-                                        placeholder="Please select"
+                                        placeholder="Nhập thuộc tính"
                                         style={{
                                             width: '60%',
                                         }}
