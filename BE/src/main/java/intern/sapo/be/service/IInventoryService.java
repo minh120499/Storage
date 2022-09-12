@@ -1,7 +1,7 @@
 package intern.sapo.be.service;
 
 import intern.sapo.be.dto.request.Inventory.ListIdRequest;
-import intern.sapo.be.dto.response.product.Inventory.InventoryResponse;
+import intern.sapo.be.dto.response.Product.Inventory.InventoryResponse;
 import intern.sapo.be.entity.InventoriesProductVariant;
 import intern.sapo.be.entity.Inventory;
 import org.springframework.data.domain.Page;

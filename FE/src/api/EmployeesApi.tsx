@@ -17,9 +17,12 @@ export const updateEmployeeApi = async (data: any) => {
   });
 };
 
-export const employeesApi = async () => {
+export const employeesApi = async (id?: number) => {
   return (
-    await axios.get("http:/127.0.0.1:8080/api/account", {
+    await axios.get("http://localhost:8080/api/account", {
+        params: {
+            id
+        },
       headers,
     })
   ).data;

@@ -33,6 +33,9 @@ import {
 } from "../../api/export_status";
 import { exportById, exportStatus, typeDetailExport } from "../type/data_type";
 import { getProductVariants } from "../../api/inventory";
+import {employeeDetailsApi, employeesApi} from "../../api/EmployeesApi";
+import {useSelector} from "react-redux";
+import {RootState} from "../../app/store";
 
 export const Status = () => {
   const { id } = useParams();
@@ -59,6 +62,8 @@ export const Status = () => {
       setIsModalOpen(true);
     }, 500);
   };
+  const user = useSelector((state: RootState) => state.user)
+  // console.log(user)
   const handleOk = () => {
     setLoading(true);
     setTimeout(async () => {
@@ -76,6 +81,7 @@ export const Status = () => {
               statusUpdate.length > 0
                 ? statusUpdate[statusUpdate.length - 1].note
                 : status.note,
+            accountSend:user.id,
           });
           await addExportByInventory(
             exportById?.exportInventory?.id,
@@ -99,6 +105,7 @@ export const Status = () => {
               : statusUpdate.length > 0
               ? statusUpdate[statusUpdate.length - 1].note
               : status.note,
+          accountReceive:user.id,
         });
         await importExportByInventory(
           exportById?.receiveInventory?.id,
@@ -119,6 +126,7 @@ export const Status = () => {
         dateCancel: now,
         status: status?.status,
         statusCancel: true,
+        accountCancel:user.id
       });
     } else if (status?.status === 1) {
       await updateExportStatusById(item, {
@@ -127,6 +135,7 @@ export const Status = () => {
         dateCancel: now,
         status: status?.status,
         statusCancel: true,
+        accountCancel:user.id,
       });
       await importExportByInventory(
         exportById?.exportInventory?.id,
@@ -149,13 +158,35 @@ export const Status = () => {
     setLoadingEdit(true);
     setTimeout(() => {
       setLoadingEdit(false);
-      navigate(`/storage/stock_transfers/edit/${id}`);
+      navigate(`/coordinator/storage/stock_transfers/edit/${id}`);
     }, 500);
   };
+  const [accountCreate,setAccountCreate] = useState<any>();
+  const [accountSend,setAccountSend] = useState<any>();
+  const [accountReceive,setAccountReceive] = useState<any>();
+  const [accountCancel,setAccountCancel] = useState<any>();
+
   const data = async () => {
     const exportData = await findExportById(item);
     const detailExport = await findDetailByExport(item);
     const exportStatus = await findExportStatusById(item);
+    const getAccountCreate = await employeesApi(exportStatus.accountCreate);
+    // console.log(getAccountCreate)
+    if(exportStatus.status === 1){
+      const getAccountSend = await employeesApi(exportStatus.accountSend);
+      setAccountSend(getAccountSend)
+
+    }
+    if(exportStatus.status === 2){
+      const getAccountSend = await employeesApi(exportStatus.accountSend);
+      const getAccountReceive = await employeesApi(exportStatus.accountReceive);
+      setAccountSend(getAccountSend)
+      setAccountReceive(getAccountReceive)
+    }
+    if(exportStatus.statusCancel){
+      const getAccountCancel = await employeesApi(exportStatus.accountCancel);
+    setAccountCancel(getAccountCancel)
+    }
     const exportStatusByParentId = await findExportStatusBygetByParentId(
       exportStatus.id
     );
@@ -171,9 +202,12 @@ export const Status = () => {
       );
     });
 
+    setAccountCreate(getAccountCreate);
     setExportById(exportData);
     setDetailExport(detailExport);
     setStatus(exportStatus);
+
+
     setStatusUpdate(
       exportStatusByParentId.filter((e: exportStatus) => e.status === 0)
     );
@@ -246,7 +280,7 @@ export const Status = () => {
       setSpin(false);
     }, 1000);
   }, []);
-
+  // console.log(accountCreate)
   return (
     <Spin spinning={spin}>
       <div className="p-5">
@@ -509,7 +543,7 @@ export const Status = () => {
                     {status?.status === 0 ? (
                       <>
                         <tr>
-                          <td className="">{status?.accountCreate}</td>
+                          <td className="">{accountCreate.fullName}</td>
                           <td className="">Chuyển hàng</td>
                           <td className="">Thêm mới phiếu chuyển hàng</td>
                           <td className="">
@@ -521,7 +555,7 @@ export const Status = () => {
                         {statusUpdate.length > 0
                           ? statusUpdate.map((e: exportStatus) => (
                               <tr>
-                                <td className="">{e?.accountCreate}</td>
+                                <td className="">{accountCreate?.fullName}</td>
                                 <td className="">Chuyển hàng</td>
                                 <td className="">Cập nhật phiếu chuyển hàng</td>
                                 <td className="">{e?.dateUpdate}</td>
@@ -530,7 +564,7 @@ export const Status = () => {
                           : ""}
                         {status.statusCancel ? (
                           <tr>
-                            <td className="">{status?.accountCancel}</td>
+                            <td className="">{accountCancel?.fullName}</td>
                             <td className="">Chuyển hàng</td>
                             <td className="">Huỷ phiếu chuyển hàng</td>
                             <td className="">
@@ -549,7 +583,7 @@ export const Status = () => {
                     {status?.status === 1 ? (
                       <>
                         <tr>
-                          <td className="">{status?.accountCreate}</td>
+                          <td className="">{accountSend?.fullName}</td>
                           <td className="">Chuyển hàng</td>
                           <td className="">Thêm mới phiếu chuyển hàng</td>
                           <td className="">
@@ -561,7 +595,7 @@ export const Status = () => {
                         {statusUpdate.length > 0
                           ? statusUpdate.map((e: exportStatus) => (
                               <tr>
-                                <td className="">{e?.accountCreate}</td>
+                                <td className="">{accountSend?.fullName}</td>
                                 <td className="">Chuyển hàng</td>
                                 <td className="">Cập nhật phiếu chuyển hàng</td>
                                 <td className="">{e?.dateUpdate}</td>
@@ -577,7 +611,7 @@ export const Status = () => {
                         {statusSend.length > 0
                           ? statusSend.map((e: exportStatus) => (
                               <tr>
-                                <td className="">{e?.accountSend}</td>
+                                <td className="">{accountSend?.fullName}</td>
                                 <td className="">Chuyển hàng</td>
                                 <td className="">Cập nhật phiếu chuyển hàng</td>
                                 <td className="">{e?.dateUpdate}</td>
@@ -586,7 +620,7 @@ export const Status = () => {
                           : ""}
                         {status.statusCancel ? (
                           <tr>
-                            <td className="">{status?.accountCancel}</td>
+                            <td className="">{accountCancel?.fullName}</td>
                             <td className="">Chuyển hàng</td>
                             <td className="">Huỷ phiếu chuyển hàng</td>
                             <td className="">
@@ -605,7 +639,7 @@ export const Status = () => {
                     {status?.status === 2 ? (
                       <>
                         <tr>
-                          <td className="">{status?.accountCreate}</td>
+                          <td className="">{accountCreate?.fullName}</td>
                           <td className="">Chuyển hàng</td>
                           <td className="">Thêm mới phiếu chuyển hàng</td>
                           <td className="">
@@ -617,7 +651,7 @@ export const Status = () => {
                         {statusUpdate.length > 0
                           ? statusUpdate.map((e: exportStatus) => (
                               <tr>
-                                <td className="">{e?.accountCreate}</td>
+                                <td className="">{accountSend?.fullName}</td>
                                 <td className="">Chuyển hàng</td>
                                 <td className="">Cập nhật phiếu chuyển hàng</td>
                                 <td className="">{e?.dateUpdate}</td>
@@ -625,7 +659,7 @@ export const Status = () => {
                             ))
                           : ""}
                         <tr>
-                          <td className="">{status?.accountSend}</td>
+                          <td className="">{accountSend?.fullName}</td>
                           <td className="">Chuyển hàng</td>
                           <td className="">Chuyển hàng</td>
                           <td className="">{status?.dateSend}</td>
@@ -633,7 +667,7 @@ export const Status = () => {
                         {statusSend.length > 0
                           ? statusSend.map((e: exportStatus) => (
                               <tr>
-                                <td className="">{e?.accountSend}</td>
+                                <td className="">{accountSend?.fullName}</td>
                                 <td className="">Chuyển hàng</td>
                                 <td className="">Cập nhật phiếu chuyển hàng</td>
                                 <td className="">{e?.dateUpdate}</td>
@@ -641,7 +675,7 @@ export const Status = () => {
                             ))
                           : ""}
                         <tr>
-                          <td className="">{status?.accountReceive}</td>
+                          <td className="">{accountReceive?.fullName}</td>
                           <td className="">Chuyển hàng</td>
                           <td className="">Nhận hàng</td>
                           <td className="">{status?.dateReceive}</td>
@@ -683,7 +717,7 @@ export const Status = () => {
                   <div style={style}>Người tạo </div>
                 </Col>
                 <Col className="gutter-row" span={6}>
-                  <div style={style}>: {status?.accountCreate}</div>
+                  <div style={style}>: {accountCreate?.fullName}</div>
                 </Col>
               </Row>
               {status?.status === 1 ? (
@@ -700,7 +734,7 @@ export const Status = () => {
                     <div style={style}>Người chuyển </div>
                   </Col>
                   <Col className="gutter-row" span={6}>
-                    <div style={style}>: {status?.accountSend}</div>
+                    <div style={style}>: {accountSend?.fullName}</div>
                   </Col>
                 </Row>
               ) : (
@@ -721,7 +755,7 @@ export const Status = () => {
                       <div style={style}>Người chuyển </div>
                     </Col>
                     <Col className="gutter-row" span={6}>
-                      <div style={style}>: {status?.accountSend}</div>
+                      <div style={style}>: {accountSend?.fullName}</div>
                     </Col>
                   </Row>
                   <Row gutter={16}>
@@ -738,7 +772,7 @@ export const Status = () => {
                       <div style={style}>Người nhận </div>
                     </Col>
                     <Col className="gutter-row" span={6}>
-                      <div style={style}>: {status?.accountReceive}</div>
+                      <div style={style}>: {accountReceive?.fullName}</div>
                     </Col>
                   </Row>
                 </>

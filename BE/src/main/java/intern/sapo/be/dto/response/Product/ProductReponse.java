@@ -1,4 +1,4 @@
-package intern.sapo.be.dto.response.product;
+package intern.sapo.be.dto.response.Product;
 
 import intern.sapo.be.entity.Category;
 import intern.sapo.be.entity.Product;

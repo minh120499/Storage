@@ -2,8 +2,8 @@ package intern.sapo.be.service;
 
 import intern.sapo.be.dto.request.Product.ProductAddDTO;
 import intern.sapo.be.dto.request.Product.ProductFilter;
-import intern.sapo.be.dto.response.product.ProductFilterResponse;
-import intern.sapo.be.dto.response.product.ProductReponse;
+import intern.sapo.be.dto.response.Product.ProductFilterResponse;
+import intern.sapo.be.dto.response.Product.ProductReponse;
 import intern.sapo.be.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;

@@ -24,30 +24,30 @@ public class ProductController {
 	}
 
 	@PostMapping("/count")
-	public ResponseEntity<Object> countProductByFilter(@RequestBody @Valid ProductFilter filter, BindingResult bindingResult) {
+	public ResponseEntity countProductByFilter(@RequestBody @Valid ProductFilter filter, BindingResult bindingResult) {
 
 		return ResponseEntity.ok(productService.countProductByFilter(filter, bindingResult));
 
 	}
 
 	@PostMapping("/filter")
-	public ResponseEntity<Object> filterProducts(@RequestBody @Valid ProductFilter filter, BindingResult bindingResult) {
+	public ResponseEntity filterProducts(@RequestBody @Valid ProductFilter filter, BindingResult bindingResult) {
 		return ResponseEntity.ok(productService.productFilter(filter, bindingResult));
 
 	}
 
 	@PostMapping()
-	public ResponseEntity<Object> create(@RequestBody @Valid ProductAddDTO request, BindingResult bindingResult) {
+	public ResponseEntity create(@RequestBody @Valid ProductAddDTO request, BindingResult bindingResult) {
 		return ResponseEntity.ok(productService.save(request, bindingResult));
 	}
 
-	@GetMapping("{id}")
-	public ResponseEntity<Object> findById(@PathVariable(value = "id") Integer id) {
+	@GetMapping("/{id}")
+	public ResponseEntity findById(@PathVariable(value = "id") Integer id) {
 		return ResponseEntity.ok(productService.findById(id));
 	}
 
 
-	@DeleteMapping("{id}")
+	@DeleteMapping("/{id}")
 	public void delete(@PathVariable(value = "id") Integer id) {
 		productService.deleteById(id);
 	}

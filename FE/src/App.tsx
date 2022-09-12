@@ -98,6 +98,21 @@ const App: React.FC = () => {
           ],
         },
         {
+          path: "/products",
+
+          children: [
+
+            {
+              path: "/products/add",
+              element: <AddProduct />,
+            },
+            { index: true, element: <ListProduct /> },
+            { path: "/products/:id", element: <ProductDetails /> },
+
+
+          ],
+        },
+        {
           path: "/statistics",
           element: <Statistics />,
         },

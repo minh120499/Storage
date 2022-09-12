@@ -864,3 +864,32 @@ BEGIN
     select * from categories where (categories.id  like concat('%', valueText, '%') or categories.name like concat('%', valueText, '%')) order by categories.id desc;
 END; $$
 
+alter table mock_tts_10.exports
+    drop foreign key exports_ibfk_1;
+
+alter table mock_tts_10.exports
+    drop foreign key exports_ibfk_4;
+
+alter table mock_tts_10.exports
+    drop foreign key exports_ibfk_5;
+
+alter table mock_tts_10.exports
+    drop column status_id;
+
+alter table mock_tts_10.exports
+    drop column transport_company_id;
+
+alter table mock_tts_10.exports
+    drop column account_id;
+
+alter table mock_tts_10.exports
+    drop column create_at;
+
+alter table mock_tts_10.exports
+    drop column update_at;
+
+alter table mock_tts_10.exports
+    drop column is_delete;
+
+alter table mock_tts_10.exports_status
+    modify export_id int null;

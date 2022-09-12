@@ -18,11 +18,16 @@ public class StatisticsImportResponse {
     private Integer detailsImportId;
     private Integer productVariantId;
     private BigDecimal importPrice;
+    private BigDecimal avgPrice;
+
     private Integer importNumber;
     private BigDecimal totalPrice;
     private String deliveryDate;
     private java.sql.Timestamp createAt;
+    private String code;
     private String name;
+    private Integer productId;
+    private String productName;
     private Integer returnNumber;
     private Integer receiveNumber;
 

@@ -1,4 +1,4 @@
-package intern.sapo.be.dto.response.product.Inventory;
+package intern.sapo.be.dto.response.Product.Inventory;
 
 import intern.sapo.be.dto.request.ProductVariantsDTO;
 import intern.sapo.be.entity.Inventory;
@@ -15,4 +15,5 @@ public class InventoryResponse {
     private List<ProductVariantsDTO> productVariants;
     private Integer totalProductVariant;
     private Integer countProductVariant;
+
 }

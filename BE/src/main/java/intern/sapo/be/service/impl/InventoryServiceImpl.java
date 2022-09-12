@@ -1,7 +1,7 @@
 package intern.sapo.be.service.impl;
 import intern.sapo.be.dto.request.Inventory.ListIdRequest;
 import intern.sapo.be.dto.request.ProductVariantsDTO;
-import intern.sapo.be.dto.response.product.Inventory.InventoryResponse;
+import intern.sapo.be.dto.response.Product.Inventory.InventoryResponse;
 import intern.sapo.be.entity.InventoriesProductVariant;
 import intern.sapo.be.entity.Inventory;
 import intern.sapo.be.entity.ProductVariant;

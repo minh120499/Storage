@@ -30,6 +30,8 @@ import { DeleteTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { createExportStatus } from "../../api/export_status";
 import { TableRowSelection } from "antd/lib/table/interface";
+import {useSelector} from "react-redux";
+import {RootState} from "../../app/store";
 
 const Create: React.FC = () => {
   const [products, setProducts] = useState<any>([]);
@@ -48,6 +50,8 @@ const Create: React.FC = () => {
     exportInventory: inventorySend,
     receiveInventory: inventoryReceive,
   };
+  const user = useSelector((state: RootState) => state.user)
+  // console.log(user)
 
   const [total, setTotal] = useState<number>(0);
   useEffect(() => {
@@ -246,6 +250,7 @@ const Create: React.FC = () => {
         status: 0,
         code: code,
         note: note,
+        accountCreate:user.id
       });
     } else {
       await createExportStatus({
@@ -253,10 +258,12 @@ const Create: React.FC = () => {
         status: 0,
         code: "TPN000" + id,
         note: note,
+        accountCreate:user.id
+
       });
     }
     message.success(<div>Thêm mới thành công</div>, 2);
-    navigate(`/storage/stock_transfers/${id}`, { replace: true });
+    navigate(`/coordinator/storage/stock_transfers/${id}`, { replace: true });
   };
   if (creatDetailExportSubmit.isSuccess) {
     handleStatus(exportId);

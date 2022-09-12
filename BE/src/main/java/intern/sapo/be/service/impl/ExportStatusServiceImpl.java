@@ -42,6 +42,18 @@ public class ExportStatusServiceImpl extends BaseService<ExportsStatus> implemen
         if (eStatus.getDateReceive() != null) {
             exportsStatus.setDateReceive(eStatus.getDateReceive());
         }
+        if (eStatus.getAccountCreate() != null){
+            exportsStatus.setAccountCreate(eStatus.getAccountCreate());
+        }
+        if(eStatus.getAccountSend()!= null){
+            exportsStatus.setAccountSend(eStatus.getAccountSend());
+        }
+        if(eStatus.getAccountReceive()!= null){
+            exportsStatus.setAccountReceive(eStatus.getAccountReceive());
+        }
+        if(eStatus.getAccountCancel()!= null){
+            exportsStatus.setAccountCancel(eStatus.getAccountCancel());
+        }
         exportsStatus.setCode(eStatus.getCode());
         return repository.save(exportsStatus);
     }

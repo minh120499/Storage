@@ -295,10 +295,10 @@ export const ListExport = () => {
   const navigate = useNavigate();
 
   const hanldeClick = () => {
-    navigate(`/storage/stock_transfers/create`);
+    navigate(`/coordinator/storage/stock_transfers/create`);
   };
   const hanldeRow = (e: any) => {
-    navigate(`/storage/stock_transfers/${e}`);
+    navigate(`/coordinator/storage/stock_transfers/${e}`);
   };
   const [spin, setSpin] = useState(true);
   useEffect(() => {

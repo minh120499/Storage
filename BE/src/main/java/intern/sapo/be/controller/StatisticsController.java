@@ -1,6 +1,7 @@
 package intern.sapo.be.controller;
 
 import intern.sapo.be.dto.request.Statistics.StatisticsImportRequest;
+import intern.sapo.be.dto.request.Statistics.StatisticsInventoryRequest;
 import intern.sapo.be.service.IStatisticsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,5 +27,10 @@ public class StatisticsController {
     {
 
         return ResponseEntity.ok(statisticsService.getStatisticsImportExtend(request));
+    }
+    @PostMapping("/inventories")
+    public ResponseEntity getStatisticsInventory(@RequestBody StatisticsInventoryRequest request)
+    {
+        return ResponseEntity.ok(statisticsService.getStatisticsInventory(request));
     }
 }

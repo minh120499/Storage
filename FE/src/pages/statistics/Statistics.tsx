@@ -1,466 +1,632 @@
 import { FC, useEffect, useState } from "react";
-import type { RangePickerProps } from "antd/es/date-picker";
-import moment from "moment";
-import * as Antd from "antd";
-import { Grid, Paper } from "@mui/material";
+import type { RangePickerProps } from 'antd/es/date-picker';
+import moment from 'moment';
+import * as Antd from 'antd'
+import * as Mui from '@mui/material'
+import { Grid, Paper } from '@mui/material'
+import { number } from "yup";
 import SelectSupplierV2 from "./SelectSupplierV2";
 import SelectInventory from "./SelectInventory";
-// import LineChartReport from "../../components/Home/LineChartReport";
-import {
-  ImportSortOptions,
-  ImportStatistic,
-  StatisticsFilter,
-} from "../../type/allType";
-import { getStatisticsImportExtend } from "../../services/statisticsService";
-// import { render } from "@testing-library/react";
-// import Moment from "react-moment";
+import { ImportSortOptions, ImportStatistic, InventorySortOptions, InventoryStatistic, InventoryTypeOption, StatisticsFilter, TypeOptions, ViewTypeOptions } from "../../type/allType";
+import { getStatisticsImport, getStatisticsImportExtend, getStatisticsInventory } from "../../services/statisticsService";
 import { ColumnProps } from "antd/es/table";
 import SelectSortby from "./SelectSortBy";
 import CardDetails from "./CardDetails";
 import LineCharImport from "./LineChartImport";
-import { useNavigate } from "react-router-dom";
-// const normalImportCol = [
+import { Link, useNavigate } from "react-router-dom";
+import ImportStatisticNomal from "./ImportStatisticNomal";
+import ImportStatisticExtend from "./ImportStatisticExtend";
+import BarChartStatistic from "./BarChartStatistic";
+import StatisticTypeOptions from "./StatisticTypeOptions";
+import InventoryStatisticTable from "./InventoryStatisticTable";
+import PieChartReturnImport from "./PieChartReturnImport";
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import {DeleteOutlined, DownOutlined, InfoCircleOutlined, StopOutlined,SortDescendingOutlined} from '@ant-design/icons';
+import BarChartStatisticInventory from "./BarChartStatisticInventory";
+import ExportExcelImportStatistic from "./ExportExcelImportStatistic";
+import { downloadExcel } from "react-export-table-to-excel";
 
-//     {
-//         title: 'Tên sản phẩm',
-//         dataIndex: 'name',
-//         key: 'name',
-//     },
-//     {
-//         title: 'Tổng Đặt',
-//         dataIndex: "importNumber",
-//         key: "importNumber"
-//     },
-//     {
-//         title: "Trả lại",
-//         dataIndex: "returnNumber",
-//         key: "returnNumber"
-//     },
-
-//     {
-//         title: "Nhập kho",
-//         dataIndex: "receiveNumber",
-//         key: "receiveNumber"
-//     },
-//     {
-//         title: "Số tiền thanh toán",
-//         dataIndex: "totalPrice",
-//         key: "totalPrice",
-//         render: (totalPrice: number) => {
-//             return (
-//                 <div>{totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} VNĐ</div>
-//             )
-//         }
-//     }
-
-// ]
 
 const Statistics: FC = () => {
-  const navigate = useNavigate();
-  const extendImportCol: ColumnProps<ImportStatistic>[] = [
-    {
-      title: "Mã Phiếu nhập",
-      dataIndex: "importCode",
-      key: "importCode",
-      width: "10%",
+    const navigate = useNavigate()
 
-      render: (importCode: string) => {
-        return (
-          <Antd.Tag
-            color="green"
-            onClick={() => {
-              navigate(`/purchase_orders/details/${importCode}`);
-            }}
-          >
-            {importCode}
-          </Antd.Tag>
-        );
-      },
-    },
-
-    {
-      title: "Tên sản phẩm",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Tổng Đặt",
-      dataIndex: "importNumber",
-      key: "importNumber",
-      width: "7%",
-      align: "center",
-      render: (data: number) => {
-        return data > 0 ? data : "---";
-      },
-    },
-    {
-      title: "Trả lại",
-      dataIndex: "returnNumber",
-      key: "returnNumber",
-      width: "7%",
-      align: "center",
-      render: (data: number) => {
-        return data > 0 ? data : "---";
-      },
-    },
-
-    {
-      title: "Nhập kho",
-      dataIndex: "receiveNumber",
-      key: "receiveNumber",
-      width: "7%",
-      align: "center",
-      render: (data: number) => {
-        return data > 0 ? data : "---";
-      },
-    },
-    {
-      title: "Đơn giá",
-      dataIndex: "importPrice",
-      key: "importPrice",
-      width: "12%",
-
-      render: (importPrice: number) => {
-        return importPrice ? (
-          <div>
-            {importPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VNĐ
-          </div>
-        ) : (
-          "---"
-        );
-      },
-    },
-    {
-      title: "Số tiền thanh toán",
-      dataIndex: "totalPrice",
-      key: "totalPrice",
-      width: "12%",
-
-      render: (totalPrice: number) => {
-        return totalPrice ? (
-          <div>
-            {totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VNĐ
-          </div>
-        ) : (
-          "---"
-        );
-      },
-    },
-
-    {
-      title: "Ngày giao dự kiến",
-      dataIndex: "deliveryDate",
-      key: "deliveryDate",
-      width: "12%",
-
-      // render: (deliveryDate:string)=>
-      //     {
-      //     return (
-      //         totalPrice?
-      //         <div>{totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') } VNĐ</div>:0
-      //     )
-      // }
-    },
-
-    {
-      title: "Thời điểm nhập",
-      dataIndex: "createAt",
-      key: "createAt",
-      width: "12%",
-
-      render: (data: string) => {
-        const moment = require("moment");
-        const d = new Date(data);
-        return (
-          <div>{moment(d, ["hh:mm A"]).format("DD-MM-YYYY HH:mm:ss")}</div>
-        );
-      },
-    },
-  ];
-
-  var fstring = localStorage.getItem("importFilter");
-  var filter: StatisticsFilter = fstring
-    ? JSON.parse(fstring)
-    : {
+    var fstring = localStorage.getItem('importFilter')
+    var filter: StatisticsFilter = fstring ? JSON.parse(fstring) : {
         inventoryId: -1,
         supplierId: -1,
         startDate: 0,
         endDate: new Date().getTime(),
-        sortBy: "name",
+        sortBy: 'name',
         sortDir: true,
-        productName: "",
+        keySearch: '',
         tag: 0,
         page: 1,
         size: 10,
         type: 1,
         statisticsType: 1,
-      };
-  const [filterProps, setFilterProps] = useState<StatisticsFilter>(filter);
-  const [isOpenFilter, setIsOpenFilter] = useState(false);
-  const [loadding, setLoadding] = useState(false);
-  //   const [extend, setExtend] = useState<boolean>(true);
-  const [imports, setImports] = useState<ImportStatistic[]>([]);
+        viewType: 1,
+    }
+    const [filterProps, setFilterProps] = useState<StatisticsFilter>(filter)
+    const [isOpenFilter, setIsOpenFilter] = useState(false)
+    const [loadding, setLoadding] = useState(false)
+    // const [extend, setExtend] = useState<number>(1)
+    const [imports, setImports] = useState<ImportStatistic[]>([])
+    const [stokes, setStokes] = useState<InventoryStatistic[]>([])
 
-  useEffect(() => {
-    setLoadding(true);
 
-    getStatisticsImportExtend(filter)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setImports(data);
-      })
-      .catch((erro) => {});
-    setLoadding(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    useEffect(() => {
+        setLoadding(true)
+        document.title='Thống kê báo cáo'
+        loadData()
+    }, [])
 
-  const onSubmitFilter = (data: any) => {
-    localStorage.setItem("importFilter", JSON.stringify(filter));
-    closeFilter();
+    const onSubmitFilter = (data: any) => {
+        localStorage.setItem('importFilter', JSON.stringify(filter))
+        closeFilter()
 
-    console.log(filter);
-    setLoadding(true);
+        console.log(filter)
+        setLoadding(true)
+        loadData()
+        setFilterProps(filter)
 
-    setFilterProps(filter);
-    getStatisticsImportExtend(filter)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setImports(data);
-      })
-      .catch((erro) => {});
-    setLoadding(false);
-  };
-  const closeFilter = () => {
-    setIsOpenFilter(false);
-  };
-  const showFilter = () => {
-    var filterString = localStorage.getItem("importFilter");
-    filter = filterString ? JSON.parse(filterString) : filter;
-    setIsOpenFilter(true);
-    console.log(filter);
-  };
+    }
 
-  const StatisticsFilter = () => {
-    // const [type, setType] = useState<number>(filter.type);
-    const [statisticsType, setStatisticsType] = useState<number>(
-      filter.statisticsType
-    );
+    const loadData = () => {
 
-    // const setFilter = (filter: StatisticsFilter) => {
-    //   filter = filter;
-    // };
-    const changeSupplierId = (id: number) => {
-      console.log(id);
-      filter.supplierId = id;
-    };
 
-    const onTimeChange: RangePickerProps["onChange"] = (dates, dateStrings) => {
-      var date1 = new Date(dateStrings[0]);
-      var date2 = new Date(dateStrings[1]);
-      console.log("From: ", dateStrings[0], ", to: ", dateStrings[1]);
-      filter.startDate = date1.getTime();
-      filter.endDate = date2.getTime();
-      console.log(filter);
-    };
-    const onSortByChange = (value: string) => {
-      filter.sortBy = value;
-    };
+        switch (filter.type) {
+            case 1:
+                switch (filter.viewType) {
+                    case 2:
+                        getStatisticsImportExtend(filter).then((res) => {
+                            if (res.ok)
+                                return res.json()
+                        }).then(data => {
+                            setImports(data)
+                            setLoadding(false)
+
+                        }).catch(erro => {
+                            setLoadding(false)
+
+                        })
+                        break;
+                    case 1:
+                        getStatisticsImport(filter).then((res) => {
+                            if (res.ok)
+                                return res.json()
+                        }).then(data => {
+                            setImports(data)
+                            setLoadding(false)
+
+                        }).catch(erro => {
+                            setLoadding(false)
+
+                        })
+                        break;
+
+                    default:
+                        break;
+                }
+                break;
+            case 2:
+                getStatisticsInventory(filter).then(r => {
+                    if (r.ok)
+                        return r.json()
+                }).then(data => {
+
+                    setStokes(data)
+                    setLoadding(false)
+                    console.log(data);
+
+                })
+                break;
+            case 3:
+                setLoadding(false)
+
+                break;
+            default:
+                setLoadding(false)
+
+                break;
+        }
+
+    }
+
+    const closeFilter = () => {
+        setIsOpenFilter(false)
+
+    }
+    const showFilter = () => {
+        var filterString = localStorage.getItem('importFilter')
+        filter = filterString ? JSON.parse(filterString) : filter
+        setIsOpenFilter(true)
+        console.log(filter);
+
+    }
+
+    const StatisticsFilter = () => {
+        const [type, setType] = useState<number>(filter.type)
+        const [statisticsType, setStatisticsType] = useState<number>(filter.statisticsType)
+        const [sortDir, setSortDir] = useState<boolean>(filter.sortDir)
+
+        const changeSupplierId = (id: number) => {
+            filter.supplierId = id
+        }
+
+        const onTimeChange: RangePickerProps['onChange'] = (dates, dateStrings) => {
+            var date1 = new Date(dateStrings[0]);
+            var date2 = new Date(dateStrings[1]);
+            console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
+            filter.startDate = date1.getTime()
+            filter.endDate = date2.getTime()
+            console.log(filter);
+
+
+
+        };
+        const onSortByChange = (value: string) => {
+            filter.sortBy = value
+
+        }
+
+        const ImportFilter = () => {
+            return (
+                <>
+                    <Grid item xs={12}>
+
+                        {statisticsType == 2 ?
+                            <Antd.Form.Item label={'Mã sản phẩm cụ thể: '} labelCol={{ span: 6 }} labelAlign={'left'} >
+                                <Antd.Input width={'100%'} placeholder="Nhập mã sản phẩm" defaultValue={filter.keySearch} onChange={(e) => { filter.keySearch = e.target.value }}></Antd.Input>
+                            </Antd.Form.Item> : null
+
+                        }
+                        <StatisticTypeOptions title="Kiểu xem: " data={ViewTypeOptions} initValue={filter.viewType} onChange={(value: number) => {
+                            filter.viewType = value
+                        }}></StatisticTypeOptions>
+
+                        <Grid container spacing={2} >
+
+                            <Grid item xs={12}>
+                                <Antd.Form.Item label={'Sắp xếp theo: '} name={'sortBy'} style={{ width: '100%' }} labelAlign='left' labelCol={{ span: 6 }} >
+                                    <SelectSortby initValue={filter.sortBy} sortOptions={ImportSortOptions} onChange={onSortByChange}></SelectSortby>
+                                </Antd.Form.Item>
+
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Antd.Form.Item label={'Top: '} name={'size'} labelCol={{ span: 6 }} labelAlign={'left'}   >
+                                    <Antd.InputNumber style={{ width: '100%' }} defaultValue={filter.size} onChange={(value: number) => filter.size = value} placeholder="Nhập số lượng"></Antd.InputNumber>
+                                </Antd.Form.Item>
+
+                            </Grid>
+                            <Grid item xs={12}>
+
+                                <Antd.Form.Item label={'Xắp xếp: '} name={'sortDir'} style={{ width: '100%' }} labelAlign='left' labelCol={{ span: 6 }} >
+                                    <Antd.Switch defaultChecked={sortDir} onChange={(check, e) => { filter.sortDir = check 
+                                    
+                                        setSortDir(check)
+                                    }}></Antd.Switch >
+                                </Antd.Form.Item>
+
+                            </Grid>
+
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} >
+                                <SelectInventory initValue={filter.inventoryId} onChange={(id: number) => { filter.inventoryId = id }} spanLable={6} />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <SelectSupplierV2 initValue={filter.supplierId} changeSupplierId={changeSupplierId} />
+                            </Grid>
+
+                        </Grid>
+
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Antd.Form.Item label='Thời gian' name={'time'} labelCol={{ span: 24 }}  >
+                            <Antd.DatePicker.RangePicker
+
+                                defaultValue={[moment(filter.startDate), moment(filter.endDate)]}
+                                size="large"
+                                style={{ width: "100%" }}
+                                ranges={{
+                                    'Hôm nay': [moment().startOf('day'), moment().endOf('day')],
+                                    'Tuần này': [moment().startOf('week'), moment().endOf('week')],
+                                    'Tháng này': [moment().startOf('month'), moment().endOf('month')],
+                                    'Năm nay': [moment().startOf('year'), moment().endOf('year')],
+
+
+                                }}
+                                showTime
+                                format="YYYY/MM/DD HH:mm:ss"
+                                onChange={onTimeChange}
+                            />
+                        </Antd.Form.Item >
+
+
+                    </Grid>
+                </>
+            )
+        }
+        const InventoryFilter = () => {
+            return (
+                <>
+                    <Grid item xs={12}>
+
+                        {statisticsType == 2 ?
+                            <Antd.Form.Item label={'Mã sản phẩm cụ thể: '} labelCol={{ span: 6 }} labelAlign={'left'}>
+                                <Antd.Input width={'100%'} placeholder="Nhập mã sản phẩm" defaultValue={filter.keySearch} onChange={(e) => { filter.keySearch = e.target.value }}></Antd.Input>
+                            </Antd.Form.Item> : null
+
+                        }
+                        {/* <StatisticTypeOptions title="Kiểu xem: " data={ViewTypeOptions} initValue={filter.viewType} onChange={(value: number) => {
+                            filter.viewType = value
+                        }}></StatisticTypeOptions> */}
+
+
+                        <Grid container spacing={2} >
+
+                            <Grid item xs={12}>
+                                <Antd.Form.Item label={'Sắp xếp theo: '} name={'sortBy'} style={{ width: '100%' }} labelAlign='left' labelCol={{ span: 6 }} >
+                                    <SelectSortby initValue={filter.sortBy} sortOptions={InventorySortOptions} onChange={onSortByChange}></SelectSortby>
+                                </Antd.Form.Item>
+
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Antd.Form.Item label={'Top: '} name={'size'} labelCol={{ span: 6 }} labelAlign={'left'}   >
+                                    <Antd.InputNumber style={{ width: '100%' }} defaultValue={filter.size} onChange={(value: number) => filter.size = value} placeholder="Nhập số lượng"></Antd.InputNumber>
+                                </Antd.Form.Item>
+
+                            </Grid>
+                            <Grid item xs={12}>
+
+                            <Antd.Form.Item label={'Xắp xếp: '} name={'sortDir'} style={{ width: '100%' }} labelAlign='left' labelCol={{ span: 6 }} >
+                                    <Antd.Switch defaultChecked={filter.sortDir} onChange={(check, e) => { filter.sortDir = check 
+                                    setSortDir(check)
+                                    }}></Antd.Switch >
+                                    {sortDir?'Tăng dần':'Giảm dần'}
+                                </Antd.Form.Item>
+
+                            </Grid>
+
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} >
+                                <SelectInventory  initValue={filter.inventoryId} onChange={(id: number) => { filter.inventoryId = id }} spanLable={6} />
+                            </Grid>
+
+
+                        </Grid>
+
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Antd.Form.Item label='Thời gian' name={'time'} labelCol={{ span: 6 }}labelAlign='left' >
+                            <Antd.DatePicker
+                                format="YYYY-MM-DD HH:mm:ss"
+                                showTime
+                                defaultValue={moment(filter.endDate)}
+                                onChange={(moment, dateString) => {
+                                    var date1 = new Date(dateString);
+                                    filter.endDate = date1.getTime()
+
+
+                                }}
+                            />
+
+                        </Antd.Form.Item >
+
+
+                    </Grid>
+                </>
+            )
+        }
+
+        const ExportFilter = () => {
+            return (
+                <>
+                    <Grid item xs={12}>
+
+                        {statisticsType == 2 ?
+                            <Antd.Form.Item label={'Mã sản phẩm cụ thể: '} labelCol={{ span: 6 }} labelAlign={'left'} >
+                                <Antd.Input width={'100%'} placeholder="Nhập mã sản phẩm" defaultValue={filter.keySearch} onChange={(e) => { filter.keySearch = e.target.value }}></Antd.Input>
+                            </Antd.Form.Item> : null
+
+                        }
+                        <StatisticTypeOptions title="Kiểu xem: " data={ViewTypeOptions} initValue={filter.viewType} onChange={(value: number) => {
+                            filter.viewType = value
+                        }}></StatisticTypeOptions>
+
+                        <Grid container spacing={2} >
+
+                            <Grid item xs={12}>
+                                <Antd.Form.Item label={'Sắp xếp theo: '} name={'sortBy'} style={{ width: '100%' }} labelAlign='left' labelCol={{ span: 6 }} >
+                                    <SelectSortby initValue={filter.sortBy} sortOptions={ImportSortOptions} onChange={onSortByChange}></SelectSortby>
+                                </Antd.Form.Item>
+
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Antd.Form.Item label={'Top: '} name={'size'} labelCol={{ span: 6 }} labelAlign={'left'}   >
+                                    <Antd.InputNumber style={{ width: '100%' }} defaultValue={filter.size} onChange={(value: number) => filter.size = value} placeholder="Nhập số lượng"></Antd.InputNumber>
+                                </Antd.Form.Item>
+
+                            </Grid>
+                            <Grid item xs={12}>
+
+                                <Antd.Form.Item label={'Xắp xếp: '} name={'sortDir'} style={{ width: '100%' }} labelAlign='left' labelCol={{ span: 6 }} >
+                                    <Antd.Switch defaultChecked={sortDir} onChange={(check, e) => { filter.sortDir = check 
+                                    
+                                        setSortDir(check)
+                                    }}></Antd.Switch >
+                                </Antd.Form.Item>
+
+                            </Grid>
+
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} >
+                                <SelectInventory initValue={filter.inventoryId} onChange={(id: number) => { filter.inventoryId = id }} spanLable={6} />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <SelectSupplierV2 initValue={filter.supplierId} changeSupplierId={changeSupplierId} />
+                            </Grid>
+
+                        </Grid>
+
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Antd.Form.Item label='Thời gian' name={'time'} labelCol={{ span: 24 }}  >
+                            <Antd.DatePicker.RangePicker
+
+                                defaultValue={[moment(filter.startDate), moment(filter.endDate)]}
+                                size="large"
+                                style={{ width: "100%" }}
+                                ranges={{
+                                    'Hôm nay': [moment().startOf('day'), moment().endOf('day')],
+                                    'Tuần này': [moment().startOf('week'), moment().endOf('week')],
+                                    'Tháng này': [moment().startOf('month'), moment().endOf('month')],
+                                    'Năm nay': [moment().startOf('year'), moment().endOf('year')],
+
+
+                                }}
+                                showTime
+                                format="YYYY/MM/DD HH:mm:ss"
+                                onChange={onTimeChange}
+                            />
+                        </Antd.Form.Item >
+
+
+                    </Grid>
+                </>
+            )
+        }
+        return (
+
+            <Antd.Drawer title="Lựa chọn thống kê" placement={'right'} onClose={closeFilter} visible={isOpenFilter}
+                width={'35%'}
+            >
+                <Antd.Form onFinish={onSubmitFilter}>
+                    <Grid item xs={12}>
+                        <StatisticTypeOptions title="Thống kê: " data={TypeOptions} initValue={filter.type} onChange={(value: number) => {
+                            filter.type = value
+                            switch (value) {
+                                case 1:
+                                    filter.sortBy = ImportSortOptions[1].key
+                                    filter.startDate = filter.endDate - 86399999
+
+                                    break;
+                                case 2:
+                                    filter.sortBy = InventorySortOptions[2].key
+
+                                    break;
+                                    case 2:
+                                        filter.sortBy = InventorySortOptions[2].key
+                                        filter.startDate = filter.endDate - 86399999
+
+                                        break;
+                                default:
+                                    filter.sortBy = 'import_number'
+
+                                    break;
+                            }
+                            setType(value)
+
+                        }}></StatisticTypeOptions>
+                        <StatisticTypeOptions title="Kiểu thống kê: " data={InventoryTypeOption} initValue={filter.statisticsType} onChange={(value: number) => {
+                            switch (value) {
+                                case 1:
+                                    filter.keySearch = ''
+                                    break;
+                                case 2:
+                                    filter.keySearch = ''
+
+                                    break;
+
+                                default:
+                                    filter.keySearch = ''
+                                    break;
+                            }
+                            filter.statisticsType = value
+                            setStatisticsType(value)
+                        }}></StatisticTypeOptions>
+                    </Grid>
+
+                    {
+                        type == 1 ? <ImportFilter /> : type == 2 ? <InventoryFilter /> : <ExportFilter/>
+
+                    }
+
+
+                    <Antd.Button htmlType="submit"> Lọc</Antd.Button>
+                </Antd.Form  >
+
+
+
+
+            </Antd.Drawer>
+        )
+    }
+
     return (
-      <Antd.Drawer
-        title="Lựa chọn thống kê"
-        placement={"right"}
-        onClose={closeFilter}
-        visible={isOpenFilter}
-        width={"35%"}
-      >
-        <Antd.Form onFinish={onSubmitFilter}>
-          <Grid item xs={12}>
-            <Antd.Form.Item label={"Thống kế: "}>
-              <Antd.Radio.Group
-                defaultValue={filter.type}
-                name="type"
-                buttonStyle="solid"
-                onChange={(e) => {
-                  filter.type = e.target.value;
-                }}
-              >
-                <Antd.Radio.Button value={1}>Nhập kho</Antd.Radio.Button>
-                <Antd.Radio.Button value={2}>Tồn kho</Antd.Radio.Button>
-                <Antd.Radio.Button value={3}>Xuất kho</Antd.Radio.Button>
-              </Antd.Radio.Group>
-            </Antd.Form.Item>
-          </Grid>
-          <Grid container spacing={2}>
-            <Grid item xs={3}>
-              <Antd.Form.Item label={"Top: "} name={"size"}>
-                <Antd.InputNumber
-                  style={{ width: "100%" }}
-                  defaultValue={filter.size}
-                  onChange={(value: number) => (filter.size = value)}
-                  placeholder="Nhập số lượng"
-                ></Antd.InputNumber>
-              </Antd.Form.Item>
-            </Grid>
-            <Grid item xs={6}>
-              <Antd.Form.Item
-                label={"Sắp xếp theo: "}
-                name={"sortBy"}
-                style={{ width: "100%" }}
-              >
-                <SelectSortby
-                  initValue={filter.sortBy}
-                  sortOptions={ImportSortOptions}
-                  onChange={onSortByChange}
-                ></SelectSortby>
-              </Antd.Form.Item>
-            </Grid>
+        <>
+            <div className="p-5"  >
+                <h1 style={{ fontSize: '30px', marginRight: 10 }}  >Thống kê báo cáo </h1>
 
-            <Grid item xs={3}>
-              <Antd.Form.Item
-                label={"Tăng dần: "}
-                name={"sortDir"}
-                style={{ width: "100%" }}
-              >
-                <Antd.Switch
-                  defaultChecked={filter.sortDir}
-                  onChange={(check, e) => {
-                    filter.sortDir = check;
-                  }}
-                ></Antd.Switch>
-              </Antd.Form.Item>
-            </Grid>
-          </Grid>
 
-          <Grid item xs={12}>
-            <Antd.Form.Item label={"Kiểu thống kê: "}>
-              <Antd.Radio.Group
-                defaultValue={filter.statisticsType}
-                buttonStyle="solid"
-                onChange={(e) => {
-                  filter.statisticsType = e.target.value;
-                  setStatisticsType(e.target.value);
-                }}
-              >
-                <Antd.Radio.Button value={1}>Chung</Antd.Radio.Button>
-                <Antd.Radio.Button value={2}>Sản phẩm cụ thể</Antd.Radio.Button>
-                <Antd.Radio.Button value={3}>Chưa biết</Antd.Radio.Button>
-              </Antd.Radio.Group>
-            </Antd.Form.Item>
-            {statisticsType === 2 ? (
-              <Antd.Form.Item
-                label={"Mã sản phẩm cụ thể: "}
-                labelCol={{ span: 24 }}
-              >
-                <Antd.Input
-                  width={"100%"}
-                  placeholder="Nhập mã sản phẩm"
-                ></Antd.Input>
-              </Antd.Form.Item>
-            ) : null}
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <SelectInventory
-                  initValue={filter.inventoryId}
-                  onChange={(id: number) => {
-                    filter.inventoryId = id;
-                  }}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <SelectSupplierV2
-                  initValue={filter.supplierId}
-                  changeSupplierId={changeSupplierId}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <Antd.Form.Item
-              label="Thời gian"
-              name={"time"}
-              labelCol={{ span: 24 }}
-            >
-              <Antd.DatePicker.RangePicker
-                defaultValue={[
-                  moment(filter.startDate),
-                  moment(filter.endDate),
-                ]}
-                size="large"
-                style={{ width: "100%" }}
-                ranges={{
-                  "Hôm nay": [moment().startOf("day"), moment().endOf("day")],
-                  "Tuần này": [
-                    moment().startOf("week"),
-                    moment().endOf("week"),
-                  ],
-                  "Tháng này": [
-                    moment().startOf("month"),
-                    moment().endOf("month"),
-                  ],
-                  "Năm nay": [moment().startOf("year"), moment().endOf("year")],
-                }}
-                showTime
-                format="YYYY/MM/DD HH:mm:ss"
-                onChange={onTimeChange}
-              />
-            </Antd.Form.Item>
-          </Grid>
-          <Antd.Button htmlType="submit"> Lọc</Antd.Button>
-        </Antd.Form>
-      </Antd.Drawer>
-    );
-  };
+                <Antd.Spin spinning={loadding} tip={'Đang thống kê'} >
 
-  return (
-    <Antd.Spin spinning={loadding} tip={"Đang thống kê"}>
-      <div className="p-5">
-        <Antd.Button onClick={showFilter}>Lọc</Antd.Button>
-        <StatisticsFilter />
-        <Grid container spacing={2}>
-          <Grid item xs={4} container spacing={2}>
-            <Grid item xs={12}>
-              <CardDetails
-                filter={filterProps}
-                loadding={loadding}
-              ></CardDetails>
-            </Grid>
+                    <StatisticsFilter />
 
-            <Grid item xs={12}>
-              <Paper style={{ height: 200, width: "100%" }}></Paper>
-            </Grid>
-          </Grid>
-          <Grid item xs={8}>
-            <Paper
-              style={{
-                borderRadius: 5,
-                height: 420,
-                width: "100%",
-                padding: 20,
-              }}
-            >
-              <LineCharImport />
-            </Paper>
-          </Grid>
-          <Grid item xs={12}>
-            <Antd.Table
-              style={{ height: 400 }}
-              dataSource={imports}
-              columns={extendImportCol}
-              bordered
-              rowKey=""
-            ></Antd.Table>
-          </Grid>
-        </Grid>
-      </div>
-    </Antd.Spin>
-  );
-};
-export default Statistics;
+
+                    {
+                        filterProps.type == 1 ? <div className='p-5' style={{ width: '100%' }}>
+                            {/* <div style={{width:'100%' ,height:800 }}> <BarChartStatistic imports={imports}></BarChartStatistic></div> */}
+
+                            <Grid container spacing={2}>
+                                <Grid item xs={4.5} container spacing={2}>
+                                    <Grid item xs={12} >
+                                        <Paper style={{ height: 290 }}>
+                                            <CardDetails filter={filterProps} loadding={loadding} imports={imports} stokes={stokes}></CardDetails>
+
+                                        </Paper>
+
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Paper style={{ height: 290, width: '100%' }}>
+                                            {imports ? <PieChartReturnImport imports={imports} stokes={[]} filter={filter}></PieChartReturnImport> : null}
+                                        </Paper>
+                                    </Grid>
+
+                                </Grid>
+                                <Grid item xs={7.5}>
+                                    <Paper style={{ borderRadius: 5, height: 600, width: '100%', padding: 20 }}>
+                                        {imports.length > 0 ? <BarChartStatistic imports={imports}></BarChartStatistic> :
+                                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+
+                                                <Antd.Image
+                                                    src="/no-data-rafiki.svg"
+                                                    preview={false}
+                                                    height={"50%"}
+                                                    width={'50%'}
+
+
+                                                >
+
+
+                                                </Antd.Image>
+                                            </div>
+                                        }
+
+                                    </Paper>
+                                </Grid>
+                                    <Grid item xs={12} >
+                                     
+                                            
+                                            <Antd.Button style={{ width: '150px', fontSize: '14px', marginRight: 20,marginLeft:0 }} type="primary" onClick={()=>{showFilter()}}>
+                                                <Antd.Space>
+                                                    <SortDescendingOutlined />
+                                                    Lọc thống kê
+                                                </Antd.Space>
+                                            </Antd.Button>
+
+
+                                            <ExportExcelImportStatistic imports={imports}></ExportExcelImportStatistic>
+
+
+                                    </Grid>
+                                <Grid item xs={12}>
+                                    {filterProps.viewType == 1 ? <ImportStatisticNomal imports={imports} onChange={() => { }}></ImportStatisticNomal> : <ImportStatisticExtend imports={imports} onChange={() => { }}></ImportStatisticExtend>}
+
+                                </Grid>
+                            </Grid>
+
+                        </div> : filterProps.type == 2 ?
+
+
+
+
+                            <Grid container spacing={2}>
+                                <Grid item xs={4} container spacing={2}>
+                                    <Grid item xs={12} >
+                                        <Paper style={{ height: 300 }}>
+                                        <CardDetails filter={filterProps} loadding={loadding} imports={imports} stokes={stokes}></CardDetails>
+
+                                        </Paper>
+
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Paper style={{ height: 300, width: '100%' }}>
+                                            {imports ? <PieChartReturnImport imports={imports} stokes={stokes} filter={filter}></PieChartReturnImport> : null}
+                                        </Paper>
+                                    </Grid>
+
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <Paper style={{ borderRadius: 5, height: 620, width: '100%', padding: 20 }}>
+                                        {stokes?.length > 0 ? <BarChartStatisticInventory inventoryStatistic={stokes}></BarChartStatisticInventory> :
+                                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+
+                                                <Antd.Image
+                                                    src="/no-data-rafiki.svg"
+                                                    preview={false}
+                                                    height={"50%"}
+                                                    width={'50%'}
+
+
+                                                >
+
+
+                                                </Antd.Image>
+                                            </div>
+                                        }
+
+                                    </Paper>
+                                </Grid>
+                                    <Grid item xs={12} >
+                                     
+                                            
+                                            <Antd.Button style={{ width: '150px', fontSize: '14px', marginRight: 20,marginLeft:0 }} type="primary" onClick={()=>{showFilter()}}>
+                                                <Antd.Space>
+                                                    <SortDescendingOutlined />
+                                                    Lọc thống kê
+                                                </Antd.Space>
+                                            </Antd.Button>
+
+
+                                            <ExportExcelImportStatistic imports={imports}></ExportExcelImportStatistic>
+
+
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                    <InventoryStatisticTable data={stokes} onChange={() => { }} ></InventoryStatisticTable>
+                                    </Grid>
+                                   
+                            </Grid>
+
+                            : null
+                    }
+
+
+
+
+
+                </Antd.Spin>
+
+            </div>
+            <Antd.Button style={{ right: 0, width: 40, height: 50, top: '45%', position: 'fixed', zIndex: 10 }} type={'primary'}
+                icon={<KeyboardDoubleArrowLeftIcon />}
+                onClick={() => { showFilter() }}></Antd.Button>
+
+
+        </>
+
+
+    )
+}
+export default Statistics

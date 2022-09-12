@@ -72,6 +72,9 @@ const Create: React.FC = () => {
   useEffect(() => {
     dataEdit();
     document.title = "Cập nhật phiếu chuyển hàng";
+    setTimeout(() => {
+      setSpin(false);
+    }, 2000);
   }, []);
   useEffect(() => {
     let b = 0;
@@ -113,6 +116,16 @@ const Create: React.FC = () => {
       });
     }
   };
+  const [listInventory, setListInventory] = useState<any>();
+  const allQueries = async () => {
+    const productVariant = await getProductVariants(inventoryId);
+    const getListInventory = await getAllInventory();
+    setProductVariant(productVariant.productVariants);
+    setListInventory(getListInventory);
+  };
+  useEffect(() => {
+    allQueries();
+  }, [inventoryId]);
   const data = detailExport;
   const columns: ColumnsType<typeDetailExport> = [
     {
@@ -134,9 +147,9 @@ const Create: React.FC = () => {
       title: "Số lượng chuyển",
       dataIndex: ["quantity", "productVariant"],
       render: (a, text) => {
-        const check = productVariant.find(
-          (a: any) => a.id === text?.productVariant?.id
-        );
+        // const check = productVariant.find(
+        //   (a: any) => a.id === text?.productVariant?.id
+        // );
         // console.log(check);
         return (
           <>
@@ -147,17 +160,14 @@ const Create: React.FC = () => {
             ) : (
               <Input
                 type={"number"}
-                style={
-                  check?.quantity === 0
-                    ? { backgroundColor: "red", width: "50%" }
-                    : { backgroundColor: "none", width: "50%" }
-                }
+                style={{width:"50%"}}
                 onChange={handleQuantity}
                 id={text?.productVariant?.id + ""}
                 key={text?.productVariant?.id}
                 value={text.quantity}
                 min={0}
                 size={"middle"}
+
               />
             )}
           </>
@@ -224,16 +234,7 @@ const Create: React.FC = () => {
     }
   };
 
-  const [listInventory, setListInventory] = useState<any>();
-  const allQueries = async () => {
-    const productVariant = await getProductVariants(inventoryId);
-    const getListInventory = await getAllInventory();
-    setProductVariant(productVariant.productVariants);
-    setListInventory(getListInventory);
-  };
-  useEffect(() => {
-    allQueries();
-  }, [inventoryId]);
+
 
   const dataProduct = productVariant;
 
@@ -244,7 +245,7 @@ const Create: React.FC = () => {
       const exportId = saveExport.data.id;
       setExportId(exportId);
       await deleteDetailByExport(exportId);
-      const detailExports = await detailExport.map((e: any) => {
+      const detailExports =  detailExport.map((e: any) => {
         return {
           productVariant: e.productVariant,
           quantity: e.quantity,
@@ -276,7 +277,7 @@ const Create: React.FC = () => {
 
   const handleStatus = async (id?: number) => {
     message.success(<div>Cập nhật phiếu chuyển hàng thành công</div>, 2);
-    navigate(`/storage/stock_transfers/${id}`, { replace: true });
+    navigate(`/coordinator/storage/stock_transfers/${id}`, { replace: true });
   };
   if (creatDetailExportSubmit.isSuccess) {
     handleStatus(exportId);
@@ -435,8 +436,11 @@ const Create: React.FC = () => {
       };
     },
   };
+  const [spin, setSpin] = useState(true);
+
 
   return (
+      <Spin spinning={spin}>
     <div className="p-5">
       <div className="site-page-header-ghost-wrapper">
         <PageHeader
@@ -678,6 +682,7 @@ const Create: React.FC = () => {
         </div>
       </div>
     </div>
+      </Spin>
   );
 };
 
