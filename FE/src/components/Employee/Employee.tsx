@@ -9,6 +9,7 @@ import { accountApi, deleteEmpApi } from "../../api/EmployeesApi";
 import { useState } from "react";
 import useTitle from "../../app/useTitle";
 import Swal from "sweetalert2";
+import UploadImg from "./UploadImg";
 
 interface DataType {
   key: React.Key;
@@ -18,18 +19,7 @@ interface DataType {
 }
 
 function Employee() {
-  useTitle(
-    <h1
-      style={{
-        fontSize: "30px",
-        margin: 0,
-      }}
-      className="self-center"
-    >
-      Danh sách nhân viên
-    </h1>,
-    "Nhân viên"
-  );
+  useTitle("Danh sách nhân viên", "Nhân viên");
   const columns: ColumnsType<DataType> = [
     // {
     //   title: <b>ID</b>,
@@ -52,7 +42,7 @@ function Employee() {
     {
       title: <b>Tài khoản</b>,
       dataIndex: "username",
-      render: (text: string) => <div className="w-20">{text || '--'}</div>,
+      render: (text: string) => <div className="w-20">{text || "--"}</div>,
     },
     {
       title: <b>Họ & Tên</b>,
@@ -110,10 +100,13 @@ function Employee() {
   ];
 
   let currentRoles: string[] = [];
-
   const setRole = (e: any) => {
     currentRoles = e;
   };
+  // const [imageUrl, setImageUrl] = useState<string>();
+  // const onImageChange = (url: string) => {
+  //   setImageUrl(url);
+  // };
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [reRender, setReRender] = useState(false);
   const [employeeForm] = Form.useForm();
@@ -226,7 +219,15 @@ function Employee() {
           <Form.Item
             label="Mật khẩu"
             name="password"
-            rules={[{ required: true, message: "Mật khẩu tối thiểu 6 ký tự, ít nhất 1 chữ cái và 1 số, 1 ký tự đặc biệt", pattern:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/ }]}
+            rules={[
+              {
+                required: true,
+                message:
+                  "Mật khẩu tối thiểu 6 ký tự, ít nhất 1 chữ cái và 1 số, 1 ký tự đặc biệt",
+                pattern:
+                  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/,
+              },
+            ]}
           >
             <Input.Password />
           </Form.Item>
@@ -284,6 +285,7 @@ function Employee() {
             <Input />
           </Form.Item>
           <RoleSelect getRole={setRole} />
+          <UploadImg />
           <Form.Item {...{ wrapperCol: { offset: 4, span: 16 } }}>
             <Button type="primary" htmlType="submit">
               Thêm
