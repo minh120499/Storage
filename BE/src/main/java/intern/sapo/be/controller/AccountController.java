@@ -23,10 +23,10 @@ import java.util.Map;
 public class AccountController {
 	private final AccountService accountService;
 
-	@GetMapping()
-	public ResponseEntity<Object> getAll() {
-		return ResponseEntity.ok(accountService.getAll());
-	}
+//	@GetMapping()
+//	public ResponseEntity<Object> getAll() {
+//		return ResponseEntity.ok(accountService.getAll());
+//	}
 
 	@GetMapping("{page}")
 	public ResponseEntity<Object> getPerPage(@PathVariable("page") Integer page, @RequestParam(defaultValue = "10") Integer size) {
@@ -37,6 +37,12 @@ public class AccountController {
 		result.put("from", accounts.getSize() * accounts.getNumber() + 1);
 		result.put("to", accounts.getSize() * accounts.getNumber() + accounts.getNumberOfElements());
 		return ResponseEntity.ok(result);
+	}
+
+	@GetMapping
+	public ResponseEntity<Object> getAccount(@RequestParam Integer id) {
+		Map<String, Object> result = new HashMap<>();
+		return ResponseEntity.ok(accountService.getAllDetails(id));
 	}
 
 	@PostMapping

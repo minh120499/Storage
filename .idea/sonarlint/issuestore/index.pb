@@ -21,8 +21,6 @@ i
 9BE/src/main/java/intern/sapo/be/entity/ExportsStatus.java,2\9\290f44f2e9c29a427865e11927816395cf3785cf
 ‚
 RBE/src/main/java/intern/sapo/be/service/impl/InventoriesProductVariantService.java,2\e\2ebe78258848a88ceabac0480216971274181edb
-e
-5BE/src/main/java/intern/sapo/be/entity/Inventory.java,c\6\c66da82a429a8ddaa9473f41f27fd7a8f05c6b8f
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302

@@ -23,6 +23,8 @@ public interface IInventoryService {
 
     void delete (Integer id);
 
+    void updateStatusInventory(Integer id);
+
     InventoryResponse getProductVariantByInventoryId(Integer id, String name);
 
     void deleteListProductVanriant(ListIdRequest listIdRequest);

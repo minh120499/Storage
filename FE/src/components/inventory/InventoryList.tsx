@@ -18,6 +18,7 @@ import {
   updateInvetory,
   deleteInvetory,
   getPagination,
+  updateStatusInventory,
 } from "../../api/inventory";
 import React, { useState } from "react";
 import AddAddress from "../AddAddress";
@@ -56,7 +57,7 @@ const InventoryList = () => {
         return a?.code?.localeCompare(b?.code);
       },
       render: (inventory: IInventory) => (
-        <a className="bg-red">{inventory?.code}</a>
+        <div className="text-blue">{inventory?.code}</div>
       ),
     },
     {
@@ -90,30 +91,10 @@ const InventoryList = () => {
       dataIndex: ["totalProductVariant", "inventory"],
       key: "stock",
       render: (_: any, record: any) => {
-        // const size = record?.inventory?.size || 1000;
         const stock = record?.totalProductVariant;
-        // const percent = size ? Math.round((stock / size) * 100) : 0;
-        // const color = percent > 70 ? "red" : percent > 40 ? "blue" : "green";
-
         return (
           <Tooltip title={`${stock?.toLocaleString()}`}>
-            <div>
-              {Intl.NumberFormat("en", { notation: "compact" }).format(stock)}
-              {/* + " / " +
-                 Intl.NumberFormat("en", { notation: "compact" }).format(size)} */}
-            </div>
-            {/* <Progress
-              style={{ width: 130 }}
-              strokeColor={color}
-              percent={percent}
-              format={(percent) => {
-                if (percent && percent >= 100) {
-                  return <div style={{ color: "red" }}>Đầy</div>;
-                } else {
-                  return <div>{percent || 0} %</div>;
-                }
-              }}
-            /> */}
+            {Intl.NumberFormat("en", { notation: "compact" }).format(stock)}
           </Tooltip>
         );
       },
@@ -141,6 +122,36 @@ const InventoryList = () => {
       },
     },
     {
+      title: <b>Tình trạng</b>,
+      dataIndex: "inventory",
+      key: "isDelete",
+      render: (inventory: IInventory) => {
+        return inventory?.size ? (
+          <Tag
+            style={{ borderRadius: "15px", padding: "3px 10px" }}
+            color={`rgb(246 76 114)`}
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              updateStatusInvetoryHandler(inventory, "còn trống");
+            }}
+          >
+            Đã đầy
+          </Tag>
+        ) : (
+          <Tag
+            style={{ borderRadius: "15px", padding: "3px 10px" }}
+            color={"green" || `rgb(159 237 207)`}
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              updateStatusInvetoryHandler(inventory, "đã đầy");
+            }}
+          >
+            Còn trống
+          </Tag>
+        );
+      },
+    },
+    {
       dataIndex: "inventory",
       key: "action",
       render: (record: any) => {
@@ -160,14 +171,14 @@ const InventoryList = () => {
               <Lock
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
-                  deleteInvetoryHandler(record, "mở khóa");
+                  deleteInvetoryHandler(record, "mở khóa kho");
                 }}
               />
             ) : (
               <UnLock
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
-                  deleteInvetoryHandler(record, "ngừng hoạt động");
+                  deleteInvetoryHandler(record, "ngừng hoạt động kho");
                 }}
               />
             )}
@@ -218,6 +229,9 @@ const InventoryList = () => {
     filterValue: "",
   });
   const inventoriesDelete = useMutation((id: number) => deleteInvetory(id));
+  const inventoriesUpdateStatus = useMutation((id: number) =>
+    updateStatusInventory(id)
+  );
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fullAddress, setFullAddress] = useState<string>("");
   const [keyChange, setKeyChange] = useState(0);
@@ -266,7 +280,7 @@ const InventoryList = () => {
     Swal.fire({
       icon: "question",
       title: "Thay đổi trạng thái",
-      html: `Xác nhận ${text} kho ${record?.code}`,
+      html: `Xác nhận ${text} ${record?.code}`,
       confirmButtonText: "Xác nhận",
       cancelButtonText: "Hủy",
       showCancelButton: true,
@@ -279,6 +293,25 @@ const InventoryList = () => {
     });
     setIsModalVisible(false);
   };
+
+  const updateStatusInvetoryHandler = (record: any, text: string) => {
+    Swal.fire({
+      icon: "question",
+      title: "Thay đổi tình trạng",
+      html: `Xác nhận kho ${record?.code} ${text}`,
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
+      showCancelButton: true,
+      cancelButtonColor: "#d33",
+    }).then((e: any) => {
+      if (e.isConfirmed) {
+        inventoriesUpdateStatus.mutate(record?.id || 0);
+        Swal.fire("Thành công!", "Đã thay đổi thành công", "success");
+      }
+    });
+    setIsModalVisible(false);
+  };
+
   return (
     <div className="p-5">
       <Row justify="space-between">
