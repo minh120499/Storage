@@ -11,15 +11,15 @@ export default function HeaderMenu() {
 
   return (
     <div className="top-header-menu flex justify-between h-full">
-        <h1
+        <h2
             style={{
-                fontSize: "30px",
+                fontSize: "20px",
                 margin: 0,
             }}
             className="self-center"
         >
             {title}
-        </h1>
+        </h2>
 
       <div className="user-box">
         <Avatar size="large" src={`${currentUser?.image}`}>

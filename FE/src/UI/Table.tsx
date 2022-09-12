@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { Pagination, Spin, Table } from "antd";
-import React from "react";
 import { useState } from "react";
 import PageResult from "../components/PageResult";
 
@@ -11,12 +10,12 @@ const T = (props: any) => {
   const value = props?.search?.filterValue;
 
   const query = useQuery(
-    [props?.rowKey, page, pageSize],
+    ["id", page, pageSize],
     () =>
       !!name && !!value
         ? props.query(page, pageSize, name, value)
-        : props.query(page, pageSize)
-    // { keepPreviousData: true }
+        : props.query(page, pageSize),
+    { keepPreviousData: true }
   );
 
   if (query?.isError) {
@@ -30,8 +29,7 @@ const T = (props: any) => {
     setPage(page - 1);
   }
 
-  // query.refetch();
-  console.log(query.data);
+  query.refetch();
 
   return (
     <div>
@@ -63,4 +61,4 @@ const T = (props: any) => {
   );
 };
 
-export default React.memo(T);
+export default T;

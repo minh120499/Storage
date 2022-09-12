@@ -9,13 +9,13 @@ import {
   Spin,
   Empty,
   TablePaginationConfig,
-  Modal,
+  Modal, Tag,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { findProductById } from "../../api/product_variant";
 import "./file.css";
 import {
-  findInventoryById,
+  findInventoryById, getAllActiveInventory,
   getAllInventory,
   getProductVariants,
 } from "../../api/inventory";
@@ -41,7 +41,7 @@ const Create: React.FC = () => {
   >();
   const [exportId, setExportId] = useState<number | undefined>();
   const [loading, setLoading] = useState(false);
-  const [inventoryId, setInventoryId] = useState(1);
+  const [inventoryId, setInventoryId] = useState(7);
   const [productVariant, setProductVariant] = useState<any>();
   const [code, setCode] = useState<any>();
   const [note, setNote] = useState<any>();
@@ -186,10 +186,11 @@ const Create: React.FC = () => {
   const [listInventory, setListInventory] = useState<any>();
   const allQueries = async () => {
     const productVariant = await getProductVariants(inventoryId);
-    const getListInventory = await getAllInventory();
+    const getListInventory = (await getAllActiveInventory()).data;
     setProductVariant(productVariant.productVariants);
     setListInventory(getListInventory);
   };
+
   useEffect(() => {
     allQueries();
     setProducts([]);
@@ -452,15 +453,28 @@ const Create: React.FC = () => {
                     dropdownStyle={{ height: 150, width: 1000000 }}
                     onSelect={handleClickOptionSend}
                     placeholder="Tìm kiếm chi nhánh"
+                    allowClear
                   >
                     {inSend &&
-                      inSend.map((item: inventory) => (
+                      inSend?.map((item: inventory) => (
                         <Select.Option
                           style={{ width: "100%" }}
                           key={item.id}
                           value={item.id}
                         >
-                          {item.name}
+                          {
+                            item.size ? (
+                                <div>
+                                  {item.name }
+                                  <Tag style={{marginLeft:10}} color="red">Đã đầy </Tag>
+                                </div>
+                            ) : (
+                                <div>
+                                  {item.name }
+                                  <Tag style={{marginLeft:10}} color="green">Còn trống</Tag>
+                                </div>
+                            )
+                          }
                         </Select.Option>
                       ))}
                   </Select>
@@ -476,15 +490,28 @@ const Create: React.FC = () => {
                     dropdownStyle={{ height: 150, width: 3000000 }}
                     placeholder="Tìm kiếm chi nhánh"
                     onSelect={handleClickOptionReceive}
+                    allowClear
                   >
                     {inReceive &&
-                      inReceive.map((item: inventory) => (
+                      inReceive?.map((item: inventory) => (
                         <Select.Option
                           style={{ width: "100%" }}
                           key={item.id}
                           value={item.id}
                         >
-                          {item.name}
+                          {
+                            item.size ? (
+                                <div>
+                                  {item.name }
+                                  <Tag style={{marginLeft:10}} color="red">Đã đầy </Tag>
+                                </div>
+                            ) : (
+                                <div>
+                                  {item.name }
+                                  <Tag style={{marginLeft:10}} color="green">Còn trống</Tag>
+                                </div>
+                            )
+                          }
                         </Select.Option>
                       ))}
                   </Select>
@@ -529,6 +556,7 @@ const Create: React.FC = () => {
                   dropdownStyle={{ width: 1000 }}
                   placeholder="Tìm kiếm sản phẩm"
                   onSelect={handleClickOptionProduct}
+                  allowClear
                 >
                   {productVariant !== undefined ? (
                     productVariant.map((item: DataType) => (
@@ -582,13 +610,7 @@ const Create: React.FC = () => {
                   </Modal>
                 )}
               </div>
-              {/* <ModalTable
-                products={products}
-                setProducts={(e) => setProducts(e)}
-                dataProduct={dataProduct}
-                quantityProducts={quantityProducts}
-                handleQuantity={(e) => handleQuantity(e)}
-              /> */}
+
             </div>
             <div>
               {products.length > 0 ? (

@@ -81,3 +81,11 @@ export const getCurrentQuantityInventory = async (id: number) => {
 export const getImportInvoiceBySupplier = async (id: number) => {
     return await axios.get(`http://localhost:8080/api/imports/getImportInvoiceBySuppler/${id}`,{headers})
 }
+
+export const getAllAccount = async () => {
+    return await axios.get(`http://localhost:8080/api/account/findAll`,{headers})
+}
+
+export const findAccountById = async (id:number) => {
+    return await axios.get(`http://localhost:8080/api/account?id=${id}`,{headers})
+}

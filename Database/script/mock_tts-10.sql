@@ -893,3 +893,9 @@ alter table mock_tts_10.exports
 
 alter table mock_tts_10.exports_status
     modify export_id int null;
+
+alter table mock_tts_10.inventories
+    drop column size;
+alter table mock_tts_10.inventories
+    add size bit(1) default 0 null;
+

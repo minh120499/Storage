@@ -16,7 +16,7 @@ const PageResult = (props: any) => {
             onClick={() => navigate("/", { replace: true })}
             type="primary"
           >
-            Back Home
+            Trang chủ
           </Button>
         }
       />
@@ -31,7 +31,7 @@ const PageResult = (props: any) => {
       subTitle="Xin lỗi, bạn không đủ quyền truy cập trang này."
       extra={
         <Button onClick={() => navigate("/", { replace: true })} type="primary">
-          Back Home
+          Trang chủ
         </Button>
       }
     />

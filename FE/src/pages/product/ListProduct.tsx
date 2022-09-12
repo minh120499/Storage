@@ -21,6 +21,7 @@ import Swal from 'sweetalert2';
 import ToastCustom from '../../features/toast/Toast';
 import { Delete, PreviewOutlined } from '@mui/icons-material';
 import { margin } from '@mui/system';
+import useTitle from "../../app/useTitle";
 // import { Sort } from '@mui/icons-material';
 // import { margin } from '@mui/system';
 
@@ -38,7 +39,7 @@ const ListProduct = () => {
         page: 1,
         size: 7
     }
-
+    useTitle("",'Sản phẩm')
     const ProductCol = [
         {
             title: 'Mã sản phẩm',
@@ -78,7 +79,7 @@ const ListProduct = () => {
                 return (
                     <>
                         <Antd.Button style={{ width: '40%', margin: 5 }} danger type={'ghost'} icon={<Delete />} onClick={() => deleteProduct(id)}></Antd.Button>
-                        <Antd.Button style={{ width: '40%' }} type={'ghost'} icon={<PreviewOutlined />} onClick={() => navigate({ pathname: `/products/${id}` })}></Antd.Button>
+                        <Antd.Button style={{ width: '40%' }} type={'ghost'} icon={<PreviewOutlined />} onClick={() => navigate({ pathname: `/warehouse/products/${id}` })}></Antd.Button>
                     </>
                 )
             }
@@ -118,7 +119,8 @@ const ListProduct = () => {
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Delete!'
+            confirmButtonText: 'Xoá!',
+            cancelButtonText:'Huỷ'
         }).then((result) => {
             if (result.isConfirmed) {
                 deleteProductById(id)
@@ -213,9 +215,6 @@ const ListProduct = () => {
 
     useLayoutEffect(() => {
             loadData()
-
-        document.title = 'Danh sách sản phẩm'
-
     }, [productFilter])
 
     const onPageChange = (page: number, size: number) => {
@@ -264,10 +263,7 @@ const ListProduct = () => {
 
     return (
         <div className ='p-5'>
-            <Antd.Typography.Title>Danh sách sản phẩm</Antd.Typography.Title>
-            <Antd.Drawer title="Tìm kiếm nâng cao" placement="right" onClose={closeFilter} visible={isOpenFilter}>
-
-            </Antd.Drawer>
+            <h1 style={{ fontSize: '30px', marginRight: 10}}  >Danh sách sản phẩm </h1>
             <Mui.Grid container spacing={2} sx={{ mb: 2 }}>
                 <Mui.Grid item xs={1.5}>
                     <Antd.Dropdown overlay={menu} disabled={selectProduct.length < 1}>
@@ -280,7 +276,7 @@ const ListProduct = () => {
                     </Antd.Dropdown>
 
                 </Mui.Grid>
-                <Mui.Grid item xs={6.5} sx={{ m: 0 }}>
+                <Mui.Grid item xs={8.5} sx={{ m: 0 }}>
                     <Antd.Input
                         placeholder='Nhập tên hoặc mã sản phẩm'
                         onChange={(e) => {
@@ -296,15 +292,7 @@ const ListProduct = () => {
 
                     </Antd.Input>
                 </Mui.Grid>
-                <Mui.Grid item xs={2} sx={{ display: 'flex', justifyContent: 'center' }}>
 
-                    <Antd.Button onClick={showFilter} style={{ width: "100%", margin: 0 }} type='primary'>
-                        <Antd.Space>
-                            <SortDescendingOutlined />
-                            Tìm kiếm nâng cao
-                        </Antd.Space>
-                    </Antd.Button>
-                </Mui.Grid>
                 {/* <Mui.Grid item xs={1}>
                     <Antd.Button style={{ width: "100%", fontSize: '14px', margin: 0 }} type="primary" >
                         <Antd.Space>
@@ -314,7 +302,7 @@ const ListProduct = () => {
                     </Antd.Button>
                 </Mui.Grid> */}
                 <Mui.Grid item xs={2}>
-                    <Antd.Button style={{ width: "100%", fontSize: '14px', margin: 0 }} type="primary" onClick={() => { navigate('/products/add') }} >
+                    <Antd.Button style={{ width: "100%", fontSize: '14px', margin: 0 }} type="primary" onClick={() => { navigate('/warehouse/products/add') }} >
                         <Antd.Space>
                             <PlusOutlined />
                             Thêm mới

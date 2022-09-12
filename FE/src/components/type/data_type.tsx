@@ -7,6 +7,7 @@ export interface inventory {
   createAt?: string;
   updateAt?: null;
   isDelete?: boolean;
+  size?:boolean;
 }
 // export interface receiveInventory {
 //   id?: number;

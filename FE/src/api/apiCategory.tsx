@@ -26,20 +26,20 @@ export const getCategories = async (valueInput = "") => {
 }
 
 export const createCategory = async (category: object) => {
-  return axios.post(`http://localhost:8080/api/categories/category`, category);
+  return axios.post(`http://localhost:8080/api/categories/category`, category,{headers});
 };
 
 export const deleteListCategory = async (listId: React.Key[]) => {
-  return axios.post("http://localhost:8080/api/categories/delete", listId);
+  return axios.post("http://localhost:8080/api/categories/delete", listId,{headers});
 };
 
 export const updateCategory = async (category: object, idUpdate: number) => {
   return axios.put(
     `http://localhost:8080/api/categories/category/${idUpdate}`,
-    category
+    category, {headers }
   );
 };
 
 export const deleteCategory = async (id: number) => {
-  return axios.delete(`http://localhost:8080/api/categories/delete/${id}`);
+  return axios.delete(`http://localhost:8080/api/categories/delete/${id}`,{headers});
 };

@@ -32,7 +32,7 @@ function getItem(
 }
 
 const MENUS: MenuItem[] = [
-  getItem("Quản lý sản phẩm", "warehouse", <AppstoreOutlined />, [
+  getItem("Sản phẩm", "warehouse", <AppstoreOutlined />, [
     getItem("Thêm sản phẩm", "warehouse/products/add"),
     getItem("Danh sách sản phẩm", "warehouse/products"),
     getItem("Danh mục sản phẩm", "warehouse/categories"),

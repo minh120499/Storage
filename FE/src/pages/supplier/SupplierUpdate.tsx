@@ -81,7 +81,7 @@ const SupplierUpdate = ({supplier, isVisible, setIsVisible}: SupplierProps) => {
                     >
                         <Row gutter={12}>
                             <Col span={12}>
-                                <Form.Item label="Tên nhà cung cấp" name="name" rules={[{required: true}]}>
+                                <Form.Item label="Tên nhà cung cấp" name="name" rules={[{required: true, message:"Tên không được để trống"}]}>
                                     <Input/>
                                 </Form.Item>
                             </Col>
@@ -98,6 +98,7 @@ const SupplierUpdate = ({supplier, isVisible, setIsVisible}: SupplierProps) => {
                                            rules={[
                                                {
                                                    required: true,
+                                                    message:"SĐT không được để trống"
                                                },
                                                {
                                                    pattern: (/((09|03|07|08|05)+([0-9]{8})\b)/g),
@@ -108,7 +109,7 @@ const SupplierUpdate = ({supplier, isVisible, setIsVisible}: SupplierProps) => {
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
-                                <Form.Item label="Email" name="email" rules={[{required: true, type: "email"}]}>
+                                <Form.Item label="Email" name="email" rules={[{required: true, type: "email", message:"Email không được để trống"}]}>
                                     <Input placeholder="Nhập email"/>
                                 </Form.Item>
                             </Col>
@@ -121,37 +122,21 @@ const SupplierUpdate = ({supplier, isVisible, setIsVisible}: SupplierProps) => {
                                 </Form.Item>
                             </Col>
                             <Col span={12} style={{height: '100%'}}>
-                                <Form.Item label="Nhân viên phụ trách">
-                                    <Select
-                                        showSearch
-                                        placeholder="Select a person"
-                                        optionFilterProp="children"
-                                        onChange={onChange}
-                                        onSearch={onSearch}
-                                        listItemHeight={10} listHeight={250}
-                                        filterOption={(input, option) =>
-                                            (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
-                                        }
-                                        dropdownStyle={{height: 100, width: 300}}
-                                    >
-                                        <Option value="jack">Jack</Option>
-                                        <Option value="lucy">Lucy</Option>
-                                    </Select>
+                                <Form.Item label="Địa chỉ" name="address" rules={[{required: true, message:"Địa chỉ không được để trống"}]}>
+                                    <Input placeholder="nhập địa chỉ nhà cung cấp"/>
                                 </Form.Item>
                             </Col>
                         </Row>
-                        <Form.Item label="Địa chỉ" name="address" rules={[{required: true}]}>
-                            <Input placeholder="nhập địa chỉ nhà cung cấp"/>
-                        </Form.Item>
+
                         <Row>
                             <Col span={4}>
                                 <Form.Item>
-                                    <Button onClick={handleCancel}>Cancel</Button>
+                                    <Button onClick={handleCancel}>Huỷ</Button>
                                 </Form.Item>
                             </Col>
                             <Col span={4}>
                                 <Form.Item>
-                                    <Button htmlType="submit" type="primary">Submit</Button>
+                                    <Button htmlType="submit" type="primary">Xác nhận</Button>
                                 </Form.Item>
                             </Col>
                         </Row>

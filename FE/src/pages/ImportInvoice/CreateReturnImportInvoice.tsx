@@ -26,7 +26,7 @@ interface ReturnImport {
 const CreateReturnImportInvoice = () => {
 
     const {code} = useParams();
-    useTitle("Tạo hoá đơn trả")
+    useTitle("Tạo hoá đơn trả","Tạo hoá đơn trả")
     const [importReturn, setImportReturn] = useState<IImportReturnMyTableData[]>([]);
     const [detailInvoices, setDetailInvoices] = useState<IDetailImportInvoice>();
 

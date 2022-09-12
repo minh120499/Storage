@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {Col, Form, Input, Modal, Row, Select, Space} from 'antd';
 import "antd/dist/antd.css";
-import {TypeSupplier} from "../../services/customType";
-import {createSupplier} from "../../services/api";
+import {IProductVariant, TypeSupplier} from "../../services/customType";
+import {createSupplier, getAllAccount} from "../../services/api";
 import ToastCustom from "../../features/toast/Toast";
 import AddAddress from "../../components/AddAddress";
 import {PlusOutlined} from '@ant-design/icons';
@@ -11,15 +11,24 @@ import Button from "../../UI/Button";
 type SupplierProps = {
     reload: () => void
 }
-
+type Account = {
+    id: number
+    employee:[
+        {
+            fullName:string
+        }
+    ]
+}
 const SupplierCreate = ({reload}: SupplierProps) => {
     const {Option} = Select;
 
+    const [accountId, setAccountId] = useState<number>();
+    const [accounts, setAccounts] = useState<Account[]>([]);
+
+
     const [form] = Form.useForm();
     const onFormSubmit = (supplier: TypeSupplier) => {
-        supplier.accountId = Number(1)
-        console.log(supplier);
-        
+        supplier.accountId = accountId as number
         createSupplier(supplier).then(() => {
             ToastCustom.fire({
                 icon: 'success',
@@ -55,28 +64,37 @@ const SupplierCreate = ({reload}: SupplierProps) => {
     };
 
 
-    const [fullAddress,setFullAddress] = useState("")
+    const [fullAddress, setFullAddress] = useState("")
     const [keyChange, setKeyChange] = useState(0);
 
     const handleKeyChange = () => {
         setKeyChange(current => current + 1);
     };
-    useEffect(() =>{
-         form.setFieldsValue({
+    useEffect(() => {
+        form.setFieldsValue({
             address: fullAddress
         })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[fullAddress])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [fullAddress])
+
+    useEffect(() => {
+        getAllAccount().then((acc) => {
+            setAccounts(acc.data)
+        })
+    }, [])
+
+    function onChange(value:number) {
+        setAccountId(value)
+    }
 
     return (
-
 
 
         <div>
 
             <Button onClick={showModal} style={{width: "180px", fontSize: '14px'}} type="primary">
                 <Space>
-                    <PlusOutlined />
+                    <PlusOutlined/>
                     Thêm mới
                 </Space>
             </Button>
@@ -95,7 +113,7 @@ const SupplierCreate = ({reload}: SupplierProps) => {
                         onFinish={onFormSubmit}
                         layout="vertical"
                     >
-                        <Form.Item label="Tên nhà cung cấp" name="name" rules={[{required: true}]}>
+                        <Form.Item label="Tên nhà cung cấp" name="name" rules={[{required: true, message:"Tên không được để trống"}]}>
                             <Input/>
                         </Form.Item>
                         <Row gutter={24}>
@@ -109,6 +127,7 @@ const SupplierCreate = ({reload}: SupplierProps) => {
                                            rules={[
                                                {
                                                    required: true,
+                                                message:"SĐT không được để trống"
                                                },
                                                {
                                                    pattern: (/((09|03|07|08|05)+([0-9]{8})\b)/g),
@@ -119,7 +138,7 @@ const SupplierCreate = ({reload}: SupplierProps) => {
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
-                                <Form.Item label="Email" name="email" rules={[{required: true, type: "email"}]}>
+                                <Form.Item label="Email" name="email" rules={[{required: true, type: "email", message:"Email không được để trống"}]}>
                                     <Input placeholder="Nhập email"/>
                                 </Form.Item>
                             </Col>
@@ -127,18 +146,22 @@ const SupplierCreate = ({reload}: SupplierProps) => {
                                 <Form.Item label="Nhân viên phụ trách" name="account">
                                     <Select
                                         showSearch
-                                        placeholder="Select a person"
+                                        placeholder="Chọn nhân viên phụ trách"
                                         optionFilterProp="children"
-                                        // onChange={onChange}
+                                        onChange={onChange}
                                         // onSearch={onSearch}
                                         listItemHeight={10} listHeight={250}
-                                        filterOption={(input, option) =>
-                                            (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
-                                        }
                                         dropdownStyle={{height: 100, width: 100}}
                                     >
-                                        <Option value="jack">Jack</Option>
-                                        <Option value="lucy">Lucy</Option>
+                                        {
+                                            accounts && accounts.map((account, key) =>
+                                                (
+                                                    <Option
+                                                        key={account.id}
+                                                        value={account.id}>{account?.employee[0].fullName}</Option>
+                                                )
+                                            )
+                                        }
                                     </Select>
                                 </Form.Item>
                             </Col>
@@ -146,22 +169,22 @@ const SupplierCreate = ({reload}: SupplierProps) => {
 
                         {/*add address*/}
 
-                       <AddAddress onChange = {setFullAddress} keyChange={keyChange}/>
+                        <AddAddress onChange={setFullAddress} keyChange={keyChange}/>
 
                         {/*-------------------*/}
 
                         <Form.Item label="Địa chỉ" name="address">
-                            <Input disabled  placeholder="địa chỉ nhà cung cấp"/>
+                            <Input disabled placeholder="địa chỉ nhà cung cấp"/>
                         </Form.Item>
                         <Row>
                             <Col span={4}>
                                 <Form.Item>
-                                    <Button onClick={handleCancel}>Cancel</Button>
+                                    <Button onClick={handleCancel}>Huỷ</Button>
                                 </Form.Item>
                             </Col>
                             <Col span={4}>
                                 <Form.Item>
-                                    <Button htmlType="submit" type="primary">Submit</Button>
+                                    <Button htmlType="submit" type="primary">Xác nhận</Button>
                                 </Form.Item>
                             </Col>
                         </Row>

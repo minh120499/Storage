@@ -23,10 +23,10 @@ import java.util.Map;
 public class AccountController {
 	private final AccountService accountService;
 
-//	@GetMapping()
-//	public ResponseEntity<Object> getAll() {
-//		return ResponseEntity.ok(accountService.getAll());
-//	}
+	@GetMapping("/findAll")
+	public ResponseEntity<Object> getAll() {
+		return ResponseEntity.ok(accountService.getAll());
+	}
 
 	@GetMapping()
 	public ResponseEntity<Object> getAccount(@RequestParam Integer id) {

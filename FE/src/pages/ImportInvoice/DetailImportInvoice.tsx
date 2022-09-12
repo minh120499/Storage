@@ -22,7 +22,8 @@ import {RootState} from "../../app/store";
 import useTitle from "../../app/useTitle";
 
 const DetailImportInvoice = () => {
-    useTitle("")
+    useTitle("","Chi tiết đơn nhập hàng")
+
     const {code} = useParams();
 
     const [detailInvoices, setDetailInvoices] = useState<IDetailImportInvoice>();

@@ -1,27 +1,35 @@
 import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {IImportInvoiceBySupplier, ISupplier} from "../../services/customType";
-import {getImportInvoiceBySupplier, getSupplierById} from "../../services/api";
+import {findAccountById, getImportInvoiceBySupplier, getSupplierById} from "../../services/api";
 import {Col, Dropdown, Menu, MenuProps, Row, Space, Table, Tabs} from "antd";
 import Moment from "react-moment";
 import {DeleteOutlined, DownOutlined, InfoCircleOutlined, LeftOutlined} from "@ant-design/icons";
 import SupplierUpdate from "./SupplierUpdate";
 import {ImportInvoiceColumn, ImportInvoiceColumnBySupplier} from "../../components/Datatablesource";
 import useTitle from "../../app/useTitle";
-
+type Account = {
+    id: number,
+    fullName:string
+}
 const SupplierDetails = () => {
-    useTitle("Chi tiết nhà cung cấp")
+    useTitle("Chi tiết nhà cung cấp","Nhà cung cấp")
     const {id} = useParams();
     const [supplier, setSupplier] = useState({} as ISupplier);
     const [importInvoiceBySupplier, setImportInvoiceBySupplier] = useState<IImportInvoiceBySupplier[]>([]);
-
+    const [account,setAccount] = useState({} as Account)
     useEffect(() => {
         getSupplierById(parseInt(id as string)).then(supplier => {
             setSupplier(supplier.data)
+
+            findAccountById(parseInt(supplier.data.accountId as string)).then((acc) =>{
+                setAccount(acc.data)
+            })
         })
         getImportInvoiceBySupplier(parseInt(id as string)).then(supplier => {
             setImportInvoiceBySupplier(supplier.data)
         })
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -65,9 +73,9 @@ const SupplierDetails = () => {
             {
                 supplier && (
                     <div>
-                        <h2 style={{margin: 20}}>
+                        <h2 style={{ fontSize:'15px',marginBottom:20}} >
                             <Link to="/stocker/supplier/">
-                                <LeftOutlined/> Danh sách nhà cung cấp
+                                <LeftOutlined /> Danh sách nhà cung cấp
                             </Link>
                         </h2>
                         <div style={{background: "white"}}>
@@ -129,7 +137,7 @@ const SupplierDetails = () => {
                                                 <p>Nhân viên phụ trách: </p>
                                             </Col>
                                             <Col span={12}>
-                                                <b>{supplier.accountId}</b>
+                                                <b>{account?.fullName}</b>
                                             </Col>
                                         </Row>
                                         <Row>
