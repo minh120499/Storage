@@ -9,14 +9,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Repository
 public interface ICategoryRepo extends JpaRepository<Category,Integer>{
 
-    Page<Category> findByNameContaining(String name, Pageable pageable);
-    Page<Category> findByIdContaining(String id,Pageable pageable);
+    @Query(value = "call get_categoriesByIdorName(?1)", nativeQuery = true)
+    Page<Category> findAllByPage(String value, Pageable pageable);
 
     @Transactional
     @Query(value = "call delete_category(?1)", nativeQuery = true)

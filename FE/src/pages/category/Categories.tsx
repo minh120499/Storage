@@ -15,9 +15,11 @@ import Swal from "sweetalert2";
 import ToastCustom from "../../features/toast/Toast";
 import { DeletedIcon } from "../../UI/ActionIcons";
 import Search from "antd/lib/input/Search";
+import useTitle from "../../app/useTitle";
 
 
 export default function Categories() {
+  useTitle("Danh mục","Danh mục")
   const [response, setResponse] = useState<Category[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [status, setStatus] = useState(false);
@@ -38,10 +40,6 @@ export default function Categories() {
         });
     }, [status, inputValue]
   );
-  useEffect(() => {
-    document.title = "Danh mục"
-  }, [])
-
   const handleSearch = (e: string) => {
     setInputValue(e.trim());
   }
@@ -62,6 +60,11 @@ export default function Categories() {
     {
       title: "Mã danh mục",
       dataIndex: "id",
+      render:(id:string)=>{
+        return(
+          <a>{id}</a>
+        )
+      },
       sorter: (a, b) => a.id - b.id
     },
     {
@@ -165,7 +168,6 @@ export default function Categories() {
 
   return (
     <div className="m-5">
-      <h1 className="ant-typography">Danh mục</h1>
       <div
         style={{
           marginBottom: 16,

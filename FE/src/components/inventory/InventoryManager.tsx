@@ -38,7 +38,7 @@ import AddIcon from "@mui/icons-material/Add";
 import useTitle from "../../app/useTitle";
 
 const InventoryManager = () => {
-  useTitle("Quản lý kho");
+  useTitle("Quản lý kho","Quản lý kho");
   const { Search } = Input;
   const { id } = useParams();
   const [inventory, setInventory] = useState({} as IInventoryDto);
@@ -55,9 +55,7 @@ const InventoryManager = () => {
   const [minQuantityForm] = Form.useForm();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    document.title = "Quản lý kho";
-  }, []);
+  
 
   useEffect(() => {
     setReload(true);
@@ -162,8 +160,8 @@ const InventoryManager = () => {
                   quantity.minQuantity === 0
                     ? "Thêm giới hạn cảnh báo"
                     : quantity.quantity > quantity.minQuantity
-                      ? `Còn hàng ${quantity.quantity} / ${quantity.minQuantity}`
-                      : `Sắp hết hàng ${quantity.quantity} / ${quantity.minQuantity}`
+                      ? `Còn hàng ${quantity?.quantity?.toLocaleString()} / ${quantity?.minQuantity?.toLocaleString()}`
+                      : `Sắp hết hàng ${quantity?.quantity?.toLocaleString()} / ${quantity?.minQuantity?.toLocaleString()}`
                 }
               >
                 {quantity?.minQuantity ? (

@@ -26,12 +26,10 @@ public class CategoryService implements ICategoryService {
 
 
     @Override
-    public Page<Category> findAll(Integer pageNumber, Integer pageSize, String sortBy, String sortDir, String name, String id) {
+    public Page<Category> findAll(Integer pageNumber, Integer pageSize, String sortBy, String sortDir, String value) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        if (id != null) {
-            return iCategoryRepo.findByIdContaining(id,PageRequest.of(pageNumber - 1, pageSize,sort));
-        }else if(name != null){
-            return iCategoryRepo.findByNameContaining(name,PageRequest.of(pageNumber - 1, pageSize,sort));
+        if (value != null) {
+            return  iCategoryRepo.findAllByPage(value,PageRequest.of(pageNumber - 1 , pageSize, sort));
         }
         else{
             return iCategoryRepo.findAll(PageRequest.of(pageNumber - 1, pageSize, sort));
